@@ -1,4 +1,5 @@
 export const ROUTERS = {
   MAIN: '/',
-  LOGIN: '/login'
+  LOGIN: '/login',
+  TEST: '/test',
 } as const;
