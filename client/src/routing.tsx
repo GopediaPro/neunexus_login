@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { ROUTERS } from "./constant/route";
-import Login from "./pages/Login";
-import Layout from './Layout';
-import TestComponent from './components/TestComponent';
-import Main from './pages/Main';
+import { ROUTERS } from '@/constant/route';
+import Layout from '@/Layout';
+import TestComponent from '@/components/TestComponent';
+import Main from '@/pages/Main';
+import Login from '@/pages/Login';
 
 const routeList = [
   {

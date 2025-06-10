@@ -12,8 +12,10 @@
   "dependencies": {
     "@tanstack/react-query": "^5.80.6",
     "@tanstack/react-query-devtools": "^5.80.6",
+    "path": "^0.12.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.57.0",
     "react-router-dom": "^7.6.2"
   },
   "devDependencies": {
