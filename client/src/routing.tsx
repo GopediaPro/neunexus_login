@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { ROUTERS } from "./constant/route";
-import Login from "./pages/Login";
+import { ROUTERS } from './constant/route';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import Layout from './Layout';
 import TestComponent from './components/TestComponent';
 import Main from './pages/Main';
@@ -8,15 +9,19 @@ import Main from './pages/Main';
 const routeList = [
   {
     path: ROUTERS.MAIN,
-    element: <Main />
+    element: <Main />,
   },
   {
     path: ROUTERS.LOGIN,
-    element: <Login />
+    element: <Login />,
+  },
+  {
+    path: ROUTERS.SIGNUP,
+    element: <Signup />,
   },
   {
     path: ROUTERS.TEST,
-    element: <TestComponent />
+    element: <TestComponent />,
   },
 ];
 
