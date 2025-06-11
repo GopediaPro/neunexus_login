@@ -50,9 +50,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               "flex h-[3.125rem] w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
               
-              currentVariant === 'default' && "border-gray-300 focus:border-blue-500",
+              currentVariant === 'default' && "border-gray2 focus:border-blue-500",
               currentVariant === 'focused' && "border-blue-500",
-              currentVariant === 'error' && "border-red-500",
+              currentVariant === 'error' && "border-redNotice",
 
               error && "pr-10",
               props.disabled && "bg-gray-50 text-gray-500 cursor-not-allowed",
@@ -73,7 +73,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error && <ErrorMessage message={error} />}
-        {helperText && !error && <p className="text-sm text-gray-500">{helperText}</p>}
+        {helperText && !error && <p className="text-sm text-gray2">{helperText}</p>}
       </div>
     )
   }

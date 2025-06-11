@@ -24,6 +24,12 @@ export default {
 					sm: 'calc(var(--radius) - 4px)'
 				},
 				colors: {
+					// custom color 값
+					gray1: '#454545',
+					gray2: '#666666',
+					gray3: '#D9D9D9', 
+					redNotice: '#FF0000',
+
 					background: 'hsl(var(--background))',
 					foreground: 'hsl(var(--foreground))',
 					card: {
