@@ -2,6 +2,7 @@ import { forwardRef, useState, type FocusEvent } from "react";
 
 import { cn } from "@/lib/utils"
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { InputSuffix } from "@/components/ui/InputSuffix";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> { 
@@ -9,6 +10,7 @@ export interface InputProps
     error?: string;
     helperText?: string;
     variant?: 'default' | 'focused' | 'error';
+    showPasswordToggle?: boolean;
   }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -18,12 +20,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     error,
     variant = 'default',
     className,
-    type,
+    type: propType,
     onFocus,
     onBlur,
+    showPasswordToggle = false,
     ...props 
 }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const isPasswordInput = propType === 'password';
+    const currentType = isPasswordInput && showPassword ? 'text' : propType;
+    const onIcons = error || (isPasswordInput && showPasswordToggle);
 
     const currentVariant = error ? 'error' : (isFocused ? 'focused' : variant);
 
@@ -35,6 +43,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
       setIsFocused(false);
       onBlur?.(e);
+    };
+
+    const handleTogglePassword = () => {
+      setShowPassword(!showPassword);
     }
 
     return (
@@ -46,7 +58,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative">
           <input
-            type={type}
+            type={currentType}
             className={cn(
               "flex h-[3.125rem] w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
               
@@ -54,7 +66,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               currentVariant === 'focused' && "border-blue-500",
               currentVariant === 'error' && "border-redNotice",
 
-              error && "pr-10",
+              onIcons && "pr-10",
               props.disabled && "bg-gray-50 text-gray-500 cursor-not-allowed",
               className,
 
@@ -65,10 +77,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             onBlur={handleBlur}
             {...props}
           />
-          {error && (
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-              <img src="/image/alert.svg" alt="에러 이미지" />
-            </div>
+          {onIcons && (
+            <InputSuffix
+              error={error}
+              showPassword={showPassword}
+              onTogglePassword={isPasswordInput && showPasswordToggle ? handleTogglePassword : undefined}
+              type={propType}
+            />
           )}
         </div>
 
