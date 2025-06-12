@@ -29,6 +29,12 @@ export default {
 					gray2: '#666666',
 					gray3: '#D9D9D9', 
 					redNotice: '#FF0000',
+					primary: "#1E6ECF",
+					secondary: "#347ED9",
+					back: "#F4F3F9",
+					card: "#FFFFFF",
+					textBody: "#555555",
+					textTitle: "#222222",
 
 					background: 'hsl(var(--background))',
 					foreground: 'hsl(var(--foreground))',

@@ -14,6 +14,7 @@
     "@tanstack/react-query-devtools": "^5.80.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
     "lucide-react": "^0.514.0",
     "path": "^0.12.7",
     "react": "^19.1.0",
