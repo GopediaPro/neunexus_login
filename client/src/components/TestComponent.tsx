@@ -1,4 +1,5 @@
-import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Input } from "@/components/ui/Input";
 import { useQuery } from "@tanstack/react-query";
 
 const TestComponent = () => {
@@ -56,6 +57,7 @@ const TestComponent = () => {
               placeholder="아이디"
               error="사용자를 찾을 수 없습니다."
             />
+            <Checkbox />
           </form>
         </div>
         
