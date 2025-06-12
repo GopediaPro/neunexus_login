@@ -38,6 +38,35 @@ export default {
 
 					background: 'hsl(var(--background))',
 					foreground: 'hsl(var(--foreground))',
+					
+					// 배경 색상
+					'web-background': 'hsl(var(--web-background))',
+					'web-primary': 'hsl(var(--web-primary))',
+					'web-secondary': 'hsl(var(--web-secondary))',
+					'web-accent': 'hsl(var(--web-accent))',
+					
+					'border-default': 'hsl(var(--border-default))',
+					'border-icon': 'hsl(var(--border-icon))',
+					'border-subtle': 'hsl(var(--border-subtle))',
+					
+					'input-background': 'hsl(var(--input-background))',
+					'input-font': 'hsl(var(--input-font))',
+					
+					'font-white': 'hsl(var(--font-white))',
+					'font-black': 'hsl(var(--font-black))',
+					'font-primary': 'hsl(var(--font-primary))',
+					'font-secondary': 'hsl(var(--font-secondary))',
+					'font-tertiary': 'hsl(var(--font-tertiary))',
+					'font-muted': 'hsl(var(--font-muted))',
+					
+					'gray-100': 'hsl(var(--gray-100))',
+					'gray-200': 'hsl(var(--gray-200))',
+					'gray-300': 'hsl(var(--gray-300))',
+					'gray-400': 'hsl(var(--gray-400))',
+					'gray-500': 'hsl(var(--gray-500))',
+
+					'web-error': 'hsl(var(--web-error))',
+
 					card: {
 						DEFAULT: 'hsl(var(--card))',
 						foreground: 'hsl(var(--card-foreground))'

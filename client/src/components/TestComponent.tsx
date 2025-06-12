@@ -1,5 +1,6 @@
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Input } from "@/components/ui/Input";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useQuery } from "@tanstack/react-query";
 
 const TestComponent = () => {
@@ -17,6 +18,7 @@ const TestComponent = () => {
   
   return (
     <div className="flex flex-col justify-center items-center">
+      <ThemeToggle />
       <h1>유저: {user?.firstName} {user?.lastName}</h1>
       <h2>게시글:</h2>
       {posts?.map((post: any) => (
