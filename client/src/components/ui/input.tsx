@@ -51,16 +51,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div>
-        {label && (
-          <label>
-            {label}
-          </label>
-        )}
         <div className="relative">
           <input
             type={currentType}
             className={cn(
-              "flex h-[3.125rem] w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+              "flex h-[3.125rem] w-full rounded-lg border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
               
               currentVariant === 'default' && "border-gray2 focus:border-blue-500",
               currentVariant === 'focused' && "border-blue-500",

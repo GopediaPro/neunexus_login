@@ -42,19 +42,17 @@ const TestComponent = () => {
 
           <form className="flex flex-col gap-5">            
             <Input
-              id="비밀번호"
+              label="라벨테스트"
               type="text"
               placeholder="아이디"
               error=""
             />
             <Input
-              id="비밀번호"
               type="text"
               placeholder="아이디"
               error=""
             />
             <Input
-              id="아이디"
               type="text"
               placeholder="아이디"
               error="사용자를 찾을 수 없습니다."
