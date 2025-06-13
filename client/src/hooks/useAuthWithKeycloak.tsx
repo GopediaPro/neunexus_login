@@ -275,9 +275,6 @@ export const useAuthWithKeycloak = () => {
       .replace(/[^\w.-]/g, '_') // 한글 사용 안됨 영어로 바꿔줌
       .toLowerCase();
   
-    console.log('Original username:', username);
-    console.log('Sanitized username:', sanitizedUsername);
-  
     const userData = {
       username: sanitizedUsername,
       email,
@@ -346,37 +343,37 @@ export const useAuthWithKeycloak = () => {
   };
 
   const register = async (email: string, password: string, username:string) => {
-  try {
-    setLoading(true);
-
-    const adminToken = await getAdminToken();
-    await checkUserExists(email, username, adminToken);
-    await createKeycloakUser(email, password, username, adminToken);
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
     try {
-      await login(email, password);
-      return {
-        success: true,
-        message: '회원가입 및 로그인이 완료되었습니다.',
-        autoLogin: true
-      };
-    } catch (loginError) {
-      console.warn('자동 로그인 실패, 수동 로그인 필요:', loginError);
-      return {
-        success: true,
-        message: '회원가입이 완료되었습니다. 로그인해주세요.',
-        autoLogin: false
-      };
-    }
+      setLoading(true);
 
-  } catch (error) {
-    console.error('Registration error:', error);
-    throw error;
-  } finally {
-    setLoading(false);
-  }
+      const adminToken = await getAdminToken();
+      await checkUserExists(email, username, adminToken);
+      await createKeycloakUser(email, password, username, adminToken);
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      try {
+        await login(email, password);
+        return {
+          success: true,
+          message: '회원가입 및 로그인이 완료되었습니다.',
+          autoLogin: true
+        };
+      } catch (loginError) {
+        console.warn('자동 로그인 실패, 수동 로그인 필요:', loginError);
+        return {
+          success: true,
+          message: '회원가입이 완료되었습니다. 로그인해주세요.',
+          autoLogin: false
+        };
+      }
+
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   // PostgreSQL에 사용자 정보 동기화
