@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import ReactQueryProvider from '@/provider/queryProvider'
 import { ThemeProvider } from 'next-themes'
+import { AuthProvider } from './contexts/AuthContext';
 import App from '@/App'
 
 const renderApp = () => {
@@ -14,9 +15,11 @@ const renderApp = () => {
         enableSystem
         disableTransitionOnChange={false}
       >
-        <StrictMode>
-          <App />
-        </StrictMode>
+        <AuthProvider>
+          <StrictMode>
+            <App />
+          </StrictMode>
+        </AuthProvider>
       </ThemeProvider>
     </ReactQueryProvider>,
   )
