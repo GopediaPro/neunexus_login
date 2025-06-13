@@ -8,20 +8,20 @@ import App from '@/App'
 
 const renderApp = () => {
   createRoot(document.getElementById('root')!).render(
-    <ReactQueryProvider>
-      <ThemeProvider
-        attribute='class'
-        defaultTheme='system'
-        enableSystem
-        disableTransitionOnChange={false}
-      >
-        <AuthProvider>
+    <AuthProvider>
+      <ReactQueryProvider>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange={false}
+        >
           <StrictMode>
             <App />
           </StrictMode>
-        </AuthProvider>
-      </ThemeProvider>
-    </ReactQueryProvider>,
+        </ThemeProvider>
+      </ReactQueryProvider>
+    </AuthProvider>,
   )
 }
 
