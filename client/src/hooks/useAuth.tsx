@@ -4,9 +4,19 @@ import { useApi } from './useApi';
 
 // Keycloak 설정
 const keycloakConfig = {
-  url: 'http://localhost:8080/auth',
-  realm: 'your-realm',
-  clientId: 'your-client-id'
+  url: import.meta.env.VITE_KEYCLOAK_URL,
+  realm: import.meta.env.VITE_KEYCLOAK_REALM,
+  clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID
+};
+
+const getKeycloakUrls = () => {
+  const baseUrl = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid_connect`;
+  
+  return {
+    userInfo: `${baseUrl}/userinfo`,
+    token: `${baseUrl}/token`,
+    logout: `${baseUrl}/logout`
+  };
 };
 
 export const useAuth = () => {
@@ -15,6 +25,7 @@ export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const api = useApi();
+  const keycloakUrls = getKeycloakUrls();
 
   useEffect(() => {
     // 앱 시작 시 토큰 확인
@@ -46,9 +57,7 @@ export const useAuth = () => {
   // Keycloak 토큰 검증
   const verifyToken = async (token: string) => {
     try {
-      const url = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid_connect/userinfo`;
-
-      const response = await api.get(url, api.withAuth(token));
+      const response = await api.get(keycloakUrls.userInfo, api.withAuth(token));
 
       if (response.data && !response.error) {
         return response.data;
@@ -70,8 +79,6 @@ export const useAuth = () => {
         return;
       }
 
-      const url = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid_connect/token`;
-
       // URLSearchParams 형태로 데이터 전송 (application/x-www-form-urlencoded)
       const formData = new URLSearchParams({
         client_id: keycloakConfig.clientId,
@@ -79,7 +86,7 @@ export const useAuth = () => {
         refresh_token: refreshToken
       });
 
-      const response = await api.apiCall(url, {
+      const response = await api.apiCall(keycloakUrls.token, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -119,8 +126,6 @@ export const useAuth = () => {
     try {
       setLoading(true);
 
-      const url = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid_connect/token`;
-
       // URLSearchParams 형태로 데이터 전송 (application/x-www-form-urlencoded)
       const formData = new URLSearchParams({
         client_id: keycloakConfig.clientId,
@@ -129,7 +134,7 @@ export const useAuth = () => {
         password: password
       });
 
-      const response = await api.apiCall(url, {
+      const response = await api.apiCall(keycloakUrls.token, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -222,7 +227,6 @@ export const useAuth = () => {
 
       if (token && refreshToken) {
         // Keycloak 서버에서 로그아웃
-        const url = `${keycloakConfig.url}/realms/${keycloakConfig.realm}/protocol/openid_connect/logout`;
 
         // URLSearchParams 형태로 데이터 전송
         const formData = new URLSearchParams({
@@ -230,7 +234,7 @@ export const useAuth = () => {
           refresh_token: refreshToken
         });
 
-        const response = await api.apiCall(url, {
+        const response = await api.apiCall(keycloakUrls.logout, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
