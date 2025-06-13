@@ -1,44 +1,35 @@
 import { Input } from "@/components/ui/Input";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useAuth } from "@/hooks";
-import { loginSchema } from "@/schemas/auth.schema";
+import { signupSchema } from "@/schemas/auth.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
 
-export type LoginFormData = z.infer<typeof loginSchema>
+export type SignupFormData = z.infer<typeof signupSchema>
 
-const TestComponent = () => { 
-  const { login, logout, loading } = useAuth();
+const RegisterTest = () => { 
+  const { register } = useAuth();
 
-  const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
-      password: ""
+      password: "",
+      username: "테스트1"
     }
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    console.log(data);
-
+  const onSubmit = async (data: SignupFormData) => {
     try {
-      await login(data.email, data.password);
+      await register(data.email, data.password, data.username);
     } catch (error: any) {
       setError("root", {
         type: "manual",
         message: error.message || "로그인 실패"
       });
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error(error);
     }
   };
   
@@ -58,18 +49,19 @@ const TestComponent = () => {
             <h1 className="text-2xl font-semibold">로그인</h1>
           </div>
 
-          <form 
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-5">
-              <div>
+          <form onSubmit={(e) => {
+  console.log("폼 이벤트 발생!");
+  return handleSubmit(onSubmit)(e);
+}}>
+            {/* className="flex flex-col gap-5"> */}
                 <FormField 
                   name="email"
                   control={control}
                   // 여기 focus 사용위해서 label과 아래 input id 일치 시켜주시면 됨당
-                  label="email"
+                  label="이메일"
                   render={(field) => (
                     <Input
-                      id="email"
+                      id="이메일"
                       type="email"
                       placeholder="email"
                       {...field}
@@ -77,13 +69,13 @@ const TestComponent = () => {
                   )}
                   error={errors.email?.message}
                 />
-                <FormField 
+                <FormField
                   name="password"
                   control={control}
-                  label="password"
+                  label="비밀번호"
                   render={(field) => (
                     <Input
-                      id="password"
+                      id="비밀번호"
                       type="password"
                       placeholder="password"
                       {...field}
@@ -99,13 +91,11 @@ const TestComponent = () => {
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "로그인 중 .." : "로그인"}
                 </Button>
-              </div>
           </form>
         </div>
-        
       </div>
     </div>
   );
 }
 
-export default TestComponent;
+export default RegisterTest;
