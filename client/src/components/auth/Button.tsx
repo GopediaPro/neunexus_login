@@ -28,16 +28,17 @@ export const Button = ({
 }: ButtonProps) => {
   const baseClasses = 'focus:outline-none rounded-lg transition-colors box-border';
 
-  const colorClasses = classNames({
-    'bg-black text-white border border-black': color === 'black',
-    'bg-white text-black border border-black': color === 'white',
-    'bg-gray text-white border border-gray': color === 'gray',
-    'bg-gray2 text-white border border-gray2': color === 'gray2',
-    'bg-gray3 text-white border border-gray3': color === 'gray3',
-    'bg-buttonGrayWhite text-gray1': color === 'grayWhite',
-    'bg-disabledGrayWhite text-gray1': color === 'disabled',
-    'bg-cheeseYellow text-black': color === 'cheeseYellow',
-  });
+const colorClasses = classNames({
+  'bg-black text-white border border-black dark:bg-white dark:text-black dark:border-white': color === 'black',
+  'bg-white text-black border border-black dark:bg-black dark:text-white dark:border-white': color === 'white',
+  'bg-gray text-white border border-gray dark:bg-gray3 dark:text-white dark:border-gray3': color === 'gray',
+  'bg-gray2 text-white border border-gray2 dark:bg-gray3 dark:text-white dark:border-gray3': color === 'gray2',
+  'bg-gray3 text-white border border-gray3 dark:bg-gray3 dark:text-white': color === 'gray3',
+  'bg-buttonGrayWhite text-gray1 dark:bg-black dark:text-white': color === 'grayWhite',
+  'bg-disabledGrayWhite text-gray1 dark:bg-gray3 dark:text-white': color === 'disabled',
+  'bg-cheeseYellow text-black dark:bg-yellow-300': color === 'cheeseYellow',
+});
+
 
   const hoverColorClasses = classNames({
     'hover:bg-black/10 active:bg-black/20':
