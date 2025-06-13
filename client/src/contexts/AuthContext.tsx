@@ -11,7 +11,7 @@ interface KeycloakConfig {
 interface AuthContextType {
   user: any;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
+  register: (email: string, password: string, name: string, firstname:string, lastname:string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   loading: boolean;

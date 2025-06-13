@@ -1,30 +1,33 @@
 import { Input } from "@/components/ui/Input";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { useAuth } from "@/hooks";
 import { signupSchema } from "@/schemas/auth.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
+import { useAuthWithKeycloak } from "@/hooks/useAuthWithKeycloak";
 
 export type SignupFormData = z.infer<typeof signupSchema>
 
+
 const RegisterTest = () => { 
-  const { register } = useAuth();
+  const { register } = useAuthWithKeycloak();
 
   const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       email: "",
       password: "",
-      username: "테스트1"
+      username: "aaa12"
     }
   });
 
   const onSubmit = async (data: SignupFormData) => {
     try {
       await register(data.email, data.password, data.username);
+
+      alert('성공');
     } catch (error: any) {
       setError("root", {
         type: "manual",
@@ -40,7 +43,7 @@ const RegisterTest = () => {
         <div className="space-y-4">
 
           <img 
-            src="/image/logo.png"
+            src="/image/logo.svg"
             alt="로고"
             className="w-[15rem] h-[8rem]"
           />
@@ -49,11 +52,7 @@ const RegisterTest = () => {
             <h1 className="text-2xl font-semibold">로그인</h1>
           </div>
 
-          <form onSubmit={(e) => {
-  console.log("폼 이벤트 발생!");
-  return handleSubmit(onSubmit)(e);
-}}>
-            {/* className="flex flex-col gap-5"> */}
+          <form onSubmit={handleSubmit(onSubmit)}>
                 <FormField 
                   name="email"
                   control={control}
