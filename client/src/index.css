@@ -1,18 +1,113 @@
-@import 'tailwindcss/base'; 
-@import 'tailwindcss/components'; 
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+@font-face {
+  font-family: 'Pretendard';
   font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/pretendard/Pretendard-Regular.woff2') format('woff2');
+}
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/pretendard/Pretendard-Medium.woff2') format('woff2');
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/pretendard/Pretendard-SemiBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/pretendard/Pretendard-Bold.woff2') format('woff2');
+}
+
+@layer base {
+  :root {
+    font-family: 'Pretendard', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    --background: var(--web-background);
+    --foreground: var(--font-primary);
+
+    /* 피그마 디자인 색상 추가 */
+    --web-background: 252 50% 98%;
+    --web-primary: 213 77% 47%;
+    --web-secondary: 213 69% 55%;
+    --web-accent: 213 77% 47%;
+    --web-error: 0 84% 60%;
+
+    --border-default: 0 0% 85%;
+    --border-icon: 0 0% 66%;
+    --border-subtle: 0 0% 91%;
+
+    --input-background: 0 100% 98%;
+    --input-font: 0 0% 13%;
+
+    --font-white: 0 0% 100%; 
+    --font-black: 0 0% 7%; 
+    --font-primary: 0 0% 13%;
+    --font-secondary: 0 0% 33%;
+    --font-tertiary: 0 0% 47%;
+    --font-muted: 0 0% 47%;
+
+    --gray-100: 0 0% 95%;
+    --gray-200: 0 0% 91%;
+    --gray-300: 0 0% 85%;
+    --gray-400: 0 0% 66%;
+    --gray-500: 240 2% 32%;
+  }
+  .dark {
+    --background: var(--web-background);
+    --foreground: var(--font-primary);
+
+    --web-background: 207 21% 19%;
+    --web-primary: 207 13% 28%;
+    --web-secondary: 207 13% 28%;
+    --web-accent: 211 100% 58%;
+    --web-error: 0 84% 60%;
+
+    --border-default: 207 6% 39%;
+    --border-icon: 0 0% 66%;
+    --border-subtle: 207 10% 32%;
+
+    --input-background: 207 13% 21%;
+    --input-font: 207 22% 88%;
+
+    --font-white: 0 0% 100%;
+    --font-black: 0 0% 100%;
+    --font-primary: 0 0% 100%;
+    --font-secondary: 210 17% 95%;
+    --font-tertiary: 0 0% 98%;
+    --font-muted: 207 9% 38%;
+
+    --gray-100: 207 9% 38%;
+    --gray-200: 207 10% 32%;
+    --gray-300: 207 6% 39%;
+    --gray-400: 0 0% 66%;
+    --gray-500: 207 13% 28%;
+  }
+
+  * {
+    @apply border-border-default;
+  }
+
+  body {
+    @apply bg-web-background text-font-primary;
+    margin: 0;
+    padding: 0;
+  }
 }

@@ -1,3 +1,6 @@
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Input } from "@/components/ui/Input";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useQuery } from "@tanstack/react-query";
 
 const TestComponent = () => {
@@ -15,6 +18,7 @@ const TestComponent = () => {
   
   return (
     <div className="flex flex-col justify-center items-center">
+      <ThemeToggle />
       <h1>유저: {user?.firstName} {user?.lastName}</h1>
       <h2>게시글:</h2>
       {posts?.map((post: any) => (
@@ -23,6 +27,41 @@ const TestComponent = () => {
           <div>{post.content}</div>
         </div>
       ))}
+      <div className="w-[36.875rem] rounded-lg shadow-lg p-8 border-2">
+        <div className="space-y-4">
+
+          <img 
+            src="/image/logo.png"
+            alt="로고"
+            className="w-[15rem] h-[8rem]"
+          />
+
+          <div className="flex">
+            <h1 className="text-2xl font-semibold">로그인</h1>
+          </div>
+
+          <form className="flex flex-col gap-5">            
+            <Input
+              label="라벨테스트"
+              type="text"
+              placeholder="아이디"
+              error=""
+            />
+            <Input
+              type="text"
+              placeholder="아이디"
+              error=""
+            />
+            <Input
+              type="text"
+              placeholder="아이디"
+              error="사용자를 찾을 수 없습니다."
+            />
+            <Checkbox />
+          </form>
+        </div>
+        
+      </div>
     </div>
   );
 }
