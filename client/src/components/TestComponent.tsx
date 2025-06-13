@@ -1,17 +1,18 @@
 import { Input } from "@/components/ui/Input";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { useAuth } from "@/hooks";
 import { loginSchema } from "@/schemas/auth.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
+import { useAuthWithKeycloak } from "@/hooks/useAuthWithKeycloak";
+import { useNavigate } from "react-router-dom";
 
 export type LoginFormData = z.infer<typeof loginSchema>
 
 const TestComponent = () => { 
-  const { login, logout, loading } = useAuth();
+  const { login, logout } = useAuthWithKeycloak();
+  const navigate = useNavigate();
 
   const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -22,10 +23,10 @@ const TestComponent = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log(data);
-
     try {
       await login(data.email, data.password);
+
+      navigate('/');
     } catch (error: any) {
       setError("root", {
         type: "manual",
@@ -41,15 +42,15 @@ const TestComponent = () => {
       console.error(error);
     }
   };
+
   
   return (
     <div className="flex flex-col justify-center items-center">
-      <ThemeToggle />
       <div className="w-[36.875rem] rounded-lg shadow-lg p-8 border-2">
         <div className="space-y-4">
 
           <img 
-            src="/image/logo.png"
+            src="/image/logo.svg"
             alt="로고"
             className="w-[15rem] h-[8rem]"
           />
@@ -60,47 +61,48 @@ const TestComponent = () => {
 
           <form 
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-5">
-              <div>
-                <FormField 
-                  name="email"
-                  control={control}
-                  // 여기 focus 사용위해서 label과 아래 input id 일치 시켜주시면 됨당
-                  label="email"
-                  render={(field) => (
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="email"
-                      {...field}
-                    />
-                  )}
-                  error={errors.email?.message}
-                />
-                <FormField 
-                  name="password"
-                  control={control}
-                  label="password"
-                  render={(field) => (
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="password"
-                      {...field}
-                    />
-                  )}
-                  error={errors.password?.message}
-                />
-
-                {errors.root && (
-                  <div>{errors.root.message}</div>
+            >
+              <FormField 
+                name="email"
+                control={control}
+                // 여기 focus 사용위해서 label과 아래 input id 일치 시켜주시면 됨당
+                label="이메일"
+                render={(field) => (
+                  <Input
+                    id="이메일"
+                    type="email"
+                    placeholder="email"
+                    {...field}
+                  />
                 )}
+                error={errors.email?.message}
+              />
+              <FormField 
+                name="password"
+                control={control}
+                label="비밀번호"
+                render={(field) => (
+                  <Input
+                    id="비밀번호"
+                    type="password"
+                    placeholder="password"
+                    {...field}
+                  />
+                )}
+                error={errors.password?.message}
+              />
 
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "로그인 중 .." : "로그인"}
-                </Button>
-              </div>
+              {errors.root && (
+                <div>{errors.root.message}</div>
+              )}
+
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "로그인 중 .." : "로그인"}
+              </Button>
           </form>
+          <Button onClick={handleLogout} type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "로그아웃 중 .." : "로그아웃"}
+          </Button>
         </div>
         
       </div>

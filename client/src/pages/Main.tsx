@@ -1,7 +1,7 @@
-import { useAuth } from "@/hooks";
+import { useAuthWithKeycloak } from "@/hooks/useAuthWithKeycloak";
 
 const Main = () => {
-  const { user } = useAuth();
+  const { user } = useAuthWithKeycloak();
 
   return (
     <div>

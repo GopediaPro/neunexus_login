@@ -122,7 +122,6 @@ export const useAuthWithKeycloak = () => {
   // Admin API 사용할 예정
   const getAdminToken = async (): Promise<string> => {
     try {
-      
       const response = await fetch(keycloakUrls.token, {
         method: 'POST',
         headers: {
@@ -156,6 +155,13 @@ export const useAuthWithKeycloak = () => {
   const login = async (email: string, password: string) => {
     try {
       setLoading(true);
+
+      const adminToken = await getAdminToken();
+      const emailExists = await checkEmailExists(email, adminToken);
+
+      if (!emailExists) {
+        throw new Error('존재하지 않는 이메일입니다.');
+      }
   
       const response = await fetch(keycloakUrls.token, {
         method: 'POST',
@@ -166,7 +172,8 @@ export const useAuthWithKeycloak = () => {
           client_id: keycloakConfig.clientId,
           grant_type: 'password',
           username: email,
-          password: password
+          password: password,
+          scope: 'openid profile'
         })
       });
   
@@ -192,9 +199,13 @@ export const useAuthWithKeycloak = () => {
         setIsAuthenticated(true);
   
         // PostgreSQL에 사용자 정보 동기화
-        await syncUserToDatabase(userData);
+        try {
+          await syncUserToDatabase(userData);
+        } catch (syncError) {
+          console.warn('📊 User sync failed but login successful:', syncError);
+          // 동기화 실패는 무시하고 로그인 성공 처리
+        }
         
-        console.log('로그인 성공!');
       } else {
         throw new Error('Failed to get user info');
       }
@@ -207,37 +218,56 @@ export const useAuthWithKeycloak = () => {
     }
   };
 
-  
-
-  // 사용자 확인
-  const checkUserExists = async (email: string, adminToken: string): Promise<boolean> => {
-    const searchUrl = `${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`;
-    
+  // 로그인 
+  const checkEmailExists = async (email: string, adminToken: string): Promise<boolean> => {
     try {
-      const response = await fetch(searchUrl, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${adminToken}`,
-          'Content-Type': 'application/json',
+      const response = await fetch(`${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`, {
+        headers: { 
+          'Authorization': `Bearer ${adminToken}`, 
+          'Content-Type': 'application/json' 
         }
       });
-  
+
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('사용자 검색 실패:', errorText);
-        throw new Error(`사용자 검색 실패: Status ${response.status} - ${errorText}`);
+        console.error('이메일 검색 실패:', response.status);
+        return false;
       }
-  
+
       const users = await response.json();
-      console.log('사용자 검색 결과:', users.length, '명');
+      const exists = users.length > 0;
       
-      return users.length > 0;
+      return exists;
     } catch (error) {
-      console.error('사용자 중복:', error);
-      throw error;
+      console.error('이메일 확인 에러:', error);
+      return false;
     }
   };
+
+// 회원가입 사용자 확인
+  const checkUserExists = async (email: string, username:string, adminToken: string): Promise<boolean> => {
+  const sanitizedUsername = username.replace(/[^\w.-]/g, '_').toLowerCase();
   
+  const [emailCheck, usernameCheck] = await Promise.all([
+  fetch(`${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`, {
+    headers: { 'Authorization': `Bearer ${adminToken}` }
+  }),
+  fetch(`${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?username=${encodeURIComponent(sanitizedUsername)}`, {
+    headers: { 'Authorization': `Bearer ${adminToken}` }
+  })
+  ]);
+
+  const emailUsers = await emailCheck.json();
+  const usernameUsers = await usernameCheck.json();
+
+  if (emailUsers.length > 0) {
+    throw new Error('이미 존재하는 이메일입니다.');
+  }
+  if (usernameUsers.length > 0) {
+    throw new Error('이미 존재하는 사용자명입니다.');
+  }
+
+  return false;
+  };
 
   // keycloak 사용자 생성
   const createKeycloakUser = async (email: string, password: string, username: string, adminToken: string): Promise<void> => {
@@ -254,12 +284,13 @@ export const useAuthWithKeycloak = () => {
       emailVerified: true,
       enabled: true,
       firstName: username, // 추후 손봐줘야할듯 회원가입페이지에 추가시키든
-      lastName: "",
+      lastName: username,
       attributes: {},
       credentials: [{
         type: 'password',
         value: password,
-        temporary: false
+        temporary: false,
+        createdDate: Date.now()
       }],
       requiredActions: []
     };
@@ -283,7 +314,8 @@ export const useAuthWithKeycloak = () => {
           const locationHeader = response.headers.get('Location');
           if (locationHeader) {
             const userId = locationHeader.split('/').pop();
-            console.log(userId);
+            console.log('사용자 생성 완료, UserId:', userId);
+            
           }
         }
       } else {
@@ -313,34 +345,53 @@ export const useAuthWithKeycloak = () => {
     }
   };
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (email: string, password: string, username:string) => {
   try {
     setLoading(true);
 
     const adminToken = await getAdminToken();
+    await checkUserExists(email, username, adminToken);
+    await createKeycloakUser(email, password, username, adminToken);
 
-    const userExists = await checkUserExists(email, adminToken);
-    if (userExists) {
-      throw new Error('이미 존재하는 이메일입니다.');
-    }
-
-    await createKeycloakUser(email, password, name, adminToken);
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    return {
-      success: true,
-      message: '회원가입이 완료되었습니다. 로그인해주세요.'
-    };
-
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
-    } finally {
-      setLoading(false);
+    try {
+      await login(email, password);
+      return {
+        success: true,
+        message: '회원가입 및 로그인이 완료되었습니다.',
+        autoLogin: true
+      };
+    } catch (loginError) {
+      console.warn('자동 로그인 실패, 수동 로그인 필요:', loginError);
+      return {
+        success: true,
+        message: '회원가입이 완료되었습니다. 로그인해주세요.',
+        autoLogin: false
+      };
     }
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
   };
 
   // PostgreSQL에 사용자 정보 동기화
   const syncUserToDatabase = async (userData: any) => {
+    const syncEnabled = import.meta.env.VITE_SYNC_ENABLED === 'true';
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+    if (!syncEnabled) {
+      return;
+    }
+
+    if (!apiBaseUrl || apiBaseUrl.includes('5173')) {
+      return;
+    }
+
     try {
       const token = localStorage.getItem('auth_token');
 
@@ -359,7 +410,7 @@ export const useAuthWithKeycloak = () => {
       console.error('User sync failed:', error);
     }
   };
-  
+
   const logout = async () => {
     try {
       const token = localStorage.getItem('auth_token');
