@@ -1,12 +1,10 @@
 import { forwardRef, useState, type FocusEvent } from "react";
 
 import { cn } from "@/lib/utils"
-import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { InputSuffix } from "@/components/ui/InputSuffix";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> { 
-    label?: string;
     error?: string;
     helperText?: string;
     variant?: 'default' | 'focused' | 'error';
@@ -15,7 +13,6 @@ export interface InputProps
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({
-    label,
     helperText,
     error,
     variant = 'default',
@@ -82,7 +79,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {error && <ErrorMessage message={error} />}
         {helperText && !error && <p className="text-sm text-gray2">{helperText}</p>}
       </div>
     )

@@ -57,15 +57,18 @@ const RegisterTest = () => {
             <h1 className="text-2xl font-semibold">로그인</h1>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form 
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-6"
+          >
             <FormField 
               name="email"
               control={control}
               // 여기 focus 사용위해서 label과 아래 input id 일치 시켜주시면 됨당
               label="이메일"
-              render={(field) => (
+              render={(field, fieldId) => (
                 <Input
-                  id="이메일"
+                  id={fieldId}
                   type="email"
                   placeholder="email"
                   {...field}
@@ -77,9 +80,9 @@ const RegisterTest = () => {
               name="password"
               control={control}
               label="비밀번호"
-              render={(field) => (
+              render={(field, fieldId) => (
                 <Input
-                  id="비밀번호"
+                  id={fieldId}
                   type="password"
                   placeholder="password"
                   {...field}

@@ -12,7 +12,7 @@ interface FormFieldProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   label?: string;
-  render: (field: ControllerRenderProps<T>) => ReactElement;
+  render: (field: ControllerRenderProps<T>, fieldId: string) => ReactElement;
   error?: string;
 }
 
@@ -23,10 +23,12 @@ export const FormField = <T extends FieldValues>({
   render,
   error
 }: FormFieldProps<T>) => {
+  const fieldId = `field-${name}`;
+
   return (
     <div className="relative flex flex-col gap-2">
       <label
-        htmlFor={label}
+        htmlFor={fieldId}
         className="cursor-pointer text-body2 web:text-heading3"
       >
         {label}
@@ -34,7 +36,7 @@ export const FormField = <T extends FieldValues>({
       <Controller
         name={name}
         control={control}
-        render={({ field }) => render(field)}
+        render={({ field }) => render(field, fieldId)}
       />
       {error && <ErrorMessage message={error} />}
     </div>
