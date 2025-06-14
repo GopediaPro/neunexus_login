@@ -65,8 +65,15 @@ export const useKeycloakAuth = () => {
         return response.data;
       }
       return null;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Token verification failed:', error);
+
+      if (error.message?.includes('CORS') || error.message?.includes('net::ERR_FAILED')) {
+        console.warn('🚫 CORS 에러 - 개발 환경 설정 필요');
+        // 개발 환경에서는 토큰을 유지하고 사용자 정보만 null 반환
+        return null;
+      }
+      
       return null;
     }
   };
