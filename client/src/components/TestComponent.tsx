@@ -5,13 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
-import { useAuthWithKeycloak } from "@/hooks/useAuthWithKeycloak";
 import { useNavigate } from "react-router-dom";
+import { keycloakLogin } from "@/services/keycloakLogin";
 
 export type LoginFormData = z.infer<typeof loginSchema>
 
 const TestComponent = () => { 
-  const { login, logout } = useAuthWithKeycloak();
   const navigate = useNavigate();
 
   const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<LoginFormData>({
@@ -24,7 +23,7 @@ const TestComponent = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login(data.email, data.password);
+      await keycloakLogin(data);
 
       navigate('/');
     } catch (error: any) {
@@ -32,14 +31,6 @@ const TestComponent = () => {
         type: "manual",
         message: error.message || "로그인 실패"
       });
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -100,9 +91,6 @@ const TestComponent = () => {
                 {isSubmitting ? "로그인 중 .." : "로그인"}
               </Button>
           </form>
-          <Button onClick={handleLogout} type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "로그아웃 중 .." : "로그아웃"}
-          </Button>
         </div>
         
       </div>

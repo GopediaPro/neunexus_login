@@ -5,14 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
 import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
-import { useAuthWithKeycloak } from "@/hooks/useAuthWithKeycloak";
 import { useNavigate } from "react-router-dom";
+import { keycloakSignup } from "@/services/keycloakSignup";
 
 export type SignupFormData = z.infer<typeof signupSchema>
 
 
 const RegisterTest = () => { 
-  const { register } = useAuthWithKeycloak();
   const navigate = useNavigate();
 
   const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<SignupFormData>({
@@ -20,13 +19,13 @@ const RegisterTest = () => {
     defaultValues: {
       email: "",
       password: "",
-      username: "testuseraaafa"
+      username: "testuseasdraaafa"
     }
   });
 
   const onSubmit = async (data: SignupFormData) => {
     try {
-      const result = await register(data.email, data.password, data.username);
+      const result = await keycloakSignup(data);
 
       if (result.success) {
         if (result.autoLogin) {
