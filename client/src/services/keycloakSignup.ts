@@ -34,13 +34,10 @@ export const keycloakSignup = async ({
   username
 }: ISignupRequest): Promise<IAuthResponse & { user?: IKeycloakUser }> => {
   try {
-    // 1. Admin 토큰 획득
     const adminToken = await getAdminToken();
     
-    // 2. 중복 사용자 확인
     await checkUserExists(email, username, adminToken);
     
-    // 3. Keycloak에 사용자 생성
     const userId = await createKeycloakUser({
       email,
       password,
@@ -48,10 +45,8 @@ export const keycloakSignup = async ({
       adminToken
     });
 
-    // 4. 사용자 생성 후 잠시 대기 (Keycloak 내부 처리를 위해)
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // 5. 자동 로그인 시도
     try {
       const loginResult = await keycloakLogin({ email, password });
       

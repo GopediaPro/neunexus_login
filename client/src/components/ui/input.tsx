@@ -52,16 +52,20 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             type={currentType}
             className={cn(
-              "flex h-[3.125rem] w-full rounded-lg border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+              "flex h-[3.125rem] w-full rounded-lg border transition-colors",
+              "px-3 py-1 text-base shadow-sm",
+              "file:border-0 file:bg-transparent file:text-sm file:font-medium",
+              "focus-visible:outline-none focus-visible:ring-1",
+              "disabled:cursor-not-allowed disabled:opacity-50",
+              "md:text-sm",
               
-              currentVariant === 'default' && "border-gray2 focus:border-blue-500",
-              currentVariant === 'focused' && "border-blue-500",
-              currentVariant === 'error' && "border-redNotice",
+              currentVariant === 'default' && "border-border-default focus:border-web-primary",
+              currentVariant === 'focused' && "border-web-primary focus-visible:ring-web-primary/20",
+              currentVariant === 'error' && "border-border-error focus:border-border-error focus-visible:ring-web-error/20",
 
               onIcons && "pr-10",
-              props.disabled && "bg-gray-50 text-gray-500 cursor-not-allowed",
+              props.disabled && "bg-gray-100 text-gray-400 cursor-not-allowed border-border-subtle",
               className,
-
             )}
             ref={ref}
             autoComplete="off"
@@ -79,7 +83,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {helperText && !error && <p className="text-sm text-gray2">{helperText}</p>}
+        {helperText && !error && (
+          <p className="text-sm text-font-tertiary mt-1">
+            {helperText}
+          </p>
+        )}
       </div>
     )
   }

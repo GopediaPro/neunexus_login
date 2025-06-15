@@ -27,8 +27,7 @@ export default {
 					// custom color 값
 					gray1: '#454545',
 					gray2: '#666666',
-					gray3: '#D9D9D9', 
-					redNotice: '#FF0000',
+					gray3: '#D9D9D9',
 					primary: "#1E6ECF",
 					secondary: "#347ED9",
 					back: "#F4F3F9",
@@ -48,6 +47,7 @@ export default {
 					'border-default': 'hsl(var(--border-default))',
 					'border-icon': 'hsl(var(--border-icon))',
 					'border-subtle': 'hsl(var(--border-subtle))',
+					'border-error': 'hsl(var(--border-error))',
 					
 					'input-background': 'hsl(var(--input-background))',
 					'input-font': 'hsl(var(--input-font))',
@@ -66,6 +66,10 @@ export default {
 					'gray-500': 'hsl(var(--gray-500))',
 
 					'web-error': 'hsl(var(--web-error))',
+					'background-error': 'hsl(var(--background-error))',
+
+					primary: 'hsl(var(--web-primary))',
+					secondary: 'hsl(var(--web-secondary))',
 
 					card: {
 						DEFAULT: 'hsl(var(--card))',
@@ -74,14 +78,6 @@ export default {
 					popover: {
 						DEFAULT: 'hsl(var(--popover))',
 						foreground: 'hsl(var(--popover-foreground))'
-					},
-					primary: {
-						DEFAULT: 'hsl(var(--primary))',
-						foreground: 'hsl(var(--primary-foreground))'
-					},
-					secondary: {
-						DEFAULT: 'hsl(var(--secondary))',
-						foreground: 'hsl(var(--secondary-foreground))'
 					},
 					muted: {
 						DEFAULT: 'hsl(var(--muted))',
