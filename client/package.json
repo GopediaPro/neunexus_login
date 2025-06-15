@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "storybook-docs": "storybook build --docs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -37,6 +38,7 @@
     "@eslint/js": "^9.25.0",
     "@storybook/addon-a11y": "^9.0.9",
     "@storybook/addon-docs": "^9.0.9",
+    "@storybook/addon-postcss": "^2.0.0",
     "@storybook/addon-vitest": "^9.0.9",
     "@storybook/react-vite": "^9.0.9",
     "@types/react": "^19.1.2",
