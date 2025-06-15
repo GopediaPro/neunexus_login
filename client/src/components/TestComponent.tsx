@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/Input";
 import { loginSchema } from "@/schemas/auth.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,6 +6,8 @@ import { FormField } from "@/components/ui/FormField";
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { keycloakLogin } from "@/services/keycloakLogin";
+import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 export type LoginFormData = z.infer<typeof loginSchema>
 
@@ -39,6 +40,7 @@ const TestComponent = () => {
     <div className="flex flex-col justify-center items-center">
       <div className="w-[36.875rem] rounded-lg shadow-lg p-8 border-2">
         <div className="space-y-4">
+          <ThemeToggle />
 
           <img 
             src="/image/logo.svg"
@@ -77,6 +79,22 @@ const TestComponent = () => {
                     id="비밀번호"
                     type="password"
                     placeholder="password"
+                    error={errors.password?.message}
+                    {...field}
+                  />
+                )}
+                error={errors.password?.message}
+              />
+              <FormField 
+                name="password"
+                control={control}
+                label="비밀번호"
+                render={(field) => (
+                  <Input
+                    id="비밀번호"
+                    type="password"
+                    placeholder="password"
+                    error="error"
                     {...field}
                   />
                 )}

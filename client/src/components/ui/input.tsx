@@ -52,19 +52,41 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             type={currentType}
             className={cn(
-              "flex h-[3.125rem] w-full rounded-lg border transition-colors",
-              "px-3 py-1 text-base shadow-sm",
-              "file:border-0 file:bg-transparent file:text-sm file:font-medium",
-              "focus-visible:outline-none focus-visible:ring-1",
+              "flex h-[3.125rem] w-full border-2 rounded-[0.5rem] transition-all duration-200 ease-in-out",
+              "px-3 py-3 text-base font-normal",
+              "focus-visible:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
-              "md:text-sm",
+
+              !error && "bg-input-background",
+              error && "bg-background-error",
+              "text-input-font",
+
+              currentVariant === 'default' && !error && "placeholder:text-font-tertiary",
+              currentVariant === 'focused' && !error && "placeholder:text-web-focus",
+              currentVariant === 'error' && "placeholder:text-web-error",
+              "placeholder:font-normal",
               
-              currentVariant === 'default' && "border-border-default focus:border-web-primary",
-              currentVariant === 'focused' && "border-web-primary focus-visible:ring-web-primary/20",
-              currentVariant === 'error' && "border-border-error focus:border-border-error focus-visible:ring-web-error/20",
+              currentVariant === 'default' && [
+                "border-border-default",
+                "hover:border-border-icon",
+                "focus:border-web-focus focus:text-input-font"
+              ],
+              currentVariant === 'focused' && [
+                "border-web-focus text-input-font"
+              ],
+              currentVariant === 'error' && [
+                "border-border-error",
+                "focus:border-border-error focus:text-input-font"
+              ],
 
               onIcons && "pr-10",
-              props.disabled && "bg-gray-100 text-gray-400 cursor-not-allowed border-border-subtle",
+
+              props.disabled && [
+                "bg-disabled-background text-disabled-text",
+                "border-disabled-border cursor-not-allowed", 
+                "placeholder:text-disabled-placeholder",
+                "hover:border-disabled-border focus:border-disabled-border"
+              ],
               className,
             )}
             ref={ref}

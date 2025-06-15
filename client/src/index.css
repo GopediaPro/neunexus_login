@@ -44,10 +44,11 @@
     --foreground: var(--font-primary);
 
     /* 피그마 디자인 색상 추가 */
-    --web-background: 252 50% 98%;
+    --web-background: 248 38% 98%;
     --web-primary: 213 77% 47%;
     --web-secondary: 213 69% 55%;
     --web-accent: 213 77% 47%;
+    --web-focus: 213 77% 47%; 
     --web-error: 0 84% 60%;
 
     --border-default: 0 0% 85%;
@@ -55,7 +56,7 @@
     --border-subtle: 0 0% 91%;
     --border-error: 0 84% 60%;   
 
-    --input-background: 0 100% 98%;
+    --input-background: 0 50% 98%;
     --input-font: 0 0% 13%;
 
     --font-white: 0 0% 100%; 
@@ -71,7 +72,12 @@
     --gray-400: 0 0% 66%;
     --gray-500: 240 2% 32%;
 
-    --background-error: 0 100% 98%;
+    --disabled-background: 0 0% 96%;
+    --disabled-text: 0 0% 62%;
+    --disabled-border: 0 0% 88%;
+    --disabled-placeholder: 0 0% 74%;
+
+    --background-error: 0 50% 98%; 
 
     /* Shadcn UI */
     --card: var(--web-background);
@@ -96,7 +102,8 @@
     --web-primary: 207 13% 28%;
     --web-secondary: 207 13% 28%;
     --web-accent: 211 100% 58%;
-    --web-error: 0 84% 60%;
+    --web-focus: 211 100% 58%; 
+    --web-error: 359 100% 65%;
 
     --border-default: 207 6% 39%;
     --border-icon: 0 0% 66%;
@@ -104,7 +111,7 @@
     --border-error: 359 100% 65%; 
 
     --input-background: 207 13% 21%;
-    --input-font: 207 22% 88%;
+    --input-font: 210 17% 95%;
 
     --font-white: 0 0% 100%;
     --font-black: 0 0% 100%;
@@ -118,6 +125,11 @@
     --gray-300: 207 6% 39%;
     --gray-400: 0 0% 66%;
     --gray-500: 207 13% 28%;
+
+    --disabled-background: 207 12% 25%;
+    --disabled-text: 0 0% 62%;
+    --disabled-border: 207 8% 35%;
+    --disabled-placeholder: 0 0% 54%;
 
     --background-error: 0 13% 24%;
 
