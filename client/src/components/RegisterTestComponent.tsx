@@ -19,7 +19,7 @@ const RegisterTest = () => {
     defaultValues: {
       email: "",
       password: "",
-      username: "testuseasdraaafa"
+      username: "aasd"
     }
   });
 

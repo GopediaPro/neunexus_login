@@ -1,6 +1,30 @@
 import type { ICreateUserRequest } from "@/types/auth.types";
 import { keycloakConfig } from "@/utils/keycloakConfig";
 
+export const checkEmailExists = async (email: string, adminToken: string): Promise<boolean> => {
+  try {
+    const response = await fetch(
+      `${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`,
+      {
+        headers: { 
+          'Authorization': `Bearer ${adminToken}`, 
+          'Content-Type': 'application/json' 
+        }
+      }
+    );
+
+    if (!response.ok) {
+      console.error('이메일 검색 실패:', response.status);
+      return false;
+    }
+
+    const users = await response.json();
+    return users.length > 0;
+  } catch (error) {
+    console.error('이메일 확인 에러:', error);
+    return false;
+  }
+};
 
 export const checkUserExists = async (
   email: string, 

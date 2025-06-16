@@ -1,32 +1,7 @@
-import { getAdminToken, keycloakLogin } from "@/services/keycloakLogin";
-import { createKeycloakUser } from "@/services/keycloakUser";
+import { keycloakLogin } from "@/services/keycloakLogin";
+import { tokenService } from "@/services/keycloakToken";
+import { checkUserExists, createKeycloakUser } from "@/services/keycloakUser";
 import type { IAuthResponse, IKeycloakUser, ISignupRequest } from "@/types/auth.types";
-import { keycloakConfig } from "@/utils/keycloakConfig";
-
-const checkUserExists = async (email: string, username:string, adminToken: string): Promise<boolean> => {
-  const sanitizedUsername = username.replace(/[^\w.-]/g, '_').toLowerCase();
-  
-  const [emailCheck, usernameCheck] = await Promise.all([
-    fetch(`${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?email=${encodeURIComponent(email)}`, {
-      headers: { 'Authorization': `Bearer ${adminToken}` }
-    }),
-    fetch(`${keycloakConfig.url}/admin/realms/${keycloakConfig.realm}/users?username=${encodeURIComponent(sanitizedUsername)}`, {
-      headers: { 'Authorization': `Bearer ${adminToken}` }
-    })
-  ]);
-
-  const emailUsers = await emailCheck.json();
-  const usernameUsers = await usernameCheck.json();
-
-  if (emailUsers.length > 0) {
-    throw new Error('이미 존재하는 이메일입니다.');
-  }
-  if (usernameUsers.length > 0) {
-    throw new Error('이미 존재하는 사용자명입니다.');
-  }
-
-  return false;
-};
 
 export const keycloakSignup = async ({
   email,
@@ -34,18 +9,19 @@ export const keycloakSignup = async ({
   username
 }: ISignupRequest): Promise<IAuthResponse & { user?: IKeycloakUser }> => {
   try {
-    const adminToken = await getAdminToken();
+    const adminToken = await tokenService.getAdminToken();
     
     await checkUserExists(email, username, adminToken);
-    
-    const userId = await createKeycloakUser({
+    await createKeycloakUser({
       email,
       password,
       username,
       adminToken
     });
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    const KEYCLOAK_USER_CREATION_DELAY = 2000;
+
+    await new Promise(resolve => setTimeout(resolve, KEYCLOAK_USER_CREATION_DELAY));
     
     try {
       const loginResult = await keycloakLogin({ email, password });
