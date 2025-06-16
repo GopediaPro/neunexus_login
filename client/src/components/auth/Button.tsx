@@ -1,75 +1,96 @@
-import classNames from 'classnames';
+import { cva, type VariantProps } from 'class-variance-authority';
+import cx from 'classnames';
 import { ReactNode } from 'react';
 
-type ButtonColor =
-  | 'black'
-  | 'white'
-  | 'gray'
-  | 'gray2'
-  | 'gray3'
-  | 'grayWhite'
-  | 'disabled'
-  | 'cheeseYellow';
+const buttonStyles = cva(
+  'inline-flex items-center justify-center rounded-lg font-semibold transition-colors focus:outline-none',
+  {
+    variants: {
+      variant: {
+        primary:
+          'bg-black text-white hover:bg-black/80 dark:bg-white dark:text-black',
+        secondary:
+          'bg-gray2 text-black hover:bg-gray dark:bg-gray3 dark:text-white',
+        ghost:
+          'border border-black text-black hover:bg-black/10 dark:border-white dark:text-white dark:hover:bg-white/10',
+        text:
+          'bg-transparent text-black hover:underline dark:text-white dark:hover:underline',
+      },
+      size: {
+        xs: 'px-2 py-0.5 text-xs',
+        sm: 'px-2 py-1 text-sm',
+        md: 'px-4 py-2',
+        lg: 'px-6 py-3 text-lg',
+      },
+      loading: {
+        true: 'cursor-wait',
+      },
+    },
+    compoundVariants: [
+      {
+        variant: ['primary', 'secondary', 'ghost', 'text'],
+        loading: true,
+        class: 'opacity-70',
+      },
+    ],
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+    },
+  }
+);
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonStyles> {
   children: ReactNode;
-  size?: 'xsmall' | 'small' | 'medium' | 'large';
-  color?: ButtonColor;
   loading?: boolean;
 }
 
 export const Button = ({
   children,
-  size = 'medium',
-  color = 'white',
-  disabled = false,
+  variant,
+  size,
   loading = false,
-  ...props
+  className,
+  disabled,
+  ...rest
 }: ButtonProps) => {
-  const baseClasses = 'focus:outline-none rounded-lg transition-colors box-border';
-
-const colorClasses = classNames({
-  'bg-black text-white border border-black dark:bg-white dark:text-black dark:border-white': color === 'black',
-  'bg-white text-black border border-black dark:bg-black dark:text-white dark:border-white': color === 'white',
-  'bg-gray text-white border border-gray dark:bg-gray3 dark:text-white dark:border-gray3': color === 'gray',
-  'bg-gray2 text-white border border-gray2 dark:bg-gray3 dark:text-white dark:border-gray3': color === 'gray2',
-  'bg-gray3 text-white border border-gray3 dark:bg-gray3 dark:text-white': color === 'gray3',
-  'bg-buttonGrayWhite text-gray1 dark:bg-black dark:text-white': color === 'grayWhite',
-  'bg-disabledGrayWhite text-gray1 dark:bg-gray3 dark:text-white': color === 'disabled',
-  'bg-cheeseYellow text-black dark:bg-yellow-300': color === 'cheeseYellow',
-});
-
-
-  const hoverColorClasses = classNames({
-    'hover:bg-black/10 active:bg-black/20':
-      color === 'white' || color === 'gray' || color === 'gray2' || color === 'gray3' || color === 'grayWhite',
-    'hover:bg-opacity-80 active:bg-opacity-50 active:border-none':
-      color === 'cheeseYellow' || color === 'black',
-  });
-
-  const sizeClasses = classNames({
-    'px-2 py-0.5 text-xs': size === 'xsmall',
-    'px-2 py-1 text-sm': size === 'small',
-    'px-4 py-2': size === 'medium',
-    'px-6 py-3 text-lg': size === 'large',
-  });
-
-  const combinedClasses = classNames(
-    baseClasses,
-    colorClasses,
-    sizeClasses,
-    hoverColorClasses,
-    {
-      'opacity-50 cursor-not-allowed': disabled,
-    }
-  );
-
   return (
-    <button className={combinedClasses} disabled={disabled} {...props}>
-      <div className="flex items-center justify-center w-full gap-2">
-        <span>{children}</span>
-        {loading && <span>Loading...</span>}
-      </div>
+    <button
+      className={cx(
+        buttonStyles({ variant, size, loading }),
+        'disabled:opacity-40 disabled:pointer-events-none',
+        className
+      )}
+      aria-busy={loading}
+      disabled={disabled || loading}
+      {...rest}
+    >
+      {loading ? (
+        <svg
+          className="animate-spin h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+          ></path>
+        </svg>
+      ) : (
+        children
+      )}
     </button>
   );
 };
