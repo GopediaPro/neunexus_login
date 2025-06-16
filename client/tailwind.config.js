@@ -24,33 +24,23 @@ export default {
 					sm: 'calc(var(--radius) - 4px)'
 				},
 				colors: {
-					// custom color 값
-					gray1: '#454545',
-					gray2: '#666666',
-					gray3: '#D9D9D9', 
-					redNotice: '#FF0000',
-					primary: "#1E6ECF",
-					secondary: "#347ED9",
-					back: "#F4F3F9",
-					card: "#FFFFFF",
-					textBody: "#555555",
-					textTitle: "#222222",
-
 					background: 'hsl(var(--background))',
 					foreground: 'hsl(var(--foreground))',
 					
-					// 배경 색상
 					'web-background': 'hsl(var(--web-background))',
 					'web-primary': 'hsl(var(--web-primary))',
 					'web-secondary': 'hsl(var(--web-secondary))',
 					'web-accent': 'hsl(var(--web-accent))',
+					'web-focus': 'hsl(var(--web-focus))',
 					
 					'border-default': 'hsl(var(--border-default))',
 					'border-icon': 'hsl(var(--border-icon))',
 					'border-subtle': 'hsl(var(--border-subtle))',
+					'border-error': 'hsl(var(--border-error))',
 					
 					'input-background': 'hsl(var(--input-background))',
 					'input-font': 'hsl(var(--input-font))',
+					'background-error': 'hsl(var(--background-error))',
 					
 					'font-white': 'hsl(var(--font-white))',
 					'font-black': 'hsl(var(--font-black))',
@@ -65,7 +55,15 @@ export default {
 					'gray-400': 'hsl(var(--gray-400))',
 					'gray-500': 'hsl(var(--gray-500))',
 
+					'disabled-background': 'hsl(var(--disabled-background))',
+					'disabled-text': 'hsl(var(--disabled-text))',
+					'disabled-border': 'hsl(var(--disabled-border))',
+					'disabled-placeholder': 'hsl(var(--disabled-placeholder))',
+
 					'web-error': 'hsl(var(--web-error))',
+
+					primary: 'hsl(var(--web-primary))',
+					secondary: 'hsl(var(--web-secondary))',
 
 					card: {
 						DEFAULT: 'hsl(var(--card))',
@@ -74,14 +72,6 @@ export default {
 					popover: {
 						DEFAULT: 'hsl(var(--popover))',
 						foreground: 'hsl(var(--popover-foreground))'
-					},
-					primary: {
-						DEFAULT: 'hsl(var(--primary))',
-						foreground: 'hsl(var(--primary-foreground))'
-					},
-					secondary: {
-						DEFAULT: 'hsl(var(--secondary))',
-						foreground: 'hsl(var(--secondary-foreground))'
 					},
 					muted: {
 						DEFAULT: 'hsl(var(--muted))',

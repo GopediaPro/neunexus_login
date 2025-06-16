@@ -1,12 +1,10 @@
 import { forwardRef, useState, type FocusEvent } from "react";
 
 import { cn } from "@/lib/utils"
-import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { InputSuffix } from "@/components/ui/InputSuffix";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> { 
-    label?: string;
     error?: string;
     helperText?: string;
     variant?: 'default' | 'focused' | 'error';
@@ -15,7 +13,6 @@ export interface InputProps
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({
-    label,
     helperText,
     error,
     variant = 'default',
@@ -55,16 +52,42 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             type={currentType}
             className={cn(
-              "flex h-[3.125rem] w-full rounded-lg border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+              "flex h-[3.125rem] w-full border-2 rounded-[0.5rem] transition-all duration-200 ease-in-out",
+              "px-3 py-3 text-base font-normal",
+              "focus-visible:outline-none",
+              "disabled:cursor-not-allowed disabled:opacity-50",
+
+              !error && "bg-input-background",
+              error && "bg-background-error",
+              "text-input-font",
+
+              currentVariant === 'default' && !error && "placeholder:text-font-tertiary",
+              currentVariant === 'focused' && !error && "placeholder:text-web-focus",
+              currentVariant === 'error' && "placeholder:text-web-error",
+              "placeholder:font-normal",
               
-              currentVariant === 'default' && "border-gray2 focus:border-blue-500",
-              currentVariant === 'focused' && "border-blue-500",
-              currentVariant === 'error' && "border-redNotice",
+              currentVariant === 'default' && [
+                "border-border-default",
+                "hover:border-border-icon",
+                "focus:border-web-focus focus:text-input-font"
+              ],
+              currentVariant === 'focused' && [
+                "border-web-focus text-input-font"
+              ],
+              currentVariant === 'error' && [
+                "border-border-error",
+                "focus:border-border-error focus:text-input-font"
+              ],
 
               onIcons && "pr-10",
-              props.disabled && "bg-gray-50 text-gray-500 cursor-not-allowed",
-              className,
 
+              props.disabled && [
+                "bg-disabled-background text-disabled-text",
+                "border-disabled-border cursor-not-allowed", 
+                "placeholder:text-disabled-placeholder",
+                "hover:border-disabled-border focus:border-disabled-border"
+              ],
+              className,
             )}
             ref={ref}
             autoComplete="off"
@@ -82,8 +105,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {error && <ErrorMessage message={error} />}
-        {helperText && !error && <p className="text-sm text-gray2">{helperText}</p>}
+        {helperText && !error && (
+          <p className="text-sm text-font-tertiary mt-1">
+            {helperText}
+          </p>
+        )}
       </div>
     )
   }

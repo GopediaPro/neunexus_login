@@ -1,12 +1,7 @@
 import { createContext, useContext } from 'react';
 import { useAuth } from '../hooks';
 
-// Keycloak 타입 정의
-interface KeycloakConfig {
-  url: string;
-  realm: string;
-  clientId: string;
-}
+// Keycloak 타입 정의 types폴더안에 넣어두겠습니다!
 
 interface AuthContextType {
   user: any;
