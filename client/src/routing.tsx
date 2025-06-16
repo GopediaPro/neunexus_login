@@ -5,6 +5,7 @@ import Signup from './pages/Signup';
 import Layout from './Layout';
 import TestComponent from './components/TestComponent';
 import Main from './pages/Main';
+import RegisterTest from '@/components/RegisterTestComponent';
 
 const routeList = [
   {
@@ -23,6 +24,10 @@ const routeList = [
     path: ROUTERS.TEST,
     element: <TestComponent />,
   },
+  {
+    path: ROUTERS.REGISTER_TEST,
+    element: <RegisterTest />
+  }
 ];
 
 export const router = createBrowserRouter(
