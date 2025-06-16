@@ -3,11 +3,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from 'zod';
 import { FormField } from "@/components/ui/FormField";
-import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { keycloakLogin } from "@/services/keycloakLogin";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { Button } from "./ui/Button";
 
 export type LoginFormData = z.infer<typeof loginSchema>
 
