@@ -1,8 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { Loader2 } from "lucide-react"; // ✅ 스피너 아이콘
-
+import Spinner from "@/assets/spinner.svg"; // ✅ svg 불러오기
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
@@ -37,7 +36,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  loading?: boolean; // ✅ 추가
+  loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -48,10 +47,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        disabled={loading || disabled} // ✅ 로딩 중에도 비활성화
+        disabled={loading || disabled}
         {...props}
       >
-        {loading && <Loader2 className="animate-spin mr-2" />} {/* ✅ 로딩 스피너 */}
+        {loading && (
+          <img
+            src={Spinner}
+            alt="loading spinner"
+            className="w-4 h-4 animate-spin mr-2"
+          />
+        )}
         {children}
       </Comp>
     );
