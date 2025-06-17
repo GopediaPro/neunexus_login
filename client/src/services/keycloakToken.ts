@@ -4,9 +4,11 @@ import { getKeycloakUrls, keycloakConfig } from "@/utils/keycloakConfig";
 const tokenCache = new Map<string, { token: string; expires: number }>();
 
 export const tokenService = {
-  saveTokens: (accessToken: string, refreshToken: string): void => {
-    localStorage.setItem('auth_token', accessToken);
-    localStorage.setItem('refresh_token', refreshToken);
+  saveTokens: (accessToken: string, refreshToken: string, rememberMe: number): void => {
+    const storage = rememberMe === 1 ? localStorage : sessionStorage;
+    storage.setItem('auth_token', accessToken);
+    storage.setItem('refresh_token', refreshToken);
+    storage.setItem('remember_me', String(rememberMe));
     
     const payload = JSON.parse(atob(accessToken.split('.')[1]));
     tokenCache.set('access_token', {
@@ -15,10 +17,17 @@ export const tokenService = {
     });
   },
 
-  getStoredTokens: () => ({
-    accessToken: localStorage.getItem('auth_token'),
-    refreshToken: localStorage.getItem('refresh_token')
-  }),
+  getStoredTokens: () => {
+    const accessToken = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const refreshToken = localStorage.getItem('refresh_token') || sessionStorage.getItem('refresh_token');
+    const rememberMe = Number(localStorage.getItem('remember_me') || sessionStorage.getItem('remember_me') || 0);
+
+    return {
+      accessToken,
+      refreshToken,
+      rememberMe
+    };
+  },
 
   isTokenValid: (token: string): boolean => {
     if (!token) return false;
@@ -89,7 +98,7 @@ export const tokenService = {
 
   // 토큰 갱신
   refreshToken: async (): Promise<IKeycloakTokenResponse | null> => {
-    const { refreshToken } = tokenService.getStoredTokens();
+    const { refreshToken, rememberMe } = tokenService.getStoredTokens();
     if (!refreshToken || !tokenService.isTokenValid(refreshToken)) return null;
 
     try {
@@ -106,7 +115,7 @@ export const tokenService = {
 
       if (response.ok) {
         const tokenData = await response.json() as IKeycloakTokenResponse;
-        tokenService.saveTokens(tokenData.access_token, tokenData.refresh_token);
+        tokenService.saveTokens(tokenData.access_token, tokenData.refresh_token, rememberMe);
         return tokenData;
       }
       return null;
@@ -116,10 +125,47 @@ export const tokenService = {
     }
   },
 
+  checkAutoLogin: async (): Promise<{ user: IKeycloakUser; tokens: IKeycloakTokenResponse } | null> => {
+    const { accessToken, refreshToken } = tokenService.getStoredTokens();
+    
+    if (!accessToken && !refreshToken) return null;
+    
+    // 액세스 토큰이 유효한 경우
+    if (accessToken && tokenService.isTokenValid(accessToken)) {
+      const userData = await tokenService.verifyToken(accessToken);
+      if (userData) {
+        return {
+          user: userData,
+          tokens: { access_token: accessToken, refresh_token: refreshToken || '' } as IKeycloakTokenResponse
+        };
+      }
+    }
+    
+    if (refreshToken) {
+      const newTokens = await tokenService.refreshToken();
+      if (newTokens) {
+        const userData = await tokenService.verifyToken(newTokens.access_token);
+        if (userData) {
+          return {
+            user: userData,
+            tokens: newTokens
+          };
+        }
+      }
+    }
+    
+    tokenService.clearAuthData();
+    return null;
+  },
+
   // 토큰 정리
   clearAuthData: (): void => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('remember_me');
+    sessionStorage.removeItem('auth_token');
+    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('remember_me');
     tokenCache.clear();
   }
 } as const;

@@ -6,7 +6,7 @@ import { getKeycloakUrls, keycloakConfig } from "@/utils/keycloakConfig";
 const keycloakUrls = getKeycloakUrls();
 
 
-export const keycloakLogin = async ({ email, password }: ILoginRequest): Promise<{
+export const keycloakLogin = async ({ email, password, rememberMe = 0 }: ILoginRequest): Promise<{
   user: IKeycloakUser;
   tokens: IKeycloakTokenResponse;
 }> => {
@@ -44,7 +44,7 @@ export const keycloakLogin = async ({ email, password }: ILoginRequest): Promise
     const tokenData = JSON.parse(responseText) as IKeycloakTokenResponse;
 
     // 3. 토큰 저장
-    tokenService.saveTokens(tokenData.access_token, tokenData.refresh_token);
+    tokenService.saveTokens(tokenData.access_token, tokenData.refresh_token, rememberMe);
 
     // 4. 사용자 정보 획득
     const userData = await tokenService.verifyToken(tokenData.access_token);

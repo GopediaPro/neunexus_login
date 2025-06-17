@@ -10,6 +10,7 @@ export const getStoredTokens = () => ({
 export const clearAuthData = (): void => {
   localStorage.removeItem('auth_token');
   localStorage.removeItem('refresh_token');
+  localStorage.removeItem('remember_me');
 };
 
 export const keycloakLogout = async (): Promise<void> => {
