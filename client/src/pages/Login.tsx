@@ -173,7 +173,8 @@ const Login = () => {
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-blue-600 dark:text-blue-500 font-bold underline hover:text-blue-400 transition-colors"
+              className="px-2.5 py-3 text-blue-500 font-bold underline hover:text-blue-400 transition-colors"
+              onClick={() => navigate('/signup')}
             >
               회원가입
             </button>
