@@ -1,14 +1,9 @@
-import { CtaButton } from "../components/ui/cta-button"
+import { AuthForm } from "@/components/auth/AuthForm"  // 🔥 진짜 로그인 폼 import
 
 const Login = () => {
-
   return (
     <div className="p-4">
-      <h1 className="text-xl mb-4">로그인 페이지</h1>
-      <CtaButton
-        text="로그인"
-        // onClick={handleLoginClick}
-      />
+      <AuthForm />  {/* ✅ 진짜 로그인 폼 사용 */}
     </div>
   )
 }
