@@ -45,6 +45,12 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
     lg: 'h-7 w-14',
   };
 
+  const thumbSizeClasses = {
+      sm: 'h-4 w-4',
+      md: 'h-5 w-5',
+      lg: 'h-6 w-6',
+    };
+
   const translateClasses = {
     sm: isChecked ? 'translate-x-4' : 'translate-x-0.5',
     md: isChecked ? 'translate-x-5' : 'translate-x-0.5',
@@ -72,15 +78,12 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
         className
       )}
       {...props}
-    >
-      <span>
-        {isChecked ? '활성화됨' : '비활성화됨'}
-      </span>
-      
+    > 
       <span
         className={cn(
           'pointer-events-none inline-block transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out',
           translateClasses[size],
+          thumbSizeClasses[size],
           disabled && 'bg-disabled-background'
         )}
       />
