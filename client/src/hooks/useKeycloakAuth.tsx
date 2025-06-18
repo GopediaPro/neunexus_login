@@ -18,7 +18,7 @@ export const useKeycloakAuth = () => {
 
   const initializeAuth = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       
       if (token) {
         // 토근 만료되면 갱신
@@ -81,7 +81,8 @@ export const useKeycloakAuth = () => {
   // 토큰 갱신
   const attemptTokenRefresh = async () => {
     try {
-      const refreshToken = localStorage.getItem('refresh_token');
+      const refreshToken = localStorage.getItem('refresh_token') || sessionStorage.getItem('refresh_token');
+      const rememberMe = Number(localStorage.getItem('remember_me') || sessionStorage.getItem('remember_me') || 0);
   
       if (!refreshToken) {
         clearAuthData();
@@ -106,8 +107,11 @@ export const useKeycloakAuth = () => {
       }
   
       const tokenData = await response.json();
-      localStorage.setItem('auth_token', tokenData.access_token);
-      localStorage.setItem('refresh_token', tokenData.refresh_token);
+
+      const storage = rememberMe === 1 ? localStorage : sessionStorage;
+      storage.setItem('auth_token', tokenData.access_token);
+      storage.setItem('refresh_token', tokenData.refresh_token);
+      storage.setItem('remember_me', String(rememberMe));
   
       // 새 토큰으로 사용자 정보 다시 가져오기
       const userData = await verifyToken(tokenData.access_token);
@@ -126,6 +130,7 @@ export const useKeycloakAuth = () => {
   const clearAuthData = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('remember_me');
     setUser(null);
     setIsAuthenticated(false);
   };

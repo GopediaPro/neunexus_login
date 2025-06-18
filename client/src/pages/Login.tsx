@@ -1,9 +1,9 @@
-import { AuthForm } from "@/components/auth/AuthForm"  // 🔥 진짜 로그인 폼 import
+import { AuthForm } from "@/components/auth/AuthForm"
 
 const Login = () => {
   return (
     <div className="p-4">
-      <AuthForm />  {/* ✅ 진짜 로그인 폼 사용 */}
+      <AuthForm />
     </div>
   )
 }

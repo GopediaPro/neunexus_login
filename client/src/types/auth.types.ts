@@ -41,6 +41,7 @@ export interface IAuthState {
 export interface ILoginRequest {
   email: string;
   password: string;
+  rememberMe?: number;
 }
 
 export interface ISignupRequest {

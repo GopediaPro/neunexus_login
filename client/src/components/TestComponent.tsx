@@ -8,6 +8,7 @@ import { keycloakLogin } from "@/services/keycloakLogin";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Button } from "./ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 
 export type LoginFormData = z.infer<typeof loginSchema>
 
@@ -18,14 +19,15 @@ const TestComponent = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
-      password: ""
+      password: "",
+      rememberMe: 0
     }
   });
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await keycloakLogin(data);
 
+      await keycloakLogin(data);
       navigate('/');
     } catch (error: any) {
       setError("root", {
@@ -86,19 +88,17 @@ const TestComponent = () => {
                 error={errors.password?.message}
               />
               <FormField 
-                name="password"
+                name="rememberMe"
                 control={control}
-                label="비밀번호"
+                label="자동 로그인"
                 render={(field) => (
-                  <Input
-                    id="비밀번호"
-                    type="password"
-                    placeholder="password"
-                    error="error"
-                    {...field}
+                  <Checkbox 
+                    checked={field.value === 1}
+                    onCheckedChange={(checked) => {
+                      field.onChange(checked ? 1 : 0);
+                    }}
                   />
                 )}
-                error={errors.password?.message}
               />
 
               {errors.root && (

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import Spinner from "@/assets/spinner.svg"; // ✅ svg 불러오기
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
@@ -52,7 +51,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {loading && (
           <img
-            src={Spinner}
+            src="/image/spinner.svg"
             alt="loading spinner"
             className="w-4 h-4 animate-spin mr-2"
           />
