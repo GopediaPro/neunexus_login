@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { loginSchema } from '@/schemas/auth.schema';
 import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/ui/FormField';
@@ -15,18 +14,7 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const navigate = useNavigate();
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const getSystemTheme = () => {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
-  };
+  const { theme } = useTheme();
 
   const {
     control,
@@ -45,7 +33,6 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await keycloakLogin(data);
-      console.log('data', data);
 
       navigate('/');
     } catch (error: any) {
@@ -55,17 +42,13 @@ const Login = () => {
       });
     }
   };
-  useEffect(() => {
-    const theme2 = getSystemTheme();
-    setTheme(theme2);
-    console.log('theme', theme);
-  });
+
   return (
-    <div className="w-full h-screen dark:bg-gray-800 bg-slate-50 flex justify-center items-center">
-      <div className="w-[590px] p-24 dark:bg-gray-700 bg-white rounded-3xl shadow-lg p-24">
+    <div className="w-full h-screen bg-web-background flex justify-center items-center">
+      <div className="w-[590px] px-24 py-14 bg-card rounded-3xl shadow-lg border border-broder-default">
         <div className="flex flex-col items-center gap-10">
           {/* 로고 */}
-          <div className="w-64 h-16">
+          <div className="w-64 h-16 mb-20">
             {theme == 'dark' ? (
               <img
                 src="/image/logo-dark.svg"
@@ -83,7 +66,7 @@ const Login = () => {
         </div>
         {/* 로그인 폼 */}
         <div className="w-full space-y-4">
-          <h1 className="dark:text-white text-neutral-900 text-2xl font-bold">
+          <h1 className="text-font-primary text-2xl font-bold">
             로그인
           </h1>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -97,7 +80,6 @@ const Login = () => {
                   type="email"
                   placeholder="email"
                   error={errors.password?.message}
-                  className="dark:bg-neutral-700 border-neutral-400 bg-white dark:border-zinc-600 dark:text-zinc-200 text-neutral-600 placeholder:text-zinc-400"
                   {...field}
                 />
               )}
@@ -111,7 +93,6 @@ const Login = () => {
                   type="password"
                   placeholder="password"
                   error={errors.password?.message}
-                  className="dark:bg-neutral-700 border-neutral-400 bg-white dark:border-zinc-600 dark:text-zinc-200 text-neutral-600 placeholder:text-zinc-400"
                   {...field}
                 />
               )}
@@ -127,12 +108,12 @@ const Login = () => {
                     <div className="flex items-center gap-2 py-3 cursor-pointer">
                       <Checkbox
                         checked={field.value === 1}
-                        className="w-4 h-4 rounded border border-neutral-900 dark:border-gray-50 bg-transparent accent-blue-500"
+                        className="w-4 h-4 rounded border border-border-default bg-transparent"
                         onCheckedChange={(checked) => {
                           field.onChange(checked ? 1 : 0);
                         }}
                       />
-                      <span className="dark:text-gray-50 text-neutral-900 text-sm hover:text-blue-600">
+                      <span className="text-font-secondary text-sm hover:text-web-primary transition-colors">
                         자동 로그인
                       </span>
                     </div>
@@ -140,17 +121,17 @@ const Login = () => {
                 />
               </label>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center">
                 <button
                   type="button"
-                  className="py-3 px-2.5 dark:text-gray-50 text-neutral-900 text-sm hover:text-blue-600 transition-colors"
+                  className="py-3 px-2.5 text-font-secondary text-sm hover:text-web-primary transition-colors"
                 >
                   아이디 찾기
                 </button>
-                <div className="w-px h-3.5 bg-zinc-600"></div>
+                <div className="w-px h-3.5 bg-border-default"></div>
                 <button
                   type="button"
-                  className="py-3 px-2.5 dark:text-gray-50 text-neutral-900 text-sm hover:text-blue-600 transition-colors"
+                  className="py-3 px-2.5 text-font-secondary text-sm hover:text-web-primary transition-colors"
                 >
                   비밀번호 찾기
                 </button>
@@ -168,12 +149,12 @@ const Login = () => {
           </form>
           {/* 회원가입 링크 */}
           <div className="flex justify-center items-center gap-1 pt-4">
-            <span className="text-neutral-800 dark:text-neutral-50 font-medium">
+            <span className="text-font-primary font-medium">
               아직 회원이 아니신가요?
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-blue-500 font-bold underline hover:text-blue-400 transition-colors"
+              className="px-2.5 py-3 text-web-secondary dark:text-web-accent font-bold underline hover:text-web-primary dark:hover:text-web-accent/90 transition-colors"
               onClick={() => navigate('/signup')}
             >
               회원가입
