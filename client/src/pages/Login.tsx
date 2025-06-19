@@ -108,12 +108,11 @@ const Login = () => {
                     <div className="flex items-center gap-2 py-3 cursor-pointer">
                       <Checkbox
                         checked={field.value === 1}
-                        className="w-4 h-4 rounded border border-border-default bg-transparent"
                         onCheckedChange={(checked) => {
                           field.onChange(checked ? 1 : 0);
                         }}
                       />
-                      <span className="text-font-secondary text-sm hover:text-web-primary transition-colors">
+                      <span className="text-font-secondary text-sm transition-colors">
                         자동 로그인
                       </span>
                     </div>
@@ -121,17 +120,17 @@ const Login = () => {
                 />
               </label>
 
-              <div className="flex items-center">
+              <div className="flex items-center mt-2">
                 <button
                   type="button"
-                  className="py-3 px-2.5 text-font-secondary text-sm hover:text-web-primary transition-colors"
+                  className="py-3 px-2.5 text-font-secondary text-sm transition-colors"
                 >
                   아이디 찾기
                 </button>
                 <div className="w-px h-3.5 bg-border-default"></div>
                 <button
                   type="button"
-                  className="py-3 px-2.5 text-font-secondary text-sm hover:text-web-primary transition-colors"
+                  className="py-3 px-2.5 text-font-secondary text-sm transition-colors"
                 >
                   비밀번호 찾기
                 </button>
