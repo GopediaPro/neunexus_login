@@ -45,7 +45,7 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen bg-web-background flex justify-center items-center">
-      <div className="w-[590px] px-24 py-14 bg-card rounded-3xl shadow-lg border border-broder-default">
+      <div className="w-[590px] px-24 py-14 bg-font-white dark:bg-web-primary rounded-3xl shadow-lg border border-broder-default">
         <div className="flex flex-col items-center gap-10">
           {/* 로고 */}
           <div className="w-64 h-16 mb-20">
@@ -69,7 +69,7 @@ const Login = () => {
           <h1 className="text-font-primary text-2xl font-bold">
             로그인
           </h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
             <FormField
               name="email"
               control={control}
@@ -78,8 +78,8 @@ const Login = () => {
                 <Input
                   id="이메일"
                   type="email"
-                  placeholder="email"
-                  error={errors.password?.message}
+                  placeholder="아이디"
+                  error={errors.email?.message}
                   {...field}
                 />
               )}
@@ -91,7 +91,7 @@ const Login = () => {
                 <Input
                   id="비밀번호"
                   type="password"
-                  placeholder="password"
+                  placeholder="비밀번호"
                   error={errors.password?.message}
                   {...field}
                 />

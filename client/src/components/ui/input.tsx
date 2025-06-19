@@ -57,7 +57,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               "focus-visible:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
 
-              !error && "bg-input-background",
+              !error && "bg-white dark:bg-input-background",
               error && "bg-background-error",
               "text-input-font",
 
