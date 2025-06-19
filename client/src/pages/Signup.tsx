@@ -109,14 +109,14 @@ const Signup = () => {
             <Button
               type="submit"
               variant="default"
+              loading={isSubmitting}
               className="btn-login bg-blue-500 dark:hover:bg-blue-500/90 transition-colors"
-              disabled={isSubmitting}
             >
-              <span>{isSubmitting ? '회원가입 중...' : '회원가입'}</span>
+              회원가입
             </Button>
           </form>
           
-          <div className="flex justify-center items-center gap-1 pt-4">
+          <div className="flex justify-center items-center gap-1">
             <span className="text-font-primary font-medium">
               이미 계정이 있으신가요?
             </span>

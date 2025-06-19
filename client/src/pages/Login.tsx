@@ -147,6 +147,7 @@ const Login = () => {
             <Button
               type="submit"
               variant="default"
+              loading={isSubmitting}
               className="btn-login bg-blue-500 dark:hover:bg-blue-500/90 transition-colors"
               disabled={isSubmitting}
             >
@@ -154,7 +155,7 @@ const Login = () => {
             </Button>
           </form>
           {/* 회원가입 링크 */}
-          <div className="flex justify-center items-center gap-1 pt-4">
+          <div className="flex justify-center items-center gap-1">
             <span className="text-font-primary font-medium">
               아직 회원이 아니신가요?
             </span>
