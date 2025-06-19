@@ -100,10 +100,16 @@ const Signup = () => {
               error={errors.password?.message}
             />
 
+            {errors.root && (
+              <div className="flex items-center pt-1 pl-1 text-sm text-web-error">
+                <span className="text-body2">{errors.root.message}</span>
+              </div>
+            )}
+
             <Button
               type="submit"
               variant="default"
-              className="btn-login bg-blue-500 transition-colors"
+              className="btn-login bg-blue-500 dark:hover:bg-blue-500/90 transition-colors"
               disabled={isSubmitting}
             >
               <span>{isSubmitting ? '회원가입 중...' : '회원가입'}</span>

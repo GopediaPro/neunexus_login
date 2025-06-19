@@ -98,6 +98,13 @@ const Login = () => {
               )}
               error={errors.password?.message}
             />
+
+            {errors.root && (
+              <div className="flex items-center pt-1 pl-1 text-sm text-web-error">
+                <span className="text-body2">{errors.root.message}</span>
+              </div>
+            )}
+
             {/* 자동로그인 & 찾기 옵션 */}
             <div className="flex justify-between items-center">
               <label>
@@ -140,7 +147,7 @@ const Login = () => {
             <Button
               type="submit"
               variant="default"
-              className="btn-login bg-blue-500 transition-colors"
+              className="btn-login bg-blue-500 dark:hover:bg-blue-500/90 transition-colors"
               disabled={isSubmitting}
             >
               <span>로그인</span>
