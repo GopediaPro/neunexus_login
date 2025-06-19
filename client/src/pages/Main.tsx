@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useKeycloakAuth } from "@/hooks/useKeycloakAuth";
 import { keycloakLogout } from "@/services/keycloakLogout";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +35,7 @@ const Main = () => {
         <Button onClick={handleLogout} type="submit">
           로그아웃
         </Button>
+        <ThemeToggle />
       </div>
     </div>
   );
