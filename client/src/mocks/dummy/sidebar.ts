@@ -20,7 +20,7 @@ export const sidebarDummy: ISidebarMenuItem[] = [
     label: '서비스',
     hasSubmenu: true,
     isExpanded: false,
-    submenu: ['고객 지원', '공지사항', 'FAQ']
+    submenu: ['위키', '마니모', 'FAQ']
   },
   {
     id: 'temp1',
