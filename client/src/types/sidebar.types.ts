@@ -1,4 +1,19 @@
-export interface ISidebarMenuItem {
+export interface ILeftMenuButtonProps {
+  text: string;
+  icon?: string;
+  hasSubmenu?: boolean;
+  isActive?: boolean;
+  onClick?: () => void;
+  className?: string;
+}
+
+export interface ISubMenuItemProps {
+  text: string;
+  onClick?: () => void;
+  className?: string;
+}
+
+export interface IMenuItemType {
   id: string;
   label: string;
   hasSubmenu?: boolean;

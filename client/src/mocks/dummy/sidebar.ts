@@ -1,6 +1,6 @@
-import type { ISidebarMenuItem } from "@/types/sidebar.types";
+import type { IMenuItemType } from "@/types/sidebar.types";
 
-export const sidebarDummy: ISidebarMenuItem[] = [
+export const sidebarDummy: IMenuItemType[] = [
   {
     id: 'products',
     label: '상품관리',
@@ -20,7 +20,7 @@ export const sidebarDummy: ISidebarMenuItem[] = [
     label: '서비스',
     hasSubmenu: true,
     isExpanded: false,
-    submenu: ['위키', '마니모', 'FAQ']
+    submenu: ['Wiki', 'Mattermost', 'Minio', 'Zammad', 'n8n']
   },
   {
     id: 'temp1',
