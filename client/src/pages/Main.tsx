@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { Sidebar } from "@/components/ui/Sidebar";
 import { useKeycloakAuth } from "@/hooks/useKeycloakAuth";
 import { keycloakLogout } from "@/services/keycloakLogout";
 
@@ -14,7 +15,8 @@ const Main = () => {
     };
 
   return (
-    <div>
+    <div className="flex">
+      <Sidebar />
       <div>
         <p>이메일: {user?.email || '이메일'}</p>
         <p>이름: {user?.name || '이름'}</p>
