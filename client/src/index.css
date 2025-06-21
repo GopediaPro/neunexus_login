@@ -40,6 +40,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
+    --left-sidebar-width: 256px;
+    --right-sidebar-width: 320px;
+
     --background: var(--web-background);
     --foreground: var(--font-primary);
 
@@ -71,6 +74,10 @@
     --gray-300: 0 0% 85%;
     --gray-400: 0 0% 66%;
     --gray-500: 240 2% 32%;
+
+    --blue-300: #1E6ECF;
+    --blue-400: #1C63B9;
+    --sky-blue-light: #E0EEFF;
 
     --disabled-background: 0 0% 96%;
     --disabled-text: 0 0% 62%;
@@ -126,6 +133,10 @@
     --gray-400: 0 0% 66%;
     --gray-500: 207 13% 28%;
 
+    --blue-300: #228BFF;
+    --blue-400: #1F7DE5;
+    --sky-blue-light: #E0EEFF;
+
     --disabled-background: 207 12% 25%;
     --disabled-text: 0 0% 62%;
     --disabled-border: 207 8% 35%;
@@ -157,4 +168,16 @@
     margin: 0;
     padding: 0;
   }
+}
+
+.sidebar-left-width {
+  width: var(--left-sidebar-width);
+}
+
+.sidebar-right-width {
+  width: var(--right-sidebar-width);
+}
+
+.grid-sidebar-layout {
+  grid-template-columns: var(--left-sidebar-width) 1fr;
 }

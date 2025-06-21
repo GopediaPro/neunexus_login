@@ -1,29 +1,22 @@
-import { Button } from "@/components/ui/Button";
-import { useKeycloakAuth } from "@/hooks/useKeycloakAuth";
-import { keycloakLogout } from "@/services/keycloakLogout";
+import { ContentLayout } from "@/components/main/Layout/ContentLayout";
+import { HeaderLayout } from "@/components/main/Layout/HeaderLayout";
+import { LeftSidebarLayout } from "@/components/main/Layout/LeftSidebarLayout";
+import { RightSidebarLayout } from "@/components/main/Layout/RightSidebarLayout";
 
 const Main = () => {
-  const { user } = useKeycloakAuth();
-
-  const handleLogout = async () => {
-      try {
-        await keycloakLogout();
-      } catch (error) {
-        console.error(error);
-      }
-    };
 
   return (
-    <div>
-      <div>
-        <p>이메일: {user?.email || '이메일'}</p>
-        <p>이름: {user?.name || '이름'}</p>
-        <p>사용자 ID: {user?.sub || '사용자 아이디'}</p>
-      </div>
-
-      <Button onClick={handleLogout} type="submit">
-        로그아웃
-      </Button>
+    <div className="min-h-screen bg-background">
+      <div className={`grid grid-sidebar-layout min-h-screen`}>
+        <LeftSidebarLayout />
+        <div className="flex flex-col">
+          <HeaderLayout />
+          <div className="flex flex-1">
+            <ContentLayout />
+            <RightSidebarLayout />
+          </div>
+        </div>
+      </div>      
     </div>
   );
 };
