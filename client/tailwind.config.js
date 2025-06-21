@@ -62,6 +62,10 @@ export default {
 
 					'web-error': 'hsl(var(--web-error))',
 
+					'blue-300': 'var(--blue-300)',
+					'blue-400': 'var(--blue-400)',
+					'sky-blue-light': 'var(--sky-blue-light)',
+
 					primary: 'hsl(var(--web-primary))',
 					secondary: 'hsl(var(--web-secondary))',
 

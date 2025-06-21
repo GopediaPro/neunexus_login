@@ -78,7 +78,7 @@ export const LeftSidebarLayout = () => {
                 onClick={() => item.hasSubmenu ? toggleSubmenu(item.id) : undefined}
               />
                 {item.hasSubmenu && item.isExpanded && item.submenu && (
-                  <div>
+                  <div className="flex flex-col gap-2">
                     {item.submenu.map((subItem, i) => (
                       <SubMenuItem 
                         key={i}
@@ -96,7 +96,7 @@ export const LeftSidebarLayout = () => {
       <div className="p-4">
         <button
           onClick={handleLogout}
-          className="w-full px-4 py-2 flex items-center justify-center gap-2 text-font-tertiary border border-border-default rounded-md hover:bg-gray-100 dark:hover:bg-gray-200 transition-colors duration-200"
+          className="w-full px-4 py-2 flex items-center justify-center gap-2 text-font-tertiary border border-border-default rounded-[10px] hover:bg-gray-100 dark:hover:bg-gray-200 transition-colors duration-200"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
