@@ -6,12 +6,10 @@ import Layout from './Layout';
 import TestComponent from './components/TestComponent';
 import Main from './pages/Main';
 import RegisterTest from '@/components/RegisterTestComponent';
+import { PrivateRoute } from '@/components/layout/PrivateRoute';
+import { PublicRoute } from '@/components/layout/PublicRoute';
 
-const routeList = [
-  {
-    path: ROUTERS.MAIN,
-    element: <Main />,
-  },
+const publicRouteList = [
   {
     path: ROUTERS.LOGIN,
     element: <Login />,
@@ -30,11 +28,28 @@ const routeList = [
   }
 ];
 
-export const router = createBrowserRouter(
-  routeList.map((item) => {
-    return {
-      ...item,
-      element: <Layout>{item.element}</Layout>,
-    };
-  })
-);
+const privateRouteList = [
+  {
+    path: ROUTERS.MAIN,
+    element: <Main />,
+  },
+]
+
+export const router = createBrowserRouter([
+  ...privateRouteList.map(({ path, element }) => ({
+    path,
+    element: (
+      <PrivateRoute>
+        <Layout>{element}</Layout>
+      </PrivateRoute>
+    )
+  })),
+  ...publicRouteList.map(({ path, element }) => ({
+    path,
+    element: (
+      <PublicRoute>
+        <Layout>{element}</Layout>
+      </PublicRoute>
+    ),
+  })),
+]);
