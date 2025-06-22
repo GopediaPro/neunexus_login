@@ -41,9 +41,6 @@ export const LeftSidebarLayout = () => {
       case 'Minio':
         window.location.href = 'https://minio.lyckabc.xyz'
         break;
-      case 'Zammad':
-        window.location.href = 'https://www.naver.com/'
-        break;
       case 'n8n':
         window.location.href = 'https://rpa.lyckabc.xyz'
         break;

@@ -20,7 +20,7 @@ export const sidebarDummy: IMenuItemType[] = [
     label: '서비스',
     hasSubmenu: true,
     isExpanded: false,
-    submenu: ['Wiki', 'Mattermost', 'Minio', 'Zammad', 'n8n']
+    submenu: ['Wiki', 'Mattermost', 'Minio', 'n8n']
   },
   {
     id: 'temp1',

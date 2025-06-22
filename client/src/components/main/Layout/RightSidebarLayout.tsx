@@ -1,7 +1,7 @@
 
 export const RightSidebarLayout = () => {
   return (
-    <div className={`sidebar-right-width p-6 space-y-6 bg-blue-500`}>
+    <div className={`sidebar-right-width p-6 space-y-6`}>
       {/* 일정 섹션 */}
       {/* <ScheduleSection /> */}
       
