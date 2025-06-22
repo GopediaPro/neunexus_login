@@ -14,7 +14,7 @@ export const InputSuffix = ({
   const isPasswordType = type === 'password' || (type === 'text' && onTogglePassword);
 
   return (
-    <div className="absolute inset-y-0 right-0 flex items-center pr-3 space-x-2">
+    <div className="absolute inset-y-0 right-1 flex items-center pr-3 space-x-2">
       {isPasswordType && onTogglePassword && (
         <button
           type="button"

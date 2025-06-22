@@ -131,6 +131,9 @@ export const useKeycloakAuth = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('remember_me');
+    sessionStorage.removeItem('auth_token');
+    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('remember_me');
     setUser(null);
     setIsAuthenticated(false);
   };

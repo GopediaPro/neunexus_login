@@ -1,21 +1,11 @@
+import { tokenService } from "@/services/keycloakToken";
 import { getKeycloakUrls, keycloakConfig } from "@/utils/keycloakConfig";
 
 const keycloakUrls = getKeycloakUrls();
 
-export const getStoredTokens = () => ({
-  accessToken: localStorage.getItem('auth_token'),
-  refreshToken: localStorage.getItem('refresh_token')
-});
-
-export const clearAuthData = (): void => {
-  localStorage.removeItem('auth_token');
-  localStorage.removeItem('refresh_token');
-  localStorage.removeItem('remember_me');
-};
-
 export const keycloakLogout = async (): Promise<void> => {
   try {
-    const { accessToken, refreshToken } = getStoredTokens();
+    const { accessToken, refreshToken } = tokenService.getStoredTokens();
 
     // Keycloak 서버에서 로그아웃 시도
     if (accessToken && refreshToken) {
@@ -38,6 +28,6 @@ export const keycloakLogout = async (): Promise<void> => {
   } catch (error) {
     console.error('서버로부터 로그아웃 실패:', error);
   } finally {
-    clearAuthData();
+    tokenService.clearAuthData();
   }
 };
