@@ -45,7 +45,7 @@ const Login = () => {
 
   return (
     <div className="w-full h-screen bg-page-bg flex justify-center items-center">
-      <div className="w-[590px] px-24 py-14 bg-page-card-bg dark:bg-web-primary rounded-3xl shadow-lg border border-page-input-border">
+      <div className="w-[590px] px-24 py-14 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
         <div className="flex flex-col items-center gap-10">
           {/* 로고 */}
           <div className="w-64 h-16 mb-20">

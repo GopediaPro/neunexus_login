@@ -66,6 +66,8 @@ export default {
 					'page-toggle-on-bg': 'var(--page-toggle-on-bg)',
 					'page-toggle-off-bg': 'var(--page-toggle-off-bg)',
 
+					'border-default': 'hsl(var(--border-default))',
+
 					primary: 'hsl(var(--web-primary))',
 					secondary: 'hsl(var(--web-secondary))',
 

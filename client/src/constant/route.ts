@@ -3,5 +3,4 @@ export const ROUTERS = {
   LOGIN: '/login',
   SIGNUP: '/signup',
   TEST: '/test',
-  REGISTER_TEST: '/register/test',
 } as const;

@@ -19,7 +19,7 @@ export const InputSuffix = ({
         <button
           type="button"
           onClick={onTogglePassword}
-          className="text-border-icon hover:text-font-secondary focus:outline-none transition-colors"
+          className="text-page-input-font hover:text-page-font-primary focus:outline-none transition-colors"
         >
           <img
             src={showPassword ? "/image/eye-off.svg" : "/image/eye.svg"}

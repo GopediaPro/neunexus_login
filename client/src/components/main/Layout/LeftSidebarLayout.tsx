@@ -48,17 +48,17 @@ export const LeftSidebarLayout = () => {
   }
 
   return (
-    <div className={`flex flex-col sidebar-left-width h-screen bg-web-background border-r border-border-default`}>
-      <div className="p-6 border-b border-border-subtle">
+    <div className={`flex flex-col sidebar-left-width h-screen bg-page-sidebar-bg border-r border-page-divider-border`}>
+      <div className="p-6 border-b border-page-divider-border">
         <div className="flex flex-col items-center text-center">
           <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center mb-3">
             {/* 임시 유저 프로필 */}
             <div className="w-8 h-8 text-gray-500" />
           </div>
-          <h3 className="text-font-primary font-medium text-base mb-1">
+          <h3 className="text-page-font-primary font-medium text-base mb-1">
             {userProfile.name}
           </h3>
-          <p className="text-font-tertiary text-sm">
+          <p className="text-page-font-tertiary text-sm">
             {userProfile.department}
           </p>
         </div>
@@ -93,7 +93,7 @@ export const LeftSidebarLayout = () => {
       <div className="p-4">
         <button
           onClick={handleLogout}
-          className="w-full px-4 py-2 flex items-center justify-center gap-2 text-font-tertiary border border-border-default rounded-[10px] hover:bg-gray-100 dark:hover:bg-gray-200 transition-colors duration-200"
+          className="w-full px-4 py-2 flex items-center justify-center gap-2 text-page-font-tertiary border border-page-button-border rounded-[10px] hover:bg-page-sidebar-menu-bg-hover transition-colors duration-200"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

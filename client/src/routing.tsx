@@ -5,7 +5,6 @@ import Signup from './pages/Signup';
 import Layout from './Layout';
 import TestComponent from './components/TestComponent';
 import Main from './pages/Main';
-import RegisterTest from '@/components/RegisterTestComponent';
 import { PrivateRoute } from '@/components/layout/PrivateRoute';
 import { PublicRoute } from '@/components/layout/PublicRoute';
 
@@ -21,10 +20,6 @@ const publicRouteList = [
   {
     path: ROUTERS.TEST,
     element: <TestComponent />,
-  },
-  {
-    path: ROUTERS.REGISTER_TEST,
-    element: <RegisterTest />
   }
 ];
 

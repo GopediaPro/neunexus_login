@@ -43,7 +43,7 @@ const Signup = () => {
 
   return (
     <div className="w-full h-screen bg-page-bg flex justify-center items-center">
-      <div className="w-[590px] p-24 bg-page-card-bg rounded-3xl shadow-lg border border-page-input-border">
+      <div className="w-[590px] p-24 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
         
         <div className="w-full space-y-8">
           <h1 className="text-page-font-primary text-2xl font-bold">

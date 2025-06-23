@@ -74,6 +74,8 @@
     --foreground: var(--page-font-primary);
     --card: var(--page-card-bg);
     --card-foreground: var(--page-font-primary);
+
+    --border-default: 0 0% 85%;
   }
   .dark {
     --page-bg: #27313A;
@@ -95,6 +97,8 @@
     --foreground: var(--page-font-primary);
     --card: var(--page-card-bg);
     --card-foreground: var(--page-font-primary);
+
+    --border-default: 207 6% 39%;
   }
 
   /* 메인페이지 공통 색상 */
@@ -135,9 +139,9 @@
   }
 
   * {
-    @apply border-box;
+    @apply border-border-default;
   }
-
+  
   body {
     background-color: var(--page-bg);
     color: var(--page-font-primary);
