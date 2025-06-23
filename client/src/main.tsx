@@ -1,13 +1,34 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
-import ReactQueryProvider from './provider/queryProvider.tsx'
+import ReactQueryProvider from '@/provider/queryProvider'
+import { ThemeProvider } from 'next-themes'
+import { AuthProvider } from './contexts/AuthContext';
+import App from '@/App'
 
-createRoot(document.getElementById('root')!).render(
-  <ReactQueryProvider>
-    <StrictMode>
-      <App />
-    </StrictMode>
-  </ReactQueryProvider>,
-)
+const renderApp = () => {
+  createRoot(document.getElementById('root')!).render(
+    <AuthProvider>
+      <ReactQueryProvider>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <StrictMode>
+            <App />
+          </StrictMode>
+        </ThemeProvider>
+      </ReactQueryProvider>
+    </AuthProvider>,
+  )
+}
+
+if (import.meta.env.VITE_MSW_ENABLED === 'true') {
+  import('./mocks/browser').then(({ worker }) => {
+    worker.start().then(renderApp)
+  })
+} else {
+  renderApp()
+}
