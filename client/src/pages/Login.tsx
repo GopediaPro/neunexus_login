@@ -46,7 +46,7 @@ const Login = () => {
   return (
     <div className="w-full h-screen bg-page-bg flex justify-center items-center">
       <div className="w-[590px] px-24 py-14 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
-        <div className="flex flex-col items-center gap-10">
+        <div className="flex flex-col items-center">
           {/* 로고 */}
           <div className="w-64 h-16 mb-20">
             {theme == 'dark' ? (
@@ -106,7 +106,7 @@ const Login = () => {
             )}
 
             {/* 자동로그인 & 찾기 옵션 */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center !mt-[0px]">
               <label>
                 <FormField
                   name="rememberMe"
@@ -148,7 +148,7 @@ const Login = () => {
               type="submit"
               variant="default"
               loading={isSubmitting}
-              className="btn-login bg-page-button-primary hover:bg-page-button-primary-hover transition-colors"
+              className="btn-login bg-page-button-primary hover:bg-page-button-primary-hover transition-colors !mt-[10px]"
               disabled={isSubmitting}
             >
               <span>로그인</span>

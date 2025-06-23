@@ -12,7 +12,7 @@ export const LeftMenuButton = ({
   return (
     <button
       className={`w-[90%] text-left p-4 mb-2 rounded-[10px] transition-all duration-200
-        flex items-center justify-between mx-auto ${isActive ? "bg-page-blue-200" : ""} ${className}`}
+        flex items-center justify-between mx-auto hover:bg-page-blue-200 ${isActive ? "bg-page-blue-200" : ""} ${className}`}
       onClick={onClick}
       type="button"
     >
@@ -48,7 +48,7 @@ export const SubMenuItem = ({
   return (
     <button
       onClick={onClick}
-      className={`w-[90%] px-8 py-2 rounded-[10px] text-left text-font-secondary text-sm hover:bg-sky-blue-light transition-colors duration-200 mx-auto ${className}`}
+      className={`w-[90%] px-8 py-2 rounded-[10px] text-left text-font-secondary text-sm hover:text-page-blue-400 hover:bg-page-blue-200 transition-colors duration-200 mx-auto ${className}`}
     >
       {text}
     </button>

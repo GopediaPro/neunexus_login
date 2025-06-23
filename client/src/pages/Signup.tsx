@@ -110,7 +110,7 @@ const Signup = () => {
               type="submit"
               variant="default"
               loading={isSubmitting}
-              className="btn-login bg-page-button-primary hover:bg-page-button-primary-hover transition-colors"
+              className="btn-login bg-page-button-primary hover:bg-page-button-primary-hover transition-colors !mt-[40px]"
             >
               회원가입
             </Button>
