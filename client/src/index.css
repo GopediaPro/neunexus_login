@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* font */
 @font-face {
   font-family: 'Pretendard';
   font-weight: 400;
@@ -30,6 +31,7 @@
   src: url('/fonts/pretendard/Pretendard-Bold.woff2') format('woff2');
 }
 
+/* CSS Variables */
 @layer base {
   :root {
     font-family: 'Pretendard', system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -42,32 +44,24 @@
 
     --left-sidebar-width: 256px;
     --right-sidebar-width: 320px;
+    --disabled-opacity: 0.5;
+    --transition-duration: 0.2s;
 
-    --background: var(--web-background);
-    --foreground: var(--font-primary);
-
-    /* 피그마 디자인 색상 추가 */
-    --web-background: 248 38% 98%;
-    --web-primary: 213 77% 47%;
-    --web-secondary: 213 69% 55%;
-    --web-accent: 213 77% 47%;
-    --web-focus: 213 77% 47%;
-    --web-error: 0 84% 60%;
-
-    --border-default: 0 0% 85%;
-    --border-icon: 0 0% 66%;
-    --border-subtle: 0 0% 91%;
-    --border-error: 0 84% 60%;
-
-    --input-background: 0 50% 98%;
-    --input-font: 0 0% 13%;
-
-    --font-white: 0 0% 100%;
-    --font-black: 0 0% 7%;
-    --font-primary: 0 0% 13%;
-    --font-secondary: 0 0% 33%;
-    --font-tertiary: 0 0% 47%;
-    --font-muted: 0 0% 47%;
+    /* 모든 페이지의 공통 색상 */
+    --page-bg: #F9F8FD;
+    --page-card-bg: #FFFFFF;
+    --page-button-primary: #1E6ECF;
+    --page-button-primary-hover: #1C63B9;
+    --page-button-primary-loading: #6291CF;
+    --page-error: #F04848;
+    --page-error-input-bg: #FFF9F9;
+    --page-input-bg: #FFFFFF;
+    --page-input-font: #555555;
+    --page-input-border: #A9A9A9;
+    --page-input-title: #555555;
+    --page-button-font: #FFFFFF;
+    --page-font-primary: #111111;
+    --page-font-secondary: #222222;
 
     --gray-100: 0 0% 95%;
     --gray-200: 0 0% 91%;
@@ -75,101 +69,85 @@
     --gray-400: 0 0% 66%;
     --gray-500: 240 2% 32%;
 
-    --blue-300: #1E6ECF;
-    --blue-400: #1C63B9;
-    --sky-blue-light: #E0EEFF;
-
-    --disabled-background: 0 0% 96%;
-    --disabled-text: 0 0% 62%;
-    --disabled-border: 0 0% 88%;
-    --disabled-placeholder: 0 0% 74%;
-
-    --background-error: 0 50% 98%;
-
-    /* Shadcn UI */
-    --card: var(--web-background);
-    --card-foreground: var(--font-primary);
-    --popover: var(--web-background);
-    --popover-foreground: var(--font-primary);
-    --muted: var(--gray-100);
-    --muted-foreground: var(--font-tertiary);
-    --accent: var(--web-accent);
-    --accent-foreground: var(--font-white);
-    --destructive: var(--web-error);
-    --destructive-foreground: var(--font-white);
-    --border: var(--border-default);
-    --input: var(--input-background);
-    --ring: var(--web-primary);
+    /* Tailwind 호환 코드 */
+    --background: var(--page-bg);
+    --foreground: var(--page-font-primary);
+    --card: var(--page-card-bg);
+    --card-foreground: var(--page-font-primary);
   }
   .dark {
-    --background: var(--web-background);
-    --foreground: var(--font-primary);
+    --page-bg: #27313A;
+    --page-card-bg: #3C454D;
+    --page-button-primary: #228BFF;
+    --page-button-primary-hover: #1F7DE5;
+    --page-button-primary-loading: #5F97E5;
+    --page-error: #FF4D4F;
+    --page-error-input-bg: #423639;
+    --page-input-bg: #2F363D;
+    --page-input-font: #DDE2E7;
+    --page-input-border: #4A535B;
+    --page-input-title: #D9D9D9;
+    --page-button-font: #FFFFFF;
+    --page-font-primary: #FFFFFF;
+    --page-font-secondary: #F1F3F5;
 
-    --web-background: 207 21% 19%;
-    --web-primary: 207 13% 28%;
-    --web-secondary: 207 13% 28%;
-    --web-accent: 211 100% 58%;
-    --web-focus: 211 100% 58%;
-    --web-error: 359 100% 65%;
+    --background: var(--page-bg);
+    --foreground: var(--page-font-primary);
+    --card: var(--page-card-bg);
+    --card-foreground: var(--page-font-primary);
+  }
 
-    --border-default: 207 6% 39%;
-    --border-icon: 0 0% 66%;
-    --border-subtle: 207 10% 32%;
-    --border-error: 359 100% 65%;
+  /* 메인페이지 공통 색상 */
+  .page-main {
+    --page-blue-400: #1E6ECF;
+    --page-blue-300: #8FB7E7;
+    --page-blue-200: #E0EEFF;
+    --page-sidebar-bg: #FFFFFF;
+    --page-sidebar-menu-bg-default: #FFFFFF;
+    --page-sidebar-menu-bg-hover: #E4ECF6;
+    --page-sidebar-menu-list-bg: #F9F9F9;
+    --page-feature-button-icon-default: #777777;
+    --page-feature-button-icon-hover: #333333;
+    --page-font-tertiary: #555555;
+    --page-font-muted: #777777;
+    --page-button-border: #D9D9D9;
+    --page-divider-border: #E9E9E9;
+    --page-toggle-on-bg: #1E6ECF;
+    --page-toggle-off-bg: #D9D9D9;
+  }
 
-    --input-background: 207 13% 21%;
-    --input-font: 210 17% 95%;
-
-    --font-white: 0 0% 100%;
-    --font-black: 0 0% 100%;
-    --font-primary: 0 0% 100%;
-    --font-secondary: 210 17% 95%;
-    --font-tertiary: 210 14% 89%;
-    --font-muted: 207 9% 38%;
-
-    --gray-100: 207 9% 38%;
-    --gray-200: 207 10% 32%;
-    --gray-300: 207 6% 39%;
-    --gray-400: 0 0% 66%;
-    --gray-500: 207 13% 28%;
-
-    --blue-300: #228BFF;
-    --blue-400: #1F7DE5;
-    --sky-blue-light: #E0EEFF;
-
-    --disabled-background: 207 12% 25%;
-    --disabled-text: 0 0% 62%;
-    --disabled-border: 207 8% 35%;
-    --disabled-placeholder: 0 0% 54%;
-
-    --background-error: 0 13% 24%;
-
-    --card: var(--web-background);
-    --card-foreground: var(--font-primary);
-    --popover: var(--web-background);
-    --popover-foreground: var(--font-primary);
-    --muted: var(--gray-200);
-    --muted-foreground: var(--font-muted);
-    --accent: var(--web-accent);
-    --accent-foreground: var(--font-white);
-    --destructive: var(--web-error);
-    --destructive-foreground: var(--font-white);
-    --border: var(--border-default);
-    --input: var(--input-background);
-    --ring: var(--web-accent);
+  .page-main.dark {
+    --page-blue-400: #228BFF;
+    --page-blue-300: #8FB7E7;
+    --page-blue-200: #E0EEFF;
+    --page-sidebar-bg: #3C454D;
+    --page-sidebar-menu-bg-default: #3C454D;
+    --page-sidebar-menu-bg-hover: #343D46;
+    --page-sidebar-menu-list-bg: #565D65;
+    --page-feature-button-icon-default: #DDE2E7;
+    --page-feature-button-icon-hover: #FFFFFF;
+    --page-font-tertiary: #E6E9EC;
+    --page-font-muted: #DDE2E7;
+    --page-button-border: #5F666D;
+    --page-divider-border: #555D65;
+    --page-toggle-on-bg: #1E6ECF;
+    --page-toggle-off-bg: #A9A9A9;
   }
 
   * {
-    @apply border-border-default;
+    @apply border-box;
   }
 
   body {
-    @apply bg-web-background text-font-primary;
+    background-color: var(--page-bg);
+    color: var(--page-font-primary);
     margin: 0;
     padding: 0;
+    transition: background-color var(--transition-duration) ease;
   }
 }
 
+/* 레이아웃 유틸 */
 .sidebar-left-width {
   width: var(--left-sidebar-width);
 }
@@ -180,6 +158,15 @@
 
 .grid-sidebar-layout {
   grid-template-columns: var(--left-sidebar-width) 1fr;
+}
+
+.transition-common {
+  transition: all var(--transition-duration) ease-in-out;
+}
+
+.disabled {
+  opacity: var(--disabled-opacity);
+  pointer-events: none;
 }
 
 /* ========= ui - button ========= */
