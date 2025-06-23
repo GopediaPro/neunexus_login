@@ -42,11 +42,11 @@ const Signup = () => {
     };
 
   return (
-    <div className="w-full h-screen bg-web-background flex justify-center items-center">
-      <div className="w-[590px] p-24 bg-font-white dark:bg-web-primary rounded-3xl shadow-lg border border-broder-default">
+    <div className="w-full h-screen bg-page-bg flex justify-center items-center">
+      <div className="w-[590px] p-24 bg-page-card-bg rounded-3xl shadow-lg border border-page-input-border">
         
         <div className="w-full space-y-8">
-          <h1 className="text-font-primary text-2xl font-bold">
+          <h1 className="text-page-font-primary text-2xl font-bold">
             회원가입
           </h1>
           
@@ -101,7 +101,7 @@ const Signup = () => {
             />
 
             {errors.root && (
-              <div className="flex items-center pt-1 pl-1 text-sm text-web-error">
+              <div className="flex items-center pt-1 pl-1 text-sm text-page-error">
                 <span className="text-body2">{errors.root.message}</span>
               </div>
             )}
@@ -110,19 +110,19 @@ const Signup = () => {
               type="submit"
               variant="default"
               loading={isSubmitting}
-              className="btn-login bg-blue-500 dark:hover:bg-blue-500/90 transition-colors"
+              className="btn-login bg-page-button-primary hover:bg-page-button-primary-hover transition-colors"
             >
               회원가입
             </Button>
           </form>
           
           <div className="flex justify-center items-center gap-1">
-            <span className="text-font-primary font-medium">
+            <span className="text-page-font-primary font-medium">
               이미 계정이 있으신가요?
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-web-secondary dark:text-web-accent font-bold underline hover:text-web-primary dark:hover:text-web-accent/90 transition-colors"
+              className="px-2.5 py-3 text-page-button-primary font-bold underline hover:text-page-button-primary-hover transition-colors"
               onClick={() => navigate('/login')}
             >
               로그인

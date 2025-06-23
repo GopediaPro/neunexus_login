@@ -44,8 +44,8 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-web-background flex justify-center items-center">
-      <div className="w-[590px] px-24 py-14 bg-font-white dark:bg-web-primary rounded-3xl shadow-lg border border-broder-default">
+    <div className="w-full h-screen bg-page-bg flex justify-center items-center">
+      <div className="w-[590px] px-24 py-14 bg-page-card-bg dark:bg-web-primary rounded-3xl shadow-lg border border-page-input-border">
         <div className="flex flex-col items-center gap-10">
           {/* 로고 */}
           <div className="w-64 h-16 mb-20">
@@ -66,7 +66,7 @@ const Login = () => {
         </div>
         {/* 로그인 폼 */}
         <div className="w-full space-y-4">
-          <h1 className="text-font-primary text-2xl font-bold">
+          <h1 className="text-page-font-primary text-2xl font-bold">
             로그인
           </h1>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
@@ -100,7 +100,7 @@ const Login = () => {
             />
 
             {errors.root && (
-              <div className="flex items-center pt-1 pl-1 text-sm text-web-error">
+              <div className="flex items-center pt-1 pl-1 text-sm text-page-error">
                 <span className="text-body2">{errors.root.message}</span>
               </div>
             )}
@@ -119,7 +119,7 @@ const Login = () => {
                           field.onChange(checked ? 1 : 0);
                         }}
                       />
-                      <span className="text-font-secondary text-sm transition-colors">
+                      <span className="text-page-font-secondary text-sm transition-colors">
                         자동 로그인
                       </span>
                     </div>
@@ -130,14 +130,14 @@ const Login = () => {
               <div className="flex items-center mt-2">
                 <button
                   type="button"
-                  className="py-3 px-2.5 text-font-secondary text-sm transition-colors"
+                  className="py-3 px-2.5 text-page-font-secondary text-sm transition-colors"
                 >
                   아이디 찾기
                 </button>
                 <div className="w-px h-3.5 bg-border-default"></div>
                 <button
                   type="button"
-                  className="py-3 px-2.5 text-font-secondary text-sm transition-colors"
+                  className="py-3 px-2.5 text-page-font-secondary text-sm transition-colors"
                 >
                   비밀번호 찾기
                 </button>
@@ -148,7 +148,7 @@ const Login = () => {
               type="submit"
               variant="default"
               loading={isSubmitting}
-              className="btn-login bg-blue-500 dark:hover:bg-blue-500/90 transition-colors"
+              className="btn-login bg-page-button-primary hover:bg-page-button-primary-hover transition-colors"
               disabled={isSubmitting}
             >
               <span>로그인</span>
@@ -156,12 +156,12 @@ const Login = () => {
           </form>
           {/* 회원가입 링크 */}
           <div className="flex justify-center items-center gap-1">
-            <span className="text-font-primary font-medium">
+            <span className="text-page-font-primary font-medium">
               아직 회원이 아니신가요?
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-web-secondary dark:text-web-accent font-bold underline hover:text-web-primary dark:hover:text-web-accent/90 transition-colors"
+              className="px-2.5 py-3 text-page-button-primary font-bold underline hover:text-page-button-primary-hover transition-colors"
               onClick={() => navigate('/signup')}
             >
               회원가입
