@@ -48,7 +48,7 @@ const Login = () => {
     <div className="w-full h-screen bg-page-bg flex justify-center items-center">
       <div className="w-[590px] px-24 py-14 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
         <div className="flex flex-col items-center">
-          {/* 로고 */}
+
           <div className="w-64 h-16 mb-20">
             {theme == 'dark' ? (
               <img
@@ -65,7 +65,7 @@ const Login = () => {
             )}
           </div>
         </div>
-        {/* 로그인 폼 */}
+        
         <div className="w-full space-y-4">
           <h1 className="text-page-font-primary text-2xl font-bold">
             로그인

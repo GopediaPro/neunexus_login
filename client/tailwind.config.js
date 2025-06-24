@@ -65,6 +65,7 @@ export default {
 					'page-divider-border': 'var(--page-divider-border)',
 					'page-toggle-on-bg': 'var(--page-toggle-on-bg)',
 					'page-toggle-off-bg': 'var(--page-toggle-off-bg)',
+					'page-input-bar-scroll-bg': 'var(--page-input-bar-scroll-bg)',
 
 					'border-default': 'hsl(var(--border-default))',
 
