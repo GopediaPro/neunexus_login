@@ -71,7 +71,7 @@ pipeline {
                         // client 디렉토리로 이동하여 Docker 빌드 실행
                         dir('client') {
                             // Docker 빌드 시 .env 파일의 환경변수들이 자동으로 사용됨
-                            docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}", ".")
+                            def image = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}", ".")
                         }
                         
                         // 빌드 후 .env 파일 정리
@@ -86,10 +86,12 @@ pipeline {
                 not { expression { params.RESTORE_MODE } }
             }
             steps {
-                echo "Pushing image to ${DOCKER_REGISTRY}"
-                // Docker Private Registry에 로그인 후 이미지 푸시
-                docker.withRegistry("https://${DOCKER_REGISTRY}", REGISTRY_CREDENTIAL_ID) {
-                    docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}").push()
+                script {
+                    echo "Pushing image to ${DOCKER_REGISTRY}"
+                    // Docker Private Registry에 로그인 후 이미지 푸시
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", REGISTRY_CREDENTIAL_ID) {
+                        docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}").push()
+                    }
                 }
             }
         }
@@ -99,8 +101,8 @@ pipeline {
                 expression { params.RESTORE_MODE }
             }
             steps {
-                echo "복원 모드: Registry에서 버전 ${env.IMAGE_TAG} 확인 중..."
                 script {
+                    echo "복원 모드: Registry에서 버전 ${env.IMAGE_TAG} 확인 중..."
                     // Docker Registry에서 이미지 존재 여부 확인
                     docker.withRegistry("https://${DOCKER_REGISTRY}", REGISTRY_CREDENTIAL_ID) {
                         try {
