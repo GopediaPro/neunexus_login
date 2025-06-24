@@ -19,6 +19,7 @@ export const LeftSidebarLayout = () => {
   const handleLogout = async () => {
     try {
       await keycloakLogout();
+      navigate('/login');
     } catch (error) {
       console.error(error);
     }
