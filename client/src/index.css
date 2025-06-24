@@ -259,7 +259,7 @@ padding: 1rem 0;
 }
 
 .tbl-head > th {
-  font-weight: 600 !important;
+  font-weight: 600;
 }
 
 .tbl-wrap .tbl-body {
