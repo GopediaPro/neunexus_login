@@ -1,7 +1,7 @@
 import { LeftMenuButton, SubMenuItem } from "@/components/main/LeftMenuButton";
 import { sidebarDummy } from "@/mocks/dummy/sidebar";
 import { keycloakLogout } from "@/services/keycloakLogout";
-import type { IMenuItemType } from "@/types/sidebar.types";
+import type { IMenuItemType } from "@/share/types/sidebar.types";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -98,6 +98,7 @@ export const LeftSidebarLayout = () => {
                       <SubMenuItem 
                         key={i}
                         text={subItem}
+                        parentText={item.label}
                         onClick={() => handleSubMenuClick(subItem)}
                       />
                     ))}
