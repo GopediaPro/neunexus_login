@@ -4,28 +4,28 @@
 
 /* font */
 @font-face {
-  font-family: 'Pretendard';
+  font-family: Pretendard;
   font-weight: 400;
   font-display: swap;
   src: url('/fonts/pretendard/Pretendard-Regular.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Pretendard';
+  font-family: Pretendard;
   font-weight: 500;
   font-display: swap;
   src: url('/fonts/pretendard/Pretendard-Medium.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Pretendard';
+  font-family: Pretendard;
   font-weight: 600;
   font-display: swap;
   src: url('/fonts/pretendard/Pretendard-SemiBold.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Pretendard';
+  font-family: Pretendard;
   font-weight: 700;
   font-display: swap;
   src: url('/fonts/pretendard/Pretendard-Bold.woff2') format('woff2');
@@ -34,11 +34,11 @@
 /* CSS Variables */
 @layer base {
   :root {
-    font-family: 'Pretendard', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: Pretendard, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
     font-synthesis: none;
-    text-rendering: optimizeLegibility;
+    text-rendering: optimizelegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
@@ -62,7 +62,6 @@
     --page-button-font: #FFFFFF;
     --page-font-primary: #111111;
     --page-font-secondary: #222222;
-
     --gray-100: 0 0% 95%;
     --gray-200: 0 0% 91%;
     --gray-300: 0 0% 85%;
@@ -74,9 +73,9 @@
     --foreground: var(--page-font-primary);
     --card: var(--page-card-bg);
     --card-foreground: var(--page-font-primary);
-
     --border-default: 0 0% 85%;
   }
+
   .dark {
     --page-bg: #27313A;
     --page-card-bg: #3C454D;
@@ -92,12 +91,10 @@
     --page-button-font: #FFFFFF;
     --page-font-primary: #FFFFFF;
     --page-font-secondary: #F1F3F5;
-
     --background: var(--page-bg);
     --foreground: var(--page-font-primary);
     --card: var(--page-card-bg);
     --card-foreground: var(--page-font-primary);
-
     --border-default: 207 6% 39%;
   }
 
@@ -143,7 +140,7 @@
   * {
     @apply border-border-default;
   }
-  
+
   body {
     background-color: var(--page-bg);
     color: var(--page-font-primary);
@@ -175,3 +172,102 @@
   pointer-events: none;
 }
 
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-width: 1px;
+  border-radius: 10px;
+  border-color: hsl(var(--border-default));
+  overflow: hidden;
+  padding: 1rem;
+}
+
+.card-left-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding-right: 1rem;
+  border-right-width: 2px;
+  border-color: hsl(var(--border-default));
+}
+
+.card-right-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding-left: 1rem;
+}
+
+.card-title {
+  padding-bottom: 0.75rem;
+  border-bottom-width: 1px;
+  border-color: hsl(var(--border-default));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title > h3 {
+  color: var(--page-font-primary);
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.card-tab {
+  display: flex;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.card-tab-button {
+  padding: 0.25rem 1rem;
+  background-color: var(--page-sidebar-bg);
+  border-color: hsl(var(--border-default));
+  border-width: 1px;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--page-font-tertiary);
+}
+
+.card-tab-button.active {
+  color: var(--page-blue-400) !important;
+  background-color: var(--page-blue-200);
+}
+
+.card-body {
+  height: 100%;
+  overflow: auto;
+}
+
+/* ========= ui - table ========= */
+.tbl {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.tbl-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tbl-head > th {
+  font-weight: 600;
+}
+
+.tbl-wrap .tbl-body {
+  overflow: auto;
+  height: 100%;
+}
+
+.tbl td {
+  vertical-align: middle;
+  word-break: break-all;
+}
