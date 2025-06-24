@@ -10,6 +10,7 @@ pipeline {
     // Jenkins 파이프라인에서 사용할 환경 변수
     environment {
         DOCKER_REGISTRY = 'registry.lyckabc.xyz/'
+        
         IMAGE_NAME = 'neunexus_login'
         // GitHub 레포지토리 주소
         GIT_REPO_URL = 'https://github.com/GopediaPro/neunexus_login.git'
@@ -67,9 +68,15 @@ pipeline {
                         
                         // .env 파일을 client 디렉토리에 복사
                         sh "cp ${ENV_FILE} client/.env"
+                        // .env 파일 내용 확인
+                        sh "cat client/.env"
                         
                         // client 디렉토리로 이동하여 Docker 빌드 실행
                         dir('client') {
+                            //pwd 확인
+                            sh "echo 'pwd 확인'"
+                            sh "pwd"
+                            sh "ls -la"
                             // Docker 빌드 시 .env 파일의 환경변수들이 자동으로 사용됨
                             def image = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}", ".")
                         }
