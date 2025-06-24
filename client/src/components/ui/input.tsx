@@ -52,31 +52,31 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             type={currentType}
             className={cn(
-              "flex h-[3.125rem] w-full border-2 rounded-[0.5rem] transition-all duration-200 ease-in-out",
+              "flex h-[3.125rem] w-full border rounded-[0.5rem] transition-all duration-200 ease-in-out",
               "px-3 py-3 text-base font-normal",
               "focus-visible:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
 
-              !error && "bg-white dark:bg-input-background",
-              error && "bg-background-error",
-              "text-input-font",
+              !error && "bg-page-input-bg",
+              error && "bg-page-error-input-bg",
+              "text-page-input-font",
 
-              currentVariant === 'default' && !error && "placeholder:text-font-tertiary",
-              currentVariant === 'focused' && !error && "placeholder:text-web-focus",
-              currentVariant === 'error' && "placeholder:text-web-error",
+              currentVariant === 'default' && !error && "placeholder:text-page-font-secondary",
+              currentVariant === 'focused' && !error && "placeholder:text-page-button-primary",
+              currentVariant === 'error' && "placeholder:text-page-error",
               "placeholder:font-normal",
               
               currentVariant === 'default' && [
-                "border-border-default",
-                "hover:border-border-icon",
-                "focus:border-web-focus focus:text-input-font"
+                "border-page-input-border",
+                "hover:border-page-input-border",
+                "focus:border-page-button-primary focus:text-page-input-font"
               ],
               currentVariant === 'focused' && [
-                "border-web-focus text-input-font"
+                "border-page-button-primary text-page-input-font"
               ],
               currentVariant === 'error' && [
-                "border-border-error",
-                "focus:border-border-error focus:text-input-font"
+                "border-page-error",
+                "focus:border-page-error focus:text-page-input-font"
               ],
 
               onIcons && "pr-10",
@@ -106,7 +106,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {helperText && !error && (
-          <p className="text-sm text-font-tertiary mt-1">
+          <p className="text-sm text-page-font-secondary mt-1">
             {helperText}
           </p>
         )}

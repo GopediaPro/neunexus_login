@@ -66,10 +66,10 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
       disabled={disabled}
       onClick={handleToggle}
       className={cn(
-        'relative inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-web-focus focus-visible:ring-offset-2 focus-visible:ring-offset-web-background',
+        'relative inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-page-button-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page-bg',
         sizeClasses[size],
         isChecked
-          ? 'bg-web-primary hover:bg-web-secondary'
+          ? 'bg-page-button-primary hover:bg-page-button-primary-hover'
           : 'bg-gray-300 hover:bg-gray-400',
         disabled && [
           'cursor-not-allowed opacity-50',

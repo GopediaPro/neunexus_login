@@ -6,7 +6,7 @@ import { RightSidebarLayout } from "@/components/main/Layout/RightSidebarLayout"
 const Main = () => {
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="page-main marker:min-h-screen bg-page-bg">
       <div className={`grid grid-sidebar-layout min-h-screen`}>
         <LeftSidebarLayout />
         <div className="flex flex-col">

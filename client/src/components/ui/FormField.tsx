@@ -29,7 +29,7 @@ export const FormField = <T extends FieldValues>({
     <div className="relative flex flex-col gap-2 w-full">
       <label
         htmlFor={fieldId}
-        className="cursor-pointer text-font-primary font-medium text-left self-start"
+        className="cursor-pointer text-page-input-title font-medium text-left self-start"
       >
         {label}
       </label>

@@ -12,22 +12,22 @@ export const LeftMenuButton = ({
   return (
     <button
       className={`w-[90%] text-left p-4 mb-2 rounded-[10px] transition-all duration-200
-        flex items-center justify-between mx-auto ${isActive ? "bg-sky-blue-light" : ""} ${className}`}
+        flex items-center justify-between mx-auto hover:bg-page-blue-200 ${isActive ? "bg-page-blue-200" : ""} ${className}`}
       onClick={onClick}
       type="button"
     >
       <div className="flex items-center gap-3">
         {icon && (
-          <div className={`text-lg ${isActive ? "text-web-primary" : "text-gray-300"}`}>
+          <div className={`text-lg ${isActive ? "text-page-blue-400" : "text-page-font-muted"}`}>
             {icon}
           </div>
         )}
-        <span className={`${isActive ? "text-web-primary" : "text-font-primary"} font-medium`}>{text}</span>
+        <span className={`${isActive ? "text-page-blue-400" : "text-page-font-primary"} font-medium`}>{text}</span>
       </div>
       {hasSubmenu && (
         <svg 
           className={`transition-all duration-300 ease-in-out transform 
-            ${isActive ? "text-web-primary rotate-90" : "text-gray-300 rotate-0"}`}
+            ${isActive ? "text-page-blue-400 rotate-90" : "text-gray-300 rotate-0"}`}
           width="10" 
           height="16" 
           viewBox="0 0 10 16" 
@@ -48,7 +48,7 @@ export const SubMenuItem = ({
   return (
     <button
       onClick={onClick}
-      className={`w-[90%] px-8 py-2 rounded-[10px] text-left text-font-secondary text-sm hover:bg-sky-blue-light transition-colors duration-200 mx-auto ${className}`}
+      className={`w-[90%] px-8 py-2 rounded-[10px] text-left text-font-secondary text-sm hover:text-page-blue-400 hover:bg-page-blue-200 transition-colors duration-200 mx-auto ${className}`}
     >
       {text}
     </button>
