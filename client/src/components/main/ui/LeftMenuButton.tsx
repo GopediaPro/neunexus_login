@@ -20,7 +20,7 @@ export const LeftMenuButton = ({
 
   return (
     <button
-      className={`w-[90%] text-left p-4 mb-2 rounded-[10px] transition-all duration-200 text-lg
+      className={`w-[90%] text-left p-3 mb-2 rounded-[10px] transition-all duration-200 text-lg
         flex items-center gap-2 mx-auto hover:bg-page-blue-200 ${isActive ? "bg-page-blue-200" : ""} ${className}`}
       onClick={onClick}
       type="button"
@@ -68,7 +68,7 @@ export const SubMenuItem = ({
   return (
     <button
       onClick={onClick}
-      className={`flex justify-between w-[90%] px-8 py-2 rounded-[10px] text-left text-font-secondary text-md hover:text-page-blue-400 hover:bg-page-blue-200 transition-colors duration-200 mx-auto ${className}`}
+      className={`flex justify-between w-[90%] px-5 py-2 rounded-[10px] text-left text-font-secondary text-sm hover:text-page-blue-400 hover:bg-page-blue-200 transition-colors duration-200 mx-auto ${className}`}
     >
       {text}
       {subText === '서비스' && (

@@ -1,4 +1,4 @@
-import { LeftMenuButton, SubMenuItem } from "@/components/main/LeftMenuButton";
+import { LeftMenuButton, SubMenuItem } from "@/components/main/ui/LeftMenuButton";
 import { sidebarDummy } from "@/mocks/dummy/sidebar";
 import { keycloakLogout } from "@/services/keycloakLogout";
 import type { IMenuItemType } from "@/share/types/sidebar.types";
