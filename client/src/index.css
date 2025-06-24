@@ -219,7 +219,6 @@
 
 .card-tab {
   display: flex;
-  padding-top: 1rem;
   padding-bottom: 1rem;
   gap: 0.5rem;
 }
@@ -243,6 +242,7 @@
 .card-body {
   height: 100%;
   overflow: auto;
+padding: 1rem 0;
 }
 
 /* ========= ui - table ========= */
@@ -259,7 +259,7 @@
 }
 
 .tbl-head > th {
-  font-weight: 600;
+  font-weight: 600 !important;
 }
 
 .tbl-wrap .tbl-body {
@@ -270,4 +270,6 @@
 .tbl td {
   vertical-align: middle;
   word-break: break-all;
+  font-size: 0.875rem;
+  padding: 0.5rem 0;
 }
