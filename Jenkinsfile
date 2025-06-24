@@ -3,55 +3,48 @@ pipeline {
 
     // 파라미터 정의 - 복원 시 사용
     parameters {
-        string(name: 'RESTORE_VERSION', defaultValue: '', description: '복원할 버전 (MMDDhhmm 형식, 예: 01151430)')
-        booleanParam(name: 'RESTORE_MODE', defaultValue: false, description: '복원 모드 활성화')
+        string(name: 'RESTORE_VERSION', defaultValue: '', description: '복원할 버전 (MMddHHmm 형식, 예: 06251130)')
+        booleanParam(name: 'RESTORE_MODE', defaultValue: false, description: '복원 모드를 활성화하려면 체크')
     }
 
     // Jenkins 파이프라인에서 사용할 환경 변수
     environment {
-        DOCKER_REGISTRY = 'registry.lyckabc.xyz/'
-        
+        DOCKER_REGISTRY = 'registry.lyckabc.xyz'
         IMAGE_NAME = 'neunexus_login'
-        // GitHub 레포지토리 주소
         GIT_REPO_URL = 'https://github.com/GopediaPro/neunexus_login.git'
         GIT_CREDENTIAL_ID = 'Iv23likhQak519AdkG6d'
         GIT_BRANCH = 'feat/docker-setup'
-        // Docker Registry 인증 정보 ID (Jenkins에 등록한 ID)
         REGISTRY_CREDENTIAL_ID = 'docker-registry-credentials'
-        // 배포 서버 정보
-        DEPLOY_SERVER_SSH = 'root@lyckabc.xyz'
-        // 배포 서버 포트
+        DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
         DEPLOY_SERVER_PORT = '50022'
-        // .env 파일을 위한 secret file credential ID
-        ENV_FILE_CREDENTIAL_ID = 'login-env-file'
-        // SSH 인증 정보 ID (Jenkins에 등록한 ID)
         SSH_CREDENTIAL_ID = 'lyckabc-ssh-key-id'
     }
 
     stages {
-        stage('Check Mode') {
+        stage('Initialize') {
             steps {
                 script {
                     if (params.RESTORE_MODE) {
+                        if (params.RESTORE_VERSION.trim().isEmpty()) {
+                            error "❌ 복원 모드에서는 'RESTORE_VERSION'을 반드시 입력해야 합니다."
+                        }
                         env.IMAGE_TAG = params.RESTORE_VERSION
-                        echo "복원 모드: 버전 ${env.IMAGE_TAG} 복원 시작"
+                        echo "🔄 [복원 모드] 버전 ${env.IMAGE_TAG}(으)로 복원을 시작합니다."
                     } else {
-                        // 빌드 태그를 "MMDDhhmm" 형식의 타임스탬프로 설정
                         def now = new Date()
-                        env.IMAGE_TAG = now.format('MMddHHmm')
-                        echo "빌드 모드: 새 버전 ${env.IMAGE_TAG} 생성"
+                        env.IMAGE_TAG = now.format('MMddHHmm', TimeZone.getTimeZone('Asia/Seoul'))
+                        echo "🚀 [빌드 모드] 새 버전 ${env.IMAGE_TAG}(을)를 생성합니다."
                     }
                 }
             }
         }
 
-        stage('Checkout') {
+        stage('Checkout from Git') {
             when {
                 not { expression { params.RESTORE_MODE } }
             }
             steps {
-                echo 'Checking out from GitHub...'
-                // GitHub에서 소스 코드 가져오기
+                echo 'Source 코드를 다운로드합니다...'
                 git branch: GIT_BRANCH, credentialsId: GIT_CREDENTIAL_ID, url: GIT_REPO_URL
             }
         }
@@ -61,28 +54,14 @@ pipeline {
                 not { expression { params.RESTORE_MODE } }
             }
             steps {
-                // secret file을 사용하여 .env 파일의 모든 환경변수를 한번에 로드
-                withCredentials([file(credentialsId: ENV_FILE_CREDENTIAL_ID, variable: 'ENV_FILE')]) {
+                dir('client') {
                     script {
-                        echo "Building Docker image with environment variables from .env file..."
-                        
-                        // .env 파일을 client 디렉토리에 복사
-                        sh "cp ${ENV_FILE} client/.env"
-                        // .env 파일 내용 확인
-                        sh "cat client/.env"
-                        
-                        // client 디렉토리로 이동하여 Docker 빌드 실행
-                        dir('client') {
-                            //pwd 확인
-                            sh "echo 'pwd 확인'"
-                            sh "pwd"
-                            sh "ls -la"
-                            // Docker 빌드 시 .env 파일의 환경변수들이 자동으로 사용됨
-                            def image = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}", ".")
+                        echo "Docker 이미지를 빌드합니다: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}"
+                        // .env 파일 없이 클린 빌드 실행
+                        // 이미지는 환경과 분리되어야 합니다.
+                        docker.withRegistry("https://${DOCKER_REGISTRY}", REGISTRY_CREDENTIAL_ID) {
+                            def customImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}", ".")
                         }
-                        
-                        // 빌드 후 .env 파일 정리
-                        sh "rm -f client/.env"
                     }
                 }
             }
@@ -94,8 +73,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Pushing image to ${DOCKER_REGISTRY}"
-                    // Docker Private Registry에 로그인 후 이미지 푸시
+                    echo "이미지를 Private Registry에 푸시합니다..."
                     docker.withRegistry("https://${DOCKER_REGISTRY}", REGISTRY_CREDENTIAL_ID) {
                         docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}").push()
                     }
@@ -103,39 +81,41 @@ pipeline {
             }
         }
 
-        stage('Restore from Registry') {
-            when {
-                expression { params.RESTORE_MODE }
-            }
-            steps {
-                script {
-                    echo "복원 모드: Registry에서 버전 ${env.IMAGE_TAG} 확인 중..."
-                    // Docker Registry에서 이미지 존재 여부 확인
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", REGISTRY_CREDENTIAL_ID) {
-                        try {
-                            sh "docker pull ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}"
-                            echo "✅ 버전 ${env.IMAGE_TAG} 복원 성공"
-                        } catch (Exception e) {
-                            error "❌ 버전 ${env.IMAGE_TAG}을(를) 찾을 수 없습니다. Registry를 확인해주세요."
-                        }
-                    }
-                }
-            }
-        }
-
         stage('Deploy to Server') {
             steps {
-                echo "Deploying to production server..."
-                // SSH 인증 정보를 사용하여 배포 서버에 접속
+                echo "배포 서버(${DEPLOY_SERVER_USER_HOST})에 배포를 시작합니다..."
                 sshagent(credentials: [SSH_CREDENTIAL_ID]) {
+                    // 더 안정적이고 읽기 쉬운 Here-document 문법 사용
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${DEPLOY_SERVER_SSH} -p ${DEPLOY_SERVER_PORT} '
-                            cd /morphogen/neunexus/login && \\
-                            export DOCKER_REGISTRY=${DOCKER_REGISTRY} && \\
-                            export IMAGE_NAME=${IMAGE_NAME} && \\
-                            export TAG=${env.IMAGE_TAG} && \\
-                            docker-compose -f docker-compose.yml --env-file .env pull && \\
-                            docker-compose -f docker-compose.yml --env-file .env up -d'
+                        ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
+                            # 스크립트 실행 중 오류 발생 시 즉시 중단
+                            set -e
+
+                            echo ">> 배포 디렉토리로 이동"
+                            cd /morphogen/neunexus/login
+
+                            echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
+                            # docker-compose.yml이 참조할 환경변수 파일(.env) 업데이트
+                            # TAG 변수를 현재 배포 버전으로 덮어씀
+                            echo "TAG=${env.IMAGE_TAG}" > .env.docker
+                            
+                            # Private Registry 로그인
+                            # 참고: Jenkins Secret Text를 사용하여 로그인 정보를 안전하게 전달할 수도 있음
+                            docker login ${DOCKER_REGISTRY}
+
+                            echo ">> docker-compose를 사용하여 서비스 업데이트"
+                            # .env.docker 파일을 환경변수로 사용하여 pull
+                            docker-compose -f docker-compose.yml --env-file .env.docker pull
+                            
+                            # --force-recreate: 이미지가 변경되었으므로 컨테이너 강제 재생성
+                            # --no-build: 배포 서버에서 실수로 빌드하는 것을 방지
+                            docker-compose -f docker-compose.yml --env-file .env.docker up -d --force-recreate --no-build
+
+                            echo ">> 사용하지 않는 Docker 이미지 정리"
+                            docker image prune -af
+
+                            echo "✅ 배포 완료: ${env.IMAGE_TAG}"
+                        EOF
                     """
                 }
             }
@@ -144,14 +124,15 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up workspace...'
-            // 빌드 후 생성된 Docker 이미지 정리 (Jenkins 서버 용량 확보)
-            script {
-                if (!params.RESTORE_MODE) {
-                    sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} || true"
-                }
-            }
+            // Jenkins Agent의 작업 공간 정리
+            echo 'Jenkins Agent의 Workspace를 정리합니다...'
             cleanWs()
+            
+            // Jenkins Agent에 남아있는 Docker 이미지 정리 (빌드/복원 시 다운로드한 이미지)
+            script {
+                // 로그인 실패 등으로 태그가 없을 수 있으므로 오류 무시
+                sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} || true"
+            }
         }
     }
 }
