@@ -139,15 +139,6 @@ ENV_EOF
                             # --no-build: 배포 서버에서 실수로 빌드하는 것을 방지
                             docker-compose -f docker-compose.yml --env-file .env.docker up -d --force-recreate --no-build
 
-                            echo ">> 사용하지 않는 이전 버전의 Docker 이미지 정리 (${DOCKER_REGISTRY}/${IMAGE_NAME})"
-                            
-                            # 현재 배포된 태그를 제외한 모든 이전 버전 이미지 ID를 찾아서 삭제
-                            # 이전 버전이 없는 경우에도 오류 없이 실행됨
-                            docker images --filter=reference="${DOCKER_REGISTRY}/${IMAGE_NAME}" --format "{{.ID}} {{.Tag}}" | \
-                            grep -v " ${env.IMAGE_TAG}" | \
-                            awk '{print $1}' | \
-                            xargs --no-run-if-empty docker rmi -f
-
                             echo "✅ 배포 완료: ${env.IMAGE_TAG}"
                         EOF
                     """
