@@ -32,10 +32,16 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 # React Router와 같은 SPA 라우팅을 올바르게 처리하기 위해
 # 사용자 정의 Nginx 설정을 복사합니다.
-COPY ./public/conf/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./public/conf/nginx.conf /etc/nginx/conf.d/default.conf.template
+
+# 환경변수를 nginx 설정에 적용하는 스크립트 생성
+RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
+    echo 'envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf' >> /docker-entrypoint.sh && \
+    echo 'nginx -g "daemon off;"' >> /docker-entrypoint.sh && \
+    chmod +x /docker-entrypoint.sh
 
 # Nginx는 기본적으로 80 포트를 사용합니다.
 EXPOSE 80
 
-# 컨테이너 시작 시 Nginx를 실행합니다.
-CMD ["nginx", "-g", "daemon off;"]
+# 컨테이너 시작 시 환경변수 적용 후 Nginx를 실행합니다.
+CMD ["/docker-entrypoint.sh"]
