@@ -108,7 +108,6 @@ pipeline {
             steps {
                 echo "배포 서버(${DEPLOY_SERVER_USER_HOST})에 배포를 시작합니다..."
                 sshagent(credentials: [SSH_CREDENTIAL_ID]) {
-                    // 더 안정적이고 읽기 쉬운 Here-document 문법 사용
                     sh """
                         ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
                             # 스크립트 실행 중 오류 발생 시 즉시 중단
@@ -140,8 +139,14 @@ ENV_EOF
                             # --no-build: 배포 서버에서 실수로 빌드하는 것을 방지
                             docker-compose -f docker-compose.yml --env-file .env.docker up -d --force-recreate --no-build
 
-                            echo ">> 사용하지 않는 Docker 이미지 정리"
-                            docker image prune -af
+                            echo ">> 사용하지 않는 이전 버전의 Docker 이미지 정리 (${DOCKER_REGISTRY}/${IMAGE_NAME})"
+                            
+                            # 현재 배포된 태그를 제외한 모든 이전 버전 이미지 ID를 찾아서 삭제
+                            # 이전 버전이 없는 경우에도 오류 없이 실행됨
+                            docker images --filter=reference="${DOCKER_REGISTRY}/${IMAGE_NAME}" --format "{{.ID}} {{.Tag}}" | \
+                            grep -v " ${env.IMAGE_TAG}" | \
+                            awk '{print $1}' | \
+                            xargs --no-run-if-empty docker rmi -f
 
                             echo "✅ 배포 완료: ${env.IMAGE_TAG}"
                         EOF
@@ -159,8 +164,7 @@ ENV_EOF
             
             // Jenkins Agent의 local에 남아있는 Docker 이미지 정리 (빌드/복원 시 다운로드한 이미지)
             script {
-                // 로그인 실패 등으로 태그가 없을 수 있으므로 오류 무시
-                sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} || true"
+
             }
         }
     }
