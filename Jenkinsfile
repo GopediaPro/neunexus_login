@@ -9,7 +9,7 @@ pipeline {
 
     // Jenkins 파이프라인에서 사용할 환경 변수
     environment {
-        DOCKER_REGISTRY = 'lyckabc.xyz'
+        DOCKER_REGISTRY = 'registry.lyckabc.xyz/'
         IMAGE_NAME = 'neunexus_login'
         // GitHub 레포지토리 주소
         GIT_REPO_URL = 'https://github.com/GopediaPro/neunexus_login.git'
