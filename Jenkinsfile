@@ -18,6 +18,8 @@ pipeline {
         DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
         DEPLOY_SERVER_PORT = '50022'
         SSH_CREDENTIAL_ID = 'lyckabc-ssh-key-id'
+        DOCKER_REGISTRY_ID='docker-registry-id'
+        DOCKER_REGISTRY_PW='docker-registry-pw'
     }
 
     stages {
@@ -57,29 +59,42 @@ pipeline {
                 dir('client') {
                     script {
                         echo "Docker 이미지를 빌드합니다: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}"
-                        // .env 파일 없이 클린 빌드 실행
-                        // 이미지는 환경과 분리되어야 합니다.
-                        docker.withRegistry("https://${DOCKER_REGISTRY}", REGISTRY_CREDENTIAL_ID) {
-                            def customImage = docker.build("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}", ".")
-                        }
+                        // sh 명령어를 사용한 Docker 이미지 빌드
+                        sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} ."
                     }
                 }
             }
         }
 
         stage('Push to Private Registry') {
-            when {
-                not { expression { params.RESTORE_MODE } }
-            }
-            steps {
-                script {
-                    echo "이미지를 Private Registry에 푸시합니다..."
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", REGISTRY_CREDENTIAL_ID) {
-                        docker.image("${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}").push()
-                    }
+    when {
+        not { expression { params.RESTORE_MODE } }
+    }
+    steps {
+        script {
+            echo "Private Registry에 로그인 및 이미지 푸시를 시작합니다..."
+            
+            // Jenkins에 등록된 Docker Registry 인증 정보를 사용합니다.
+            // 'credentialsId'는 Jenkins에 생성한 인증 정보의 ID를 사용하세요.
+            withCredentials([usernamePassword(credentialsId: 'docker-registry-credentials', usernameVariable: 'DOCKER_REGISTRY_ID', passwordVariable: 'DOCKER_REGISTRY_PW')]) {
+                try {
+                    // 1. Private Registry에 로그인
+                    // --password-stdin 옵션을 사용하여 비밀번호가 로그나 명령어 히스토리에 남지 않도록 합니다.
+                    sh "echo '${DOCKER_REGISTRY_PW}' | docker login ${DOCKER_REGISTRY} -u '${DOCKER_REGISTRY_ID}' --password-stdin"
+                    
+                    // 2. 빌드된 이미지를 Registry로 푸시
+                    echo "이미지를 푸시합니다: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}"
+                    sh "docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}"
+
+                } finally {
+                    // 3. 작업 완료 후 (성공/실패 무관) 반드시 로그아웃하여 세션을 안전하게 종료합니다.
+                    echo "Registry에서 로그아웃합니다."
+                    sh "docker logout ${DOCKER_REGISTRY}"
                 }
             }
         }
+    }
+}
 
         stage('Deploy to Server') {
             steps {
@@ -128,7 +143,7 @@ pipeline {
             echo 'Jenkins Agent의 Workspace를 정리합니다...'
             cleanWs()
             
-            // Jenkins Agent에 남아있는 Docker 이미지 정리 (빌드/복원 시 다운로드한 이미지)
+            // Jenkins Agent의 local에 남아있는 Docker 이미지 정리 (빌드/복원 시 다운로드한 이미지)
             script {
                 // 로그인 실패 등으로 태그가 없을 수 있으므로 오류 무시
                 sh "docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} || true"
