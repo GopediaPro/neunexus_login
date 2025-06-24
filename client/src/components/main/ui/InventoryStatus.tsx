@@ -10,7 +10,7 @@ export const InventoryStatus = () => {
       title="재고현황"
       onViewAll={() => navigate('/')}
     >
-      <div className="grid grid-cols-3 gap-4 text-md font-bold text-page-font-secondary pt-2 py-4">
+      <div className="grid grid-cols-3 gap-4 text-md font-semibold text-page-font-secondary pt-2 py-4">
         <span>품목코드</span>
         <span className="text-right">재고수량</span>
         <span className="text-right">재고금액</span>

@@ -10,7 +10,6 @@ export const CSStatus = () => {
     <StatusCard
       title="C/S 현황"
       onViewAll={() => navigate('/')}
-      className="border-r-2 border-border-default"
     >
       <div className="space-y-4 mt-2">
         {csData.map((item, index) => (
