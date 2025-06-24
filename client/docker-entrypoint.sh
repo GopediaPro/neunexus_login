@@ -7,6 +7,8 @@ echo "  VITE_API_BASE_URL: $VITE_API_BASE_URL"
 echo "  VITE_KEYCLOAK_URL: $VITE_KEYCLOAK_URL"
 echo "  VITE_KEYCLOAK_REALM: $VITE_KEYCLOAK_REALM"
 echo "  VITE_KEYCLOAK_CLIENT_ID: $VITE_KEYCLOAK_CLIENT_ID"
+echo "  VITE_KEYCLOAK_ADMIN_ID: $VITE_KEYCLOAK_ADMIN_ID"
+echo "  VITE_KEYCLOAK_ADMIN_PASSWORD: [HIDDEN]"
 
 # 런타임에 빌드된 JS 파일에서 환경변수 플레이스홀더를 실제 값으로 교체
 echo "=== Replacing environment variables in built files ==="
@@ -16,6 +18,8 @@ find /usr/share/nginx/html -name "*.js" -exec sed -i \
   -e "s|__VITE_KEYCLOAK_URL__|$VITE_KEYCLOAK_URL|g" \
   -e "s|__VITE_KEYCLOAK_REALM__|$VITE_KEYCLOAK_REALM|g" \
   -e "s|__VITE_KEYCLOAK_CLIENT_ID__|$VITE_KEYCLOAK_CLIENT_ID|g" \
+  -e "s|__VITE_KEYCLOAK_ADMIN_ID__|$VITE_KEYCLOAK_ADMIN_ID|g" \
+  -e "s|__VITE_KEYCLOAK_ADMIN_PASSWORD__|$VITE_KEYCLOAK_ADMIN_PASSWORD|g" \
   -e "s|__VITE_API_BASE_URL__|$VITE_API_BASE_URL|g" {} \;
 
 echo "=== Environment variables replaced in JS files ==="
