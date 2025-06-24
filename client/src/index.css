@@ -173,26 +173,3 @@
   pointer-events: none;
 }
 
-/* ========= ui - button ========= */
-.btn-login {
-  width: 100%;
-  height: 64px !important;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 18px;
-  padding-bottom: 18px;
-  background: #228bff;
-  border-radius: 8px;
-}
-.btn-login:hover {
-  background: #1f7de5;
-}
-.btn-login span {
-  color: white;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 28px;
-  letter-spacing: 0.06px;
-  word-wrap: break-word;
-}
-

@@ -147,8 +147,9 @@ const Login = () => {
             <Button
               type="submit"
               variant="default"
+              size="auth"
               loading={isSubmitting}
-              className="btn-login bg-page-button-primary hover:bg-page-button-primary-hover transition-colors !mt-[10px]"
+              className="!mt-[10px]"
               disabled={isSubmitting}
             >
               <span>로그인</span>
