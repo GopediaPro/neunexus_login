@@ -63,12 +63,12 @@ pipeline {
                         echo "Docker 이미지를 빌드합니다: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}"
                         // .env 파일 가져오기
                         withCredentials([file(credentialsId: LOGIN_ENV_FILE, variable: 'ENV_FILE')]) {
-                            sh "cp ${ENV_FILE} client/.env"
+                            sh "cp ${ENV_FILE} .env"
                         }
                         // sh 명령어를 사용한 Docker 이미지 빌드 with .env 파일
                         sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} ."
                         // .env 파일 삭제
-                        sh "rm -f client/.env"
+                        sh "rm -f .env"
                     }
                 }
             }
