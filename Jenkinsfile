@@ -20,6 +20,8 @@ pipeline {
         SSH_CREDENTIAL_ID = 'lyckabc-ssh-key-id'
         DOCKER_REGISTRY_ID='docker-registry-id'
         DOCKER_REGISTRY_PW='docker-registry-pw'
+        LOGIN_ENV_FILE='login-env-file'
+        LOGIN_SUBDOMAIN='portal'
     }
 
     stages {
@@ -59,8 +61,14 @@ pipeline {
                 dir('client') {
                     script {
                         echo "Docker 이미지를 빌드합니다: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}"
-                        // sh 명령어를 사용한 Docker 이미지 빌드
+                        // .env 파일 가져오기
+                        withCredentials([file(credentialsId: LOGIN_ENV_FILE, variable: 'ENV_FILE')]) {
+                            sh "cp ${ENV_FILE} client/.env"
+                        }
+                        // sh 명령어를 사용한 Docker 이미지 빌드 with .env 파일
                         sh "docker build -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} ."
+                        // .env 파일 삭제
+                        sh "rm -f client/.env"
                     }
                 }
             }
@@ -109,10 +117,16 @@ pipeline {
                             echo ">> 배포 디렉토리로 이동"
                             cd /morphogen/neunexus/login
 
+                            echo ">> 배포용 환경변수 파일(.env.docker) 생성"
+                            # Docker 관련 환경변수들을 포함한 .env.docker 파일 생성
+                            cat > .env.docker << 'ENV_EOF'
+DOCKER_REGISTRY=${DOCKER_REGISTRY}
+IMAGE_NAME=${IMAGE_NAME}
+TAG=${env.IMAGE_TAG}
+LOGIN_SUBDOMAIN=${LOGIN_SUBDOMAIN}
+ENV_EOF
+
                             echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
-                            # docker-compose.yml이 참조할 환경변수 파일(.env) 업데이트
-                            # TAG 변수를 현재 배포 버전으로 덮어씀
-                            echo "TAG=${env.IMAGE_TAG}" > .env.docker
                             
                             # Private Registry 로그인
                             # 참고: Jenkins Secret Text를 사용하여 로그인 정보를 안전하게 전달할 수도 있음
