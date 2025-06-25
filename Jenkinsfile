@@ -28,7 +28,7 @@ pipeline {
         DEPLOY_SERVER_PORT = '50022'
         
         // 브랜치별 설정을 위한 변수
-        IS_DEPLOYABLE = "${env.BRANCH_NAME in ['main', 'dev'] ? 'true' : 'false'}"
+        IS_DEPLOYABLE = "${env.BRANCH_NAME in ['main', 'dev'] || env.BRANCH_NAME.contains('docker') ? 'true' : 'false'}"
     }
 
     stages {
@@ -38,28 +38,25 @@ pipeline {
                     echo "🔍 현재 브랜치: ${env.BRANCH_NAME}"
                     
                     // 브랜치별 환경 설정
-                    switch(env.BRANCH_NAME) {
-                        case 'main':
-                            env.DEPLOY_ENV = 'production'
-                            env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
-                            env.LOGIN_SUBDOMAIN = 'portal'
-                            env.DOCKER_COMPOSE_FILE = 'docker-compose.prod.yml'
-                            break
-                        case 'dev':
-                            env.DEPLOY_ENV = 'development'
-                            env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'  // 개발 서버 주소로 변경 필요
-                            env.LOGIN_SUBDOMAIN = 'portal'
-                            env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
-                            break
-                        case '*docker*':
-                            env.DEPLOY_ENV = 'development'
-                            env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'  // 개발 서버 주소로 변경 필요
-                            env.LOGIN_SUBDOMAIN = 'portal'
-                            env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
-                            break
-                        default:
-                            env.DEPLOY_ENV = 'none'
-                            echo "⚠️ 브랜치 '${env.BRANCH_NAME}'는 자동 배포 대상이 아닙니다."
+                    if (env.BRANCH_NAME == 'main') {
+                        env.DEPLOY_ENV = 'production'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
+                        env.LOGIN_SUBDOMAIN = 'portal'
+                        env.DOCKER_COMPOSE_FILE = 'docker-compose.prod.yml'
+                    } else if (env.BRANCH_NAME == 'dev') {
+                        env.DEPLOY_ENV = 'development'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
+                        env.LOGIN_SUBDOMAIN = 'portal'
+                        env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
+                    } else if (env.BRANCH_NAME.contains('docker')) {
+                        env.DEPLOY_ENV = 'development'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
+                        env.LOGIN_SUBDOMAIN = 'portal'
+                        env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
+                        echo "🐳 Docker 브랜치 감지: ${env.BRANCH_NAME}"
+                    } else {
+                        env.DEPLOY_ENV = 'none'
+                        echo "⚠️ 브랜치 '${env.BRANCH_NAME}'는 자동 배포 대상이 아닙니다."
                     }
                     
                     // PR 빌드인지 확인
@@ -91,6 +88,8 @@ pipeline {
                             env.IMAGE_TAG = "prod-${timestamp}"
                         } else if (env.BRANCH_NAME == 'dev') {
                             env.IMAGE_TAG = "dev-${timestamp}"
+                        } else if (env.BRANCH_NAME.contains('docker')) {
+                            env.IMAGE_TAG = "docker-${timestamp}"
                         } else {
                             env.IMAGE_TAG = "feature-${timestamp}"
                         }
