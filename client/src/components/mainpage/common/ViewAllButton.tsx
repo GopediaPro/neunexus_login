@@ -1,18 +1,16 @@
 interface ViewAllButtonProps {
   text?: string;
   onClick?: () => void;
-  className?: string;
 }
 
 export const ViewAllButton = ({ 
   text = "전체보기", 
   onClick, 
-  className
 }: ViewAllButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className={`w-20 h-6 flex items-center gap-2 text-xs text-page-font-secondary hover:text-page-font-secondary transition-colors border rounded-[10px] border-border-default pl-3 ${className}`}
+      className={`${text === "전체보기" ? "w-20 h-6" : "w-14 h-6"} flex items-center gap-2 text-xs text-page-font-secondary hover:text-page-font-secondary transition-colors border rounded-[10px] border-border-default pl-3`}
     >
       <span>
         {text}

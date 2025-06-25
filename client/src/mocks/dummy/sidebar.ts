@@ -50,7 +50,7 @@ export const notices = [
   { id: "1", title: "신규 업무 시스템 도입 안내", date: "2025.06.09" },
   { id: "2", title: "신규 업무 시스템 도입 안내", date: "2025.06.09" },
   { id: "3", title: "신규 업무 시스템 도입 안내", date: "2025.06.09" },
-  { id: "4", title: "신규 업무 시스템 도입 안내", date: "2025.06.09" }
+  { id: "4", title: "신규 업무 시스템 도입 안내 오버플로우 테스트 진행 고고", date: "2025.06.09" }
 ];
 
 export const schedules = [

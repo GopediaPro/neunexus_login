@@ -17,12 +17,12 @@ export const StatusCard = ({
 }: StatusCardProps) => {
   return (
     <div className={`bg-white p-4 ${className}`}>
-      <div className="flex items-center justify-between border-b border-border-default pb-3">
+      <div className={`flex items-center justify-between ${title === "조직도" ? "" : "border-b border-border-default"} pb-3`}>
         <h3 className="text-lg font-medium text-page-font-primary">{title}</h3>
         {onViewAll && (
           <ViewAllButton
             text={viewAllText}
-            onClick={onViewAll} 
+            onClick={onViewAll}
           />
         )}
       </div>
