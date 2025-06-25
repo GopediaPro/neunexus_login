@@ -28,7 +28,9 @@ pipeline {
         DEPLOY_SERVER_PORT = '50022'
         
         // 브랜치별 설정을 위한 변수
-        IS_DEPLOYABLE = "${env.BRANCH_NAME in ['main', 'dev'] ? 'true' : 'false'}"
+        IS_DEPLOYABLE = "${env.BRANCH_NAME in ['main', 'dev'] || env.BRANCH_NAME.contains('docker') ? 'true' : 'false'}"
+        // Docker 이미지 태그용 안전한 브랜치명 (슬래시를 하이픈으로 변환)
+        DOCKER_SAFE_BRANCH_NAME = "${env.BRANCH_NAME.replaceAll('/', '-')}"
     }
 
     stages {
@@ -38,22 +40,25 @@ pipeline {
                     echo "🔍 현재 브랜치: ${env.BRANCH_NAME}"
                     
                     // 브랜치별 환경 설정
-                    switch(env.BRANCH_NAME) {
-                        case 'main':
-                            env.DEPLOY_ENV = 'production'
-                            env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
-                            env.LOGIN_SUBDOMAIN = 'portal'
-                            env.DOCKER_COMPOSE_FILE = 'docker-compose.prod.yml'
-                            break
-                        case 'dev':
-                            env.DEPLOY_ENV = 'development'
-                            env.DEPLOY_SERVER_USER_HOST = 'root@dev.lyckabc.xyz'  // 개발 서버 주소로 변경 필요
-                            env.LOGIN_SUBDOMAIN = 'dev-portal'
-                            env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
-                            break
-                        default:
-                            env.DEPLOY_ENV = 'none'
-                            echo "⚠️ 브랜치 '${env.BRANCH_NAME}'는 자동 배포 대상이 아닙니다."
+                    if (env.BRANCH_NAME == 'main') {
+                        env.DEPLOY_ENV = 'production'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
+                        env.LOGIN_SUBDOMAIN = 'portal'
+                        env.DOCKER_COMPOSE_FILE = 'docker-compose.prod.yml'
+                    } else if (env.BRANCH_NAME == 'dev') {
+                        env.DEPLOY_ENV = 'development'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
+                        env.LOGIN_SUBDOMAIN = 'portal'
+                        env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
+                    } else if (env.BRANCH_NAME.contains('docker')) {
+                        env.DEPLOY_ENV = 'development'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
+                        env.LOGIN_SUBDOMAIN = 'portal'
+                        env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
+                        echo "🐳 Docker 브랜치 감지: ${env.BRANCH_NAME}"
+                    } else {
+                        env.DEPLOY_ENV = 'none'
+                        echo "⚠️ 브랜치 '${env.BRANCH_NAME}'는 자동 배포 대상이 아닙니다."
                     }
                     
                     // PR 빌드인지 확인
@@ -85,6 +90,8 @@ pipeline {
                             env.IMAGE_TAG = "prod-${timestamp}"
                         } else if (env.BRANCH_NAME == 'dev') {
                             env.IMAGE_TAG = "dev-${timestamp}"
+                        } else if (env.BRANCH_NAME.contains('docker')) {
+                            env.IMAGE_TAG = "docker-${timestamp}"
                         } else {
                             env.IMAGE_TAG = "feature-${timestamp}"
                         }
@@ -165,7 +172,7 @@ pipeline {
                                 --build-arg BUILD_VERSION=${env.IMAGE_TAG} \
                                 --build-arg VCS_REF=\$(git rev-parse --short HEAD) \
                                 -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} \
-                                -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BRANCH_NAME}-latest \
+                                -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${DOCKER_SAFE_BRANCH_NAME}-latest \
                                 .
                         """
                         
@@ -212,7 +219,7 @@ pipeline {
                             
                             # 버전 태그와 latest 태그 모두 푸시
                             docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}
-                            docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BRANCH_NAME}-latest
+                            docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${DOCKER_SAFE_BRANCH_NAME}-latest
                             
                             docker logout ${DOCKER_REGISTRY}
                         """
@@ -239,8 +246,17 @@ pipeline {
                     script {
                         // 브랜치별 환경 파일 선택
                         def envFileCredentialId = LOGIN_ENV_FILE
+                        if (env.BRANCH_NAME == 'dev') {
+                            envFileCredentialId = 'login-env-file-dev'  // 개발용 환경 파일
+                        }
                         
                         withCredentials([file(credentialsId: envFileCredentialId, variable: 'ENV_FILE')]) {
+                            // 환경 파일 내용을 변수에 저장
+                            def envFileContent = sh(
+                                script: "cat ${ENV_FILE}",
+                                returnStdout: true
+                            ).trim()
+                            
                             sh """
                                 ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
                                 set -e
@@ -253,9 +269,9 @@ pipeline {
                                     cp .env.docker .env.docker.backup.\$(date +%Y%m%d%H%M%S)
                                 fi
                                 
-                                echo ">> 배포용 환경변수 파일(.env.docker) 생성 후 기본 환경변수 추가"
+                                echo ">> 배포용 환경변수 파일(.env.docker) 생성"
                                 cat > .env.docker << 'ENV_EOF'
-$(cat ${ENV_FILE})
+${envFileContent}
 DOCKER_REGISTRY=${DOCKER_REGISTRY}
 IMAGE_NAME=${IMAGE_NAME}
 TAG=${env.IMAGE_TAG}
@@ -285,7 +301,7 @@ ENV_EOF
                                     # 이전 이미지 정리 (최근 3개 버전만 유지)
                                     echo ">> 오래된 Docker 이미지 정리"
                                     docker images ${DOCKER_REGISTRY}/${IMAGE_NAME} --format "{{.Tag}} {{.ID}}" | \
-                                        grep -E "^(dev|prod)-[0-9]{8}" | \
+                                        grep -E "^(dev|prod|docker)-[0-9]{8}" | \
                                         sort -r | \
                                         tail -n +4 | \
                                         awk '{print \$2}' | \
@@ -338,7 +354,7 @@ EOF
                 if (env.IS_PR_BUILD == 'true') {
                     sh """
                         docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} || true
-                        docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BRANCH_NAME}-latest || true
+                        docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${DOCKER_SAFE_BRANCH_NAME}-latest || true
                     """
                 }
             }
