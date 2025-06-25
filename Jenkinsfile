@@ -47,8 +47,14 @@ pipeline {
                             break
                         case 'dev':
                             env.DEPLOY_ENV = 'development'
-                            env.DEPLOY_SERVER_USER_HOST = 'root@dev.lyckabc.xyz'  // 개발 서버 주소로 변경 필요
-                            env.LOGIN_SUBDOMAIN = 'dev-portal'
+                            env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'  // 개발 서버 주소로 변경 필요
+                            env.LOGIN_SUBDOMAIN = 'portal'
+                            env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
+                            break
+                        case '*docker*':
+                            env.DEPLOY_ENV = 'development'
+                            env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'  // 개발 서버 주소로 변경 필요
+                            env.LOGIN_SUBDOMAIN = 'portal'
                             env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
                             break
                         default:
