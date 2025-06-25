@@ -256,6 +256,8 @@ pipeline {
                         fi
                         
                         echo ">> 배포용 환경변수 파일(.env.docker) 생성"
+                        echo ">> ${LOGIN_ENV_FILE} 파일 내용: "
+                        cat ${LOGIN_ENV_FILE}
                         cat > .env.docker << 'ENV_EOF'
 ${LOGIN_ENV_FILE}
 DOCKER_REGISTRY=${DOCKER_REGISTRY}
