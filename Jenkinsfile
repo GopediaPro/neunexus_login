@@ -286,7 +286,7 @@ DEPLOY_ENV=${env.DEPLOY_ENV}
 ENV_EOF
                                 
                                 echo ">> Docker Registry 로그인"
-                                ${REGISTRY_PASS} | docker login ${DOCKER_REGISTRY} -u \${REGISTRY_USER} --password-stdin
+                                echo \${REGISTRY_PASS} | docker login ${DOCKER_REGISTRY} -u \${REGISTRY_USER} --password-stdin
                                 
                                 echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
                                 docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker pull
