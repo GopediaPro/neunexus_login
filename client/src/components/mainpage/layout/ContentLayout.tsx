@@ -4,7 +4,7 @@ import { StatsDashboard } from "@/components/mainpage/dashboard/StatsDashboard";
 
 export const ContentLayout = () => {
   return (
-    <main className="flex-1 p-6">
+    <main className="flex-1 p-5">
       <div className="flex flex-col gap-8">
 
         <div className="flex justify-between">

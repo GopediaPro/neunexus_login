@@ -11,7 +11,7 @@ export const CSStatus = () => {
       title="C/S 현황"
       onViewAll={() => navigate('/')}
     >
-      <div className="space-y-4 mt-2">
+      <div className="space-y-4 mt-2 pb-5">
         {csData.map((item, index) => (
           <div key={item.id} className="flex items-center justify-between">
             <span className="text-page-font-primary">{labels[index]}</span>

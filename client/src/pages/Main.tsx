@@ -15,7 +15,7 @@ const Main = () => {
           <HeaderLayout />
           <div className="flex flex-1">
             <ContentLayout />
-            <div className="pr-2">
+            <div className="pt-5 pr-2">
               <RightSidebarLayout />
             </div>
           </div>
