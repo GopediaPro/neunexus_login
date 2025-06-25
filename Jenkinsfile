@@ -280,22 +280,22 @@ DEPLOY_ENV=${env.DEPLOY_ENV}
 ENV_EOF
                                 
                                 echo ">> Docker Registry 로그인"
-                                docker login ${DOCKER_REGISTRY}
+                                ${REGISTRY_PASS} | docker login ${DOCKER_REGISTRY} -u \${REGISTRY_USER} --password-stdin
                                 
                                 echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
-                                docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker pull
+                                docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker pull
                                 
                                 echo ">> 헬스체크를 위한 이전 컨테이너 정보 저장"
-                                OLD_CONTAINER_ID=\$(docker-compose -f ${DOCKER_COMPOSE_FILE} ps -q ${IMAGE_NAME} 2>/dev/null || true)
+                                OLD_CONTAINER_ID=\$(docker compose -f ${DOCKER_COMPOSE_FILE} ps -q ${IMAGE_NAME} 2>/dev/null || true)
                                 
                                 echo ">> docker-compose를 사용하여 서비스 업데이트"
-                                docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker up -d --force-recreate --no-build
+                                docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker up -d --force-recreate --no-build
                                 
                                 echo ">> 헬스체크 수행 (30초 대기)"
                                 sleep 30
                                 
                                 # 간단한 헬스체크 (실제 환경에 맞게 수정 필요)
-                                if docker-compose -f ${DOCKER_COMPOSE_FILE} ps | grep -q "Up"; then
+                                if docker compose -f ${DOCKER_COMPOSE_FILE} ps | grep -q "Up"; then
                                     echo "✅ 배포 성공: ${env.IMAGE_TAG}"
                                     
                                     # 이전 이미지 정리 (최근 3개 버전만 유지)
@@ -309,7 +309,7 @@ ENV_EOF
                                 else
                                     echo "❌ 헬스체크 실패, 롤백을 시도합니다..."
                                     if [ ! -z "\$OLD_CONTAINER_ID" ]; then
-                                        docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker.backup.* up -d --force-recreate --no-build
+                                        docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker.backup.* up -d --force-recreate --no-build
                                     fi
                                     exit 1
                                 fi
