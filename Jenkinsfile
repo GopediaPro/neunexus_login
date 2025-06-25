@@ -257,20 +257,26 @@ pipeline {
                                 returnStdout: true
                             ).trim()
                             
-                            sh """
-                                ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
-                                set -e
-                                
-                                echo ">> 배포 디렉토리로 이동"
-                                cd /morphogen/neunexus/login
-                                
-                                echo ">> 이전 버전 백업"
-                                if [ -f .env.docker ]; then
-                                    cp .env.docker .env.docker.backup.\$(date +%Y%m%d%H%M%S)
-                                fi
-                                
-                                echo ">> 배포용 환경변수 파일(.env.docker) 생성"
-                                cat > .env.docker << 'ENV_EOF'
+                            // Docker Registry 인증 정보도 함께 전달
+                            withCredentials([usernamePassword(
+                                credentialsId: REGISTRY_CREDENTIAL_ID,
+                                usernameVariable: 'REGISTRY_USER',
+                                passwordVariable: 'REGISTRY_PASS'
+                            )]) {
+                                sh """
+                                    ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} "REGISTRY_PASS='${REGISTRY_PASS}'" "REGISTRY_USER='${REGISTRY_USER}'"<< 'EOF'
+                                    set -e
+                                    
+                                    echo ">> 배포 디렉토리로 이동"
+                                    cd /morphogen/neunexus/login
+                                    
+                                    echo ">> 이전 버전 백업"
+                                    if [ -f .env.docker ]; then
+                                        cp .env.docker .env.docker.backup.\$(date +%Y%m%d%H%M%S)
+                                    fi
+                                    
+                                    echo ">> 배포용 환경변수 파일(.env.docker) 생성"
+                                    cat > .env.docker << 'ENV_EOF'
 ${envFileContent}
 DOCKER_REGISTRY=${DOCKER_REGISTRY}
 IMAGE_NAME=${IMAGE_NAME}
@@ -278,45 +284,46 @@ TAG=${env.IMAGE_TAG}
 LOGIN_SUBDOMAIN=${LOGIN_SUBDOMAIN}
 DEPLOY_ENV=${env.DEPLOY_ENV}
 ENV_EOF
-                                
-                                echo ">> Docker Registry 로그인"
-                                docker login ${DOCKER_REGISTRY}
-                                
-                                echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
-                                docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker pull
-                                
-                                echo ">> 헬스체크를 위한 이전 컨테이너 정보 저장"
-                                OLD_CONTAINER_ID=\$(docker-compose -f ${DOCKER_COMPOSE_FILE} ps -q ${IMAGE_NAME} 2>/dev/null || true)
-                                
-                                echo ">> docker-compose를 사용하여 서비스 업데이트"
-                                docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker up -d --force-recreate --no-build
-                                
-                                echo ">> 헬스체크 수행 (30초 대기)"
-                                sleep 30
-                                
-                                # 간단한 헬스체크 (실제 환경에 맞게 수정 필요)
-                                if docker-compose -f ${DOCKER_COMPOSE_FILE} ps | grep -q "Up"; then
-                                    echo "✅ 배포 성공: ${env.IMAGE_TAG}"
                                     
-                                    # 이전 이미지 정리 (최근 3개 버전만 유지)
-                                    echo ">> 오래된 Docker 이미지 정리"
-                                    docker images ${DOCKER_REGISTRY}/${IMAGE_NAME} --format "{{.Tag}} {{.ID}}" | \
-                                        grep -E "^(dev|prod|docker)-[0-9]{8}" | \
-                                        sort -r | \
-                                        tail -n +4 | \
-                                        awk '{print \$2}' | \
-                                        xargs -r docker rmi || true
-                                else
-                                    echo "❌ 헬스체크 실패, 롤백을 시도합니다..."
-                                    if [ ! -z "\$OLD_CONTAINER_ID" ]; then
-                                        docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker.backup.* up -d --force-recreate --no-build
+                                    echo ">> Docker Registry 로그인 (비대화형)"
+                                    echo \${REGISTRY_PASS} | docker login ${DOCKER_REGISTRY} -u \${REGISTRY_USER} --password-stdin
+                                    
+                                    echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
+                                    docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker pull
+                                    
+                                    echo ">> 헬스체크를 위한 이전 컨테이너 정보 저장"
+                                    OLD_CONTAINER_ID=\$(docker compose -f ${DOCKER_COMPOSE_FILE} ps -q ${IMAGE_NAME} 2>/dev/null || true)
+                                    
+                                    echo ">> docker-compose를 사용하여 서비스 업데이트"
+                                    docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker up -d --force-recreate --no-build
+                                    
+                                    echo ">> 헬스체크 수행 (30초 대기)"
+                                    sleep 30
+                                    
+                                    # 간단한 헬스체크 (실제 환경에 맞게 수정 필요)
+                                    if docker compose -f ${DOCKER_COMPOSE_FILE} ps | grep -q "Up"; then
+                                        echo "✅ 배포 성공: ${env.IMAGE_TAG}"
+                                        
+                                        # 이전 이미지 정리 (최근 3개 버전만 유지)
+                                        echo ">> 오래된 Docker 이미지 정리"
+                                        docker images ${DOCKER_REGISTRY}/${IMAGE_NAME} --format "{{.Tag}} {{.ID}}" | \
+                                            grep -E "^(dev|prod|docker)-[0-9]{8}" | \
+                                            sort -r | \
+                                            tail -n +4 | \
+                                            awk '{print \$2}' | \
+                                            xargs -r docker rmi || true
+                                    else
+                                        echo "❌ 헬스체크 실패, 롤백을 시도합니다..."
+                                        if [ ! -z "\$OLD_CONTAINER_ID" ]; then
+                                            docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker.backup.* up -d --force-recreate --no-build
+                                        fi
+                                        exit 1
                                     fi
-                                    exit 1
-                                fi
-                                
-                                docker logout ${DOCKER_REGISTRY}
+                                    
+                                    docker logout ${DOCKER_REGISTRY}
 EOF
-                            """
+                                """
+                            }
                         }
                     }
                 }
