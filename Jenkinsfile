@@ -256,6 +256,12 @@ pipeline {
                                 script: "cat ${ENV_FILE}",
                                 returnStdout: true
                             ).trim()
+
+                            withCredentials([usernamePassword(
+                                credentialsId: REGISTRY_CREDENTIAL_ID,
+                                usernameVariable: 'REGISTRY_USER',
+                                passwordVariable: 'REGISTRY_PASS'
+                            )]) {
                             
                             sh """
                                 ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
@@ -317,6 +323,7 @@ ENV_EOF
                                 docker logout ${DOCKER_REGISTRY}
 EOF
                             """
+                            }
                         }
                     }
                 }
