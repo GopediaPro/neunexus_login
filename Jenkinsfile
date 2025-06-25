@@ -248,8 +248,9 @@ pipeline {
                             cp .env.docker .env.docker.backup.\$(date +%Y%m%d%H%M%S)
                         fi
                         
-                        echo ">> 배포용 환경변수 파일(.env.docker) 생성"
-                        cat > .env.docker << 'ENV_EOF'
+                        echo ">> 배포용 환경변수 파일(.env.docker) 생성 후 기본 환경변수 추가"
+                        cat > .env.docker < ${LOGIN_ENV_FILE}
+                        cat >> .env.docker << 'ENV_EOF'
 DOCKER_REGISTRY=${DOCKER_REGISTRY}
 IMAGE_NAME=${IMAGE_NAME}
 TAG=${env.IMAGE_TAG}
