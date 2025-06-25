@@ -250,9 +250,8 @@ pipeline {
                             // 1. Credential 파일 내용을 미리 읽어서 Groovy 변수에 저장
                             def envFileContent = readFile(ENV_FILE).trim()
 
-                            sh $/
-                                # << 'EOF' 가 아닌 << EOF 로 변경하여 Jenkins 변수 치환이 가능하도록 함
-                                ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << EOF
+                            sh """
+                                ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
                                 set -e
                                 
                                 echo ">> 배포 디렉토리로 이동"
@@ -316,7 +315,7 @@ ENV_EOF
                                 
                                 docker logout ${DOCKER_REGISTRY}
 EOF
-                            /$
+                            """
                         }
                     }
                 }
