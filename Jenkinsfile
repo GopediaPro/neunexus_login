@@ -251,7 +251,7 @@ pipeline {
                             def envFileContent = readFile(ENV_FILE).trim()
 
                             sh """
-                                ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
+                                ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no \${DEPLOY_SERVER_USER_HOST} << 'EOF'
                                 set -e
                                 
                                 echo ">> 배포 디렉토리로 이동"
