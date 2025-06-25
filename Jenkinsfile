@@ -29,6 +29,8 @@ pipeline {
         
         // 브랜치별 설정을 위한 변수
         IS_DEPLOYABLE = "${env.BRANCH_NAME in ['main', 'dev'] || env.BRANCH_NAME.contains('docker') ? 'true' : 'false'}"
+        // Docker 이미지 태그용 안전한 브랜치명 (슬래시를 하이픈으로 변환)
+        DOCKER_SAFE_BRANCH_NAME = "${env.BRANCH_NAME.replaceAll('/', '-')}"
     }
 
     stages {
@@ -170,7 +172,7 @@ pipeline {
                                 --build-arg BUILD_VERSION=${env.IMAGE_TAG} \
                                 --build-arg VCS_REF=\$(git rev-parse --short HEAD) \
                                 -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} \
-                                -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BRANCH_NAME}-latest \
+                                -t ${DOCKER_REGISTRY}/${IMAGE_NAME}:${DOCKER_SAFE_BRANCH_NAME}-latest \
                                 .
                         """
                         
@@ -217,7 +219,7 @@ pipeline {
                             
                             # 버전 태그와 latest 태그 모두 푸시
                             docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}
-                            docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BRANCH_NAME}-latest
+                            docker push ${DOCKER_REGISTRY}/${IMAGE_NAME}:${DOCKER_SAFE_BRANCH_NAME}-latest
                             
                             docker logout ${DOCKER_REGISTRY}
                         """
@@ -285,7 +287,7 @@ ENV_EOF
                             # 이전 이미지 정리 (최근 3개 버전만 유지)
                             echo ">> 오래된 Docker 이미지 정리"
                             docker images ${DOCKER_REGISTRY}/${IMAGE_NAME} --format "{{.Tag}} {{.ID}}" | \
-                                grep -E "^(dev|prod)-[0-9]{8}" | \
+                                grep -E "^(dev|prod|docker)-[0-9]{8}" | \
                                 sort -r | \
                                 tail -n +4 | \
                                 awk '{print \$2}' | \
@@ -336,7 +338,7 @@ EOF
                 if (env.IS_PR_BUILD == 'true') {
                     sh """
                         docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG} || true
-                        docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.BRANCH_NAME}-latest || true
+                        docker rmi ${DOCKER_REGISTRY}/${IMAGE_NAME}:${DOCKER_SAFE_BRANCH_NAME}-latest || true
                     """
                 }
             }
