@@ -241,17 +241,18 @@ pipeline {
             steps {
                 echo "배포 서버(${DEPLOY_SERVER_USER_HOST})에 ${env.DEPLOY_ENV} 환경으로 배포를 시작합니다..."
                 
-                sshagent(credentials: [SSH_CREDENTIAL_ID]) {
-                    script {
-                        // 브랜치별 환경 파일 선택
-                        def envFileCredentialId = LOGIN_ENV_FILE
-                        
-                        withCredentials([file(credentialsId: envFileCredentialId, variable: 'ENV_FILE')]) {
-                            // 1. Credential 파일 내용을 미리 읽어서 Groovy 변수에 저장
-                            def envFileContent = readFile(ENV_FILE).trim()
+                // 1. 배포에 필요한 모든 Credential을 준비하는 블록을 외부로
+                withCredentials([
+                    file(credentialsId: LOGIN_ENV_FILE, variable: 'ENV_FILE'),
+                    sshUserPrivateKey(credentialsId: SSH_CREDENTIAL_ID, keyFileVariable: 'SSH_KEY_FILE')
+                ]) {
+                    // 2. 준비된 Credential을 사용하는 sshagent 블록
+                    sshagent(credentials: [SSH_CREDENTIAL_ID]) {
+                        script {
+                            def envFileContent = readFile(ENV_FILE).trim(
 
                             sh """
-                                ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no \${DEPLOY_SERVER_USER_HOST} << 'EOF'
+                                ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
                                 set -e
                                 
                                 echo ">> 배포 디렉토리로 이동"
