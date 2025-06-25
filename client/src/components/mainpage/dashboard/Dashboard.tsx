@@ -1,7 +1,7 @@
-import { CSStatus } from "@/components/main/ui/CSStatus";
-import { InventoryStatus } from "@/components/main/ui/InventoryStatus";
-import { ProductStatus } from "@/components/main/ui/ProductStatus";
-import { SalesStatus } from "@/components/main/ui/SalesStatus";
+import { CSStatus } from "@/components/mainpage/dashboard/CSStatus";
+import { InventoryStatus } from "@/components/mainpage/dashboard/InventoryStatus";
+import { ProductStatus } from "@/components/mainpage/dashboard/ProductStatus";
+import { SalesStatus } from "@/components/mainpage/dashboard/SalesStatus";
 
 export const Dashboard = () => {
   return (

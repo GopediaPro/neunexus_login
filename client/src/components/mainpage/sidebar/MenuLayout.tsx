@@ -1,4 +1,4 @@
-import { MenuBox } from "@/components/main/ui/MenuBox";
+import { MenuBox } from "@/components/mainpage/common/MenuBox";
 import { menuItems } from "@/mocks/dummy/menu";
 
 export const MenuGridLayout = () => {

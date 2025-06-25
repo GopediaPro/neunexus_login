@@ -1,4 +1,4 @@
-import { ViewAllButton } from "@/components/main/ui/ViewAllButton";
+import { ViewAllButton } from "@/components/mainpage/common/ViewAllButton";
 
 interface StatusCardProps {
   title: string;

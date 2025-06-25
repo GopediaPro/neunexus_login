@@ -1,4 +1,4 @@
-import { StatusCard } from "@/components/main/ui/StatusCard";
+import { StatusCard } from "@/components/mainpage/common/StatusCard";
 import { inventoryData } from "@/mocks/dummy/status";
 import { useNavigate } from "react-router-dom";
 

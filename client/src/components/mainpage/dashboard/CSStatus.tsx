@@ -1,4 +1,4 @@
-import { StatusCard } from "@/components/main/ui/StatusCard";
+import { StatusCard } from "@/components/mainpage/common/StatusCard";
 import { csData } from "@/mocks/dummy/status";
 import { useNavigate } from "react-router-dom";
 

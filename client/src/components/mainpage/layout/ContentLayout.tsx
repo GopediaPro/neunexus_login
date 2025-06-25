@@ -1,6 +1,6 @@
-import { Dashboard } from "@/components/main/ui/Dashboard";
-import { MenuGridLayout } from "@/components/main/ui/MenuLayout";
-import { StatsDashboard } from "@/components/main/ui/StatsDashboard";
+import { Dashboard } from "@/components/mainpage/dashboard/Dashboard";
+import { MenuGridLayout } from "@/components/mainpage/sidebar/MenuLayout";
+import { StatsDashboard } from "@/components/mainpage/dashboard/StatsDashboard";
 
 export const ContentLayout = () => {
   return (
