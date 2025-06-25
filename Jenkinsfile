@@ -250,8 +250,8 @@ pipeline {
                             // 1. Credential 파일 내용을 미리 읽어서 Groovy 변수에 저장
                             def envFileContent = readFile(ENV_FILE).trim()
 
-                            sh """
-                                # 2. 'EOF' -> EOF 로 변경하여 Jenkins 변수 치환 활성화
+                            sh $/
+                                # << 'EOF' 가 아닌 << EOF 로 변경하여 Jenkins 변수 치환이 가능하도록 함
                                 ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << EOF
                                 set -e
                                 
@@ -260,12 +260,11 @@ pipeline {
                                 
                                 echo ">> 이전 버전 백업"
                                 if [ -f .env.docker ]; then
-                                    # 3. 원격 서버에서 실행될 명령어의 '$'를 이스케이프 ( \\$ )
-                                    cp .env.docker .env.docker.backup.\\\$(date +%Y%m%d%H%M%S)
+                                    # 불필요한 이스케이프 제거. 쉘이 $(...)를 해석함
+                                    cp .env.docker .env.docker.backup.$(date +%Y%m%d%H%M%S)
                                 fi
                                 
                                 echo ">> 배포용 환경변수 파일(.env.docker) 생성"
-                                # 4. 미리 읽어둔 파일 내용과 Jenkins 변수를 사용해 .env.docker 파일 생성
                                 cat > .env.docker << 'ENV_EOF'
 ${envFileContent}
 DOCKER_REGISTRY=${DOCKER_REGISTRY}
@@ -276,15 +275,14 @@ DEPLOY_ENV=${env.DEPLOY_ENV}
 ENV_EOF
                                 
                                 echo ">> Docker Registry 로그인"
-                                # Jenkins 변수가 올바르게 치환되어 전달됨
                                 docker login ${DOCKER_REGISTRY} -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PASSWORD}
                                 
                                 echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
                                 docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker pull
                                 
                                 echo ">> 헬스체크를 위한 이전 컨테이너 정보 저장"
-                                # 원격 서버의 docker-compose 명령 결과가 변수에 저장되도록 '\\$' 사용
-                                OLD_CONTAINER_ID=\\\$(docker-compose -f ${DOCKER_COMPOSE_FILE} ps -q ${IMAGE_NAME} 2>/dev/null || true)
+                                # 불필요한 이스케이프 제거
+                                OLD_CONTAINER_ID=$(docker-compose -f ${DOCKER_COMPOSE_FILE} ps -q ${IMAGE_NAME} 2>/dev/null || true)
                                 
                                 echo ">> docker-compose를 사용하여 서비스 업데이트"
                                 docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker up -d --force-recreate --no-build
@@ -296,22 +294,21 @@ ENV_EOF
                                     echo "✅ 배포 성공: ${env.IMAGE_TAG}"
                                     
                                     echo ">> 오래된 Docker 이미지 정리"
-                                    # 원격 서버의 awk에서 사용할 '$'를 이스케이프 ( \\\$ )
-                                    docker images ${DOCKER_REGISTRY}/${IMAGE_NAME} --format "{{.Tag}} {{.ID}}" | \\
-                                        grep -E "^(dev|prod)-[0-9]{8}" | \\
-                                        sort -r | \\
-                                        tail -n +4 | \\
-                                        awk '{print \\\$2}' | \\
+                                    # 불필요한 이스케이프 제거
+                                    docker images ${DOCKER_REGISTRY}/${IMAGE_NAME} --format "{{.Tag}} {{.ID}}" | \
+                                        grep -E "^(dev|prod)-[0-9]{8}" | \
+                                        sort -r | \
+                                        tail -n +4 | \
+                                        awk '{print $2}' | \
                                         xargs -r docker rmi || true
                                 else
                                     echo "❌ 헬스체크 실패, 롤백을 시도합니다..."
-                                    # 원격 변수를 사용할 때 '\\$' 사용
-                                    if [ ! -z "\\\$OLD_CONTAINER_ID" ]; then
-                                        # 백업된 env 파일 중 가장 최신 파일을 찾아 롤백
-                                        LATEST_BACKUP=\\\$(ls -t .env.docker.backup.* | head -n 1)
-                                        if [ -f "\\\$LATEST_BACKUP" ]; then
-                                            echo ">> 가장 최신 백업 파일(\\\$LATEST_BACKUP)로 롤백합니다."
-                                            docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file \\\$LATEST_BACKUP up -d --force-recreate --no-build
+                                    # 불필요한 이스케이프 제거
+                                    if [ ! -z "$OLD_CONTAINER_ID" ]; then
+                                        LATEST_BACKUP=$(ls -t .env.docker.backup.* | head -n 1)
+                                        if [ -f "$LATEST_BACKUP" ]; then
+                                            echo ">> 가장 최신 백업 파일($LATEST_BACKUP)로 롤백합니다."
+                                            docker-compose -f ${DOCKER_COMPOSE_FILE} --env-file $LATEST_BACKUP up -d --force-recreate --no-build
                                         fi
                                     fi
                                     exit 1
@@ -319,7 +316,7 @@ ENV_EOF
                                 
                                 docker logout ${DOCKER_REGISTRY}
 EOF
-                            """
+                            /$
                         }
                     }
                 }
