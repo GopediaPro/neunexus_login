@@ -1,3 +1,4 @@
+import { Icon } from "@/components/ui/Icon";
 import { keycloakLogout } from "@/services/keycloakLogout";
 import { useNavigate } from "react-router-dom";
 
@@ -18,12 +19,11 @@ export const HeaderLayout = () => {
     <header className="px-4 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button className="text-gray-500">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 7C3 6.44772 3.44772 6 4 6H20C20.5523 6 21 6.44772 21 7C21 7.55229 20.5523 8 20 8H4C3.44772 8 3 7.55229 3 7Z" fill="#A9A9A9"/>
-              <path d="M4 11C3.44772 11 3 11.4477 3 12C3 12.5522 3.44772 13 4 13H20C20.5523 13 21 12.5522 21 12C21 11.4477 20.5523 11 20 11H4Z" fill="#A9A9A9"/>
-              <path d="M3 17C3 16.4477 3.44772 16 4 16H20C20.5523 16 21 16.4477 21 17C21 17.5523 20.5523 18 20 18H4C3.44772 18 3 17.5523 3 17Z" fill="#A9A9A9"/>
-            </svg>
+          <button
+            className="flex justify-center items-center rounded-full bg-page-blue-400"
+            onClick={() => console.log(1)}
+          >
+            <Icon name="search" ariaLabel="검색" style='w-9 h-9' />
           </button>
         </div>
         <div className="flex items-center gap-3">
@@ -45,7 +45,7 @@ export const HeaderLayout = () => {
           </button>
           <button 
             onClick={handleLogout}
-            className="flex justify-center items-center w-9 h-9 bg-page-blue-400 text-page-font-primary rounded-full">
+            className="flex justify-center items-center rounded-full">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 4.88889C12 5.37981 11.602 5.77778 11.1111 5.77778H5.77777L5.77777 18.2222H11.1111C11.602 18.2222 12 18.6202 12 19.1111C12 19.602 11.602 20 11.1111 20H5.77777C4.79594 20 4 19.2041 4 18.2222V5.77778C4 4.79594 4.79594 4 5.77777 4H11.1111C11.602 4 12 4.39797 12 4.88889Z" fill="white"/>
               <path d="M14.6667 15.1874L16.9652 12.889H9.33336C8.84244 12.889 8.44448 12.491 8.44448 12.0001C8.44448 11.5092 8.84244 11.1112 9.33336 11.1112L16.9652 11.1112L14.6667 8.81269C14.3195 8.46556 14.3195 7.90275 14.6667 7.55561C15.0138 7.20848 15.5766 7.20848 15.9237 7.55561L19.7396 11.3715C19.9063 11.5382 20 11.7643 20 12.0001C20 12.2358 19.9063 12.4619 19.7396 12.6286L15.9238 16.4445C15.5766 16.7916 15.0138 16.7916 14.6667 16.4445C14.3196 16.0974 14.3196 15.5346 14.6667 15.1874Z" fill="white"/>

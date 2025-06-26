@@ -32,8 +32,6 @@ const svgoConfig = {
 const iconPath = 'src/assets/icons/**/*.svg';
 const svgFiles = await glob(iconPath);
 
-console.log(`🎨 ${svgFiles.length}개의 SVG 파일 최적화 시작...`);
-
 let optimizedCount = 0;
 let errorCount = 0;
 
