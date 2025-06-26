@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { keycloakLogin } from '@/services/keycloakLogin';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useTheme } from 'next-themes';
+import { Icon } from '@/components/ui/Icon';
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -51,17 +52,9 @@ const Login = () => {
 
           <div className="w-64 h-16 mb-20">
             {theme == 'dark' ? (
-              <img
-                src="/image/logo-dark.svg"
-                alt="로고"
-                className="w-[15rem] h-[8rem]"
-              />
+              <Icon name="logo-dark" ariaLabel="다크로고" style="w-[15rem] h-[8rem]" />
             ) : (
-              <img
-                src="/image/logo.svg"
-                alt="로고"
-                className="w-[15rem] h-[8rem]"
-              />
+              <Icon name="logo" ariaLabel="로고" style="w-[15rem] h-[8rem]" />
             )}
           </div>
         </div>

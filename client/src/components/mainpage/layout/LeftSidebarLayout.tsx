@@ -1,4 +1,5 @@
 import { LeftMenuButton, SubMenuItem } from "@/components/mainpage/sidebar/LeftMenuButton";
+import { Icon } from "@/components/ui/Icon";
 import { sidebarDummy } from "@/mocks/dummy/sidebar";
 import { keycloakLogout } from "@/services/keycloakLogout";
 import type { IMenuItemType } from "@/shared/types/sidebar.types";
@@ -56,17 +57,9 @@ export const LeftSidebarLayout = () => {
     <div className="flex flex-col sidebar-left-width bg-page-sidebar-bg h-screen border-r">
       <div className="flex justify-center mt-4 cursor-pointer" onClick={() => navigate('/')}>
         {theme == 'dark' ? (
-          <img
-            src="/image/logo-dark.svg"
-            alt="로고"
-            className="w-24 h-12"
-          />
+          <Icon name="logo-dark" ariaLabel="다크로고" style="w-24 h-12" />
         ) : (
-          <img
-            src="/image/logo.svg"
-            alt="로고"
-            className="w-24 h-12"
-          />
+          <Icon name="logo" ariaLabel="로고" style="w-24 h-12" />
         )}
       </div>
       <div className="p-6 border-b">
@@ -115,9 +108,7 @@ export const LeftSidebarLayout = () => {
           onClick={handleLogout}
           className="w-full px-4 py-2 flex items-center justify-center gap-2 text-page-font-tertiary dark:text-page-font-primary border border-page-button-border rounded-[10px] hover:bg-page-sidebar-menu-bg-hover transition-colors duration-200"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
+          <Icon name="exit" ariaLabel="나가기" style="w-3 h-3" />
           <span className="text-sm">로그아웃</span>
         </button>
       </div>

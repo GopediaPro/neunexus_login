@@ -1,4 +1,5 @@
 import { MenuBox } from "@/components/mainpage/common/MenuBox";
+import { Icon } from "@/components/ui/Icon";
 import { menuItems } from "@/mocks/dummy/menu";
 
 export const MenuGridLayout = () => {
@@ -9,7 +10,7 @@ export const MenuGridLayout = () => {
         {menuItems.map((item) => (
           <MenuBox
             key={item.id}
-            icon={<img src={`/image/${item.icon}`} className="w-6 h-6" />}
+            icon={<Icon name={item.icon} style="w-6 h-6" />}
             label={item.label}
             onClick={() => console.log(`${item.label} 클릭됨`)}
           />

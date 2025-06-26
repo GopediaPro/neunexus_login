@@ -1,3 +1,5 @@
+import { Icon } from "@/components/ui/Icon";
+
 interface InputSuffixProps {
   error?: string;
   showPassword?: boolean;
@@ -21,11 +23,11 @@ export const InputSuffix = ({
           onClick={onTogglePassword}
           className="text-page-input-font hover:text-page-font-primary focus:outline-none transition-colors"
         >
-          <img
-            src={showPassword ? "/image/eye-off.svg" : "/image/eye.svg"}
-            alt={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
-            className="w-5 h-5"
-          />
+          {showPassword ? (
+            <Icon name="eye-off" ariaLabel="감은눈" style="w-5 h-5" />
+          ) : (
+            <Icon name="eye" ariaLabel="눈" style="w-5 h-5" />
+          )}
         </button>
       )}
 

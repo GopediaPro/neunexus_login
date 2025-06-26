@@ -13,7 +13,7 @@ export const MenuBox = ({
   onClick, 
   className
 }: MenuBoxProps) => {
-
+  console.log(icon);
   return (
     <>
       <button
