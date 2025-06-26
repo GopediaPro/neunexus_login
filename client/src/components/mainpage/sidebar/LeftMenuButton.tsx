@@ -1,12 +1,11 @@
-import { Icon, type IconName } from "@/components/Icon";
-import type { ILeftMenuButtonProps, ISubMenuItemProps } from "@/share/types/sidebar.types";
+import type { ILeftMenuButtonProps, ISubMenuItemProps } from "@/shared/types/sidebar.types";
 import { useState } from "react";
 
-const iconMap: Record<string, { name: string; aria: string }> = {
-  상품관리: { name: "product", aria: "상품관리" },
-  주문관리: { name: "order", aria: "주문관리" },
-  서비스: { name: "service", aria: "서비스" },
-};
+// const iconMap: Record<string, { name: string; aria: string }> = {
+//   상품관리: { name: "product", aria: "상품관리" },
+//   주문관리: { name: "order", aria: "주문관리" },
+//   서비스: { name: "service", aria: "서비스" },
+// };
 
 export const LeftMenuButton = ({
   text,
@@ -16,7 +15,6 @@ export const LeftMenuButton = ({
   onClick,
   className = '',
 }: ILeftMenuButtonProps) => {
-  const mappedIcon = iconMap[text];
 
   return (
     <button
@@ -25,14 +23,6 @@ export const LeftMenuButton = ({
       onClick={onClick}
       type="button"
     >
-      {mappedIcon && (
-        <Icon
-          name={mappedIcon.name as IconName}
-          className={`w-5 h-5 ${isActive ? "text-page-blue-400" : "text-page-font-muted"}`}
-          ariaLabel={mappedIcon.aria}
-        />
-      )}
-
       <div className="flex items-center gap-3">
         {icon && (
           <div className={`text-lg ${isActive ? "text-page-blue-400" : "text-page-font-muted"}`}>

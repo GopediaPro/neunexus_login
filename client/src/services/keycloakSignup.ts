@@ -1,7 +1,7 @@
 import { keycloakLogin } from "@/services/keycloakLogin";
 import { tokenService } from "@/services/keycloakToken";
 import { checkUserExists, createKeycloakUser } from "@/services/keycloakUser";
-import type { IAuthResponse, IKeycloakUser, ISignupRequest } from "@/share/types/auth.types";
+import type { IAuthResponse, IKeycloakUser, ISignupRequest } from "@/shared/types/auth.types";
 
 export const keycloakSignup = async ({
   email,

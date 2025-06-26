@@ -1,4 +1,4 @@
-import type { ICreateUserRequest } from "@/share/types/auth.types";
+import type { ICreateUserRequest } from "@/shared/types/auth.types";
 import { keycloakConfig } from "@/utils/keycloakConfig";
 
 export const checkEmailExists = async (email: string, adminToken: string): Promise<boolean> => {

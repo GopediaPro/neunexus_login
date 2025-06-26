@@ -1,4 +1,4 @@
-import type { IMenuItemType } from "@/share/types/sidebar.types";
+import type { IMenuItemType } from "@/shared/types/sidebar.types";
 
 export const sidebarDummy: IMenuItemType[] = [
   {
