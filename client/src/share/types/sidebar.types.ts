@@ -9,6 +9,7 @@ export interface ILeftMenuButtonProps {
 
 export interface ISubMenuItemProps {
   text: string;
+  parentText: string;
   onClick?: () => void;
   className?: string;
 }

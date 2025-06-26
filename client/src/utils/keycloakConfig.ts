@@ -1,4 +1,4 @@
-import type { IKeycloakConfig, IKeycloakUrls } from "@/types/auth.types";
+import type { IKeycloakConfig, IKeycloakUrls } from "@/share/types/auth.types";
 
 export const keycloakConfig: IKeycloakConfig = {
   url: import.meta.env.VITE_KEYCLOAK_URL,

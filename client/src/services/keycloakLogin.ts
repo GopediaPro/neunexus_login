@@ -1,6 +1,6 @@
 import { tokenService } from "@/services/keycloakToken";
 import { checkEmailExists } from "@/services/keycloakUser";
-import type { IKeycloakTokenResponse, IKeycloakUser, ILoginRequest } from "@/types/auth.types";
+import type { IKeycloakTokenResponse, IKeycloakUser, ILoginRequest } from "@/share/types/auth.types";
 import { getKeycloakUrls, keycloakConfig } from "@/utils/keycloakConfig";
 
 const keycloakUrls = getKeycloakUrls();

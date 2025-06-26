@@ -1,4 +1,4 @@
-import type { IKeycloakTokenResponse, IKeycloakUser } from "@/types/auth.types";
+import type { IKeycloakTokenResponse, IKeycloakUser } from "@/share/types/auth.types";
 import { getKeycloakUrls, keycloakConfig } from "@/utils/keycloakConfig";
 
 const tokenCache = new Map<string, { token: string; expires: number }>();
