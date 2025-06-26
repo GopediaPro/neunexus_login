@@ -1,12 +1,13 @@
-import { keycloakLogout } from "@/services/keycloakLogout";
+import { useAuthContext } from "@/contexts";
 import { useNavigate } from "react-router-dom";
 
 export const HeaderLayout = () => {
   const navigate = useNavigate();
+  const { logout } = useAuthContext();
 
   const handleLogout = async () => {
       try {
-        await keycloakLogout();
+        await logout();
 
         navigate('/login');
       } catch (error) {

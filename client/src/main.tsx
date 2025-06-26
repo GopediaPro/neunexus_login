@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import ReactQueryProvider from '@/provider/queryProvider'
 import { ThemeProvider } from 'next-themes'
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from '@/contexts/auth'
 import App from '@/App'
 
 const renderApp = () => {

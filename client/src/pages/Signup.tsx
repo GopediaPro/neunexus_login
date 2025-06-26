@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/input";
+import { useAuthContext } from "@/contexts";
 import { signupSchema } from "@/schemas";
-import { keycloakSignup } from "@/services/keycloakSignup";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ export type SignupFormData = z.infer<typeof signupSchema>;
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { signup } = useAuthContext();
 
   const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<SignupFormData>({
       resolver: zodResolver(signupSchema),
@@ -25,15 +26,8 @@ const Signup = () => {
   
     const onSubmit = async (data: SignupFormData) => {
       try {
-        const result = await keycloakSignup(data);
-        
-        if (result.success) {
-          if (result.autoLogin) {
-            navigate('/');
-          } else {
-            navigate('/login');
-          }
-        }
+        await signup(data);
+        navigate('/') 
       } catch (error: any) {
         setError("root", {
           type: "manual",
