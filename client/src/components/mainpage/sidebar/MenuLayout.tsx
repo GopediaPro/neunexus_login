@@ -17,12 +17,7 @@ export const MenuGridLayout = () => {
         ))}
         
         <MenuBox
-          icon={
-            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-          }
-          label=""
+          icon={<Icon name="plus" style="w-5 h-5" />}
           className="opacity-50 hover:opacity-100"
         />
       </div>

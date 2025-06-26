@@ -57,8 +57,7 @@ export const SubMenuItem = ({
     >
       {text}
       {subText === '서비스' && (
-        // <Icon
-        <div></div>
+        <Icon name="redirect" ariaLabel="redirect" style="w-4 h-4" />
       )}
     </button>
   );
