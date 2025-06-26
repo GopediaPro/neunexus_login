@@ -1,11 +1,6 @@
 import fs from 'fs';
-import path from 'path';
 import { optimize } from 'svgo';
 import { glob } from 'glob';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const svgoConfig = {
   plugins: [
@@ -24,12 +19,19 @@ const svgoConfig = {
       },
     },
     {
-      name: 'removeDimensions',
+      name: 'addAttributesToSVGElement',
+      params: {
+        attributes: []
+      }
     }
   ],
+  js2svg: {
+    finalNewline: false,
+    pretty: false
+  }
 };
 
-const iconPath = 'src/assets/icons/**/*.svg';
+const iconPath = 'src/shared/assets/icons/**/*.svg';
 const svgFiles = await glob(iconPath);
 
 let optimizedCount = 0;
@@ -46,9 +48,14 @@ for (const file of svgFiles) {
       continue;
     }
     
-    fs.writeFileSync(file, result.data);
-    optimizedCount++;
+    let optimizedCode = result.data;
     
+    optimizedCode = optimizedCode.replace(/fill="[^"]*"/g, 'fill="currentColor"');
+    optimizedCode = optimizedCode.replace(/stroke="[^"]*"/g, 'stroke="currentColor"');
+    
+    fs.writeFileSync(file, optimizedCode);
+    optimizedCount++;
+  
   } catch (error) {
     console.error(`${file}: ${error.message}`);
     errorCount++;
