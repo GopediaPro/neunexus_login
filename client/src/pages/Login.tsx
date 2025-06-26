@@ -6,15 +6,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { keycloakLogin } from '@/services/keycloakLogin';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useTheme } from 'next-themes';
+import { useAuthContext } from '@/contexts';
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const { login } = useAuthContext();
 
   const {
     control,
@@ -33,7 +34,7 @@ const Login = () => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await keycloakLogin(data);
+      await login(data);
 
       navigate('/');
     } catch (error: any) {

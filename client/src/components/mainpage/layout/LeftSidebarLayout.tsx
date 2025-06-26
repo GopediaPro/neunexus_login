@@ -1,6 +1,6 @@
 import { LeftMenuButton, SubMenuItem } from "@/components/mainpage/sidebar/LeftMenuButton";
+import { useAuthContext } from "@/contexts";
 import { sidebarDummy } from "@/mocks/dummy/sidebar";
-import { keycloakLogout } from "@/services/keycloakLogout";
 import type { IMenuItemType } from "@/share/types/sidebar.types";
 import { useTheme } from "next-themes";
 import { useState } from "react";
@@ -10,6 +10,7 @@ export const LeftSidebarLayout = () => {
   const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarDummy);
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const { logout } = useAuthContext(); 
 
   const userProfile = {
     name: '김00 사원',
@@ -18,7 +19,7 @@ export const LeftSidebarLayout = () => {
 
   const handleLogout = async () => {
     try {
-      await keycloakLogout();
+      await logout();
       navigate('/login');
     } catch (error) {
       console.error(error);

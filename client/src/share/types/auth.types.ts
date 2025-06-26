@@ -32,12 +32,6 @@ export interface IKeycloakUser {
   [key: string]: any; // 나중에 keycloak 속성들 추가시킬때 넣어주세요
 }
 
-export interface IAuthState {
-  user: IKeycloakUser | null;
-  isAuthenticated: boolean;
-  loading: boolean;
-}
-
 export interface ILoginRequest {
   email: string;
   password: string;
