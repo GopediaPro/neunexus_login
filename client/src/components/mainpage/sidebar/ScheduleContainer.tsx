@@ -9,7 +9,7 @@ export const ScheduleContainer = () => {
     <StatusCard
       title="일정"
       onViewAll={() => navigate('/')}
-      viewAllText="추가"
+      viewAllText="일정관리"
     >
 
       <div className="space-y-3">
