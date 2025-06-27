@@ -34,7 +34,7 @@ export const ModalRoot = ({ children, isOpen, onClose }: ModalProps) => {
     <Portal>
       <ModalProvider isOpen={isOpen} onClose={onClose}>
       <div 
-          className="fixed inset-0 bg-page-bg bg-opacity-50 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
           onClick={onClose}
         >
           <div 
