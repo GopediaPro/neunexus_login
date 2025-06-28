@@ -9,14 +9,30 @@ import { createContext, useContext, useEffect, useReducer, type ReactNode } from
 interface AuthContextType {
   user: IKeycloakUser | null;
   isAuthenticated: boolean;
-  loading: boolean;
+  isLoading: boolean;
   login: (data: ILoginRequest) => Promise<void>;
   signup: (data: ISignupRequest) => Promise<IAuthResponse & { user?: IKeycloakUser }>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isAuthenticated: false,
+  isLoading: true,
+  login: async () => {
+    throw new Error('AuthProvider not found');
+  },
+  signup: async () => {
+    throw new Error('AuthProvider not found');
+  },
+  logout: async () => {
+    throw new Error('AuthProvider not found');
+  },
+  refreshToken: async () => {
+    throw new Error('AuthProvider not found');
+  },
+});
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
@@ -213,7 +229,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const value: AuthContextType = {
     user: state.user,
     isAuthenticated: state.isAuthenticated,
-    loading: state.loading,
+    isLoading: state.loading,
     login,
     signup,
     logout,
