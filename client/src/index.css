@@ -62,6 +62,10 @@
     --page-button-font: #FFFFFF;
     --page-font-primary: #111111;
     --page-font-secondary: #222222;
+    
+    --page-blue-400: #1E6ECF;
+    --page-blue-300: #8FB7E7;
+    --page-blue-200: #E0EEFF;
 
     --gray-100: 0 0% 95%;
     --gray-200: 0 0% 91%;
@@ -93,6 +97,10 @@
     --page-font-primary: #FFFFFF;
     --page-font-secondary: #F1F3F5;
 
+    --page-blue-400: #228BFF;
+    --page-blue-300: #8FB7E7;
+    --page-blue-200: #E0EEFF;
+
     --background: var(--page-bg);
     --foreground: var(--page-font-primary);
     --card: var(--page-card-bg);
@@ -103,9 +111,6 @@
 
   /* 메인페이지 공통 색상 */
   .page-main {
-    --page-blue-400: #1E6ECF;
-    --page-blue-300: #8FB7E7;
-    --page-blue-200: #E0EEFF;
     --page-sidebar-bg: #FFFFFF;
     --page-sidebar-menu-bg-default: #FFFFFF;
     --page-sidebar-menu-bg-hover: #E4ECF6;
@@ -122,9 +127,6 @@
   }
 
   .page-main.dark {
-    --page-blue-400: #228BFF;
-    --page-blue-300: #8FB7E7;
-    --page-blue-200: #E0EEFF;
     --page-sidebar-bg: #3C454D;
     --page-sidebar-menu-bg-default: #3C454D;
     --page-sidebar-menu-bg-hover: #343D46;
@@ -174,4 +176,68 @@
   opacity: var(--disabled-opacity);
   pointer-events: none;
 }
+@layer components {
+  .rbc-calendar {
+    @apply font-sans;
+  }
 
+  .rbc-toolbar {
+    @apply mb-4 flex flex-wrap gap-2 justify-between items-center;
+  }
+
+  .rbc-toolbar button {
+    @apply border border-gray-300 bg-white text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-50 transition-colors;
+  }
+
+  .rbc-toolbar button:hover {
+    @apply bg-gray-50;
+  }
+
+  .rbc-toolbar button.rbc-active {
+    @apply bg-blue-500 text-white border-blue-500;
+  }
+
+  .rbc-toolbar-label {
+    @apply text-lg font-semibold text-gray-900;
+  }
+
+  .rbc-month-view {
+    @apply border border-gray-200 rounded-lg overflow-hidden;
+  }
+
+  .rbc-header {
+    @apply bg-gray-50 text-gray-700 py-3 px-2 font-medium text-sm border-b border-gray-200;
+  }
+
+  .rbc-date-cell {
+    @apply text-gray-900 font-medium;
+  }
+
+  .rbc-off-range-bg {
+    @apply bg-gray-100;
+  }
+
+  .rbc-off-range .rbc-date-cell {
+    @apply text-gray-400;
+  }
+
+  .rbc-today {
+    @apply bg-blue-50;
+  }
+
+  .rbc-day-bg:hover {
+    @apply bg-gray-50;
+  }
+
+  .rbc-event {
+    @apply rounded text-white text-xs font-medium;
+  }
+
+  .rbc-event:hover {
+    @apply opacity-90;
+  }
+
+  .rbc-event.rbc-selected {
+    @apply ring-2 ring-blue-500;
+  }
+}

@@ -38,7 +38,7 @@ export const ModalRoot = ({ children, isOpen, onClose }: ModalProps) => {
           onClick={onClose}
         >
           <div 
-            className="bg-web-background rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+            className="bg-web-background rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {children}
