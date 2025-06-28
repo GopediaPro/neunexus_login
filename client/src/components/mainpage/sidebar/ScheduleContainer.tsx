@@ -43,7 +43,7 @@ export const ScheduleContainer = () => {
             <Modal.CloseButton />
           </Modal.Header>
           
-          <Modal.Body className="p-6">
+          <Modal.Body className="p-6 pt-2">
             <ScheduleCalendar />
           </Modal.Body>
         </div>

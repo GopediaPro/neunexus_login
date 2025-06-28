@@ -19,8 +19,8 @@ export const CustomToolbar = ({ date, onNavigate }: ToolbarProps<CalendarEvent, 
       <span className="text-xl font-bold text-page-font-primary pr-2">
         {year}년
       </span>
-      <span className='text-xl font-bold text-page-blue-400'>
-        {month}월
+      <span className="text-xl font-bold text-page-font-primary pr-2">
+        <span className="text-blue-400">{month}</span>월
       </span>
       <button
         onClick={() => onNavigate('PREV')}
