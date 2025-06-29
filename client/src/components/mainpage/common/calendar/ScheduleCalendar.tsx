@@ -18,10 +18,10 @@ export interface CalendarEvent extends Event {
 
 interface ScheduleCalendarProps {
   className?: string;
+  events: CalendarEvent[];
+  onEventsChange: (events: CalendarEvent[]) => void;
   onEventClick?: (event?: CalendarEvent) => void;
   onSlotClick?: (event?: CalendarEvent) => void;
-  events?: CalendarEvent[];
-  onEventsChange?: (events: CalendarEvent[]) => void;
 }
 
 
@@ -95,9 +95,30 @@ export const ScheduleCalendar = ({
   onEventsChange
 }: ScheduleCalendarProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [events, _setEvents] = useState<CalendarEvent[]>(initialEvents); 
+  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents); 
 
   const displayEvents = propEvents || events;
+
+  const handleEventSave = (eventData: CalendarEvent) => {
+    if (propEvents && onEventsChange) {
+      const existingIndex = propEvents.findIndex(e => e.id === eventData.id);
+      if (existingIndex >= 0) {
+        const updatedEvents = [...propEvents];
+        updatedEvents[existingIndex] = eventData;
+        onEventsChange(updatedEvents);
+      } else {
+        onEventsChange([...propEvents, eventData]);
+      }
+    }
+  };
+
+  const handleEventDelete = (eventId: string) => {
+    if (propEvents && onEventsChange) {
+      onEventsChange(propEvents.filter(e => e.id !== eventId));
+    } else {
+      setEvents(prev => prev.filter(e => e.id !== eventId));
+    }
+  };
   
   const handleSelectEvent = (event: CalendarEvent) => {
     if (onEventClick) {

@@ -1,29 +1,5 @@
 import { useModalContext } from "@/contexts";
-import type { ReactNode } from "react";
-
-interface ModalHeaderProps {
-  children: ReactNode;
-  className?: string;
-}
-
-interface ModalTitleProps {
-  children: ReactNode;
-  className?: string;
-}
-
-interface ModalCloseButtonProps {
-  className?: string;
-}
-
-interface ModalBodyProps {
-  children: ReactNode;
-  className?: string;
-}
-
-interface ModalFooterProps {
-  children: ReactNode;
-  className?: string;
-}
+import type { ModalBodyProps, ModalCloseButtonProps, ModalFooterProps, ModalHeaderProps, ModalTitleProps } from "@/share/types/modal.types";
 
 export const ModalHeader = ({ children, className }: ModalHeaderProps) => {
   return (

@@ -7,31 +7,18 @@ import { scheduleSchema, type ScheduleFormData } from '@/schemas/scheduleSchema'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormField } from '@/components/ui/FormField';
 import { Input } from '@/components/ui/input';
+import type { CalendarEvent } from './ScheduleCalendar';
+import { COLOR_OPTIONS } from '@/constant/calendar';
 
 interface AddScheduleProps {
   isOpen: boolean;
   onClose: () => void;
-  event?: {
-    id?: string;
-    title: string;
-    start: Date;
-    end: Date;
-    desc?: string;
-    color?: string;
-  } | null;
-  onSave: (eventData: any) => void;
+  onSave: (eventData: CalendarEvent) => void;
+  event?: CalendarEvent | null;
+  onDelete?: (eventId: string) => void;
 }
 
-const colorOptions = [
-  { name: '사내일정', value: '#ef4444', bg: 'bg-page-blue-400' },
-  { name: '회의', value: '#3b82f6', bg: 'bg-blue-500' },
-  { name: '업무', value: '#eab308', bg: 'bg-yellow-500' },
-  { name: '운영/관리', value: '#22c55e', bg: 'bg-green-500' },
-  { name: '이벤트', value: '#8b5cf6', bg: 'bg-purple-500' },
-  { name: '기타', value: '#6b7280', bg: 'bg-gray-500' },
-];
-
-export const AddSchedule = ({ isOpen, onClose, event, onSave }: AddScheduleProps) => {
+export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddScheduleProps) => {
   const {
     control,
     handleSubmit,
@@ -51,6 +38,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave }: AddScheduleProps
   });
 
   const selectedCategory = watch('category');
+  const isEditMode = event && event.id;
 
   useEffect(() => {
     if (isOpen && event) {
@@ -89,6 +77,15 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave }: AddScheduleProps
       handleClose();
     } catch (error) {
       console.error('일정 저장 실패:', error);
+    }
+  };
+
+  const handleDelete = () => {
+    if (isEditMode && event?.id && onDelete) {
+      if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+        onDelete(event.id);
+        handleClose();
+      }
     }
   };
 
@@ -189,8 +186,8 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave }: AddScheduleProps
               control={control}
               error={errors.category?.message}
               render={(field) => (
-                <div className="grid grid-cols-3 gap-2">
-                  {colorOptions.map((color) => (
+                <div className="flex">
+                  {COLOR_OPTIONS.map((color) => (
                     <button
                       key={color.value}
                       type="button"
@@ -242,6 +239,16 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave }: AddScheduleProps
         </Modal.Body>
 
         <Modal.Footer>
+          {isEditMode && onDelete && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleDelete}
+                className="text-red-600 border-red-200 hover:bg-red-50"
+              >
+                삭제
+              </Button>
+            )}
           <Button
             type="submit"
             onClick={handleSubmit(onSubmit)}
@@ -249,7 +256,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave }: AddScheduleProps
             disabled={isSubmitting}
             className='rounded-[8px]'
           >
-            저장
+            {isEditMode ? '수정' : '저장'}
           </Button>
         </Modal.Footer>
       </div>

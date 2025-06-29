@@ -6,7 +6,7 @@ interface ModalProps {
   children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
+  size: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' ;
 }
 
 export const ModalRoot = ({ children, isOpen, onClose, size }: ModalProps) => {
@@ -28,6 +28,20 @@ export const ModalRoot = ({ children, isOpen, onClose, size }: ModalProps) => {
     }
   }, [isOpen, onClose]);
 
+  const getSizeClass = () => {
+    const sizeMap = {
+      'sm': 'max-w-sm',
+      'md': 'max-w-md',
+      'lg': 'max-w-lg',
+      'xl': 'max-w-xl',
+      '2xl': 'max-w-2xl',
+      '3xl': 'max-w-3xl',
+      '4xl': 'max-w-4xl',
+      '5xl': 'max-w-5xl',
+      '6xl': 'max-w-6xl' 
+    };
+    return sizeMap[size];
+  };
 
   if (!isOpen) return null;
 
@@ -39,7 +53,7 @@ export const ModalRoot = ({ children, isOpen, onClose, size }: ModalProps) => {
           onClick={onClose}
         >
           <div 
-            className={`bg-web-background rounded-lg shadow-xl max-w-${size} w-full max-h-[90vh] overflow-hidden`}
+            className={`bg-web-background rounded-lg shadow-xl ${getSizeClass()} w-full max-h-[90vh] overflow-hidden`}
             onClick={(e) => e.stopPropagation()}
           >
             {children}
