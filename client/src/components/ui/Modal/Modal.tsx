@@ -6,9 +6,10 @@ interface ModalProps {
   children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
 }
 
-export const ModalRoot = ({ children, isOpen, onClose }: ModalProps) => {
+export const ModalRoot = ({ children, isOpen, onClose, size }: ModalProps) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -38,7 +39,7 @@ export const ModalRoot = ({ children, isOpen, onClose }: ModalProps) => {
           onClick={onClose}
         >
           <div 
-            className="bg-web-background rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-hidden"
+            className={`bg-web-background rounded-lg shadow-xl max-w-${size} w-full max-h-[90vh] overflow-hidden`}
             onClick={(e) => e.stopPropagation()}
           >
             {children}

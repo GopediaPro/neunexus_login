@@ -2,24 +2,46 @@ import { StatusCard } from "@/components/mainpage/common/StatusCard";
 import { Modal } from "@/components/ui/Modal";
 import { schedules } from "@/mocks/dummy/sidebar";
 import { useState } from "react";
-import { ScheduleCalendar } from "../common/calendar/ScheduleCalendar";
+import { ScheduleCalendar, type CalendarEvent } from "../common/calendar/ScheduleCalendar";
+import { AddSchedule } from "../common/calendar/AddSchedule";
 
 export const ScheduleContainer = () => {
-  const [ isModalOpen, setIsModalOpen ] = useState(false);
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
+  const handleOpenScheduleModal = () => {
+    setIsEventModalOpen(false);
+    setIsScheduleModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCloseScheduleModal = () => {
+    setIsScheduleModalOpen(false);
   };
+
+  const handleOpenEventModal = (event?: CalendarEvent) => {
+    setIsScheduleModalOpen(false);
+    setSelectedEvent(event || null);
+    setIsEventModalOpen(true);
+  };
+
+  const handleCloseEventModal = () => {
+    setIsEventModalOpen(false);
+    setSelectedEvent(null);
+    setIsScheduleModalOpen(true);
+  };
+
+  const handleSaveEvent = (eventData: CalendarEvent) => {
+    console.log(eventData);
+    handleCloseEventModal();
+  };
+
 
   return (
     <>
       <StatusCard
         title="일정"
-        onViewAll={handleOpenModal}
+        onViewAll={handleOpenScheduleModal}
         viewAllText="일정관리"
       >
 
@@ -36,7 +58,7 @@ export const ScheduleContainer = () => {
         </div>
       </StatusCard>
 
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+      <Modal isOpen={isScheduleModalOpen} onClose={handleCloseScheduleModal} size="5xl">
         <div className="bg-white rounded-2xl">
           <Modal.Header className="border-b p-4 px-6">
             <Modal.Title>일정 관리</Modal.Title>
@@ -44,10 +66,19 @@ export const ScheduleContainer = () => {
           </Modal.Header>
           
           <Modal.Body className="p-6 pt-2">
-            <ScheduleCalendar />
+            <ScheduleCalendar 
+              onEventClick={handleOpenEventModal}
+              onSlotClick={handleOpenEventModal}
+            />
           </Modal.Body>
         </div>
       </Modal>
+      <AddSchedule
+        isOpen={isEventModalOpen}
+        onClose={handleCloseEventModal}
+        event={selectedEvent}
+        onSave={handleSaveEvent}
+      />
     </>
   );
 };

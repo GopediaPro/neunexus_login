@@ -1,4 +1,3 @@
-// components/calendar/ScheduleCalendar.tsx
 import { Calendar, momentLocalizer, type Event } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -17,29 +16,37 @@ export interface CalendarEvent extends Event {
   color?: string;
 }
 
-export const events: CalendarEvent[] = [
+interface ScheduleCalendarProps {
+  className?: string;
+  onEventClick?: (event?: CalendarEvent) => void;
+  onSlotClick?: (event?: CalendarEvent) => void;
+  events?: CalendarEvent[];
+  onEventsChange?: (events: CalendarEvent[]) => void;
+}
+
+
+export const initialEvents: CalendarEvent[] = [
   {
     id: '1',
     title: '팀 회의',
-    start: new Date(2024, 5, 28, 10, 0),
-    end: new Date(2024, 5, 28, 11, 0),
+    start: new Date(2025, 5, 2, 10, 0),
+    end: new Date(2025, 5, 2, 11, 0),
     desc: '주간 팀 미팅',
     color: '#3b82f6'
-
   },
   {
     id: '2',
     title: '프로젝트 리뷰',
-    start: new Date(2024, 5, 29, 14, 0),
-    end: new Date(2024, 5, 29, 16, 0),
+    start: new Date(2025, 5, 5, 14, 0),
+    end: new Date(2025, 5, 5, 15, 0),
     desc: '분기별 프로젝트 검토',
     color: '#ef4444',
   },
   {
     id: '3',
     title: '클라이언트 미팅',
-    start: new Date(2024, 5, 30, 9, 0),
-    end: new Date(2024, 5, 30, 10, 30),
+    start: new Date(2025, 5, 17, 9, 0),
+    end: new Date(2025, 5, 17, 10, 30),
     desc: '신규 프로젝트 논의',
     color: '#3b82f6'
   },
@@ -80,16 +87,40 @@ const CustomEvent = ({ event }: { event: CalendarEvent }) => {
   );
 };
 
-export const ScheduleCalendar = ({ className }: { className?: string }) => {
+export const ScheduleCalendar = ({ 
+  className,
+  onEventClick, 
+  onSlotClick,
+  events: propEvents,
+  onEventsChange
+}: ScheduleCalendarProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  
-  // const handleSelectEvent = (event: CalendarEvent) => {
-    
-  // };
+  const [events, _setEvents] = useState<CalendarEvent[]>(initialEvents); 
 
-  // const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
-    
-  // };
+  const displayEvents = propEvents || events;
+  
+  const handleSelectEvent = (event: CalendarEvent) => {
+    if (onEventClick) {
+      onEventClick(event);
+    }
+  };
+
+  const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
+    if (onSlotClick) {
+      onSlotClick({
+        id: '',
+        title: '',
+        start,
+        end,
+        desc: '',
+        color: '#3b82f6'
+      });
+    }
+  };
+
+  const handleDate = (newDate: Date) => {
+    setCurrentDate(newDate);
+  };
 
   const eventStyleGetter = (event: CalendarEvent) => {
     return {
@@ -104,21 +135,17 @@ export const ScheduleCalendar = ({ className }: { className?: string }) => {
     };
   };
 
-  const handleDate = (newDate: Date) => {
-    setCurrentDate(newDate);
-  };
-
   return (
     <div className={`w-full ${className}`}>
       <div className="bg-white rounded-lg">
         <Calendar
           localizer={localizer}
-          events={events}
+          events={displayEvents}
           startAccessor="start"
           endAccessor="end"
           style={{ height: 600 }}
-          // onSelectEvent={handleSelectEvent}
-          // onSelectSlot={handleSelectSlot}
+          onSelectEvent={handleSelectEvent}
+          onSelectSlot={handleSelectSlot}
           selectable
           popup
           views={['month', 'week', 'day', 'agenda']}
