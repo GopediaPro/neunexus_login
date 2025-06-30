@@ -18,7 +18,7 @@ export const SalesStatus = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-1 text-sm border border-border-default rounded ${
+            className={`px-4 py-0.5 text-sm border border-border-default rounded ${
               activeTab === tab
                 ? "bg-page-blue-200 text-page-blue-400"
                 : "bg-page-sidebar-bg text-page-font-tertiary hover:bg-gray-200"
@@ -30,7 +30,7 @@ export const SalesStatus = () => {
       </div>
 
       <div className="space-y-2">
-        <div className="grid grid-cols-3 gap-4 text-md font-semibold text-page-font-secondary pb-2">
+        <div className="grid grid-cols-3 gap-4 text-md text-page-font-primary pb-2">
           <span>품목코드</span>
           <span className="text-right">재고수량</span>
           <span className="text-right">재고금액</span>
