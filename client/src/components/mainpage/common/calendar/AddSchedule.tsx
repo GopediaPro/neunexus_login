@@ -101,9 +101,11 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
     const year = date.format('YYYY');
     const month = date.format('M');
     const day = date.format('D');
-    const dayOfWeek = date.format('dddd');
+    const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+    const dayOfWeek = weekdays[date.day()];
     
-    return `${year}년 ${month}월 ${day}일이 ${dayOfWeek}`;
+    return `${year}년 ${month}월 ${day}일이 ${dayOfWeek}요일`;
   };
 
   return (
@@ -118,7 +120,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {event?.start && (
               <div className="p-3 bg-blue-50 rounded-lg">
-                <div className="text-sm font-medium text-blue-800">
+                <div className="text-md font-bold text-page-blue-400">
                   {getFormattedDate()}
                 </div>
               </div>
@@ -140,9 +142,6 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
             />
 
             <div>
-              <label className="block text-sm font-medium text-font-primary mb-2">
-                시간
-              </label>
               <div className="flex items-center space-x-3">
                 <div className="flex-1">
                   <FormField
