@@ -42,6 +42,10 @@ export default {
 					'page-button-font': 'var(--page-button-font)',
 					'page-font-primary': 'var(--page-font-primary)',
 					'page-font-secondary': 'var(--page-font-secondary)',
+
+					'page-blue-400': 'var(--page-blue-400)',
+					'page-blue-300': 'var(--page-blue-300)',
+					'page-blue-200': 'var(--page-blue-200)',
 					
 					'gray-100': 'hsl(var(--gray-100))',
 					'gray-200': 'hsl(var(--gray-200))',
@@ -50,9 +54,6 @@ export default {
 					'gray-500': 'hsl(var(--gray-500))',
 
 					// 메인페이지 전용 색상
-					'page-blue-400': 'var(--page-blue-400)',
-					'page-blue-300': 'var(--page-blue-300)',
-					'page-blue-200': 'var(--page-blue-200)',
 					'page-sidebar-bg': 'var(--page-sidebar-bg)',
 					'page-sidebar-menu-bg-default': 'var(--page-sidebar-menu-bg-default)',
 					'page-sidebar-menu-bg-hover': 'var(--page-sidebar-menu-bg-hover)',
