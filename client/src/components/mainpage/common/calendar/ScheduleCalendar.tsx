@@ -24,65 +24,21 @@ interface ScheduleCalendarProps {
   onSlotClick?: (event?: CalendarEvent) => void;
 }
 
-
-export const initialEvents: CalendarEvent[] = [
-  {
-    id: '1',
-    title: '팀 회의',
-    start: new Date(2025, 5, 2, 10, 0),
-    end: new Date(2025, 5, 2, 11, 0),
-    desc: '주간 팀 미팅',
-    color: '#3b82f6'
-  },
-  {
-    id: '2',
-    title: '프로젝트 리뷰',
-    start: new Date(2025, 5, 5, 14, 0),
-    end: new Date(2025, 5, 5, 15, 0),
-    desc: '분기별 프로젝트 검토',
-    color: '#ef4444',
-  },
-  {
-    id: '3',
-    title: '클라이언트 미팅',
-    start: new Date(2025, 5, 17, 9, 0),
-    end: new Date(2025, 5, 17, 10, 30),
-    desc: '신규 프로젝트 논의',
-    color: '#3b82f6'
-  },
-  {
-    id: '4',
-    title: '회식',
-    start: new Date(2025, 5, 17, 19, 0),
-    end: new Date(2025, 5, 17, 21, 0),
-    desc: '팀 회식',
-    color: '#22c55e'
-  },
-  {
-    id: '5',
-    title: '팀 회의',
-    start: new Date(2025, 5, 26, 10, 0),
-    end: new Date(2025, 5, 26, 11, 0),
-    desc: '주간 팀 미팅',
-    color: '#3b82f6'
-  },
-  {
-    id: '6',
-    title: '프로젝트 마감',
-    start: new Date(2025, 5, 30, 15, 0),
-    end: new Date(2025, 5, 30, 18, 0),
-    desc: '프로젝트 최종 제출',
-    color: '#8b5cf6'
-  }
-];
-
 const CustomEvent = ({ event }: { event: CalendarEvent }) => {
   const startTime = moment(event.start).format('HH:mm');
   
   return (
-    <div className="text-white text-xs font-medium">
-      <div>{event.title}</div>
-      <div className="opacity-90">{startTime}</div>
+    <div key={event.id} className="flex items-start justify-between">
+      <div className="flex items-start space-x-2 flex-1 min-w-0">
+        <div className="flex-1 min-w-0">
+          <div className="text-sm text-white leading-tight overflow-hidden text-ellipsis whitespace-nowrap">
+            {event.title}
+          </div>
+        </div>
+      </div>
+      <div className="text-xs text-page-font-tertiary whitespace-nowrap flex-shrink-0">
+        {startTime}
+      </div>
     </div>
   );
 };
@@ -91,12 +47,9 @@ export const ScheduleCalendar = ({
   className,
   onEventClick, 
   onSlotClick,
-  events: propEvents,
+  events,
 }: ScheduleCalendarProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [events, _setEvents] = useState<CalendarEvent[]>(initialEvents); 
-
-  const displayEvents = propEvents || events;
   
   const handleSelectEvent = (event: CalendarEvent) => {
     if (onEventClick) {
@@ -107,12 +60,9 @@ export const ScheduleCalendar = ({
   const handleSelectSlot = ({ start, end }: { start: Date; end: Date }) => {
     if (onSlotClick) {
       onSlotClick({
+        start, end,
         id: '',
-        title: '',
-        start,
-        end,
-        desc: '',
-        color: '#3b82f6'
+        title: ''
       });
     }
   };
@@ -139,7 +89,7 @@ export const ScheduleCalendar = ({
       <div className="bg-white rounded-lg">
         <Calendar
           localizer={localizer}
-          events={displayEvents}
+          events={events}
           startAccessor="start"
           endAccessor="end"
           style={{ height: 600 }}

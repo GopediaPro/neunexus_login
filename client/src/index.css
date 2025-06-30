@@ -176,6 +176,8 @@
   opacity: var(--disabled-opacity);
   pointer-events: none;
 }
+
+/* 캘린더 CSS */
 @layer components {
   .rbc-calendar {
     @apply font-sans;
@@ -239,5 +241,49 @@
 
   .rbc-event.rbc-selected {
     @apply ring-2 ring-blue-500;
+  }
+}
+
+/* 미니 캘린더 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 미니 캘린더 애니메이션 */
+.mini-calendar-date {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.mini-calendar-date:hover {
+  @apply transform scale-105;
+}
+
+.mini-calendar-date.selected {
+  @apply transform scale-105 shadow-md;
+}
+
+/* 이벤트 표시 점 애니메이션 */
+.event-dot {
+  @apply transition-all duration-150;
+}
+
+/* 날짜 버튼 focus 스타일 */
+.mini-calendar-date:focus {
+  @apply outline-none ring-2 ring-page-blue-300 ring-offset-2;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 640px) {
+  .mini-calendar-date {
+    @apply min-w-[40px] p-1.5;
+  }
+  
+  .mini-calendar-date span {
+    @apply text-xs;
   }
 }

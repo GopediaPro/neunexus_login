@@ -186,26 +186,23 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
               control={control}
               error={errors.category?.message}
               render={(field) => (
-                <div className="flex">
+                <div className="flex justify-between">
                   {COLOR_OPTIONS.map((color) => (
                     <button
                       key={color.value}
                       type="button"
                       onClick={() => field.onChange(color.value)}
-                      className={`flex items-center space-x-2 p-2 rounded-md border transition-all ${
+                      className={`flex items-center space-x-3 p-2 pr-4 rounded-[8px] border transition-all ${
                         selectedCategory === color.value
-                          ? 'border-web-primary bg-blue-50'
+                          ? 'border-web-primary bg-page-blue-200'
                           : 'border-border-default hover:border-gray-300'
                       }`}
                     >
                       <div 
-                        className="w-4 h-4 rounded-full" 
+                        className="w-4 h-4 rounded-full"
                         style={{ backgroundColor: color.value }}
                       />
                       <span className="text-sm text-font-primary">{color.name}</span>
-                      {selectedCategory === color.value && (
-                        <div className="ml-auto w-2 h-2 bg-web-primary rounded-full" />
-                      )}
                     </button>
                   ))}
                 </div>
