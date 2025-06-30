@@ -21,21 +21,6 @@ export const sidebarDummy: IMenuItemType[] = [
     hasSubmenu: true,
     isExpanded: false,
     submenu: ['Wiki', 'Mattermost', 'Minio', 'n8n']
-  },
-  {
-    id: 'temp1',
-    label: '업시메뉴',
-    hasSubmenu: false
-  },
-  {
-    id: 'temp2',
-    label: '업시메뉴',
-    hasSubmenu: false
-  },
-  {
-    id: 'temp3',
-    label: '업시메뉴',
-    hasSubmenu: false
   }
 ];
 
