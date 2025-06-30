@@ -47,7 +47,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full h-screen bg-page-bg flex justify-center items-center">
+    <div className="w-full h-screen bg-page-bg shadow-xl flex justify-center items-center">
       <div className="w-[590px] px-24 py-14 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
         <div className="flex flex-col items-center">
 

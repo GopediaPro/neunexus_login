@@ -4,7 +4,7 @@ import { ScheduleContainer } from "@/components/mainpage/sidebar/ScheduleContain
 
 export const RightSidebarLayout = () => {
   return (
-    <div className={`sidebar-right-width bg-page-sidebar-bg p-1 border rounded-[10px] space-y-6`}>
+    <div className={`sidebar-right-width bg-page-sidebar-bg p-1 shadow-xl border rounded-[10px] space-y-6`}>
       <NotiContainer />
       <ScheduleContainer />
       <OrgContainer />

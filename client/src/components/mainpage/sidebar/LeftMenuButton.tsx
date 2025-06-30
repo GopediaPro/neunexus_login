@@ -1,5 +1,6 @@
 import { Icon } from "@/components/ui/Icon";
 import type { ILeftMenuButtonProps, ISubMenuItemProps } from "@/shared/types/sidebar.types";
+import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 const textToIconMap: Record<string, string> = {
@@ -33,9 +34,9 @@ export const LeftMenuButton = ({
         <span className={`${isActive ? "text-page-blue-400" : "text-page-font-primary"} font-medium`}>{text}</span>
       </div>
       {hasSubmenu && (
-        <Icon name="arrow-right" ariaLabel="우측 화살표" 
-          style={`w-4 h-4 ml-auto transition-all duration-300 ease-in-out transform
-            ${isActive ? "text-page-blue-400 rotate-90" : "text-gray-300 rotate-0"}`}
+        <ChevronRight
+          className={`w-6 h-6 ml-auto transition-all duration-300 ease-in-out transform
+            ${isActive ? "text-page-blue-400 rotate-90" : "text-page-font-muted rotate-0"}`}
         />
       )}
     </button>
