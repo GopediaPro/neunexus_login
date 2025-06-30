@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useTheme } from 'next-themes';
 import { useAuthContext } from '@/contexts';
+import { Icon } from '@/components/ui/Icon';
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -52,17 +53,9 @@ const Login = () => {
 
           <div className="w-64 h-16 mb-20">
             {theme == 'dark' ? (
-              <img
-                src="/image/logo-dark.svg"
-                alt="로고"
-                className="w-[15rem] h-[8rem]"
-              />
+              <Icon name="logo-dark" ariaLabel="다크로고" style="w-[15rem] h-[8rem]" />
             ) : (
-              <img
-                src="/image/logo.svg"
-                alt="로고"
-                className="w-[15rem] h-[8rem]"
-              />
+              <Icon name="logo" ariaLabel="로고" style="w-[15rem] h-[8rem]" />
             )}
           </div>
         </div>
@@ -103,11 +96,10 @@ const Login = () => {
 
             {errors.root && (
               <div className="flex items-center pt-1 pl-1 text-sm text-page-error">
-                <span className="text-body2">{errors.root.message}</span>
+                <span className="text-body2">아이디 패스워드가 일치하지 않습니다.</span>
               </div>
             )}
 
-            {/* 자동로그인 & 찾기 옵션 */}
             <div className="flex justify-between items-center !mt-[0px]">
               <label>
                 <FormField
@@ -157,7 +149,7 @@ const Login = () => {
               <span>로그인</span>
             </Button>
           </form>
-          {/* 회원가입 링크 */}
+        
           <div className="flex justify-center items-center gap-1">
             <span className="text-page-font-primary font-medium">
               아직 회원이 아니신가요?

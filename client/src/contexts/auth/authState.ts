@@ -1,4 +1,4 @@
-import type { IKeycloakUser } from '@/share/types/auth.types';
+import type { IKeycloakUser } from "@/shared/types";
 
 export interface AuthState {
   user: IKeycloakUser | null;

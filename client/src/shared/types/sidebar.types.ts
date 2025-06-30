@@ -1,6 +1,5 @@
 export interface ILeftMenuButtonProps {
   text: string;
-  icon?: string;
   hasSubmenu?: boolean;
   isActive?: boolean;
   onClick?: () => void;
