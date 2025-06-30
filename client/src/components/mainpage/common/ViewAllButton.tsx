@@ -7,10 +7,15 @@ export const ViewAllButton = ({
   text = "전체보기", 
   onClick, 
 }: ViewAllButtonProps) => {
+  let textWidth = '';
+  if (text.split('').length === 2) textWidth = 'w-14 h-6';
+  else if (text.split('').length === 3) textWidth = 'w-16 h-6';
+  else if (text.split('').length === 4) textWidth = 'w-20 h-6';
+
   return (
     <button
       onClick={onClick}
-      className={`${text === "전체보기" ? "w-20 h-6" : "w-14 h-6"} flex items-center gap-2 text-xs text-page-font-secondary hover:text-page-font-secondary transition-colors border rounded-[10px] border-border-default pl-3`}
+      className={`${textWidth} flex items-center gap-2 text-xs text-page-font-secondary hover:text-page-font-secondary transition-colors border rounded-[10px] border-border-default pl-3`}
     >
       <span>
         {text}
