@@ -29,7 +29,7 @@ export const SalesStatus = () => {
           </button>
         ))}
       </div>
-
+  
       <div className="space-y-2">
         <div className="grid grid-cols-3 gap-4 text-md text-page-font-primary pb-2">
           <span>품목코드</span>
@@ -45,7 +45,7 @@ export const SalesStatus = () => {
               <span className="text-right text-page-font-primary">{item.amount.toLocaleString()}...</span>
             </div>
           ))}
-        </ScrollTable>        
+        </ScrollTable>
       </div>
     </StatusCard>
   );
