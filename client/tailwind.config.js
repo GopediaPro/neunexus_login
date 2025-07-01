@@ -23,8 +23,8 @@ export default {
 			},
 			extend: {
 				maxWidth: {
-					'xl': '1280px',
-					'2xl': '1600px'
+					'screen-xl': '1280px',
+					'screen-2xl': '1600px'
 				},
 				colors: {
 					background: 'hsl(var(--background))',

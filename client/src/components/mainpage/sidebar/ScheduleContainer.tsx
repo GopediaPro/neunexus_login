@@ -6,6 +6,7 @@ import { AddSchedule } from "../common/calendar/AddSchedule";
 import moment from "moment";
 import { MiniCalendar } from "../common/calendar/MiniCalendar";
 import { ScrollTable } from "../common/ScrollTable";
+import { Button } from "@/components/ui/Button";
 
 export const ScheduleContainer = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -132,17 +133,18 @@ export const ScheduleContainer = () => {
               ))}
               
               {displayEvents.length === 0 && (
-                <div className="text-xs text-page-font-tertiary text-center py-4">
+                <div className="flex flex-col items-center justify-center text-sm text-page-font-tertiary py-4">
                   {moment(selectedDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') 
                     ? '오늘 일정이 없습니다'
                     : `${moment(selectedDate).format('M월 D일')} 일정이 없습니다`
                   }
-                  <button
+                  <Button
+                    size="sm"
                     onClick={() => handleOpenEventModal()}
-                    className="block mt-2 text-page-blue-400 hover:text-blue-600 text-xs underline"
+                    className="mt-2 text-white text-xs"
                   >
-                    일정 추가하기
-                  </button>
+                    + 추가하기
+                  </Button>
                 </div>
               )}
             </ScrollTable>
