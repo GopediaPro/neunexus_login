@@ -13,7 +13,7 @@ export const LeftSidebarLayout = () => {
   const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarDummy);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { logout } = useAuthContext(); 
+  const { logout } = useAuthContext();
 
   const userProfile = {
     name: '김00 사원',
