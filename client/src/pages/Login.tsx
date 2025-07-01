@@ -54,9 +54,9 @@ const Login = () => {
 
           <div className="w-64 h-16 mb-20">
             {theme == 'dark' ? (
-              <img src={LogoLight} alt="로고" className="w-24 h-12" />
+              <img src={LogoLight} alt="로고" className="w-[15rem] h-[8rem]" />
             ) : (
-              <img src={LogoDark} alt="다크로고" className="w-24 h-12" />
+              <img src={LogoDark} alt="다크로고" className="w-[15rem] h-[8rem]" />
             )}
           </div>
         </div>
