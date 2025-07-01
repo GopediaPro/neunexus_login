@@ -28,7 +28,10 @@ export const member = [
   { id: "1", name: "김OO 주임", department: "마케팅 부서" },
   { id: "2", name: "김OO 주임", department: "마케팅 부서" },
   { id: "3", name: "김OO 주임", department: "마케팅 부서" },
-  { id: "4", name: "김OO 주임", department: "마케팅 부서" }
+  { id: "4", name: "김OO 주임", department: "마케팅 부서" },
+  { id: "5", name: "김OO 주임", department: "마케팅 부서" },
+  { id: "6", name: "김OO 주임", department: "마케팅 부서" },
+  { id: "7", name: "김OO 주임", department: "마케팅 부서" },
 ]
 
 export const notices = [

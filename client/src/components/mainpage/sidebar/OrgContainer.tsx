@@ -1,6 +1,8 @@
 import { StatusCard } from "@/components/mainpage/common/StatusCard";
 import { Icon } from "@/components/ui/Icon";
+import { member } from "@/mocks/dummy/sidebar";
 import { useNavigate } from "react-router-dom";
+import { ScrollTable } from "../common/ScrollTable";
 
 export const OrgContainer = () => {
   const navigate = useNavigate();
@@ -22,8 +24,26 @@ export const OrgContainer = () => {
           </div>
         </form>
       </div>
-      <div className="space-y-3">
-          
+
+      <div className="space-y-3 py-4">
+      <ScrollTable height="h-40">
+        {member.map((member) => (
+            <div key={member.id} className="flex items-center gap-2 mb-2.5">
+
+              <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 text-gray-500" />
+              </div>
+
+              <div>
+                <div className="text-page-font-primary">{member.name}</div>
+                <div className="text-sm text-page-font-muted">{member.department}</div>
+              </div>
+
+              {/* 추후 메신저 이미지 */}
+              <div></div>
+            </div>
+          ))}
+        </ScrollTable>
       </div>
     </StatusCard>
   );
