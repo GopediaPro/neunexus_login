@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useTheme } from 'next-themes';
 import { useAuthContext } from '@/contexts';
-import { Icon } from '@/components/ui/Icon';
+import LogoLight from "@/shared/assets/icons/logo.svg"
+import LogoDark from "@/shared/assets/icons/logo-dark.svg";
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -53,9 +54,9 @@ const Login = () => {
 
           <div className="w-64 h-16 mb-20">
             {theme == 'dark' ? (
-              <Icon name="logo-dark" ariaLabel="다크로고" style="w-[15rem] h-[8rem]" />
+              <img src={LogoLight} alt="로고" className="w-24 h-12" />
             ) : (
-              <Icon name="logo" ariaLabel="로고" style="w-[15rem] h-[8rem]" />
+              <img src={LogoDark} alt="다크로고" className="w-24 h-12" />
             )}
           </div>
         </div>

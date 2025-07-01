@@ -3,6 +3,8 @@ import { useAuthContext } from "@/contexts";
 import { Icon } from "@/components/ui/Icon";
 import { sidebarDummy } from "@/mocks/dummy/sidebar";
 import type { IMenuItemType } from "@/shared/types/sidebar.types";
+import LogoLight from "@/shared/assets/icons/logo.svg"
+import LogoDark from "@/shared/assets/icons/logo-dark.svg";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -58,9 +60,9 @@ export const LeftSidebarLayout = () => {
     <div className="flex flex-col sidebar-left-width bg-page-sidebar-bg h-full border-r">
       <div className="flex justify-center mt-4 cursor-pointer" onClick={() => navigate('/')}>
         {theme == 'dark' ? (
-          <Icon name="logo-dark" ariaLabel="다크로고" style="w-24 h-12" />
+          <img src={LogoLight} alt="로고" className="w-24 h-12" />
         ) : (
-          <Icon name="logo" ariaLabel="로고" style="w-24 h-12" />
+          <img src={LogoDark} alt="다크로고" className="w-24 h-12" />
         )}
       </div>
       <div className="p-6 border-b">
