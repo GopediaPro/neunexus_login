@@ -287,3 +287,23 @@
     @apply text-xs;
   }
 }
+
+/* 스크롤 바 */
+.always-show-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.always-show-scrollbar::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.always-show-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--page-blue-400, #60a5fa);
+  border-radius: 3px;
+  min-height: 20px;
+}
+
+.always-show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--page-blue-500, #3b82f6);
+}

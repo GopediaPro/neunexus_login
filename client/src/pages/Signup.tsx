@@ -16,7 +16,6 @@ const Signup = () => {
 
   const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<SignupFormData>({
       resolver: zodResolver(signupSchema),
-      mode: 'onChange',
       defaultValues: {
         email: "",
         password: "",

@@ -10,7 +10,7 @@ export const ScrollTable = ({
   className,
 }: ScrollTableProps) => {
   return (
-    <div className={`${height} overflow-y-auto scrollbar-thin scrollbar-thumb-page-blue-400 scrollbar-track-gray-200 pr-2 ${className}`}>
+    <div className={`${height} overflow-y-scroll always-show-scrollbar rounded pr-2 ${className}`}>
       {children}
     </div>
   );
