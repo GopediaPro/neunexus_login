@@ -88,7 +88,7 @@ export const LeftSidebarLayout = () => {
                 onClick={() => item.hasSubmenu ? toggleSubmenu(item.id) : undefined}
               />
                 {item.hasSubmenu && item.isExpanded && item.submenu && (
-                  <div className="flex flex-col gap-2">
+                  <div className="w-[90%] flex flex-col gap-2 bg-page-sidebar-menu-list-bg mx-auto">
                     {item.submenu.map((subItem, i) => (
                       <SubMenuItem 
                         key={i}

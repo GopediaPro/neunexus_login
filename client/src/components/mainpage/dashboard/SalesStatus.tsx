@@ -21,8 +21,8 @@ export const SalesStatus = () => {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-0.5 text-sm border border-border-default rounded ${
               activeTab === tab
-                ? "bg-page-blue-200 text-page-blue-400"
-                : "bg-page-sidebar-bg text-page-font-tertiary hover:bg-gray-200"
+                ? "bg-page-sidebar-menu-bg-hover text-page-blue-400"
+                : "bg-page-sidebar-bg text-page-font-tertiary hover:bg-page-sidebar-menu-bg-hover"
             }`}
           >
             {tab}
@@ -36,7 +36,7 @@ export const SalesStatus = () => {
           <span className="text-right">재고수량</span>
           <span className="text-right">재고금액</span>
         </div>
-        
+
         <ScrollTable height="h-36">
           {salesData.map((item) => (
             <div key={item.id} className="grid grid-cols-3 gap-4 text-sm py-2">
