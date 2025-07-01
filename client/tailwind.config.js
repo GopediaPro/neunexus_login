@@ -17,7 +17,15 @@ export default {
 				extrabold: '800',
 				black: '900',
 			},
+			screens: {
+				'xl': '1280px',
+				'2xl': '1600px'
+			},
 			extend: {
+				maxWidth: {
+					'xl': '1280px',
+					'2xl': '1600px'
+				},
 				colors: {
 					background: 'hsl(var(--background))',
 					foreground: 'hsl(var(--foreground))',

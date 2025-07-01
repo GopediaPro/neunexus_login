@@ -7,10 +7,14 @@ export const ContentLayout = () => {
     <main className="flex-1 p-5">
       <div className="flex flex-col gap-8">
 
-        <div className="flex justify-between">
+      <div className="flex flex-row gap-6 ">
+        <div className="w-full 2xl:w-1/2">
           <MenuGridLayout />
-          <div className="min-w-[305px] h-[200px] bg-page-blue-200"></div>
         </div>
+        <div className="w-full 2xl:w-1/2 p-6">
+          <div className="w-full h-[200px] bg-page-blue-200 rounded-lg"></div>
+        </div>
+      </div>
         <StatsDashboard />
         <Dashboard />
       </div>
