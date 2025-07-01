@@ -55,7 +55,7 @@ export const LeftSidebarLayout = () => {
   }
 
   return (
-    <div className="flex flex-col sidebar-left-width bg-page-sidebar-bg h-screen border-r">
+    <div className="flex flex-col sidebar-left-width bg-page-sidebar-bg h-full border-r">
       <div className="flex justify-center mt-4 cursor-pointer" onClick={() => navigate('/')}>
         {theme == 'dark' ? (
           <Icon name="logo-dark" ariaLabel="다크로고" style="w-24 h-12" />

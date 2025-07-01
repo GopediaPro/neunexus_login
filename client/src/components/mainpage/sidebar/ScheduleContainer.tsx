@@ -1,6 +1,5 @@
 import { StatusCard } from "@/components/mainpage/common/StatusCard";
 import { Modal } from "@/components/ui/Modal";
-import { schedules } from "@/mocks/dummy/sidebar";
 import { useState } from "react";
 import { ScheduleCalendar, type CalendarEvent } from "../common/calendar/ScheduleCalendar";
 import { AddSchedule } from "../common/calendar/AddSchedule";
