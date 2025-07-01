@@ -17,11 +17,14 @@ export default {
 				extrabold: '800',
 				black: '900',
 			},
+			screens: {
+				'xl': '1280px',
+				'2xl': '1600px'
+			},
 			extend: {
-				borderRadius: {
-					lg: 'var(--radius)',
-					md: 'calc(var(--radius) - 2px)',
-					sm: 'calc(var(--radius) - 4px)'
+				maxWidth: {
+					'screen-xl': '1280px',
+					'screen-2xl': '1600px'
 				},
 				colors: {
 					background: 'hsl(var(--background))',
@@ -106,6 +109,6 @@ export default {
 				}
 			}
 		},
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require('tailwind-scrollbar')],
 }
 

@@ -3,7 +3,7 @@ import type { ModalBodyProps, ModalCloseButtonProps, ModalFooterProps, ModalHead
 
 export const ModalHeader = ({ children, className }: ModalHeaderProps) => {
   return (
-    <div className={`flex items-center justify-between p-3 ${className} `}>
+    <div className={`flex items-center justify-between p-3 bg-page-bg ${className} `}>
       {children}
     </div>
   );
@@ -11,7 +11,7 @@ export const ModalHeader = ({ children, className }: ModalHeaderProps) => {
 
 export const ModalTitle = ({ children, className }: ModalTitleProps) => {
   return (
-    <h2 className={`text-xl font-semibold text-font-primary ${className}`}>
+    <h2 className={`text-xl font-semibold text-font-primary bg-page-bg ${className}`}>
       {children}
     </h2>
   );
@@ -36,7 +36,7 @@ export const ModalCloseButton = ({ className }: ModalCloseButtonProps) => {
 
 export const ModalBody = ({ children, className }: ModalBodyProps) => {
   return (
-    <div className={`p-6 overflow-y-auto flex-1 ${className}`}>
+    <div className={`p-6 bg-page-bg overflow-y-auto flex-1 ${className}`}>
       {children}
     </div>
   );
@@ -44,7 +44,7 @@ export const ModalBody = ({ children, className }: ModalBodyProps) => {
 
 export const ModalFooter = ({ children, className }: ModalFooterProps) => {
   return (
-    <div className={`flex items-center justify-end space-x-2 p-6 ${className}`}>
+    <div className={`flex items-center justify-end bg-page-bg space-x-2 p-6 ${className}`}>
       {children}
     </div>
   );

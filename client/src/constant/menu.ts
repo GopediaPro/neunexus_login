@@ -21,17 +21,17 @@ export const menuItems = [
   },
   {
     id: "5",
-    icon: "print",
-    label: "운송장 출력"
+    icon: "boxes",
+    label: "합포장 제작"
   },
   {
     id: "6",
-    icon: "print",
-    label: "운송장 출력"
+    icon: "graph",
+    label: "ERP 제작"
   },
   {
     id: "7",
-    icon: "print",
-    label: "운송장 출력"
+    icon: "add-folder",
+    label: "쇼핑물 품절"
   }
 ];

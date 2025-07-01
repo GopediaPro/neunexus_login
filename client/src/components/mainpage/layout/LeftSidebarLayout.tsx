@@ -3,6 +3,8 @@ import { useAuthContext } from "@/contexts";
 import { Icon } from "@/components/ui/Icon";
 import { sidebarDummy } from "@/mocks/dummy/sidebar";
 import type { IMenuItemType } from "@/shared/types/sidebar.types";
+import LogoLight from "@/shared/assets/icons/logo.svg"
+import LogoDark from "@/shared/assets/icons/logo-dark.svg";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +13,7 @@ export const LeftSidebarLayout = () => {
   const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarDummy);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { logout } = useAuthContext(); 
+  const { logout } = useAuthContext();
 
   const userProfile = {
     name: '김00 사원',
@@ -55,12 +57,12 @@ export const LeftSidebarLayout = () => {
   }
 
   return (
-    <div className="flex flex-col sidebar-left-width bg-page-sidebar-bg h-screen border-r">
+    <div className="flex flex-col sidebar-left-width bg-page-sidebar-bg h-full border-r">
       <div className="flex justify-center mt-4 cursor-pointer" onClick={() => navigate('/')}>
         {theme == 'dark' ? (
-          <Icon name="logo-dark" ariaLabel="다크로고" style="w-24 h-12" />
+          <img src={LogoLight} alt="로고" className="w-24 h-12" />
         ) : (
-          <Icon name="logo" ariaLabel="로고" style="w-24 h-12" />
+          <img src={LogoDark} alt="다크로고" className="w-24 h-12" />
         )}
       </div>
       <div className="p-6 border-b">
@@ -68,10 +70,10 @@ export const LeftSidebarLayout = () => {
           <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center mb-3">
             <div className="w-8 h-8 text-gray-500" />
           </div>
-          <h3 className="text-page-font-primary font-medium text-base mb-1">
+          <h3 className="text-page-font-primary text-lg font-bold mb-1">
             {userProfile.name}
           </h3>
-          <p className="text-page-font-tertiary text-sm">
+          <p className="text-page-font-tertiary text-xs">
             {userProfile.department}
           </p>
         </div>
@@ -88,7 +90,7 @@ export const LeftSidebarLayout = () => {
                 onClick={() => item.hasSubmenu ? toggleSubmenu(item.id) : undefined}
               />
                 {item.hasSubmenu && item.isExpanded && item.submenu && (
-                  <div className="flex flex-col gap-2">
+                  <div className="w-[90%] flex flex-col gap-2 bg-page-sidebar-menu-list-bg mx-auto">
                     {item.submenu.map((subItem, i) => (
                       <SubMenuItem 
                         key={i}
