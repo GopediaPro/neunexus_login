@@ -23,24 +23,24 @@ export const HeaderLayout = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button onClick={toggle}>
-            <Icon name="hamberger" ariaLabel="검색" style="w-10 h-10 text-gray-400" />
+            <Icon name="hamberger" ariaLabel="검색" style="w-9 h-9 text-gray-400" />
           </button>
         </div>
         <div className="flex items-center gap-3">
           <button className="flex justify-center items-center w-9 h-9 bg-page-blue-400 text-page-font-primary rounded-full">
-            <Icon name="search" ariaLabel="검색" style="w-5 h-5 text-white" />
+            <Icon name="search" ariaLabel="검색" style="w-[18px] h-[18px] text-white" />
           </button>
           <button className="flex justify-center items-center w-9 h-9 bg-page-blue-400 text-page-font-primary rounded-full">
-            <Icon name="message" ariaLabel="검색" style="w-5 h-5 text-white" />
+            <Icon name="message" ariaLabel="검색" style="w-[18px] h-[18px] text-white" />
           </button>
           <button className="flex justify-center items-center w-9 h-9 bg-page-blue-400 text-page-font-primary rounded-full">
-            <Icon name="bell" ariaLabel="검색" style="w-5 h-5 text-white" />
+            <Icon name="bell" ariaLabel="검색" style="w-[18px] h-[18px] text-white" />
           </button>
           <button 
             className="flex justify-center items-center w-9 h-9 bg-page-blue-400 text-page-font-primary rounded-full"
             onClick={handleLogout}
           >
-            <Icon name="exit" ariaLabel="검색" style="w-5 h-5 text-white" />
+            <Icon name="exit" ariaLabel="검색" style="w-[18px] h-[18px] text-white" />
           </button>
         </div>
       </div>
