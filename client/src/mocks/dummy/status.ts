@@ -47,6 +47,36 @@ export const inventoryData = [
     productCode: "OEF-BK1",
     quantity: 313,
     amount: 2663936
+  },
+  {
+    id: "6",
+    productCode: "OEF-BK1",
+    quantity: 313,
+    amount: 2663936
+  },
+  {
+    id: "7",
+    productCode: "OEF-BK1",
+    quantity: 313,
+    amount: 2663936
+  },
+  {
+    id: "8",
+    productCode: "OEF-BK1",
+    quantity: 313,
+    amount: 2663936
+  },
+  {
+    id: "9",
+    productCode: "OEF-BK1",
+    quantity: 313,
+    amount: 2663936
+  },
+  {
+    id: "10",
+    productCode: "OEF-BK1",
+    quantity: 313,
+    amount: 2663936
   }
 ];
 
@@ -78,6 +108,36 @@ export const salesData = [
   },
   {
     id: "4",
+    productCode: "(주)버킷플레...",
+    quantity: 166,
+    amount: 2663936
+  },
+  {
+    id: "5",
+    productCode: "(주)버킷플레...",
+    quantity: 166,
+    amount: 2663936
+  },
+  {
+    id: "6",
+    productCode: "(주)버킷플레...",
+    quantity: 166,
+    amount: 2663936
+  },
+  {
+    id: "7",
+    productCode: "(주)버킷플레...",
+    quantity: 166,
+    amount: 2663936
+  },
+  {
+    id: "8",
+    productCode: "(주)버킷플레...",
+    quantity: 166,
+    amount: 2663936
+  },
+  {
+    id: "9",
     productCode: "(주)버킷플레...",
     quantity: 166,
     amount: 2663936

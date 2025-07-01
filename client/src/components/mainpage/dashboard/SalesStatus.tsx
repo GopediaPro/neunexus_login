@@ -2,6 +2,7 @@ import { StatusCard } from "@/components/mainpage/common/StatusCard";
 import { salesData } from "@/mocks/dummy/status";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ScrollTable } from "../common/ScrollTable";
 
 export const SalesStatus = () => {
   const [activeTab, setActiveTab] = useState("금일");  
@@ -36,13 +37,15 @@ export const SalesStatus = () => {
           <span className="text-right">재고금액</span>
         </div>
         
-        {salesData.map((item) => (
-          <div key={item.id} className="grid grid-cols-3 gap-4 text-sm py-2">
-            <span className="text-page-font-primary">{item.productCode}</span>
-            <span className="text-right text-page-font-primary">{item.quantity.toLocaleString()}</span>
-            <span className="text-right text-page-font-primary">{item.amount.toLocaleString()}...</span>
-          </div>
-        ))}
+        <ScrollTable height="h-36">
+          {salesData.map((item) => (
+            <div key={item.id} className="grid grid-cols-3 gap-4 text-sm py-2">
+              <span className="text-page-font-primary">{item.productCode}</span>
+              <span className="text-right text-page-font-primary">{item.quantity.toLocaleString()}</span>
+              <span className="text-right text-page-font-primary">{item.amount.toLocaleString()}...</span>
+            </div>
+          ))}
+        </ScrollTable>        
       </div>
     </StatusCard>
   );

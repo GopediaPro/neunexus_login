@@ -6,6 +6,7 @@ import { ScheduleCalendar, type CalendarEvent } from "../common/calendar/Schedul
 import { AddSchedule } from "../common/calendar/AddSchedule";
 import moment from "moment";
 import { MiniCalendar } from "../common/calendar/MiniCalendar";
+import { ScrollTable } from "../common/ScrollTable";
 
 export const ScheduleContainer = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -115,38 +116,37 @@ export const ScheduleContainer = () => {
             events={events}
           />
           <div className="space-y-3">
-            {displayEvents.map((event) => (
-              <div key={`real-${event.id}`} className="flex items-start space-x-3">
-                <div 
-                  className="w-1 h-7 rounded-full mt-1 flex-shrink-0"
-                  style={{ backgroundColor: event.color || '#3b82f6' }}
-                ></div>
-                <div className="flex-1">
-                  <div className="text-sm text-page-font-primary">{event.title}</div>
-                  <div className="text-xs text-page-font-tertiary">
-                    {moment(event.start).format('HH:mm')}
+            <ScrollTable height="h-36">
+              {displayEvents.map((event) => (
+                <div key={`${event.id}`} className="flex items-start space-x-3 pb-1">
+                  <div 
+                    className="w-1 h-7 rounded-full mt-1 flex-shrink-0"
+                    style={{ backgroundColor: event.color || '#3b82f6' }}
+                  ></div>
+                  <div className="flex-1">
+                    <div className="text-sm text-page-font-primary">{event.title}</div>
+                    <div className="text-xs text-page-font-tertiary">
+                      {moment(event.start).format('HH:mm')}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-            
-            {displayEvents.length === 0 && (
-              moment(selectedDate).format('YYYY-MM-DD') !== moment().format('YYYY-MM-DD') || 
-              schedules.length === 0
-            ) && (
-              <div className="text-xs text-page-font-tertiary text-center py-4">
-                {moment(selectedDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') 
-                  ? '오늘 일정이 없습니다'
-                  : `${moment(selectedDate).format('M월 D일')} 일정이 없습니다`
-                }
-                <button
-                  onClick={() => handleOpenEventModal()}
-                  className="block mt-2 text-page-blue-500 hover:text-page-blue-600 text-xs underline"
-                >
-                  일정 추가하기
-                </button>
-              </div>
-            )}
+              ))}
+              
+              {displayEvents.length === 0 && (
+                <div className="text-xs text-page-font-tertiary text-center py-4">
+                  {moment(selectedDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') 
+                    ? '오늘 일정이 없습니다'
+                    : `${moment(selectedDate).format('M월 D일')} 일정이 없습니다`
+                  }
+                  <button
+                    onClick={() => handleOpenEventModal()}
+                    className="block mt-2 text-page-blue-400 hover:text-blue-600 text-xs underline"
+                  >
+                    일정 추가하기
+                  </button>
+                </div>
+              )}
+            </ScrollTable>
           </div>
         </div>
       </StatusCard>
