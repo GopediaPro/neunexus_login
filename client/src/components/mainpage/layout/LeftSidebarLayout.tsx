@@ -14,10 +14,11 @@ export const LeftSidebarLayout = () => {
   const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarMenu);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { logout } = useAuthContext();
+  const { user, logout } = useAuthContext();
 
+  const name = user?.name?.split(' ')[0] ?? '김00 사원';
   const userProfile = {
-    name: '김00 사원',
+    name: `${name} 님`,
     department: '온라인 사업 부서'
   };
 
