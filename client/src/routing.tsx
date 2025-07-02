@@ -7,6 +7,7 @@ import TestComponent from './components/TestComponent';
 import Main from './pages/Main';
 import { PrivateRoute } from '@/components/layout/PrivateRoute';
 import { PublicRoute } from '@/components/layout/PublicRoute';
+import { ProductManagement } from './pages/ProductManagement';
 
 const publicRouteList = [
   {
@@ -16,10 +17,6 @@ const publicRouteList = [
   {
     path: ROUTERS.SIGNUP,
     element: <Signup />,
-  },
-  {
-    path: ROUTERS.TEST,
-    element: <TestComponent />,
   }
 ];
 
@@ -28,6 +25,13 @@ const privateRouteList = [
     path: ROUTERS.MAIN,
     element: <Main />,
   },
+  {
+    path: ROUTERS.TEST,
+    element: <TestComponent />,
+  },{
+    path: ROUTERS.PRODUCT,
+    element: <ProductManagement />
+  }
 ]
 
 export const router = createBrowserRouter([
