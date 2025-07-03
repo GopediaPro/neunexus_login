@@ -8,6 +8,7 @@ import Main from './pages/Main';
 import { PrivateRoute } from '@/components/layout/PrivateRoute';
 import { PublicRoute } from '@/components/layout/PublicRoute';
 import { ProductManagement } from './pages/ProductManagement';
+import { OrderManagement } from './pages/OrderManagement';
 
 const publicRouteList = [
   {
@@ -28,9 +29,14 @@ const privateRouteList = [
   {
     path: ROUTERS.TEST,
     element: <TestComponent />,
-  },{
-    path: ROUTERS.PRODUCT,
+  },
+  {
+    path: ROUTERS.PRODUCT_MANAGAMENT,
     element: <ProductManagement />
+  },
+  {
+    path: ROUTERS.ORDER_MANAGEMENT,
+    element: <OrderManagement />
   }
 ]
 

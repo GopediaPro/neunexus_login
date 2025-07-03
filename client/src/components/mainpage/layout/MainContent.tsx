@@ -1,4 +1,3 @@
-import { useTheme } from "next-themes";
 import { LeftSidebarLayout } from "./LeftSidebarLayout";
 import { HeaderLayout } from "./HeaderLayout";
 import { ContentLayout } from "./ContentLayout";
@@ -6,11 +5,11 @@ import { RightSidebarLayout } from "./RightSidebarLayout";
 import { useSidebar } from "@/contexts/SidebarContext";
 
 export const MainContent = () => {
-  const { theme } = useTheme();
+
   const { isOpen } = useSidebar();
 
   return (
-    <div className={`page-main ${theme === 'dark' ? 'dark' : ""} marker:min-h-screen bg-page-bg`}>
+    <div className={`marker:min-h-screen bg-page-bg`}>
       {isOpen ? (
         <div className={`grid grid-sidebar-layout min-h-screen`}>
           <LeftSidebarLayout />

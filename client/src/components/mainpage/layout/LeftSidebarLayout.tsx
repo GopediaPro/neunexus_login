@@ -56,7 +56,11 @@ export const LeftSidebarLayout = () => {
         window.location.href = 'https://rpa.lyckabc.xyz'
         break;
       case '상품 등록':
-        navigate(ROUTERS.PRODUCT)
+        navigate(ROUTERS.PRODUCT_MANAGAMENT)
+        break;
+      case '주문 등록':
+        navigate(ROUTERS.ORDER_MANAGEMENT)
+        break;
     }
   }
 

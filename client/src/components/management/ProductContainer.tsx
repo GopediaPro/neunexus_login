@@ -1,20 +1,29 @@
 import type { ProductData } from "@/shared/types/product.types";
 import { AgGridReact } from "ag-grid-react";
 import { type ColDef } from 'ag-grid-community';
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HeaderManagement } from "./HeaderManagement";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { LeftSidebarLayout } from "../mainpage/layout/LeftSidebarLayout";
 import { productDummyData } from "@/mocks/dummy/product";
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
+import { ProductToolbar } from "./ProductToolbar";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export const ProductContainer = () => {
   const [productData, _setProductData] = useState<ProductData[]>(productDummyData);
-  const { isOpen } = useSidebar();
+  const { isOpen, close } = useSidebar();
+  const isInitialMount = useRef(true);
 
   const gridRef = useRef<AgGridReact>(null);
+
+  useEffect(() => {
+    if (isInitialMount) {
+      close();
+      isInitialMount.current = false;
+    }
+  }, []);
 
   const columnDefs: ColDef<ProductData>[] = [
     { 
@@ -29,7 +38,7 @@ export const ProductContainer = () => {
     { 
       field: 'brand', 
       headerName: '브랜드', 
-      width: 120,
+      width: 200,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -58,7 +67,7 @@ export const ProductContainer = () => {
     { 
       field: 'status', 
       headerName: '상태', 
-      width: 100,
+      width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -67,7 +76,7 @@ export const ProductContainer = () => {
     { 
       field: 'manufacturer', 
       headerName: '제조사', 
-      width: 120,
+      width: 160,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -94,7 +103,7 @@ export const ProductContainer = () => {
     { 
       field: 'option1', 
       headerName: '옵션1', 
-      width: 100,
+      width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -103,7 +112,7 @@ export const ProductContainer = () => {
     { 
       field: 'option2', 
       headerName: '옵션2', 
-      width: 100,
+      width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -112,7 +121,7 @@ export const ProductContainer = () => {
     { 
       field: 'createdDate', 
       headerName: '생성일시', 
-      width: 130, 
+      width: 120, 
       valueFormatter: (params) => params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
       filter: 'agDateColumnFilter',
       floatingFilterComponentParams: {
@@ -129,12 +138,13 @@ export const ProductContainer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-page-bg">
+    <div className="min-h-screen">
       {isOpen ? (
         <div className="grid grid-cols-[183px_1fr] min-h-screen">
           <LeftSidebarLayout />
           <div className="flex flex-col">
             <HeaderManagement title="상품 관리 시스템" />
+            <ProductToolbar />
             <div className="flex-1 p-4">
               <div className="ag-theme-alpine w-full h-[calc(100vh-60px)]">
                 <AgGridReact
@@ -156,9 +166,10 @@ export const ProductContainer = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-page-card-bg">
           <HeaderManagement title="상품 관리 시스템" />
-          <div className="flex-1 p-4">
+          <ProductToolbar />
+          <div className="flex-1 p-4 pl-6">
             <div className="ag-theme-alpine w-full h-[calc(100vh-60px)]">
               <AgGridReact
                 theme="legacy"
