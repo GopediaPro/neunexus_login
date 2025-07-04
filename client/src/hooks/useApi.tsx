@@ -1,150 +1,92 @@
-// API 응답 타입 정의
+import axios from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
+
 interface ApiResponse<T = any> {
   data?: T;
   error?: string;
   status?: number;
 }
 
-// API 요청 옵션 타입
-interface ApiOptions extends RequestInit {
-  baseURL?: string;
-  timeout?: number;
-}
+interface ApiOptions extends AxiosRequestConfig {}
 
-export const useApi = () => {
-  // 기본 API 호출 함수
+export const useApi = (customConfig?: Partial<ApiOptions>) => {
+  // Axios 인스턴스 생성
+  const api: AxiosInstance = axios.create({
+    baseURL: customConfig?.baseURL || '',
+    timeout: customConfig?.timeout || 10000,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(customConfig?.headers || {})
+    },
+    ...customConfig
+  });
+
+  // 응답 인터셉터 (예: 에러 핸들링)
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => Promise.reject(error)
+  );
+
   const apiCall = async <T = any,>(
     url: string,
     options: ApiOptions = {}
   ): Promise<ApiResponse<T>> => {
     try {
-      const { baseURL = '', timeout = 10000, ...fetchOptions } = options;
-      const fullUrl = baseURL ? `${baseURL}${url}` : url;
-
-      // 타임아웃 설정
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-      const response = await fetch(fullUrl, {
-        signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-          ...fetchOptions.headers
-        },
-        ...fetchOptions
+      const response = await api.request<T>({
+        url,
+        ...options
       });
 
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
       return {
-        data,
+        data: response.data,
         status: response.status
       };
     } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        return {
-          error: 'Request timeout'
-        };
-      }
+      const axiosError = error as AxiosError;
 
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
+      const isTimeout = axiosError.code === 'ECONNABORTED';
+      const message = isTimeout
+        ? 'Request timeout'
+        : axiosError.message || 'Unknown error';
+
       return {
-        error: errorMessage
+        error: message,
+        status: axiosError.response?.status
       };
-    } finally {
     }
   };
 
-  // GET 요청
-  const get = async <T = any,>(
-    url: string,
-    options: ApiOptions = {}
-  ): Promise<ApiResponse<T>> => {
-    return apiCall<T>(url, { ...options, method: 'GET' });
-  };
+  const get = <T = any,>(url: string, options: ApiOptions = {}) =>
+    apiCall<T>(url, { ...options, method: 'GET' });
 
-  // POST 요청
-  const post = async <T = any,>(
-    url: string,
-    data?: any,
-    options: ApiOptions = {}
-  ): Promise<ApiResponse<T>> => {
-    return apiCall<T>(url, {
-      ...options,
-      method: 'POST',
-      body: data ? JSON.stringify(data) : undefined
-    });
-  };
+  //post: 일반 JSON 데이터 전송
+  const post = <T = any,>(url: string, data?: any, options: ApiOptions = {}) =>
+    apiCall<T>(url, { ...options, method: 'POST', data });
 
-  // PUT 요청
-  const put = async <T = any,>(
-    url: string,
-    data?: any,
-    options: ApiOptions = {}
-  ): Promise<ApiResponse<T>> => {
-    return apiCall<T>(url, {
-      ...options,
-      method: 'PUT',
-      body: data ? JSON.stringify(data) : undefined
-    });
-  };
+  const put = <T = any,>(url: string, data?: any, options: ApiOptions = {}) =>
+    apiCall<T>(url, { ...options, method: 'PUT', data });
 
-  // PATCH 요청
-  const patch = async <T = any,>(
-    url: string,
-    data?: any,
-    options: ApiOptions = {}
-  ): Promise<ApiResponse<T>> => {
-    return apiCall<T>(url, {
-      ...options,
-      method: 'PATCH',
-      body: data ? JSON.stringify(data) : undefined
-    });
-  };
+  const patch = <T = any,>(url: string, data?: any, options: ApiOptions = {}) =>
+    apiCall<T>(url, { ...options, method: 'PATCH', data });
 
-  // DELETE 요청
-  const del = async <T = any,>(
-    url: string,
-    options: ApiOptions = {}
-  ): Promise<ApiResponse<T>> => {
-    return apiCall<T>(url, { ...options, method: 'DELETE' });
-  };
+  const del = <T = any,>(url: string, options: ApiOptions = {}) =>
+    apiCall<T>(url, { ...options, method: 'DELETE' });
 
-  // 폼 데이터 전송 (파일 업로드 등)
-  const postForm = async <T = any,>(
+  //postForm: FormData 객체 그대로 전송 (ex.파일 업로드)
+  const postForm = <T = any,>(
     url: string,
     formData: FormData,
     options: ApiOptions = {}
-  ): Promise<ApiResponse<T>> => {
-    const { headers, ...restOptions } = options;
-
-    return apiCall<T>(url, {
-      ...restOptions,
+  ) =>
+    apiCall<T>(url, {
+      ...options,
       method: 'POST',
+      data: formData,
       headers: {
-        // FormData는 Content-Type을 자동으로 설정하므로 제거
-        ...Object.fromEntries(
-          Object.entries(headers || {}).filter(
-            ([key]) => key.toLowerCase() !== 'content-type'
-          )
-        )
-      },
-      body: formData
+        ...options.headers
+        // Content-Type 생략해야 axios가 자동 설정
+      }
     });
-  };
-
-  // Authorization 헤더 추가 헬퍼
-  const withAuth = (token: string, tokenType: string = 'Bearer') => ({
-    headers: {
-      Authorization: `${tokenType} ${token}`
-    }
-  });
 
   return {
     apiCall,
@@ -153,7 +95,6 @@ export const useApi = () => {
     put,
     patch,
     del,
-    postForm,
-    withAuth
+    postForm
   };
 };
