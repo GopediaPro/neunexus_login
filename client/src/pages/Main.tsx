@@ -1,27 +1,12 @@
-import { ContentLayout } from "@/components/mainpage/layout/ContentLayout";
-import { HeaderLayout } from "@/components/mainpage/layout/HeaderLayout";
-import { LeftSidebarLayout } from "@/components/mainpage/layout/LeftSidebarLayout";
-import { RightSidebarLayout } from "@/components/mainpage/layout/RightSidebarLayout";
-import { useTheme } from "next-themes";
+import { MainContent } from "@/components/mainpage/layout/MainContent";
+import { SidebarProvider } from "@/contexts/SidebarContext";
 
 const Main = () => {
-  const { theme } = useTheme();
 
   return (
-    <div className={`page-main ${theme === 'dark' ? 'dark' : ""} marker:min-h-screen bg-page-bg`}>
-      <div className={`grid grid-sidebar-layout min-h-screen`}>
-        <LeftSidebarLayout />
-        <div className="flex flex-col">
-          <HeaderLayout />
-          <div className="flex flex-1">
-            <ContentLayout />
-            <div className="pt-5 pr-2">
-              <RightSidebarLayout />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <SidebarProvider>
+      <MainContent />
+    </SidebarProvider>
   );
 };
 

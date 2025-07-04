@@ -13,7 +13,7 @@ const renderApp = () => {
         <ThemeProvider
           attribute='class'
           defaultTheme='system'
-          enableSystem
+          enableSystem={true}
           disableTransitionOnChange={false}
         >
           <StrictMode>

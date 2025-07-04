@@ -21,21 +21,6 @@ export const sidebarDummy: IMenuItemType[] = [
     hasSubmenu: true,
     isExpanded: false,
     submenu: ['Wiki', 'Mattermost', 'Minio', 'n8n']
-  },
-  {
-    id: 'temp1',
-    label: '업시메뉴',
-    hasSubmenu: false
-  },
-  {
-    id: 'temp2',
-    label: '업시메뉴',
-    hasSubmenu: false
-  },
-  {
-    id: 'temp3',
-    label: '업시메뉴',
-    hasSubmenu: false
   }
 ];
 
@@ -43,7 +28,10 @@ export const member = [
   { id: "1", name: "김OO 주임", department: "마케팅 부서" },
   { id: "2", name: "김OO 주임", department: "마케팅 부서" },
   { id: "3", name: "김OO 주임", department: "마케팅 부서" },
-  { id: "4", name: "김OO 주임", department: "마케팅 부서" }
+  { id: "4", name: "김OO 주임", department: "마케팅 부서" },
+  { id: "5", name: "김OO 주임", department: "마케팅 부서" },
+  { id: "6", name: "김OO 주임", department: "마케팅 부서" },
+  { id: "7", name: "김OO 주임", department: "마케팅 부서" },
 ]
 
 export const notices = [

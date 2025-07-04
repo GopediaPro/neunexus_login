@@ -86,7 +86,7 @@ export const ScheduleCalendar = ({
 
   return (
     <div className={`w-full ${className}`}>
-      <div className="bg-white rounded-lg">
+      <div className="bg-page-bg rounded-lg">
         <Calendar
           localizer={localizer}
           events={events}

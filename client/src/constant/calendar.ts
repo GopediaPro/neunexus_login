@@ -6,8 +6,8 @@ export const CALENDAR_CONFIG = {
 };
 
 export const COLOR_OPTIONS = [
-  { name: '사내일정', value: '#ef4444', bg: 'bg-red-500' },
   { name: '회의', value: '#3b82f6', bg: 'bg-blue-500' },
+  { name: '사내일정', value: '#ef4444', bg: 'bg-red-500' },
   { name: '업무', value: '#eab308', bg: 'bg-yellow-500' },
   { name: '운영/관리', value: '#22c55e', bg: 'bg-green-500' },
   { name: '이벤트', value: '#8b5cf6', bg: 'bg-purple-500' },

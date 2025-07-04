@@ -101,9 +101,11 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
     const year = date.format('YYYY');
     const month = date.format('M');
     const day = date.format('D');
-    const dayOfWeek = date.format('dddd');
+    const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
+    const dayOfWeek = weekdays[date.day()];
     
-    return `${year}년 ${month}월 ${day}일이 ${dayOfWeek}`;
+    return `${year}년 ${month}월 ${day}일이 ${dayOfWeek}요일`;
   };
 
   return (
@@ -117,8 +119,8 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {event?.start && (
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <div className="text-sm font-medium text-blue-800">
+              <div className="p-3 bg-page-card-bg rounded-lg">
+                <div className="text-md font-bold text-page-blue-400">
                   {getFormattedDate()}
                 </div>
               </div>
@@ -140,9 +142,6 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
             />
 
             <div>
-              <label className="block text-sm font-medium text-font-primary mb-2">
-                시간
-              </label>
               <div className="flex items-center space-x-3">
                 <div className="flex-1">
                   <FormField
@@ -194,8 +193,8 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                       onClick={() => field.onChange(color.value)}
                       className={`flex items-center space-x-3 p-2 pr-4 rounded-[8px] border transition-all ${
                         selectedCategory === color.value
-                          ? 'border-web-primary bg-page-blue-200'
-                          : 'border-border-default hover:border-gray-300'
+                          ? 'border-web-primary bg-page-card-bg'
+                          : 'border-border-default hover:bg-page-card-bg'
                       }`}
                     >
                       <div 
@@ -219,7 +218,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                   id="memo"
                   placeholder="메모를 입력하세요..."
                   rows={3}
-                  className="w-full px-3 py-2.5 border border-border-default rounded-md focus:outline-none focus:ring-2 focus:ring-web-primary focus:border-transparent resize-none"
+                  className="w-full px-3 py-2.5 bg-page-input-bg border border-border-default rounded-md focus:outline-none focus:ring-2 focus:ring-web-primary focus:border-transparent resize-none"
                   {...field}
                 />
               )}
