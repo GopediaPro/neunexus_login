@@ -23,7 +23,7 @@ export const HeaderLayout = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button onClick={toggle}>
-            <Icon name="hamberger" ariaLabel="검색" style="w-9 h-9 text-gray-400" />
+            <Icon name="hamberger" ariaLabel="검색" style="w-9 h-9 text-gray-300" />
           </button>
         </div>
         <div className="flex items-center gap-3">

@@ -1,22 +1,24 @@
 import { LeftMenuButton, SubMenuItem } from "@/components/mainpage/sidebar/LeftMenuButton";
 import { useAuthContext } from "@/contexts";
 import { Icon } from "@/components/ui/Icon";
-import { sidebarDummy } from "@/mocks/dummy/sidebar";
 import type { IMenuItemType } from "@/shared/types/sidebar.types";
 import LogoLight from "@/shared/assets/icons/logo.svg"
 import LogoDark from "@/shared/assets/icons/logo-dark.svg";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ROUTERS } from "@/constant/route";
+import { sidebarMenu } from "@/constant/sidebar";
 
 export const LeftSidebarLayout = () => {
-  const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarDummy);
+  const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarMenu);
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { logout } = useAuthContext();
+  const { user, logout } = useAuthContext();
 
+  const name = user?.name?.split(' ')[0] ?? '김00 사원';
   const userProfile = {
-    name: '김00 사원',
+    name: `${name} 님`,
     department: '온라인 사업 부서'
   };
 
@@ -52,6 +54,12 @@ export const LeftSidebarLayout = () => {
         break;
       case 'n8n':
         window.location.href = 'https://rpa.lyckabc.xyz'
+        break;
+      case '상품 등록':
+        navigate(ROUTERS.PRODUCT_MANAGAMENT)
+        break;
+      case '주문 등록':
+        navigate(ROUTERS.ORDER_MANAGEMENT)
         break;
     }
   }

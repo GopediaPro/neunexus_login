@@ -1,3 +1,6 @@
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -62,6 +65,20 @@
     --page-button-font: #FFFFFF;
     --page-font-primary: #111111;
     --page-font-secondary: #222222;
+
+    --page-sidebar-bg: #FFFFFF;
+    --page-sidebar-menu-bg-default: #FFFFFF;
+    --page-sidebar-menu-bg-hover: #E4ECF6;
+    --page-sidebar-menu-list-bg: #F9F9F9;
+    --page-feature-button-icon-default: #777777;
+    --page-feature-button-icon-hover: #333333;
+    --page-font-tertiary: #555555;
+    --page-font-muted: #777777;
+    --page-button-border: #D9D9D9;
+    --page-divider-border: #E9E9E9;
+    --page-toggle-on-bg: #1E6ECF;
+    --page-toggle-off-bg: #D9D9D9;
+    --page-input-bar-scroll-bg: #F3F3F3;
     
     --page-blue-400: #1E6ECF;
     --page-blue-300: #8FB7E7;
@@ -97,36 +114,6 @@
     --page-font-primary: #FFFFFF;
     --page-font-secondary: #F1F3F5;
 
-    --page-blue-400: #228BFF;
-    --page-blue-300: #8FB7E7;
-    --page-blue-200: #E0EEFF;
-
-    --background: var(--page-bg);
-    --foreground: var(--page-font-primary);
-    --card: var(--page-card-bg);
-    --card-foreground: var(--page-font-primary);
-
-    --border-default: 207 6% 39%;
-  }
-
-  /* 메인페이지 공통 색상 */
-  .page-main {
-    --page-sidebar-bg: #FFFFFF;
-    --page-sidebar-menu-bg-default: #FFFFFF;
-    --page-sidebar-menu-bg-hover: #E4ECF6;
-    --page-sidebar-menu-list-bg: #F9F9F9;
-    --page-feature-button-icon-default: #777777;
-    --page-feature-button-icon-hover: #333333;
-    --page-font-tertiary: #555555;
-    --page-font-muted: #777777;
-    --page-button-border: #D9D9D9;
-    --page-divider-border: #E9E9E9;
-    --page-toggle-on-bg: #1E6ECF;
-    --page-toggle-off-bg: #D9D9D9;
-    --page-input-bar-scroll-bg: #F3F3F3;
-  }
-
-  .page-main.dark {
     --page-sidebar-bg: #3C454D;
     --page-sidebar-menu-bg-default: #3C454D;
     --page-sidebar-menu-bg-hover: #343D46;
@@ -140,6 +127,17 @@
     --page-toggle-on-bg: #1E6ECF;
     --page-toggle-off-bg: #A9A9A9;
     --page-input-bar-scroll-bg: #27313A;
+
+    --page-blue-400: #228BFF;
+    --page-blue-300: #8FB7E7;
+    --page-blue-200: #E0EEFF;
+
+    --background: var(--page-bg);
+    --foreground: var(--page-font-primary);
+    --card: var(--page-card-bg);
+    --card-foreground: var(--page-font-primary);
+
+    --border-default: 207 6% 39%;
   }
 
   * {
