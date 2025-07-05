@@ -1,4 +1,4 @@
-export const OrderManagement = () => {
+export const OrderManagementPage = () => {
   return (
     <div>
       order

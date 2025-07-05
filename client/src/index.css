@@ -323,7 +323,8 @@
   }
   
   .mini-calendar-date span {
-    @apply text-xs;
+    font-size: 0.75rem;
+    font-weight: 500;
   }
 }
 

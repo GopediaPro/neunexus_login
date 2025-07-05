@@ -1,4 +1,4 @@
-import { LeftMenuButton, SubMenuItem } from "@/components/mainpage/sidebar/LeftMenuButton";
+import { SidebarMenuButton, SubMenuItem } from "@/components/mainpage/sidebar/SidebarMenuButton";
 import { useAuthContext } from "@/contexts";
 import { Icon } from "@/components/ui/Icon";
 import type { IMenuItemType } from "@/shared/types/sidebar.types";
@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { sidebarMenu } from "@/constant/sidebar";
 
-export const LeftSidebarLayout = () => {
+export const MenuSidebarLayout = () => {
   const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarMenu);
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -91,7 +91,7 @@ export const LeftSidebarLayout = () => {
         <nav className="flex flex-col">
           {MenuItems.map((item) => (
             <div key={item.id} className="mb-1">
-              <LeftMenuButton 
+              <SidebarMenuButton 
                 text={item.label}
                 hasSubmenu={item.hasSubmenu}
                 isActive={item.isExpanded}

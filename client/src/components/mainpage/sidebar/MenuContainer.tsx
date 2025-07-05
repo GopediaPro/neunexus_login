@@ -2,7 +2,7 @@ import { MenuBox } from "@/components/mainpage/common/MenuBox";
 import { Icon } from "@/components/ui/Icon";
 import { menuItems } from "@/constant/menu";
 
-export const MenuGridLayout = () => {
+export const MenuContainer = () => {
 
   return (
     <div className="p-6">

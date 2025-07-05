@@ -4,14 +4,14 @@ import { type ColDef } from 'ag-grid-community';
 import { useEffect, useRef, useState } from "react";
 import { HeaderManagement } from "./HeaderManagement";
 import { useSidebar } from "@/contexts/SidebarContext";
-import { LeftSidebarLayout } from "../mainpage/layout/LeftSidebarLayout";
 import { productDummyData } from "@/mocks/dummy/product";
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
 import { ProductToolbar } from "./ProductToolbar";
+import { MenuSidebarLayout } from "../mainpage/layout/MenuSidebarLayout";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
-export const ProductContainer = () => {
+export const ProductLayout = () => {
   const [productData, _setProductData] = useState<ProductData[]>(productDummyData);
   const { isOpen, close } = useSidebar();
   const isInitialMount = useRef(true);
@@ -141,7 +141,7 @@ export const ProductContainer = () => {
     <div className="min-h-screen">
       {isOpen ? (
         <div className="grid grid-cols-[183px_1fr] min-h-screen">
-          <LeftSidebarLayout />
+          <MenuSidebarLayout />
           <div className="flex flex-col">
             <HeaderManagement title="상품 관리 시스템" />
             <ProductToolbar />

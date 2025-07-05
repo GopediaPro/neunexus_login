@@ -14,7 +14,7 @@ import LogoDark from "@/shared/assets/icons/logo-dark.svg";
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
-const Login = () => {
+export const LoginPage = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { login } = useAuthContext();
@@ -167,5 +167,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;

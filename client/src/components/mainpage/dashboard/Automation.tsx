@@ -44,7 +44,7 @@ export const AutomationStatus = () => {
   };
 
   return (
-    <div className="flex flex-col border rounded-[10px] overflow-hidden">
+    <div className="w-full flex flex-col border rounded-[10px] overflow-hidden">
       <div className="grid grid-cols">
         <div className="relative">
           <StatusCard title="자동화 현황" onViewAll={() => navigate('/')}>

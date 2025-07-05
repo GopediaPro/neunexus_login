@@ -1,17 +1,15 @@
 import { Dashboard } from '@/components/mainpage/dashboard/Dashboard';
-import { MenuGridLayout } from '@/components/mainpage/sidebar/MenuLayout';
 import { StatsDashboard } from '@/components/mainpage/dashboard/StatsDashboard';
 import { AutomationStatus } from '@/components/mainpage/dashboard/Automation';
+import { MenuContainer } from '../sidebar/MenuContainer';
 
-export const ContentLayout = () => {
+export const DashboardLayout = () => {
   return (
     <main className="flex-1 p-5">
       <div className="flex flex-col gap-8">
-        <div className="flex justify-between gap-5">
-          <MenuGridLayout />
-          <div className="min-w-[305px] h-[200px]">
-            <AutomationStatus />
-          </div>
+        <div className="flex gap-5">
+          <MenuContainer />
+          <AutomationStatus />
         </div>
         <StatsDashboard />
         <Dashboard />

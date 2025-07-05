@@ -2,7 +2,7 @@ import { StatusCard } from "@/components/mainpage/common/StatusCard"
 import { notices } from "@/mocks/dummy/sidebar";
 import { useNavigate } from "react-router-dom";
 
-export const NotiContainer = () => {
+export const NotificationContainer = () => {
   const navigate = useNavigate();
 
   return (

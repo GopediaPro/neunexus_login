@@ -1,10 +1,10 @@
-import { LeftSidebarLayout } from "./LeftSidebarLayout";
 import { HeaderLayout } from "./HeaderLayout";
-import { ContentLayout } from "./ContentLayout";
-import { RightSidebarLayout } from "./RightSidebarLayout";
 import { useSidebar } from "@/contexts/SidebarContext";
+import { MenuSidebarLayout } from "./MenuSidebarLayout";
+import { DashboardLayout } from "./DashboardLayout";
+import { InfoSidebarLayout } from "./InfoSidebarLayout";
 
-export const MainContent = () => {
+export const MainLayout = () => {
 
   const { isOpen } = useSidebar();
 
@@ -12,13 +12,13 @@ export const MainContent = () => {
     <div className={`marker:min-h-screen bg-page-bg`}>
       {isOpen ? (
         <div className={`grid grid-sidebar-layout min-h-screen`}>
-          <LeftSidebarLayout />
+          <MenuSidebarLayout />
           <div className="flex flex-col">
             <HeaderLayout />
             <div className="flex flex-1">
-              <ContentLayout />
+              <DashboardLayout />
               <div className="pt-5 pr-2">
-                <RightSidebarLayout />
+                <InfoSidebarLayout />
               </div>
             </div>
           </div>
@@ -27,9 +27,9 @@ export const MainContent = () => {
         <div className="flex flex-col min-h-screen">
           <HeaderLayout />
           <div className="flex flex-1">
-            <ContentLayout />
+            <DashboardLayout />
             <div className="pt-5 pr-2">
-              <RightSidebarLayout />
+              <InfoSidebarLayout />
             </div>
           </div>
         </div>

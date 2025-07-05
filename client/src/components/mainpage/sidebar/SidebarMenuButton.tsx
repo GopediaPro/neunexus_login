@@ -9,7 +9,7 @@ const textToIconMap: Record<string, string> = {
   '서비스': 'service',
 };
 
-export const LeftMenuButton = ({
+export const SidebarMenuButton = ({
   text,
   hasSubmenu = false,
   isActive = false,

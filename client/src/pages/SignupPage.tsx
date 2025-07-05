@@ -10,7 +10,7 @@ import type { z } from "zod";
 
 export type SignupFormData = z.infer<typeof signupSchema>;
 
-const Signup = () => {
+export const SignupPage = () => {
   const navigate = useNavigate();
   const { signup } = useAuthContext();
 
@@ -128,5 +128,3 @@ const Signup = () => {
     </div>
   );
 };
-
-export default Signup;

@@ -1,12 +1,12 @@
 import { StatusCard } from "@/components/mainpage/common/StatusCard";
 import { Modal } from "@/components/ui/Modal";
 import { useState } from "react";
-import { ScheduleCalendar, type CalendarEvent } from "../common/calendar/ScheduleCalendar";
-import { AddSchedule } from "../common/calendar/AddSchedule";
 import moment from "moment";
-import { MiniCalendar } from "../common/calendar/MiniCalendar";
-import { ScrollTable } from "../common/ScrollTable";
 import { Button } from "@/components/ui/Button";
+import { ScheduleCalendar, type CalendarEvent } from "../calendar/ScheduleCalendar";
+import { MiniCalendar } from "../calendar/MiniCalendar";
+import { ScrollTable } from "../common/ScrollTable";
+import { AddSchedule } from "../calendar/AddSchedule";
 
 export const ScheduleContainer = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -160,7 +160,7 @@ export const ScheduleContainer = () => {
           </Modal.Header>
           
           <Modal.Body className="p-6 pt-2">
-            <ScheduleCalendar 
+            <ScheduleCalendar
               events={events}
               onEventsChange={setEvents}
               onEventClick={handleOpenEventModal}

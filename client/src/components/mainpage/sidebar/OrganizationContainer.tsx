@@ -4,7 +4,7 @@ import { member } from "@/mocks/dummy/sidebar";
 import { useNavigate } from "react-router-dom";
 import { ScrollTable } from "../common/ScrollTable";
 
-export const OrgContainer = () => {
+export const OrganizationContainer = () => {
   const navigate = useNavigate();
 
   return (
