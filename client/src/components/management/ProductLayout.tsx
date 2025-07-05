@@ -2,13 +2,22 @@ import { HeaderManagement } from "./HeaderManagement";
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
 import { ProductToolbar } from "./ProductToolbar";
 import { MenuSidebarLayout } from "../mainpage/layout/MenuSidebarLayout";
-import { useProductManagement } from "@/hooks";
 import { ProductGrid } from "./common/ProdcutGrid";
+import { useSidebar } from "@/contexts/SidebarContext";
+import { useEffect, useRef } from "react";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export const ProductLayout = () => {
-  const { isOpen } = useProductManagement();
+  const { isOpen, close } = useSidebar();
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      close();
+      isInitialMount.current = false;
+    }
+  }, [close]);
 
   return (
     <div className="min-h-screen">
