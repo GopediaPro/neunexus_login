@@ -6,7 +6,44 @@ import type { ProductData } from "@/shared/types/product.types";
 export const useProductGrid = () => {
   const gridRef = useRef<AgGridReact>(null);
 
+  const getStatusCellStyle = (params: any) => {
+    const status = params.value;
+    switch (status) {
+      case '판매중':
+        return { 
+          backgroundColor: '#F4FFF4',
+          color: '#2F8230',
+          fontWeight: '500'
+        };
+      case '품절':
+        return { 
+          backgroundColor: '#fef2f2',
+          color: '#F04848',
+          fontWeight: '500'
+        };
+      case '단종':
+        return { 
+          backgroundColor: '#f9fafb',
+          color: '#6b7280',         
+          fontWeight: '500'
+        };
+      default:
+        return null;
+    }
+  };
+
   const columnDefs: ColDef<ProductData>[] = [
+    {
+      headerName: '',
+      checkboxSelection: true,
+      headerCheckboxSelection: true,
+      width: 50,
+      pinned: 'left',
+      resizable: false,
+      sortable: false,
+      filter: false,
+      floatingFilter: false,
+    },
     { 
       field: 'productName', 
       headerName: '상품명', 
@@ -41,8 +78,13 @@ export const useProductGrid = () => {
       field: 'status', 
       headerName: '상태', 
       width: 120,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: { suppressFilterButton: true }
+      editable: true,
+      cellEditor: 'agSelectCellEditor',
+      cellEditorParams: {
+        values: ['판매중', '품절', '단종']
+      },
+      cellStyle: getStatusCellStyle,
+      cellClass: 'ag-cell-centered'
     },
     { 
       field: 'manufacturer', 
@@ -105,6 +147,7 @@ export const useProductGrid = () => {
     rowHeight: 40,
     rowSelection: "multiple" as const,
     domLayout: "normal" as const,
+    suppressRowClickSelection: true
   };
 
   return {
