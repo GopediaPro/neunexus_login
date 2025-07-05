@@ -5,7 +5,6 @@ import { DashboardLayout } from "./DashboardLayout";
 import { InfoSidebarLayout } from "./InfoSidebarLayout";
 
 export const MainLayout = () => {
-
   const { isOpen } = useSidebar();
 
   return (
