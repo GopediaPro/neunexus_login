@@ -16,7 +16,7 @@ const StatsItem = ({ iconName, value, label }: StatsItemProps) => {
       </div>
       <div className="text-white">
         <div className="text-center text-lg font-bold leading-tight">{value.toLocaleString()}</div>
-        <div className="text-sm text-white/90">{label}</div>
+        <div className="text-h6 text-white/90">{label}</div>
       </div>
     </div>
   );

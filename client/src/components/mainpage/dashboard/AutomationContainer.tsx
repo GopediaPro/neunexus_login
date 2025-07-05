@@ -53,10 +53,10 @@ export const AutomationContainer = () => {
               className="flex justify-between items-center w-full"
             >
               <div className="flex flex-col justify-center">
-                <div className="text-sm font-semibold text-neutral-600">
+                <div className="text-body-l text-neutral-600">
                   {item.title}
                 </div>
-                <div className="text-xs font-medium text-neutral-500">
+                <div className="text-body-s text-neutral-500">
                   {item.description}
                 </div>
               </div>

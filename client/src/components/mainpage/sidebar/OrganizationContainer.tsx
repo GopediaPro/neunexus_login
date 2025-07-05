@@ -35,8 +35,8 @@ export const OrganizationContainer = () => {
               </div>
 
               <div>
-                <div className="text-page-font-primary">{member.name}</div>
-                <div className="text-sm text-page-font-muted">{member.department}</div>
+                <div className="text-page-font-primary text-body-l">{member.name}</div>
+                <div className="text-body-s text-page-font-muted">{member.department}</div>
               </div>
 
               {/* 추후 메신저 이미지 */}

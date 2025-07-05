@@ -23,10 +23,10 @@ export const MenuSidebarLayout = () => {
           <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center mb-3">
             <div className="w-8 h-8 text-gray-500" />
           </div>
-          <h3 className="text-page-font-primary text-lg font-bold mb-1">
+          <h3 className="text-page-font-primary text-h5 mb-1">
             {userProfile.name}
           </h3>
-          <p className="text-page-font-tertiary text-xs">
+          <p className="text-page-font-tertiary text-caption">
             {userProfile.department}
           </p>
         </div>

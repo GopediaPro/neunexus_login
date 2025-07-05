@@ -124,8 +124,8 @@ export const ScheduleContainer = () => {
                     style={{ backgroundColor: event.color || '#3b82f6' }}
                   ></div>
                   <div className="flex-1">
-                    <div className="text-sm text-page-font-primary">{event.title}</div>
-                    <div className="text-xs text-page-font-tertiary">
+                    <div className="text-body-l text-page-font-primary">{event.title}</div>
+                    <div className="text-body-s text-page-font-tertiary">
                       {moment(event.start).format('HH:mm')}
                     </div>
                   </div>

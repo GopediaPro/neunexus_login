@@ -19,7 +19,7 @@ export const SalesStatus = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-0.5 text-sm border border-border-default rounded ${
+            className={`px-4 py-0.5 text-body-s border border-border-default rounded ${
               activeTab === tab
                 ? "bg-page-sidebar-menu-bg-hover text-page-blue-400"
                 : "bg-page-sidebar-bg text-page-font-tertiary hover:bg-page-sidebar-menu-bg-hover"
@@ -31,7 +31,7 @@ export const SalesStatus = () => {
       </div>
   
       <div className="space-y-2">
-        <div className="grid grid-cols-3 gap-4 text-md text-page-font-primary pb-2">
+        <div className="grid grid-cols-3 gap-4 text-h6 text-page-font-primary pb-2">
           <span>품목코드</span>
           <span className="text-right">재고수량</span>
           <span className="text-right">재고금액</span>
@@ -39,7 +39,7 @@ export const SalesStatus = () => {
 
         <ScrollTable height="h-36">
           {salesData.map((item) => (
-            <div key={item.id} className="grid grid-cols-3 gap-4 text-sm py-2">
+            <div key={item.id} className="grid grid-cols-3 gap-4 text-body-s py-2">
               <span className="text-page-font-primary">{item.productCode}</span>
               <span className="text-right text-page-font-primary">{item.quantity.toLocaleString()}</span>
               <span className="text-right text-page-font-primary">{item.amount.toLocaleString()}...</span>

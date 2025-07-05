@@ -11,7 +11,7 @@ export const InventoryStatus = () => {
       title="재고현황"
       onViewAll={() => navigate('/')}
     >
-      <div className="grid grid-cols-3 gap-4 text-md text-page-font-secondary pt-2 py-4">
+      <div className="grid grid-cols-3 gap-4 text-h6 text-page-font-secondary pt-2 py-4">
         <span>품목코드</span>
         <span className="text-right">재고수량</span>
         <span className="text-right">재고금액</span>
@@ -19,7 +19,7 @@ export const InventoryStatus = () => {
       
       <ScrollTable height="h-48">
         {inventoryData.map((item) => (
-          <div key={item.id} className="grid grid-cols-3 gap-4 text-sm py-2">
+          <div key={item.id} className="grid grid-cols-3 gap-4 text-body-s py-2">
             <span 
               className="text-page-error">
               {item.productCode}
