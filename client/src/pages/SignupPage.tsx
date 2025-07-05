@@ -17,7 +17,7 @@ export const SignupPage = () => {
       <div className="w-[590px] p-24 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
         
         <div className="w-full space-y-8">
-          <h1 className="text-page-font-primary text-2xl font-bold">
+          <h1 className="text-page-font-primary text-h2">
             회원가입
           </h1>
           
@@ -73,7 +73,7 @@ export const SignupPage = () => {
 
             {errors.root && (
               <div className="flex items-center pt-1 pl-1 text-sm text-page-error">
-                <span className="text-body2">{errors.root.message}</span>
+                <span className="text-caption">{errors.root.message}</span>
               </div>
             )}
 
@@ -89,12 +89,12 @@ export const SignupPage = () => {
           </form>
           
           <div className="flex justify-center items-center gap-1">
-            <span className="text-page-font-primary font-medium">
+            <span className="text-page-font-primary text-body-s">
               이미 계정이 있으신가요?
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-page-button-primary font-bold underline hover:text-page-button-primary-hover transition-colors"
+              className="px-2.5 py-3 text-page-button-primary text-body-s underline hover:text-page-button-primary-hover transition-colors"
               onClick={handleLoginClick}
             >
               로그인

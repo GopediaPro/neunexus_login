@@ -24,7 +24,7 @@ export const LoginPage = () => {
         </div>
         
         <div className="w-full space-y-4">
-          <h1 className="text-page-font-primary text-2xl font-bold">
+          <h1 className="text-page-font-primary text-h2">
             로그인
           </h1>
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
@@ -59,7 +59,7 @@ export const LoginPage = () => {
 
             {errors.root && (
               <div className="flex items-center pt-1 pl-1 text-sm text-page-error">
-                <span className="text-body2">아이디 패스워드가 일치하지 않습니다.</span>
+                <span className="text-caption">아이디 패스워드가 일치하지 않습니다.</span>
               </div>
             )}
 
@@ -76,7 +76,7 @@ export const LoginPage = () => {
                           field.onChange(checked ? 1 : 0);
                         }}
                       />
-                      <span className="text-page-font-secondary text-sm transition-colors">
+                      <span className="text-page-font-secondary text-body-s transition-colors">
                         자동 로그인
                       </span>
                     </div>
@@ -87,14 +87,14 @@ export const LoginPage = () => {
               <div className="flex items-center mt-2">
                 <button
                   type="button"
-                  className="py-3 px-2.5 text-page-font-secondary text-sm transition-colors"
+                  className="py-3 px-2.5 text-page-font-secondary text-body-s transition-colors"
                 >
                   아이디 찾기
                 </button>
                 <div className="w-px h-3.5 bg-border-default"></div>
                 <button
                   type="button"
-                  className="py-3 px-2.5 text-page-font-secondary text-sm transition-colors"
+                  className="py-3 px-2.5 text-page-font-secondary text-body-s transition-colors"
                 >
                   비밀번호 찾기
                 </button>
@@ -107,19 +107,19 @@ export const LoginPage = () => {
               size="auth"
               loading={isSubmitting}
               className="!mt-[10px]"
-              disabled={isSubmitting}
+              disabled={isSubmitting}          
             >
               <span>로그인</span>
             </Button>
           </form>
         
           <div className="flex justify-center items-center gap-1">
-            <span className="text-page-font-primary font-medium">
+            <span className="text-page-font-primary text-body-s">
               아직 회원이 아니신가요?
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-page-button-primary font-bold underline hover:text-page-button-primary-hover transition-colors"
+              className="px-2.5 py-3 text-page-button-primary text-body-s underline hover:text-page-button-primary-hover transition-colors"
               onClick={handleSignupClick}
             >
               회원가입

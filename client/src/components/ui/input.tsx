@@ -53,7 +53,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             type={currentType}
             className={cn(
               "flex h-[3.125rem] w-full border rounded-[0.5rem] transition-all duration-200 ease-in-out",
-              "px-3 py-3 text-base font-normal",
+              "px-3 py-3 text-body-l",
               "focus-visible:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
 
@@ -106,7 +106,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {helperText && !error && (
-          <p className="text-sm text-page-font-secondary mt-1">
+          <p className="text-caption text-page-font-secondary mt-1">
             {helperText}
           </p>
         )}
