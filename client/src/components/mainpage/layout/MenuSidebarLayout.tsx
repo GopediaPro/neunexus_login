@@ -2,9 +2,6 @@ import { SidebarMenuButton, SubMenuItem } from "@/components/mainpage/sidebar/Si
 import { useAuthContext } from "@/contexts";
 import { Icon } from "@/components/ui/Icon";
 import type { IMenuItemType } from "@/shared/types/sidebar.types";
-import LogoLight from "@/shared/assets/icons/logo.svg"
-import LogoDark from "@/shared/assets/icons/logo-dark.svg";
-import { useTheme } from "next-themes";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
@@ -14,7 +11,6 @@ import { Logo } from "@/components/ui/Logo";
 export const MenuSidebarLayout = () => {
   const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarMenu);
   const navigate = useNavigate();
-  const { theme } = useTheme();
   const { user, logout } = useAuthContext();
 
   const name = user?.name?.split(' ')[0] ?? '김00 사원';

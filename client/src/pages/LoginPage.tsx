@@ -1,49 +1,18 @@
-import { loginSchema } from '@/schemas/auth.schema';
 import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/ui/FormField';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { useTheme } from 'next-themes';
-import { useAuthContext } from '@/contexts';
 import { Logo } from '@/components/ui/Logo';
-
-export type LoginFormData = z.infer<typeof loginSchema>;
+import { useLogin } from '@/hooks';
 
 export const LoginPage = () => {
-  const navigate = useNavigate();
-  const { theme } = useTheme();
-  const { login } = useAuthContext();
-
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    setError
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      rememberMe: 0
-    }
-  });
-
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-      await login(data);
-
-      navigate('/');
-    } catch (error: any) {
-      setError('root', {
-        type: 'manual',
-        message: error.message || '로그인 실패'
-      });
-    }
-  };
+    errors,
+    isSubmitting,
+    handleSignupClick
+  } = useLogin();
 
   return (
     <div className="w-full h-screen bg-page-bg shadow-xl flex justify-center items-center">
@@ -58,7 +27,7 @@ export const LoginPage = () => {
           <h1 className="text-page-font-primary text-2xl font-bold">
             로그인
           </h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <FormField
               name="email"
               control={control}
@@ -151,7 +120,7 @@ export const LoginPage = () => {
             <button
               type="button"
               className="px-2.5 py-3 text-page-button-primary font-bold underline hover:text-page-button-primary-hover transition-colors"
-              onClick={() => navigate('/signup')}
+              onClick={handleSignupClick}
             >
               회원가입
             </button>

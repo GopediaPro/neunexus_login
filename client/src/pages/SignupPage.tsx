@@ -1,39 +1,16 @@
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/input";
-import { useAuthContext } from "@/contexts";
-import { signupSchema } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import type { z } from "zod";
-
-export type SignupFormData = z.infer<typeof signupSchema>;
+import { useSignup } from "@/hooks";
 
 export const SignupPage = () => {
-  const navigate = useNavigate();
-  const { signup } = useAuthContext();
-
-  const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<SignupFormData>({
-      resolver: zodResolver(signupSchema),
-      defaultValues: {
-        email: "",
-        password: "",
-        username: ""
-      }
-    });
-  
-    const onSubmit = async (data: SignupFormData) => {
-      try {
-        await signup(data);
-        navigate('/') 
-      } catch (error: any) {
-        setError("root", {
-          type: "manual",
-          message: error.message || "로그인 실패"
-        });
-      }
-    };
+  const {
+    control,
+    handleSubmit,
+    errors,
+    isSubmitting,
+    handleLoginClick
+  } = useSignup();
 
   return (
     <div className="w-full h-screen bg-page-bg shadow-xl flex justify-center items-center">
@@ -44,7 +21,7 @@ export const SignupPage = () => {
             회원가입
           </h1>
           
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <FormField
               name="username"
               label="이름"
@@ -118,7 +95,7 @@ export const SignupPage = () => {
             <button
               type="button"
               className="px-2.5 py-3 text-page-button-primary font-bold underline hover:text-page-button-primary-hover transition-colors"
-              onClick={() => navigate('/login')}
+              onClick={handleLoginClick}
             >
               로그인
             </button>
