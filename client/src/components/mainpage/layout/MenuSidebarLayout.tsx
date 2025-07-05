@@ -1,69 +1,21 @@
 import { SidebarMenuButton, SubMenuItem } from "@/components/mainpage/sidebar/SidebarMenuButton";
-import { useAuthContext } from "@/contexts";
 import { Icon } from "@/components/ui/Icon";
-import type { IMenuItemType } from "@/shared/types/sidebar.types";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ROUTERS } from "@/constant/route";
-import { sidebarMenu } from "@/constant/sidebar";
 import { Logo } from "@/components/ui/Logo";
+import { useMenuSideabar } from "@/hooks";
 
 export const MenuSidebarLayout = () => {
-  const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarMenu);
-  const navigate = useNavigate();
-  const { user, logout } = useAuthContext();
-
-  const name = user?.name?.split(' ')[0] ?? '김00 사원';
-  const userProfile = {
-    name: `${name} 님`,
-    department: '온라인 사업 부서'
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/login');
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const toggleSubmenu = (itemId: string) => {
-    setMenuItems(prev =>
-      prev.map(item =>
-        item.id === itemId
-          ? { ...item, isExpanded: !item.isExpanded }
-          : item
-      )
-    );
-  };
-
-  const handleSubMenuClick = (subItem: string) => {
-    switch (subItem) {
-      case 'Wiki':
-        window.location.href = 'https://wiki.lyckabc.xyz'
-        break;
-      case 'Mattermost':
-        window.location.href = 'https://chat.lyckabc.xyz'
-        break;
-      case 'Minio':
-        window.location.href = 'https://minio.lyckabc.xyz'
-        break;
-      case 'n8n':
-        window.location.href = 'https://rpa.lyckabc.xyz'
-        break;
-      case '상품 등록':
-        navigate(ROUTERS.PRODUCT_MANAGAMENT)
-        break;
-      case '주문 등록':
-        navigate(ROUTERS.ORDER_MANAGEMENT)
-        break;
-    }
-  }
+  const {
+    MenuItems,
+    userProfile,
+    toggleSubmenu,
+    handleSubMenuClick,
+    handleLogout,
+    handleLogoClick,
+  } = useMenuSideabar();
 
   return (
     <div className="flex flex-col sidebar-left-width bg-page-sidebar-bg h-full border-r">
-      <div className="flex justify-center mt-4 cursor-pointer" onClick={() => navigate('/')}>
+      <div className="flex justify-center mt-4 cursor-pointer" onClick={handleLogoClick}>
         <Logo className="w-24 h-12" />
       </div>
       <div className="p-6 border-b">
