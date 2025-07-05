@@ -18,14 +18,14 @@ export const HeaderManagement = ({ title }: { title: string }) => {
         <button onClick={toggle}>
           <Icon name="hamberger" ariaLabel="검색" style="w-7 h-7 text-gray-300" />
         </button>
-        <span className="text-xl font-semibold">
+        <span className="text-h1">
           {title}
         </span>
       </div>
       <div className="px-6">
         <div className="flex gap-2 pt-2 border-b">
-          <button className="px-4 py-2 text-page-blue-400 text-lg font-bold border-b-2 border-page-blue-400">상품관리</button>
-          <button onClick={() => naviagte(ROUTERS.ORDER_MANAGEMENT)} className="px-4 py-2 text-gray-500 text-lg font-bold hover:text-page-blue-400 hover:bg-gray-100 transition-colors">주문관리</button>
+          <button className="px-4 py-2 text-page-blue-400 text-h2 border-b-2 border-page-blue-400">상품관리</button>
+          <button onClick={() => naviagte(ROUTERS.ORDER_MANAGEMENT)} className="px-4 py-2 text-gray-500 text-h2 hover:text-page-blue-400 hover:bg-gray-100 transition-colors">주문관리</button>
         </div>
         <div className="flex gap-4 pt-6">
           <Button 
@@ -48,6 +48,9 @@ export const HeaderManagement = ({ title }: { title: string }) => {
             }`}>
             대량상품등록
           </Button>
+        </div>
+        <div className="mt-6">
+          <span className="text-h2">상품등록</span>
         </div>
       </div>
     </div>
