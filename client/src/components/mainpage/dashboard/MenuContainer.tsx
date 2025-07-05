@@ -5,7 +5,7 @@ import { menuItems } from "@/constant/menu";
 export const MenuContainer = () => {
 
   return (
-    <div className="p-6">
+    <div className="flex-1 p-6">
       <div className="grid grid-cols-4 gap-10 gap-x-20 max-w-[340px] 2xl:flex 2xl:flex-wrap 2xl:gap-4 2xl:max-w-full">
         {menuItems.map((item) => (
           <MenuBox
