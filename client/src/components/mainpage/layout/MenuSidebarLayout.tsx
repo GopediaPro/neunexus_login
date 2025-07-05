@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { sidebarMenu } from "@/constant/sidebar";
+import { Logo } from "@/components/ui/Logo";
 
 export const MenuSidebarLayout = () => {
   const [MenuItems, setMenuItems] = useState<IMenuItemType[]>(sidebarMenu);
@@ -67,11 +68,7 @@ export const MenuSidebarLayout = () => {
   return (
     <div className="flex flex-col sidebar-left-width bg-page-sidebar-bg h-full border-r">
       <div className="flex justify-center mt-4 cursor-pointer" onClick={() => navigate('/')}>
-        {theme == 'dark' ? (
-          <img src={LogoLight} alt="로고" className="w-24 h-12" />
-        ) : (
-          <img src={LogoDark} alt="다크로고" className="w-24 h-12" />
-        )}
+        <Logo className="w-24 h-12" />
       </div>
       <div className="p-6 border-b">
         <div className="flex flex-col items-center text-center">

@@ -9,8 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useTheme } from 'next-themes';
 import { useAuthContext } from '@/contexts';
-import LogoLight from "@/shared/assets/icons/logo.svg"
-import LogoDark from "@/shared/assets/icons/logo-dark.svg";
+import { Logo } from '@/components/ui/Logo';
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -50,13 +49,8 @@ export const LoginPage = () => {
     <div className="w-full h-screen bg-page-bg shadow-xl flex justify-center items-center">
       <div className="w-[590px] px-24 py-14 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
         <div className="flex flex-col items-center">
-
           <div className="w-64 h-16 mb-20">
-            {theme == 'dark' ? (
-              <img src={LogoLight} alt="로고" className="w-[15rem] h-[8rem]" />
-            ) : (
-              <img src={LogoDark} alt="다크로고" className="w-[15rem] h-[8rem]" />
-            )}
+            <Logo className='w-[15rem] h-[8rem]' />
           </div>
         </div>
         
