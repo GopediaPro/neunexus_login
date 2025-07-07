@@ -1,10 +1,10 @@
-import { HeaderManagement } from "./HeaderManagement";
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
-import { ProductToolbar } from "./ProductToolbar";
-import { MenuSidebarLayout } from "../mainpage/layout/MenuSidebarLayout";
-import { ProductGrid } from "./common/ProdcutGrid";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { useEffect, useRef } from "react";
+import { MenuSidebarLayout } from '@/components/mainpage/layout/MenuSidebarLayout';
+import { HeaderManagement } from '../HeaderManagement';
+import { ProductToolbar } from '../ProductToolbar';
+import { ProductGrid } from '../common/ProdcutGrid';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -25,7 +25,7 @@ export const ProductLayout = () => {
         <div className="grid grid-cols-[183px_1fr] min-h-screen">
           <MenuSidebarLayout />
           <div className="flex flex-col">
-            <HeaderManagement title="상품 관리 시스템" />
+            <HeaderManagement title="상품/주문 관리 시스템" />
             <ProductToolbar />
             <div className="flex-1 p-4">
               <ProductGrid />
