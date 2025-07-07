@@ -36,7 +36,7 @@ export const RuleEditContainer = () => {
     setIsTestSuccess(true);
   };
 
-  const handleSave = (data: RuleFormData) => {
+  const handleSave = (_data: RuleFormData) => {
     // 저장 로직
   };
 
@@ -179,7 +179,7 @@ export const RuleEditContainer = () => {
                 control={control}
                 label="룰 선택"
                 error={errors.selectedTool?.message}
-                render={(field, fieldId) => (
+                render={(_field, fieldId) => (
                   <div className="relative">
                     <select 
                       id={fieldId}
@@ -202,7 +202,7 @@ export const RuleEditContainer = () => {
                 control={control}
                 label="구분"
                 error={errors.selectedSection?.message}
-                render={(field, fieldId) => (
+                render={(_field, fieldId) => (
                   <div className="relative">
                     <select 
                       id={fieldId}

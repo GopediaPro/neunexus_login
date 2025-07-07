@@ -20,8 +20,8 @@ export const ProductToolbar = () => {
   return (
     <>
       <div className="px-6">
-        <div className="flex gap-2 pt-2 border-b">
-          <button className="px-4 py-2 text-page-blue-400 text-h2 border-b-2 border-page-blue-400">상품관리</button>
+        <div className="flex gap-2 pt-2 border-b bg-gray-50">
+          <button className="px-4 py-2 text-page-blue-400 bg-page-card-bg text-h2 border-b-2 border-page-blue-400">상품관리</button>
           <button onClick={() => naviagte(ROUTERS.ORDER_MANAGEMENT)} className="px-4 py-2 text-gray-500 text-h2 hover:text-page-blue-400 hover:bg-gray-100 transition-colors">주문관리</button>
         </div>
         <div className="flex gap-4 pt-6">
@@ -31,7 +31,7 @@ export const ProductToolbar = () => {
             className={`border border-border-default transition-colors ${
               activeProductTab === "registration"
                 ? "bg-page-blue-400 text-white"
-                : "text-page-font-primary dark:text-black bg-gray-200"
+                : "text-page-font-primary dark:text-black hover:text-white bg-gray-200"
             }`}>
             상품등록
           </Button>
@@ -41,7 +41,7 @@ export const ProductToolbar = () => {
             className={`border border-border-default transition-colors ${
               activeProductTab === "bulk-registration"
                 ? "bg-page-blue-400 text-white"
-                : "text-page-font-primary dark:text-black bg-gray-200"
+                : "text-page-font-primary dark:text-black hover:text-white bg-gray-200"
             }`}>
             대량상품등록
           </Button>
