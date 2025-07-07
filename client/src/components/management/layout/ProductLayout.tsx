@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { MenuSidebarLayout } from '@/components/mainpage/layout/MenuSidebarLayout';
 import { HeaderManagement } from '../HeaderManagement';
 import { ProductToolbar } from '../ProductToolbar';
-import { ProductGrid } from '../common/ProdcutGrid';
+import { ProductGrid } from '../common/ProductGrid';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
