@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { FormField } from "../ui/FormField";
 import { useForm } from "react-hook-form";
+import { SelectSearchInput } from "./common/SelectSearchInput";
+import { ruleOptions } from "@/mocks/dummy/rule";
 
 interface RuleFormData {
   selectedTool: string;
   selectedSection: string;
   ruleValue: string;
 }
-
 
 export const RuleEditContainer = () => {
   const [testResult, setTestResult] = useState('');
@@ -56,28 +57,18 @@ export const RuleEditContainer = () => {
         <div className="p-6 border border-border-default rounded-[10px]">
           <form onSubmit={handleSubmit(handleSave)}>
             <div className="space-y-6">
-              <FormField
+            <FormField
                 name="selectedTool"
                 control={control}
                 label="룰 선택"
                 error={errors.selectedTool?.message}
-                render={(field, fieldId) => (
-                  <div className="relative">
-                    <select 
-                      id={fieldId}
-                      className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                      {...field}
-                    >
-                      <option value="상품명 (product name)">상품명 (product name)</option>
-                      <option value="가격 (price)">가격 (price)</option>
-                      <option value="설명 (description)">설명 (description)</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
+                render={field => (
+                  <SelectSearchInput
+                    options={ruleOptions}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="룰을 선택하세요"
+                  />
                 )}
               />
 
