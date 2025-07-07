@@ -9,6 +9,7 @@ import { SignupPage } from './pages/SignupPage';
 import { MainPage } from './pages/MainPage';
 import { ProductManagementPage } from './pages/ProductManagementPage';
 import { OrderManagementPage } from './pages/OrderManagementPage';
+import { RuleEngineManagementPage } from './pages/RuleEngineManagementPage';
 
 const publicRouteList = [
   {
@@ -37,6 +38,10 @@ const privateRouteList = [
   {
     path: ROUTERS.ORDER_MANAGEMENT,
     element: <OrderManagementPage />
+  },
+  {
+    path: ROUTERS.RULE_ENGINE_MANAGEMENT,
+    element: <RuleEngineManagementPage />
   }
 ]
 
