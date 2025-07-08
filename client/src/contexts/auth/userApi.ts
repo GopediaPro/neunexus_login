@@ -131,7 +131,7 @@ export const userApi = {
             throw new Error('사용자명에 유효하지 않은 문자가 포함되어 있습니다. 영문, 숫자, 점, 언더스코어, 하이픈만 사용 가능합니다.');
           }
         } catch (parseError) {
-          console.log('Non-JSON error response:', responseText);
+          console.error('Non-JSON error response:', responseText);
         }
         
         throw new Error(`사용자 생성 실패: Status ${response.status} - ${responseText}`);
