@@ -9,10 +9,12 @@ export const OrgContainer = () => {
   const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  // 🔍 필터링된 멤버 목록 계산
   const filteredMembers = useMemo(() => {
-    return member.filter((m) => m.name.includes(searchKeyword));
-  }, [searchKeyword]);
+    if (!searchKeyword.trim()) return member;
+    return member.filter((m) =>
+      m.name.toLowerCase().includes(searchKeyword.toLowerCase())
+    );
+  }, [member, searchKeyword]); // ✅ 의존성 추가
 
   return (
     <StatusCard 
