@@ -1,22 +1,33 @@
-import type { ProductData } from "@/shared/types/product.types";
-import { AgGridReact } from "ag-grid-react";
+import type { ProductData } from '@/shared/types/product.types';
+import { AgGridReact } from 'ag-grid-react';
 import { type ColDef } from 'ag-grid-community';
-import { useEffect, useRef, useState } from "react";
-import { HeaderManagement } from "./HeaderManagement";
-import { useSidebar } from "@/contexts/SidebarContext";
-import { LeftSidebarLayout } from "../mainpage/layout/LeftSidebarLayout";
-import { productDummyData } from "@/mocks/dummy/product";
+import { useEffect, useRef, useState } from 'react';
+import { HeaderManagement } from './HeaderManagement';
+import { useSidebar } from '@/contexts/SidebarContext';
+import { LeftSidebarLayout } from '../mainpage/layout/LeftSidebarLayout';
+import { productDummyData } from '@/mocks/dummy/product';
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
-import { ProductToolbar } from "./ProductToolbar";
+import { ProductToolbar } from './ProductToolbar';
+import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '@/api/getProducts';
+import { useSearchParams } from 'react-router-dom';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export const ProductContainer = () => {
-  const [productData, _setProductData] = useState<ProductData[]>(productDummyData);
+  const [productData, _setProductData] = useState<ProductData[]>();
   const { isOpen, close } = useSidebar();
   const isInitialMount = useRef(true);
+  const [searchParams] = useSearchParams();
 
   const gridRef = useRef<AgGridReact>(null);
+  const page = parseInt(searchParams.get('page') || '1');
+
+  const { data } = useQuery({
+    queryKey: ['products', page],
+    queryFn: () => getProducts(page)
+  });
+  console.log('data', data);
 
   useEffect(() => {
     if (isInitialMount) {
@@ -24,117 +35,123 @@ export const ProductContainer = () => {
       isInitialMount.current = false;
     }
   }, []);
+  useEffect(() => {
+    if (data?.products) {
+      _setProductData(data.products);
+    }
+  }, [data]);
 
   const columnDefs: ColDef<ProductData>[] = [
-    { 
-      field: 'productName', 
-      headerName: '상품명', 
+    {
+      field: 'goods_nm',
+      headerName: '상품명',
       width: 200,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'brand', 
-      headerName: '브랜드', 
+    {
+      field: 'brand_nm',
+      headerName: '브랜드',
       width: 200,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'sellPrice', 
-      headerName: '판매가격', 
-      width: 120, 
+    {
+      field: 'goods_price',
+      headerName: '판매가격',
+      width: 120,
       valueFormatter: (params) => `${params.value?.toLocaleString()}원`,
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'costPrice', 
-      headerName: '소비자가격', 
-      width: 120, 
+    {
+      field: 'goods_consumer_price',
+      headerName: '소비자가격',
+      width: 120,
       valueFormatter: (params) => `${params.value?.toLocaleString()}원`,
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'status', 
-      headerName: '상태', 
+    {
+      field: 'status',
+      headerName: '상태',
       width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'manufacturer', 
-      headerName: '제조사', 
+    {
+      field: 'maker',
+      headerName: '제조사',
       width: 160,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'creator', 
-      headerName: '원산지', 
+    {
+      field: 'origin',
+      headerName: '원산지',
       width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'category', 
-      headerName: '키워드', 
+    {
+      field: 'char_1_nm',
+      headerName: '키워드',
       width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'option1', 
-      headerName: '옵션1', 
+    {
+      field: 'char_1_nm',
+      headerName: '옵션1',
       width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'option2', 
-      headerName: '옵션2', 
+    {
+      field: 'char_2_nm',
+      headerName: '옵션2',
       width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
     },
-    { 
-      field: 'createdDate', 
-      headerName: '생성일시', 
-      width: 120, 
-      valueFormatter: (params) => params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
+    {
+      field: 'created_at',
+      headerName: '생성일시',
+      width: 120,
+      valueFormatter: (params) =>
+        params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
       filter: 'agDateColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       }
-    },
+    }
   ];
 
   const defaultColDef = {
     sortable: true,
     resizable: true,
     filter: true,
-    floatingFilter: true,
+    floatingFilter: true
   };
 
   return (
