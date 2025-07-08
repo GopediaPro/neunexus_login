@@ -27,7 +27,7 @@ export const MenuBox = ({
         <div className="w-9 h-9 flex items-center justify-center mb-1 text-page-font-muted">
           {icon}
         </div>
-        <span className="absolute bottom-[-22px] text-xs text-center leading-tight text-page-font-primary">
+        <span className="absolute bottom-[-22px] text-h6 text-center leading-tight text-page-font-primary">
           {label}
         </span>
       </button>

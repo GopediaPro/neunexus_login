@@ -1,30 +1,31 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { ROUTERS } from './constant/route';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
 import Layout from './Layout';
 import TestComponent from './components/TestComponent';
-import Main from './pages/Main';
 import { PrivateRoute } from '@/components/layout/PrivateRoute';
 import { PublicRoute } from '@/components/layout/PublicRoute';
-import { ProductManagement } from './pages/ProductManagement';
-import { OrderManagement } from './pages/OrderManagement';
+import { LoginPage } from './pages/LoginPage';
+import { SignupPage } from './pages/SignupPage';
+import { MainPage } from './pages/MainPage';
+import { ProductManagementPage } from './pages/ProductManagementPage';
+import { OrderManagementPage } from './pages/OrderManagementPage';
+import { RuleEngineManagementPage } from './pages/RuleEngineManagementPage';
 
 const publicRouteList = [
   {
     path: ROUTERS.LOGIN,
-    element: <Login />,
+    element: <LoginPage />,
   },
   {
     path: ROUTERS.SIGNUP,
-    element: <Signup />,
+    element: <SignupPage />,
   }
 ];
 
 const privateRouteList = [
   {
     path: ROUTERS.MAIN,
-    element: <Main />,
+    element: <MainPage />,
   },
   {
     path: ROUTERS.TEST,
@@ -32,11 +33,15 @@ const privateRouteList = [
   },
   {
     path: ROUTERS.PRODUCT_MANAGAMENT,
-    element: <ProductManagement />
+    element: <ProductManagementPage />
   },
   {
     path: ROUTERS.ORDER_MANAGEMENT,
-    element: <OrderManagement />
+    element: <OrderManagementPage />
+  },
+  {
+    path: ROUTERS.RULE_ENGINE_MANAGEMENT,
+    element: <RuleEngineManagementPage />
   }
 ]
 

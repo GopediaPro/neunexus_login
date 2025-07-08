@@ -1,12 +1,12 @@
 import { StatusCard } from "@/components/mainpage/common/StatusCard";
 import { Modal } from "@/components/ui/Modal";
 import { useState } from "react";
-import { ScheduleCalendar, type CalendarEvent } from "../common/calendar/ScheduleCalendar";
-import { AddSchedule } from "../common/calendar/AddSchedule";
 import moment from "moment";
-import { MiniCalendar } from "../common/calendar/MiniCalendar";
-import { ScrollTable } from "../common/ScrollTable";
 import { Button } from "@/components/ui/Button";
+import { ScheduleCalendar, type CalendarEvent } from "../calendar/ScheduleCalendar";
+import { MiniCalendar } from "../calendar/MiniCalendar";
+import { ScrollTable } from "../common/ScrollTable";
+import { AddSchedule } from "../calendar/AddSchedule";
 
 export const ScheduleContainer = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -124,8 +124,8 @@ export const ScheduleContainer = () => {
                     style={{ backgroundColor: event.color || '#3b82f6' }}
                   ></div>
                   <div className="flex-1">
-                    <div className="text-sm text-page-font-primary">{event.title}</div>
-                    <div className="text-xs text-page-font-tertiary">
+                    <div className="text-body-l text-page-font-primary">{event.title}</div>
+                    <div className="text-body-s text-page-font-tertiary">
                       {moment(event.start).format('HH:mm')}
                     </div>
                   </div>
@@ -160,7 +160,7 @@ export const ScheduleContainer = () => {
           </Modal.Header>
           
           <Modal.Body className="p-6 pt-2">
-            <ScheduleCalendar 
+            <ScheduleCalendar
               events={events}
               onEventsChange={setEvents}
               onEventClick={handleOpenEventModal}

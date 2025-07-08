@@ -2,7 +2,7 @@ import { StatusCard } from "@/components/mainpage/common/StatusCard"
 import { notices } from "@/mocks/dummy/sidebar";
 import { useNavigate } from "react-router-dom";
 
-export const NotiContainer = () => {
+export const NotificationContainer = () => {
   const navigate = useNavigate();
 
   return (
@@ -16,12 +16,12 @@ export const NotiContainer = () => {
             <div className="flex items-start space-x-2 flex-1 min-w-0">
               <div className="w-1.5 h-1.5 bg-page-blue-400 rounded-full mt-2 flex-shrink-0"></div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm text-page-font-primary leading-tight overflow-hidden text-ellipsis whitespace-nowrap">
+                <div className="text-body-l text-page-font-primary leading-tight overflow-hidden text-ellipsis whitespace-nowrap">
                   {notice.title}
                 </div>
               </div>
             </div>
-            <div className="text-xs text-page-font-tertiary whitespace-nowrap flex-shrink-0">
+            <div className="text-body-s text-page-font-tertiary whitespace-nowrap flex-shrink-0">
               {notice.date}
             </div>
           </div>

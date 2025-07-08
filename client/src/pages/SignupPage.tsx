@@ -1,50 +1,27 @@
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
 import { Input } from "@/components/ui/input";
-import { useAuthContext } from "@/contexts";
-import { signupSchema } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import type { z } from "zod";
+import { useSignup } from "@/hooks";
 
-export type SignupFormData = z.infer<typeof signupSchema>;
-
-const Signup = () => {
-  const navigate = useNavigate();
-  const { signup } = useAuthContext();
-
-  const { control, handleSubmit, formState: { errors, isSubmitting }, setError } = useForm<SignupFormData>({
-      resolver: zodResolver(signupSchema),
-      defaultValues: {
-        email: "",
-        password: "",
-        username: ""
-      }
-    });
-  
-    const onSubmit = async (data: SignupFormData) => {
-      try {
-        await signup(data);
-        navigate('/') 
-      } catch (error: any) {
-        setError("root", {
-          type: "manual",
-          message: error.message || "로그인 실패"
-        });
-      }
-    };
+export const SignupPage = () => {
+  const {
+    control,
+    handleSubmit,
+    errors,
+    isSubmitting,
+    handleLoginClick
+  } = useSignup();
 
   return (
     <div className="w-full h-screen bg-page-bg shadow-xl flex justify-center items-center">
       <div className="w-[590px] p-24 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
         
         <div className="w-full space-y-8">
-          <h1 className="text-page-font-primary text-2xl font-bold">
+          <h1 className="text-page-font-primary text-h2">
             회원가입
           </h1>
           
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <FormField
               name="username"
               label="이름"
@@ -96,7 +73,7 @@ const Signup = () => {
 
             {errors.root && (
               <div className="flex items-center pt-1 pl-1 text-sm text-page-error">
-                <span className="text-body2">{errors.root.message}</span>
+                <span className="text-caption">{errors.root.message}</span>
               </div>
             )}
 
@@ -112,13 +89,13 @@ const Signup = () => {
           </form>
           
           <div className="flex justify-center items-center gap-1">
-            <span className="text-page-font-primary font-medium">
+            <span className="text-page-font-primary text-body-s">
               이미 계정이 있으신가요?
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-page-button-primary font-bold underline hover:text-page-button-primary-hover transition-colors"
-              onClick={() => navigate('/login')}
+              className="px-2.5 py-3 text-page-button-primary text-body-s underline hover:text-page-button-primary-hover transition-colors"
+              onClick={handleLoginClick}
             >
               로그인
             </button>
@@ -128,5 +105,3 @@ const Signup = () => {
     </div>
   );
 };
-
-export default Signup;

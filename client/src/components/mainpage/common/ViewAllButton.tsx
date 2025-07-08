@@ -15,7 +15,7 @@ export const ViewAllButton = ({
   return (
     <button
       onClick={onClick}
-      className={`${textWidth} flex items-center gap-2 text-xs text-page-font-secondary hover:text-page-font-secondary transition-colors border rounded-[10px] border-border-default pl-3`}
+      className={`${textWidth} flex items-center gap-2 text-body-s text-page-font-secondary hover:text-page-font-secondary transition-colors border rounded-[10px] border-border-default pl-3`}
     >
       <span>
         {text}

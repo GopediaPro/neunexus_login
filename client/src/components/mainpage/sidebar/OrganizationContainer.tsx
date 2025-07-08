@@ -4,7 +4,7 @@ import { member } from "@/mocks/dummy/sidebar";
 import { useNavigate } from "react-router-dom";
 import { ScrollTable } from "../common/ScrollTable";
 
-export const OrgContainer = () => {
+export const OrganizationContainer = () => {
   const navigate = useNavigate();
 
   return (
@@ -35,8 +35,8 @@ export const OrgContainer = () => {
               </div>
 
               <div>
-                <div className="text-page-font-primary">{member.name}</div>
-                <div className="text-sm text-page-font-muted">{member.department}</div>
+                <div className="text-page-font-primary text-body-l">{member.name}</div>
+                <div className="text-body-s text-page-font-muted">{member.department}</div>
               </div>
 
               {/* 추후 메신저 이미지 */}
