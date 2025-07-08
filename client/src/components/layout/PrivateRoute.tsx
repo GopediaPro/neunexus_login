@@ -1,10 +1,19 @@
+import { useAuthContext } from '@/contexts';
 import type { ReactNode } from 'react';
 import { Navigate } from 'react-router';
 
 export const PrivateRoute = ({ children }: { children: ReactNode }) => {
-  const isLogin = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+  const { isAuthenticated, isLoading } = useAuthContext();
 
-  if (!isLogin) {
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen gap-4">
+        <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

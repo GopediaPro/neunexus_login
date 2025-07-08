@@ -3,8 +3,11 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import ReactQueryProvider from '@/provider/queryProvider'
 import { ThemeProvider } from 'next-themes'
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from '@/contexts/auth'
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import App from '@/App'
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 const renderApp = () => {
   createRoot(document.getElementById('root')!).render(
@@ -13,7 +16,7 @@ const renderApp = () => {
         <ThemeProvider
           attribute='class'
           defaultTheme='system'
-          enableSystem
+          enableSystem={true}
           disableTransitionOnChange={false}
         >
           <StrictMode>

@@ -7,47 +7,50 @@ export default {
 				sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'sans-serif'],
       	display: ['Pretendard', 'sans-serif'],
 			},
-			fontWeight: {
-				thin: '100',
-				light: '300',
-				normal: '400',
-				medium: '500',
-				semibold: '600',
-				bold: '700',
-				extrabold: '800',
-				black: '900',
+			fontSize: {
+				'h1': ['var(--text-h1-size)', { lineHeight: 'var(--text-h1-line-height)', fontWeight: 'var(--text-h1-weight)' }],
+				'h2': ['var(--text-h2-size)', { lineHeight: 'var(--text-h2-line-height)', fontWeight: 'var(--text-h2-weight)', letterSpacing: 'var(--text-h2-letter-spacing)' }],
+				'h3': ['var(--text-h3-size)', { lineHeight: 'var(--text-h3-line-height)', fontWeight: 'var(--text-h3-weight)' }],
+				'h4': ['var(--text-h4-size)', { lineHeight: 'var(--text-h4-line-height)', fontWeight: 'var(--text-h4-weight)' }],
+				'h5': ['var(--text-h5-size)', { lineHeight: 'var(--text-h5-line-height)', fontWeight: 'var(--text-h5-weight)' }],
+				'h6': ['var(--text-h6-size)', { lineHeight: 'var(--text-h6-line-height)', fontWeight: 'var(--text-h6-weight)' }],
+				'body-l': ['var(--text-body-l-size)', { lineHeight: 'var(--text-body-l-line-height)', fontWeight: 'var(--text-body-l-weight)' }],
+				'body-s': ['var(--text-body-s-size)', { lineHeight: 'var(--text-body-s-line-height)', fontWeight: 'var(--text-body-s-weight)' }],
+				'button': ['var(--text-button-size)', { lineHeight: 'var(--text-button-line-height)', fontWeight: 'var(--text-button-weight)' }],
+				'caption': ['var(--text-caption-size)', { lineHeight: 'var(--text-caption-line-height)', fontWeight: 'var(--text-caption-weight)' }],
+			},
+			screens: {
+				'xl': '1280px',
+				'2xl': '1600px'
 			},
 			extend: {
-				borderRadius: {
-					lg: 'var(--radius)',
-					md: 'calc(var(--radius) - 2px)',
-					sm: 'calc(var(--radius) - 4px)'
+				maxWidth: {
+					'screen-xl': '1280px',
+					'screen-2xl': '1600px'
 				},
 				colors: {
 					background: 'hsl(var(--background))',
 					foreground: 'hsl(var(--foreground))',
 					
-					'web-background': 'hsl(var(--web-background))',
-					'web-primary': 'hsl(var(--web-primary))',
-					'web-secondary': 'hsl(var(--web-secondary))',
-					'web-accent': 'hsl(var(--web-accent))',
-					'web-focus': 'hsl(var(--web-focus))',
-					
-					'border-default': 'hsl(var(--border-default))',
-					'border-icon': 'hsl(var(--border-icon))',
-					'border-subtle': 'hsl(var(--border-subtle))',
-					'border-error': 'hsl(var(--border-error))',
-					
-					'input-background': 'hsl(var(--input-background))',
-					'input-font': 'hsl(var(--input-font))',
-					'background-error': 'hsl(var(--background-error))',
-					
-					'font-white': 'hsl(var(--font-white))',
-					'font-black': 'hsl(var(--font-black))',
-					'font-primary': 'hsl(var(--font-primary))',
-					'font-secondary': 'hsl(var(--font-secondary))',
-					'font-tertiary': 'hsl(var(--font-tertiary))',
-					'font-muted': 'hsl(var(--font-muted))',
+					// 페이지 공통 색상
+					'page-bg': 'var(--page-bg)',
+					'page-card-bg': 'var(--page-card-bg)',
+					'page-button-primary': 'var(--page-button-primary)',
+					'page-button-primary-hover': 'var(--page-button-primary-hover)',
+					'page-button-primary-loading': 'var(--page-button-primary-loading)',
+					'page-error': 'var(--page-error)',
+					'page-error-input-bg': 'var(--page-error-input-bg)',
+					'page-input-bg': 'var(--page-input-bg)',
+					'page-input-font': 'var(--page-input-font)',
+					'page-input-border': 'var(--page-input-border)',
+					'page-input-title': 'var(--page-input-title)',
+					'page-button-font': 'var(--page-button-font)',
+					'page-font-primary': 'var(--page-font-primary)',
+					'page-font-secondary': 'var(--page-font-secondary)',
+
+					'page-blue-400': 'var(--page-blue-400)',
+					'page-blue-300': 'var(--page-blue-300)',
+					'page-blue-200': 'var(--page-blue-200)',
 					
 					'gray-100': 'hsl(var(--gray-100))',
 					'gray-200': 'hsl(var(--gray-200))',
@@ -55,16 +58,22 @@ export default {
 					'gray-400': 'hsl(var(--gray-400))',
 					'gray-500': 'hsl(var(--gray-500))',
 
-					'disabled-background': 'hsl(var(--disabled-background))',
-					'disabled-text': 'hsl(var(--disabled-text))',
-					'disabled-border': 'hsl(var(--disabled-border))',
-					'disabled-placeholder': 'hsl(var(--disabled-placeholder))',
+					// 메인페이지 전용 색상
+					'page-sidebar-bg': 'var(--page-sidebar-bg)',
+					'page-sidebar-menu-bg-default': 'var(--page-sidebar-menu-bg-default)',
+					'page-sidebar-menu-bg-hover': 'var(--page-sidebar-menu-bg-hover)',
+					'page-sidebar-menu-list-bg': 'var(--page-sidebar-menu-list-bg)',
+					'page-feature-button-icon-default': 'var(--page-feature-button-icon-default)',
+					'page-feature-button-icon-hover': 'var(--page-feature-button-icon-hover)',
+					'page-font-tertiary': 'var(--page-font-tertiary)',
+					'page-font-muted': 'var(--page-font-muted)',
+					'page-button-border': 'var(--page-button-border)',
+					'page-divider-border': 'var(--page-divider-border)',
+					'page-toggle-on-bg': 'var(--page-toggle-on-bg)',
+					'page-toggle-off-bg': 'var(--page-toggle-off-bg)',
+					'page-input-bar-scroll-bg': 'var(--page-input-bar-scroll-bg)',
 
-					'web-error': 'hsl(var(--web-error))',
-
-					'blue-300': 'var(--blue-300)',
-					'blue-400': 'var(--blue-400)',
-					'sky-blue-light': 'var(--sky-blue-light)',
+					'border-default': 'hsl(var(--border-default))',
 
 					primary: 'hsl(var(--web-primary))',
 					secondary: 'hsl(var(--web-secondary))',
@@ -102,6 +111,6 @@ export default {
 				}
 			}
 		},
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require('tailwind-scrollbar')],
 }
 

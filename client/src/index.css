@@ -1,35 +1,40 @@
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* font */
 @font-face {
   font-family: 'Pretendard';
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/pretendard/Pretendard-Regular.woff2') format('woff2');
+  src: url('/font/pretendard/PretendardStd-Regular.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Pretendard';
   font-weight: 500;
   font-display: swap;
-  src: url('/fonts/pretendard/Pretendard-Medium.woff2') format('woff2');
+  src: url('/font/pretendard/PretendardStd-Medium.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Pretendard';
   font-weight: 600;
   font-display: swap;
-  src: url('/fonts/pretendard/Pretendard-SemiBold.woff2') format('woff2');
+  src: url('/font/pretendard/PretendardStd-SemiBold.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Pretendard';
   font-weight: 700;
   font-display: swap;
-  src: url('/fonts/pretendard/Pretendard-Bold.woff2') format('woff2');
+  src: url('/font/pretendard/PretendardStd-Bold.woff2') format('woff2');
 }
 
+/* CSS Variables */
 @layer base {
   :root {
     font-family: 'Pretendard', system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -40,34 +45,85 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    --left-sidebar-width: 256px;
-    --right-sidebar-width: 320px;
+    --text-h1-size: 32px;
+    --text-h1-weight: 700;
+    --text-h1-line-height: 1.2;
 
-    --background: var(--web-background);
-    --foreground: var(--font-primary);
+    --text-h2-size: 24px;
+    --text-h2-weight: 600;
+    --text-h2-line-height: 32px;
+    --text-h2-letter-spacing: -0.3px;
 
-    /* 피그마 디자인 색상 추가 */
-    --web-background: 248 38% 98%;
-    --web-primary: 213 77% 47%;
-    --web-secondary: 213 69% 55%;
-    --web-accent: 213 77% 47%;
-    --web-focus: 213 77% 47%;
-    --web-error: 0 84% 60%;
+    --text-h3-size: 20px;
+    --text-h3-weight: 500;
+    --text-h3-line-height: 28px;
 
-    --border-default: 0 0% 85%;
-    --border-icon: 0 0% 66%;
-    --border-subtle: 0 0% 91%;
-    --border-error: 0 84% 60%;
+    --text-h4-size: 18px;
+    --text-h4-weight: 600;
+    --text-h4-line-height: 26px;
 
-    --input-background: 0 50% 98%;
-    --input-font: 0 0% 13%;
+    --text-h5-size: 16px;
+    --text-h5-weight: 600;
+    --text-h5-line-height: 24px;
 
-    --font-white: 0 0% 100%;
-    --font-black: 0 0% 7%;
-    --font-primary: 0 0% 13%;
-    --font-secondary: 0 0% 33%;
-    --font-tertiary: 0 0% 47%;
-    --font-muted: 0 0% 47%;
+    --text-h6-size: 14px;
+    --text-h6-weight: 500;
+    --text-h6-line-height: 20px;
+
+    --text-body-l-size: 16px;
+    --text-body-l-weight: 500;
+    --text-body-l-line-height: 24px;
+
+    --text-body-s-size: 14px;
+    --text-body-s-weight: 400;
+    --text-body-s-line-height: 20px;
+
+    --text-button-size: 16px;
+    --text-button-weight: 600;
+    --text-button-line-height: 24px;
+
+    --text-caption-size: 12px;
+    --text-caption-weight: 400;
+    --text-caption-line-height: 18px;
+
+    --left-sidebar-width: 183px;
+    --right-sidebar-width: 286px;
+    --disabled-opacity: 0.5;
+    --transition-duration: 0.2s;
+
+    /* 모든 페이지의 공통 색상 */
+    --page-bg: #F9F8FD;
+    --page-card-bg: #FFFFFF;
+    --page-button-primary: #1E6ECF;
+    --page-button-primary-hover: #1C63B9;
+    --page-button-primary-loading: #6291CF;
+    --page-error: #F04848;
+    --page-error-input-bg: #FFF9F9;
+    --page-input-bg: #FFFFFF;
+    --page-input-font: #555555;
+    --page-input-border: #A9A9A9;
+    --page-input-title: #555555;
+    --page-button-font: #FFFFFF;
+    --page-font-primary: #111111;
+    --page-font-secondary: #222222;
+
+    --page-sidebar-bg: #FFFFFF;
+    --page-sidebar-menu-bg-default: #FFFFFF;
+    --page-sidebar-menu-bg-hover: #E4ECF6;
+    --page-sidebar-menu-list-bg: #F9F9F9;
+    --page-feature-button-icon-default: #777777;
+    --page-feature-button-icon-hover: #333333;
+    --page-font-tertiary: #555555;
+    --page-font-muted: #777777;
+    --page-button-border: #D9D9D9;
+    --page-divider-border: #E9E9E9;
+    --page-toggle-on-bg: #1E6ECF;
+    --page-toggle-off-bg: #D9D9D9;
+    --page-input-bar-scroll-bg: #F3F3F3;
+    
+    --page-blue-400: #1E6ECF;
+    --page-blue-300: #8FB7E7;
+    --page-blue-200: #E0EEFF;
 
     --gray-100: 0 0% 95%;
     --gray-200: 0 0% 91%;
@@ -75,101 +131,70 @@
     --gray-400: 0 0% 66%;
     --gray-500: 240 2% 32%;
 
-    --blue-300: #1E6ECF;
-    --blue-400: #1C63B9;
-    --sky-blue-light: #E0EEFF;
+    /* Tailwind 호환 코드 */
+    --background: var(--page-bg);
+    --foreground: var(--page-font-primary);
+    --card: var(--page-card-bg);
+    --card-foreground: var(--page-font-primary);
 
-    --disabled-background: 0 0% 96%;
-    --disabled-text: 0 0% 62%;
-    --disabled-border: 0 0% 88%;
-    --disabled-placeholder: 0 0% 74%;
-
-    --background-error: 0 50% 98%;
-
-    /* Shadcn UI */
-    --card: var(--web-background);
-    --card-foreground: var(--font-primary);
-    --popover: var(--web-background);
-    --popover-foreground: var(--font-primary);
-    --muted: var(--gray-100);
-    --muted-foreground: var(--font-tertiary);
-    --accent: var(--web-accent);
-    --accent-foreground: var(--font-white);
-    --destructive: var(--web-error);
-    --destructive-foreground: var(--font-white);
-    --border: var(--border-default);
-    --input: var(--input-background);
-    --ring: var(--web-primary);
+    --border-default: 0 0% 85%;
   }
   .dark {
-    --background: var(--web-background);
-    --foreground: var(--font-primary);
+    --page-bg: #27313A;
+    --page-card-bg: #3C454D;
+    --page-button-primary: #228BFF;
+    --page-button-primary-hover: #1F7DE5;
+    --page-button-primary-loading: #5F97E5;
+    --page-error: #FF4D4F;
+    --page-error-input-bg: #423639;
+    --page-input-bg: #2F363D;
+    --page-input-font: #DDE2E7;
+    --page-input-border: #4A535B;
+    --page-input-title: #D9D9D9;
+    --page-button-font: #FFFFFF;
+    --page-font-primary: #FFFFFF;
+    --page-font-secondary: #F1F3F5;
 
-    --web-background: 207 21% 19%;
-    --web-primary: 207 13% 28%;
-    --web-secondary: 207 13% 28%;
-    --web-accent: 211 100% 58%;
-    --web-focus: 211 100% 58%;
-    --web-error: 359 100% 65%;
+    --page-sidebar-bg: #3C454D;
+    --page-sidebar-menu-bg-default: #3C454D;
+    --page-sidebar-menu-bg-hover: #343D46;
+    --page-sidebar-menu-list-bg: #565D65;
+    --page-feature-button-icon-default: #DDE2E7;
+    --page-feature-button-icon-hover: #FFFFFF;
+    --page-font-tertiary: #E6E9EC;
+    --page-font-muted: #DDE2E7;
+    --page-button-border: #5F666D;
+    --page-divider-border: #555D65;
+    --page-toggle-on-bg: #1E6ECF;
+    --page-toggle-off-bg: #A9A9A9;
+    --page-input-bar-scroll-bg: #27313A;
+
+    --page-blue-400: #228BFF;
+    --page-blue-300: #8FB7E7;
+    --page-blue-200: #E0EEFF;
+
+    --background: var(--page-bg);
+    --foreground: var(--page-font-primary);
+    --card: var(--page-card-bg);
+    --card-foreground: var(--page-font-primary);
 
     --border-default: 207 6% 39%;
-    --border-icon: 0 0% 66%;
-    --border-subtle: 207 10% 32%;
-    --border-error: 359 100% 65%;
-
-    --input-background: 207 13% 21%;
-    --input-font: 210 17% 95%;
-
-    --font-white: 0 0% 100%;
-    --font-black: 0 0% 100%;
-    --font-primary: 0 0% 100%;
-    --font-secondary: 210 17% 95%;
-    --font-tertiary: 210 14% 89%;
-    --font-muted: 207 9% 38%;
-
-    --gray-100: 207 9% 38%;
-    --gray-200: 207 10% 32%;
-    --gray-300: 207 6% 39%;
-    --gray-400: 0 0% 66%;
-    --gray-500: 207 13% 28%;
-
-    --blue-300: #228BFF;
-    --blue-400: #1F7DE5;
-    --sky-blue-light: #E0EEFF;
-
-    --disabled-background: 207 12% 25%;
-    --disabled-text: 0 0% 62%;
-    --disabled-border: 207 8% 35%;
-    --disabled-placeholder: 0 0% 54%;
-
-    --background-error: 0 13% 24%;
-
-    --card: var(--web-background);
-    --card-foreground: var(--font-primary);
-    --popover: var(--web-background);
-    --popover-foreground: var(--font-primary);
-    --muted: var(--gray-200);
-    --muted-foreground: var(--font-muted);
-    --accent: var(--web-accent);
-    --accent-foreground: var(--font-white);
-    --destructive: var(--web-error);
-    --destructive-foreground: var(--font-white);
-    --border: var(--border-default);
-    --input: var(--input-background);
-    --ring: var(--web-accent);
   }
 
   * {
     @apply border-border-default;
   }
-
+  
   body {
-    @apply bg-web-background text-font-primary;
+    background-color: var(--page-bg);
+    color: var(--page-font-primary);
     margin: 0;
     padding: 0;
+    transition: background-color var(--transition-duration) ease;
   }
 }
 
+/* 레이아웃 유틸 */
 .sidebar-left-width {
   width: var(--left-sidebar-width);
 }
@@ -182,26 +207,143 @@
   grid-template-columns: var(--left-sidebar-width) 1fr;
 }
 
-/* ========= ui - button ========= */
-.btn-login {
-  width: 100%;
-  height: 64px !important;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 18px;
-  padding-bottom: 18px;
-  background: #228bff;
-  border-radius: 8px;
-}
-.btn-login:hover {
-  background: #1f7de5;
-}
-.btn-login span {
-  color: white;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 28px;
-  letter-spacing: 0.06px;
-  word-wrap: break-word;
+.transition-common {
+  transition: all var(--transition-duration) ease-in-out;
 }
 
+.disabled {
+  opacity: var(--disabled-opacity);
+  pointer-events: none;
+}
+
+/* 캘린더 CSS */
+@layer components {
+  .rbc-calendar {
+    @apply font-sans;
+  }
+
+  .rbc-toolbar {
+    @apply mb-4 flex flex-wrap gap-2 justify-between items-center;
+  }
+
+  .rbc-toolbar button {
+    @apply border border-gray-300 bg-white text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-50 transition-colors;
+  }
+
+  .rbc-toolbar button:hover {
+    @apply bg-gray-50;
+  }
+
+  .rbc-toolbar button.rbc-active {
+    @apply bg-blue-500 text-white border-blue-500;
+  }
+
+  .rbc-toolbar-label {
+    @apply text-lg font-semibold text-gray-900;
+  }
+
+  .rbc-month-view {
+    @apply border border-gray-200 rounded-lg overflow-hidden;
+  }
+
+  .rbc-header {
+    @apply bg-gray-50 text-gray-700 py-3 px-2 font-medium text-sm border-b border-gray-200;
+  }
+
+  .rbc-date-cell {
+    @apply text-gray-900 font-medium;
+  }
+
+  .rbc-off-range-bg {
+    @apply bg-gray-100;
+  }
+
+  .rbc-off-range .rbc-date-cell {
+    @apply text-gray-400;
+  }
+
+  .rbc-today {
+    @apply bg-blue-50;
+  }
+
+  .rbc-day-bg:hover {
+    @apply bg-gray-50;
+  }
+
+  .rbc-event {
+    @apply rounded text-white text-xs font-medium;
+  }
+
+  .rbc-event:hover {
+    @apply opacity-90;
+  }
+
+  .rbc-event.rbc-selected {
+    @apply ring-2 ring-blue-500;
+  }
+}
+
+/* 미니 캘린더 */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 미니 캘린더 애니메이션 */
+.mini-calendar-date {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.mini-calendar-date:hover {
+  @apply transform scale-105;
+}
+
+.mini-calendar-date.selected {
+  @apply transform scale-105 shadow-md;
+}
+
+/* 이벤트 표시 점 애니메이션 */
+.event-dot {
+  @apply transition-all duration-150;
+}
+
+/* 날짜 버튼 focus 스타일 */
+.mini-calendar-date:focus {
+  @apply outline-none ring-2 ring-page-blue-300 ring-offset-2;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 640px) {
+  .mini-calendar-date {
+    @apply min-w-[40px] p-1.5;
+  }
+  
+  .mini-calendar-date span {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+
+/* 스크롤 바 */
+.always-show-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.always-show-scrollbar::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.always-show-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--page-blue-400, #60a5fa);
+  border-radius: 3px;
+  min-height: 20px;
+}
+
+.always-show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--page-blue-500, #3b82f6);
+}
