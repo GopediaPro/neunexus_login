@@ -10,6 +10,7 @@ import { MainPage } from './pages/MainPage';
 import { ProductManagementPage } from './pages/ProductManagementPage';
 import { OrderManagementPage } from './pages/OrderManagementPage';
 import { RuleEngineManagementPage } from './pages/RuleEngineManagementPage';
+import { Error } from './components/ui/Error';
 
 const publicRouteList = [
   {
@@ -62,4 +63,8 @@ export const router = createBrowserRouter([
       </PublicRoute>
     ),
   })),
+  {
+    path: '*',
+    element: <Error /> //
+  }
 ]);

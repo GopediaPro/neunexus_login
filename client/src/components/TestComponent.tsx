@@ -45,6 +45,7 @@ const TestComponent = () => {
     console.log("Form Data:", data);
   };
 
+const TestComponent = () => {
   return (
     <div className="p-6">
       <h2 className="text-xl font-semibold mb-4">인증기준 예외 관리 테이블</h2>
@@ -140,6 +141,6 @@ const TestComponent = () => {
       </form>
     </div>
   );
-}
+};
 
 export default TestComponent;
