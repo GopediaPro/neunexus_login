@@ -3,6 +3,9 @@ import { FormField } from "../ui/FormField";
 import { useForm } from "react-hook-form";
 import { SelectSearchInput } from "./common/SelectSearchInput";
 import { ruleOptions } from "@/mocks/dummy/rule";
+import { Select } from "../ui/Select";
+import { sectionOptions } from "@/constant";
+import { Textarea } from "../ui/Textarea";
 
 interface RuleFormData {
   selectedTool: string;
@@ -13,6 +16,9 @@ interface RuleFormData {
 export const RuleEditContainer = () => {
   const [testResult, setTestResult] = useState('');
   const [isTestSuccess, setIsTestSuccess] = useState(false);
+  const [inputData, _setInputData] = useState(`{ "goods_nm": "맛있는 사과", "model_code": "A-123",
+    "goods_price": 5000, "char_1_nm": "색상",
+    "char_1_val": "빨강" }`)
 
   const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<RuleFormData>({
     defaultValues: {
@@ -77,23 +83,13 @@ export const RuleEditContainer = () => {
                 control={control}
                 label="구분"
                 error={errors.selectedSection?.message}
-                render={(field, fieldId) => (
-                  <div className="relative">
-                    <select 
-                      id={fieldId}
-                      className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                      {...field}
-                    >
-                      <option value="마스터">마스터</option>
-                      <option value="옵션">옵션</option>
-                      <option value="기타">기타</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
+                render={field => (
+                  <Select
+                    options={sectionOptions}
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={!!errors.selectedSection}
+                  />
                 )}
               />
 
@@ -102,16 +98,16 @@ export const RuleEditContainer = () => {
                 control={control}
                 label="룰 값"
                 error={errors.ruleValue?.message}
-                render={(field, fieldId) => (
-                  <div>
-                    <textarea 
-                      id={fieldId}
-                      placeholder="중괄호 안에 변수를 수정하세요."
-                      className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px] font-mono text-sm"
-                      {...field}
-                    />
-                    <p className="text-sm text-gray-500 mt-1">중괄호 안에 변수를 수정하세요.</p>
-                  </div>
+                render={field => (
+                  <Textarea
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="중괄호 안에 변수를 수정하세요."
+                    variant="code"
+                    rows={4}
+                    helperText="중괄호 안에 변수를 수정하세요."
+                    error={!!errors.ruleValue}
+                  />
                 )}
               />
             </div>
@@ -164,9 +160,7 @@ export const RuleEditContainer = () => {
               입력 데이터
             </label>
             <div className="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm">
-              {`{ "goods_nm": "맛있는 사과", "model_code": "A-123",
-  "goods_price": 5000, "char_1_nm": "색상",
-  "char_1_val": "빨강" }`}
+              {inputData}
             </div>
             <p className="text-sm text-gray-500 mt-1">JSON 형식으로 테스트할 데이터를 입력하세요.</p>
           </div>
@@ -179,22 +173,12 @@ export const RuleEditContainer = () => {
                 control={control}
                 label="룰 선택"
                 error={errors.selectedTool?.message}
-                render={(_field, fieldId) => (
-                  <div className="relative">
-                    <select 
-                      id={fieldId}
-                      className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                      value={watchedValues.selectedTool}
-                      disabled
-                    >
-                      <option value="상품명 (product name)">상품명 (product name)</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
+                render={() => (
+                  <Select
+                    options={[{ value: watchedValues.selectedTool, label: watchedValues.selectedTool }]}
+                    value={watchedValues.selectedTool}
+                    disabled
+                  />
                 )}
               />
               <FormField
@@ -202,22 +186,12 @@ export const RuleEditContainer = () => {
                 control={control}
                 label="구분"
                 error={errors.selectedSection?.message}
-                render={(_field, fieldId) => (
-                  <div className="relative">
-                    <select 
-                      id={fieldId}
-                      className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                      value={watchedValues.selectedSection}
-                      disabled
-                    >
-                      <option value="마스터">마스터</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
+                render={() => (
+                  <Select
+                    options={[{ value: watchedValues.selectedSection, label: watchedValues.selectedSection }]}
+                    value={watchedValues.selectedSection}
+                    disabled
+                  />
                 )}
               />
             </div>
