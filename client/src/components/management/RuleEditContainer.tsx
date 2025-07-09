@@ -51,16 +51,16 @@ export const RuleEditContainer = () => {
   };
 
   return (
-    <div className="flex border border-border-default rounded-[10px] bg-page-card-bg overflow-hidden min-h-[683px]">
-      <div className="flex-1 p-6 bg-white border-r border-gray-200">
+    <div className="flex border border-stroke-base-100 rounded-[10px] bg-fill-base-100 overflow-hidden min-h-[683px]">
+      <div className="flex-1 p-6 bg-fill-base-100 border-stroke-base-100">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+          <h2 className="text-h4 text-text-base-500 mb-2 flex items-center">
             🔧 룰 편집기
           </h2>
-          <p className="text-gray-600">룰을 선택하고 값을 수정해주세요.</p>
+          <p className="text-text-base-400">룰을 선택하고 값을 수정해주세요.</p>
         </div>
 
-        <div className="p-6 border border-border-default rounded-[10px]">
+        <div className="p-6 border border-stroke-base-100 rounded-[10px]">
           <form onSubmit={handleSubmit(handleSave)}>
             <div className="space-y-6">
             <FormField
@@ -118,27 +118,27 @@ export const RuleEditContainer = () => {
             <button 
               type="button"
               onClick={handleImport}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-stroke-base-100 rounded-lg text-text-base-400 hover:bg-fill-alt-100 transition-colors"
             >
               룰 불러오기
             </button>
             <button 
               type="button"
               onClick={handleSubmit(handleSave)}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-500 text-text-contrast-500 rounded-lg hover:bg-primary-600 transition-colors"
             >
               변경사항 저장
             </button>
           </div>
 
-          <div className="border border-gray-200 rounded-lg p-4 mt-6">
-            <h3 className="font-medium text-gray-800 mb-3">현재 룰 정보</h3>
+          <div className="border border-stroke-base-100 rounded-lg p-4 mt-6">
+            <h3 className="font-medium text-text-base-500 mb-3">현재 룰 정보</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">선택된 룰:</span>
+                <span className="text-sm text-text-base-400">선택된 룰:</span>
                 <span className="text-sm font-medium">{watchedValues.selectedTool} ({watchedValues.selectedSection})</span>
               </div>
-              <div className="bg-gray-800 text-green-400 p-3 rounded-lg font-mono text-sm">
+              <div className="bg-text-base-400 text-green-400 p-3 rounded-lg font-mono text-sm">
                 {watchedValues.ruleValue}
               </div>
             </div>
@@ -148,25 +148,25 @@ export const RuleEditContainer = () => {
 
       <div className="flex-1 p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+          <h2 className="text-h4 text-text-base-500 mb-2 flex items-center">
             📊 룰 테스트
           </h2>
           <p className="text-gray-600">입력한 룰이 상품 데이터에 적용된 결과를 확인할 수 있습니다.</p>
         </div>
 
-        <div className="space-y-6 border border-border-default rounded-[10px] p-4 min-h-[683px] bg-gray-50">
+        <div className="space-y-6 border border-stroke-base-100 rounded-[10px] p-4 min-h-[683px] bg-fill-base-200">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-text-base-400 mb-2">
               입력 데이터
             </label>
-            <div className="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm">
+            <div className="bg-text-base-400 text-green-400 p-4 rounded-lg font-mono text-sm">
               {inputData}
             </div>
             <p className="text-sm text-gray-500 mt-1">JSON 형식으로 테스트할 데이터를 입력하세요.</p>
           </div>
 
           <div>
-            <h3 className="text-lg font-medium text-gray-800 mb-3">실행 파라미터</h3>
+            <h3 className="text-lg font-medium text-text-base-500 mb-3">실행 파라미터</h3>
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 name="selectedTool"
@@ -199,13 +199,13 @@ export const RuleEditContainer = () => {
             <div className="flex gap-3 mt-4">
               <button 
                 onClick={handleReset}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-primary-500 text-primary-500 rounded-lg hover:bg-primary-50 transition-colors"
               >
                 초기화
               </button>
               <button 
                 onClick={handleTest}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary-500 text-text-contrast-500 rounded-lg hover:bg-primary-600 transition-colors"
               >
                 테스트 실행
               </button>
@@ -213,12 +213,12 @@ export const RuleEditContainer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-medium text-gray-800 mb-3">실행 결과</h3>
+            <h3 className="text-lg font-medium text-text-base-500 mb-3">실행 결과</h3>
             {isTestSuccess && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                   <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 text-text-contrast-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>

@@ -27,14 +27,14 @@ export const Textarea = ({
 
   const baseClasses = `
     w-full p-3 border rounded-lg resize-vertical
-    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-    disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
-    ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'}
+    focus:ring-2 focus:ring-primary-500 focus:border-primary-500
+    disabled:bg-fill-alt-100 disabled:text-text-base-200 disabled:cursor-not-allowed
+    ${error ? 'border-error-500 focus:ring-error-500 focus:border-error-500' : 'border-stroke-base-100'}
   `;
 
   const variantClasses = {
-    default: 'bg-white',
-    code: 'bg-gray-50 font-mono text-sm'
+    default: 'bg-fill-base-100',
+    code: 'bg-fill-base-100 font-mono text-sm'
   };
 
   return (
@@ -49,7 +49,7 @@ export const Textarea = ({
         {...props}
       />
       {helperText && (
-        <p className={`text-sm mt-1 ${error ? 'text-red-500' : 'text-gray-500'}`}>
+        <p className={`text-sm mt-1 ${error ? 'text-error-500' : 'text-text-base-400'}`}>
           {helperText}
         </p>
       )}

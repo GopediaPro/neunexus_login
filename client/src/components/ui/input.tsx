@@ -57,35 +57,35 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               "focus-visible:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
 
-              !error && "bg-page-input-bg",
-              error && "bg-page-error-input-bg",
-              "text-page-input-font",
+              !error && "bg-fill-alt-200",
+              error && "bg-error-100",
+              "text-text-base-500",
 
-              currentVariant === 'default' && !error && "placeholder:text-page-font-secondary",
-              currentVariant === 'focused' && !error && "placeholder:text-page-button-primary",
-              currentVariant === 'error' && "placeholder:text-page-error",
+              currentVariant === 'default' && !error && "placeholder:text-text-base-400",
+              currentVariant === 'focused' && !error && "placeholder:text-primary-500",
+              currentVariant === 'error' && "placeholder:text-error-500",
               "placeholder:font-normal",
               
               currentVariant === 'default' && [
-                "border-page-input-border",
-                "hover:border-page-input-border",
-                "focus:border-page-button-primary focus:text-page-input-font"
+                "border-stroke-base-100",
+                "hover:border-stroke-base-100",
+                "focus:border-primary-500 focus:text-text-base-500"
               ],
               currentVariant === 'focused' && [
-                "border-page-button-primary text-page-input-font"
+                "border-primary-500 text-text-base-500"
               ],
               currentVariant === 'error' && [
-                "border-page-error",
-                "focus:border-page-error focus:text-page-input-font"
+                "border-error-500",
+                "focus:border-error-500 focus:text-text-base-500"
               ],
 
               onIcons && "pr-10",
 
               props.disabled && [
-                "bg-disabled-background text-disabled-text",
-                "border-disabled-border cursor-not-allowed", 
-                "placeholder:text-disabled-placeholder",
-                "hover:border-disabled-border focus:border-disabled-border"
+                "bg-fill-alt-100 text-text-base-200",
+                "border-stroke-base-100 cursor-not-allowed", 
+                "placeholder:text-text-base-300",
+                "hover:border-stroke-base-100 focus:border-stroke-base-100"
               ],
               className,
             )}
@@ -106,7 +106,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {helperText && !error && (
-          <p className="text-caption text-page-font-secondary mt-1">
+          <p className="text-caption text-text-base-400 mt-1">
             {helperText}
           </p>
         )}

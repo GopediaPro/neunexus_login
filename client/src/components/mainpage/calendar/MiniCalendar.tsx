@@ -55,18 +55,18 @@ export const MiniCalendar = ({ selectedDate, onDateSelect, events }: MiniCalenda
     <div className="py-4">
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1">
-          <span className="text-2xl font-bold text-page-blue-400">
+          <span className="text-2xl font-bold text-primary-500">
             {currentMonth.format('M')}
           </span>
-          <span className="text-sm text-page-font-primary">
+          <span className="text-sm text-text-base-500">
             월
           </span>
         </div>
 
-        <div className="flex items-center gap-0.5 p-1 border border-border-default rounded-2xl">
+        <div className="flex items-center gap-0.5 p-1 border border-stroke-base-100 rounded-2xl">
           <button
             onClick={handlePrevWeek}
-            className="flex items-center justify-center w-6 h-6 hover:bg-gray-100 rounded-2xl transition-colors text-gray-400"
+            className="flex items-center justify-center w-6 h-6 hover:bg-fill-alt-100 rounded-2xl transition-colors text-text-base-400"
           >
             <ChevronLeft className="w-3 h-3" />
           </button>
@@ -81,11 +81,11 @@ export const MiniCalendar = ({ selectedDate, onDateSelect, events }: MiniCalenda
                 key={index}
                 onClick={() => handleDateClick(date)}
                 className={`
-                  relative flex items-center justify-center text-gray-400 w-6 h-6 rounded-md text-xs font-bold transition-all
+                  relative flex items-center justify-center text-text-base-400 w-6 h-6 rounded-md text-xs font-bold transition-all
                   ${isSelectedDay 
-                    ? 'text-page-font-primary' 
+                    ? 'text-text-base-500' 
                     : isCurrentDay
-                      ? 'bg-blue-100 text-blue-600'
+                      ? 'bg-fill-alt-100 text-primary-500'
                       : ''
                   }
                 `}
@@ -105,7 +105,7 @@ export const MiniCalendar = ({ selectedDate, onDateSelect, events }: MiniCalenda
           
           <button
             onClick={handleNextWeek}
-            className="flex items-center justify-center w-6 h-6 hover:bg-gray-100 rounded-2xl transition-colors text-gray-400"
+            className="flex items-center justify-center w-6 h-6 hover:bg-fill-alt-100 rounded-2xl transition-colors text-text-base-400"
           >
             <ChevronRight className="w-3 h-3" />
           </button>

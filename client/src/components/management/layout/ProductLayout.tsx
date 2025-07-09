@@ -33,7 +33,7 @@ export const ProductLayout = () => {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col min-h-screen bg-page-card-bg">
+        <div className="flex flex-col min-h-screen bg-fill-base-100">
           <HeaderManagement title="상품/주문 관리 시스템" />
           <ProductToolbar />
           <div className="flex-1 p-4 pl-6">

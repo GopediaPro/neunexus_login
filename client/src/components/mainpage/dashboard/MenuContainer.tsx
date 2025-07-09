@@ -12,13 +12,13 @@ export const MenuContainer = () => {
             key={item.id}
             icon={<Icon name={item.icon} style="w-7 h-7" />}
             label={item.label}
-            className="flex-shrink-0 2xl:mb-4"
+            className="flex-shrink-0 2xl:mb-4 bg-fill-base-100 hover:bg-fill-alt-100"
           />
         ))}
         
         <MenuBox
           icon={<Icon name="plus" style="w-8 h-8" />}
-          className="opacity-50 hover:opacity-100 flex-shrink-0"
+          className="opacity-50 hover:opacity-100 flex-shrink-0 bg-fill-base-100 hover:bg-fill-alt-100"
         />
       </div>
     </div>

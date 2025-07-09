@@ -15,8 +15,8 @@ const StatsItem = ({ iconName, value, label }: StatsItemProps) => {
         <Icon name={iconName} style={`${iconName === 'document' ? 'w-4 h-4' : 'w-5 h-5 '} text-white`} />
       </div>
       <div className="text-white">
-        <div className="text-center text-lg font-bold leading-tight">{value.toLocaleString()}</div>
-        <div className="text-h6 text-white/90">{label}</div>
+        <div className="text-center text-h5 leading-tight">{value.toLocaleString()}</div>
+        <div className="text-h6 text-text-contrast-500">{label}</div>
       </div>
     </div>
   );
@@ -25,7 +25,7 @@ const StatsItem = ({ iconName, value, label }: StatsItemProps) => {
 export const StatsDashboard = () => {
 
   return (
-    <div className="bg-page-blue-400 rounded-[10px] p-2 px-16">
+    <div className="bg-primary-500 rounded-[10px] p-2 px-16">
       <div className="flex justify-between 2xl:justify-center 2xl:gap-20 cursor-pointer">
         {statsItems.map((item, index) => (
           <StatsItem

@@ -15,8 +15,8 @@ export const LoginPage = () => {
   } = useLogin();
 
   return (
-    <div className="w-full h-screen bg-page-bg shadow-xl flex justify-center items-center">
-      <div className="w-[590px] px-24 py-14 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
+    <div className="w-full h-screen bg-fill-base-200 shadow-xl flex justify-center items-center">
+      <div className="w-[590px] px-24 py-14 rounded-3xl bg-fill-base-100 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-stroke-base-100">
         <div className="flex flex-col items-center">
           <div className="w-64 h-16 mb-20">
             <Logo className='w-[15rem] h-[8rem]' />
@@ -24,7 +24,7 @@ export const LoginPage = () => {
         </div>
         
         <div className="w-full space-y-4">
-          <h1 className="text-page-font-primary text-h2">
+          <h1 className="text-text-base-500 text-h2">
             로그인
           </h1>
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
@@ -58,8 +58,8 @@ export const LoginPage = () => {
             />
 
             {errors.root && (
-              <div className="flex items-center pt-1 pl-1 text-sm text-page-error">
-                <span className="text-caption">아이디 패스워드가 일치하지 않습니다.</span>
+              <div className="flex items-center pt-1 pl-1 text-caption text-error-500">
+                <span>아이디 패스워드가 일치하지 않습니다.</span>
               </div>
             )}
 
@@ -76,7 +76,7 @@ export const LoginPage = () => {
                           field.onChange(checked ? 1 : 0);
                         }}
                       />
-                      <span className="text-page-font-secondary text-body-s transition-colors">
+                      <span className="text-text-base-500 text-body-s transition-colors">
                         자동 로그인
                       </span>
                     </div>
@@ -87,14 +87,14 @@ export const LoginPage = () => {
               <div className="flex items-center mt-2">
                 <button
                   type="button"
-                  className="py-3 px-2.5 text-page-font-secondary text-body-s transition-colors"
+                  className="py-3 px-2.5 text-text-base-400 text-body-s transition-colors"
                 >
                   아이디 찾기
                 </button>
-                <div className="w-px h-3.5 bg-border-default"></div>
+                <div className="w-px h-3.5 bg-stroke-base-100"></div>
                 <button
                   type="button"
-                  className="py-3 px-2.5 text-page-font-secondary text-body-s transition-colors"
+                  className="py-3 px-2.5 text-text-base-400 text-body-s transition-colors"
                 >
                   비밀번호 찾기
                 </button>
@@ -114,12 +114,12 @@ export const LoginPage = () => {
           </form>
         
           <div className="flex justify-center items-center gap-1">
-            <span className="text-page-font-primary text-body-s">
+            <span className="text-text-base-500 text-body-s">
               아직 회원이 아니신가요?
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-page-button-primary text-body-s underline hover:text-page-button-primary-hover transition-colors"
+              className="px-2.5 py-3 text-primary-500 text-body-s underline hover:text-primary-600 transition-colors"
               onClick={handleSignupClick}
             >
               회원가입

@@ -110,7 +110,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="2xl">
-      <div className="bg-white rounded-2xl">
+      <div className="bg-fill-base-100 rounded-2xl">
         <Modal.Header>
           <Modal.Title>일정 추가</Modal.Title>
           <Modal.CloseButton />
@@ -119,8 +119,8 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {event?.start && (
-              <div className="p-3 bg-page-card-bg rounded-lg">
-                <div className="text-md font-bold text-page-blue-400">
+              <div className="p-3 bg-fill-base-100 rounded-lg">
+                <div className="text-md font-bold text-primary-500">
                   {getFormattedDate()}
                 </div>
               </div>
@@ -159,7 +159,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                     )}
                   />
                 </div>
-                <div className="text-font-tertiary mt-5">~</div>
+                <div className="text-text-base-400 mt-5">~</div>
                 <div className="flex-1">
                   <FormField
                     name="endTime"
@@ -193,15 +193,15 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                       onClick={() => field.onChange(color.value)}
                       className={`flex items-center space-x-3 p-2 pr-4 rounded-[8px] border transition-all ${
                         selectedCategory === color.value
-                          ? 'border-web-primary bg-page-card-bg'
-                          : 'border-border-default hover:bg-page-card-bg'
+                          ? 'border-primary-500 bg-fill-base-100'
+                          : 'border-stroke-base-100 hover:bg-fill-alt-100'
                       }`}
                     >
                       <div 
                         className="w-4 h-4 rounded-full"
                         style={{ backgroundColor: color.value }}
                       />
-                      <span className="text-sm text-font-primary">{color.name}</span>
+                      <span className="text-sm text-text-base-500">{color.name}</span>
                     </button>
                   ))}
                 </div>
@@ -218,15 +218,15 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                   id="memo"
                   placeholder="메모를 입력하세요..."
                   rows={3}
-                  className="w-full px-3 py-2.5 bg-page-input-bg border border-border-default rounded-md focus:outline-none focus:ring-2 focus:ring-web-primary focus:border-transparent resize-none"
+                  className="w-full px-3 py-2.5 bg-fill-base-100 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
                   {...field}
                 />
               )}
             />
 
             {(errors.title || errors.startTime || errors.endTime || errors.category) && (
-              <div className="p-3 bg-red-50 rounded-lg">
-                <div className="text-sm text-red-800">
+              <div className="p-3 bg-fill-alt-100 rounded-lg">
+                <div className="text-sm text-text-base-500">
                   입력 정보를 확인해주세요.
                 </div>
               </div>
@@ -240,7 +240,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                 type="button"
                 variant="outline"
                 onClick={handleDelete}
-                className="text-red-600 border-red-200 hover:bg-red-50"
+                className="text-text-base-500 border-stroke-base-100 hover:bg-fill-alt-100"
               >
                 삭제
               </Button>

@@ -31,12 +31,12 @@ const CustomEvent = ({ event }: { event: CalendarEvent }) => {
     <div key={event.id} className="flex items-start justify-between">
       <div className="flex items-start space-x-2 flex-1 min-w-0">
         <div className="flex-1 min-w-0">
-          <div className="text-sm text-white leading-tight overflow-hidden text-ellipsis whitespace-nowrap">
+          <div className="text-sm text-text-contrast-500 leading-tight overflow-hidden text-ellipsis whitespace-nowrap">
             {event.title}
           </div>
         </div>
       </div>
-      <div className="text-xs text-page-font-tertiary whitespace-nowrap flex-shrink-0">
+      <div className="text-xs text-text-base-400 whitespace-nowrap flex-shrink-0">
         {startTime}
       </div>
     </div>
@@ -86,7 +86,7 @@ export const ScheduleCalendar = ({
 
   return (
     <div className={`w-full ${className}`}>
-      <div className="bg-page-bg rounded-lg">
+      <div className="bg-fill-base-100 rounded-lg">
         <Calendar
           localizer={localizer}
           events={events}
