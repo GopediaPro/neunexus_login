@@ -1,7 +1,8 @@
 export const Error = () => {
   return (
-    <div className="flex items-center justify-center h-screen text-[32px] font-bold text-red-500">
-      404 ERROR PAGE
+    <div className="flex flex-col items-center justify-center h-screen text-center space-y-4">
+      <h1 className="text-[40px] font-bold text-red-600">404</h1>
+      <p className="text-xl text-gray-500">페이지를 찾을 수 없습니다.</p>
     </div>
   );
 };
