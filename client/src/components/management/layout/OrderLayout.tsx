@@ -3,8 +3,8 @@ import { useSidebar } from "@/contexts/SidebarContext";
 import { useEffect, useRef } from "react";
 import { MenuSidebarLayout } from '@/components/mainpage/layout/MenuSidebarLayout';
 import { HeaderManagement } from '../HeaderManagement';
-import { ProductToolbar } from '../ProductToolbar';
-import { ProductGrid } from '../common/ProductGrid';
+import { OrderGrid } from '../common/OrderGrid';
+import { OrderToolbar } from '../OrderToolbar';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -26,18 +26,18 @@ export const OrderLayout = () => {
           <MenuSidebarLayout />
           <div className="flex flex-col">
             <HeaderManagement title="상품/주문 관리 시스템" />
-            <ProductToolbar />
+            <OrderToolbar />
             <div className="flex-1 p-4">
-              <ProductGrid />
+              <OrderGrid />
             </div>
           </div>
         </div>
       ) : (
         <div className="flex flex-col min-h-screen bg-page-card-bg">
           <HeaderManagement title="상품/주문 관리 시스템" />
-          <ProductToolbar />
+          <OrderToolbar />
           <div className="flex-1 p-4 pl-6">
-            <ProductGrid />
+            <OrderGrid />
           </div>
         </div>
       )}
