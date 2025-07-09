@@ -43,7 +43,7 @@ export const useMenuSideabar = () => {
       case '상품 등록':
         navigate(ROUTERS.PRODUCT_MANAGAMENT);
         break;
-      case '주문 등록':
+      case '주문 목록':
         navigate(ROUTERS.ORDER_MANAGEMENT);
         break;
     }
