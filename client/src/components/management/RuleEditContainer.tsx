@@ -51,7 +51,7 @@ export const RuleEditContainer = () => {
   };
 
   return (
-    <div className="flex border border-border-default rounded-[10px] bg-page-card-bg overflow-hidden">
+    <div className="flex border border-border-default rounded-[10px] bg-page-card-bg overflow-hidden min-h-[683px]">
       <div className="flex-1 p-6 bg-white border-r border-gray-200">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center">
@@ -146,7 +146,7 @@ export const RuleEditContainer = () => {
         </div>
       </div>
 
-      <div className="flex-1 p-6 bg-gray-50">
+      <div className="flex-1 p-6">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center">
             📊 룰 테스트
@@ -154,7 +154,7 @@ export const RuleEditContainer = () => {
           <p className="text-gray-600">입력한 룰이 상품 데이터에 적용된 결과를 확인할 수 있습니다.</p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 border border-border-default rounded-[10px] p-4 min-h-[683px] bg-gray-50">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               입력 데이터
