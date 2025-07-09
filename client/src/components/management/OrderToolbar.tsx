@@ -15,12 +15,14 @@ export const OrderToolbar = () => {
 
   return (
     <>
-      <div className="px-6">
-        <div className="flex gap-2 pt-2 border-b bg-fill-base-100">
-          <button onClick={() => naviagte(ROUTERS.PRODUCT_MANAGAMENT)} className="px-4 py-2 text-text-base-400 text-h3 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">상품관리</button>
-          <button className="px-4 py-2 text-primary-500 bg-fill-base-100 text-h3 border-b-2 border-primary-500">주문관리</button>
+      <div>
+        <div className="px-6 bg-fill-base-200">
+          <div className="flex gap-2 border-b">
+            <button onClick={() => naviagte(ROUTERS.PRODUCT_MANAGAMENT)} className="px-4 py-2 text-text-base-400 text-h3 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">상품관리</button>
+            <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h3 border-b-2 border-primary-500">주문관리</button>
+          </div>
         </div>
-        <div className="flex gap-4 pt-6">
+        <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
           <Button 
             size="lg" 
             className={`border border-stroke-base-100 transition-colors`}>
@@ -32,7 +34,7 @@ export const OrderToolbar = () => {
             대량주문등록
           </Button>
         </div>
-        <div className="mt-6">
+        <div className="mt-6 px-6">
           <span className="text-h2">주문목록</span>
         </div>
       </div>
