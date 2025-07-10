@@ -139,7 +139,7 @@ export const WithInput: Story = {
           type="email"
           placeholder="your@email.com"
           defaultValue="invalid-email"
-          className="flex h-[3.125rem] w-full rounded-lg border border-border-error bg-background-error text-input-font px-3 py-3 text-caption focus-visible:outline-none placeholder:text-web-error"
+          className="flex h-[3.125rem] w-full rounded-lg border border-stroke-base-100 bg-fill-alt-100 text-input-font px-3 py-3 text-caption focus-visible:outline-none placeholder:text-text-base-400"
         />
         <ErrorMessage message="유효한 이메일 형식을 입력해주세요" />
       </div>

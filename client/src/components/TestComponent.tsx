@@ -51,29 +51,29 @@ const TestComponent = () => {
       <h2 className="text-xl font-semibold mb-4">인증기준 예외 관리 테이블</h2>
       
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="border border-gray-300 rounded-lg overflow-hidden">
-          <div className="grid grid-cols-4 bg-yellow-200 border-b border-gray-300">
-            <div className="p-3 text-center font-medium border-r border-gray-300">ID</div>
-            <div className="p-3 text-center font-medium border-r border-gray-300 bg-yellow-300">인증테이블</div>
+        <div className="border border-stroke-base-100 rounded-lg overflow-hidden">
+          <div className="grid grid-cols-4 bg-fill-alt-100 border-b border-stroke-base-100">
+            <div className="p-3 text-center font-medium border-r border-stroke-base-100">ID</div>
+            <div className="p-3 text-center font-medium border-r border-stroke-base-100 bg-fill-alt-100">인증테이블</div>
             <div className="p-3 text-center font-medium border-r border-gray-300">쇼핑몰ID</div>
-            <div className="p-3 text-center font-medium bg-yellow-300">예외처리명칭</div>
+            <div className="p-3 text-center font-medium bg-fill-alt-100">예외처리명칭</div>
           </div>
 
           {fields.map((field, index) => (
-            <div key={field.id} className="grid grid-cols-4 border-b border-gray-300 last:border-b-0">
-              <div className="p-3 flex items-center justify-center border-r border-gray-300">
+            <div key={field.id} className="grid grid-cols-4 border-b border-stroke-base-100 last:border-b-0">
+              <div className="p-3 flex items-center justify-center border-r border-stroke-base-100">
                 <span className="text-sm">{field.id}</span>
                 <button
                   type="button"
                   onClick={() => remove(index)}
-                  className="ml-2 text-red-500 hover:text-red-700"
+                  className="ml-2 text-error-500 hover:text-error-700"
                   title="행 삭제"
                 >
                   ✕
                 </button>
               </div>
               
-              <div className="p-2 border-r border-gray-300">
+              <div className="p-2 border-r border-stroke-base-100">
                 <FormField
                   name={`authTable.${index}.authTableName`}
                   control={control}
@@ -88,7 +88,7 @@ const TestComponent = () => {
                 />
               </div>
               
-              <div className="p-2 border-r border-gray-300">
+              <div className="p-2 border-r border-stroke-base-100">
                 <FormField
                   name={`authTable.${index}.mallId`}
                   control={control}

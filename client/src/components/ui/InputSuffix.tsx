@@ -21,7 +21,7 @@ export const InputSuffix = ({
         <button
           type="button"
           onClick={onTogglePassword}
-          className="text-page-input-font hover:text-page-font-primary focus:outline-none transition-colors"
+          className="text-text-base-500 hover:text-text-base-500 focus:outline-none transition-colors"
         >
           {showPassword ? (
             <Icon name="eye-off" ariaLabel="감은눈" style="w-5 h-5" />
@@ -32,7 +32,7 @@ export const InputSuffix = ({
       )}
 
       {error && (
-        <Icon name="alert" ariaLabel="에러이미지" style="w-5 h-5 text-page-error" />
+        <Icon name="alert" ariaLabel="에러이미지" style="w-5 h-5 text-error-500" />
       )}
     </div>
   );

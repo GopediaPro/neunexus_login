@@ -66,14 +66,14 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
       disabled={disabled}
       onClick={handleToggle}
       className={cn(
-        'relative inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-page-button-primary focus-visible:ring-offset-2 focus-visible:ring-offset-page-bg',
+        'relative inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-fill-base-100',
         sizeClasses[size],
         isChecked
-          ? 'bg-page-button-primary hover:bg-page-button-primary-hover'
-          : 'bg-gray-300 hover:bg-gray-400',
+          ? 'bg-primary-500 hover:bg-primary-600'
+          : 'bg-fill-alt-100 hover:bg-fill-alt-200',
         disabled && [
           'cursor-not-allowed opacity-50',
-          isChecked ? 'bg-disabled-background' : 'bg-disabled-background',
+          isChecked ? 'bg-fill-alt-100' : 'bg-fill-alt-100',
         ],
         className
       )}
@@ -81,10 +81,10 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
     > 
       <span
         className={cn(
-          'pointer-events-none inline-block transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out',
+          'pointer-events-none inline-block transform rounded-full bg-fill-base-100 shadow-lg ring-0 transition duration-200 ease-in-out',
           translateClasses[size],
           thumbSizeClasses[size],
-          disabled && 'bg-disabled-background'
+          disabled && 'bg-fill-alt-100'
         )}
       />
     </button>

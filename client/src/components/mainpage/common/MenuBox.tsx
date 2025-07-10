@@ -20,14 +20,14 @@ export const MenuBox = ({
         onClick={onClick}
         className={`
           relative flex justify-center items-center w-[4.65rem] h-[4.65rem]
-          bg-page-sidebar-bg border border-border-default  rounded-xl
+          bg-fill-base-100 border border-stroke-base-100  rounded-xl
           ${className}
         `}
       >
-        <div className="w-9 h-9 flex items-center justify-center mb-1 text-page-font-muted">
+        <div className="w-9 h-9 flex items-center justify-center mb-1 text-text-base-400">
           {icon}
         </div>
-        <span className="absolute bottom-[-22px] text-h6 text-center leading-tight text-page-font-primary">
+        <span className="absolute bottom-[-22px] text-h6 text-center leading-tight text-text-base-500">
           {label}
         </span>
       </button>
