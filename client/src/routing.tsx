@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { ROUTERS } from './constant/route';
 import Layout from './Layout';
-import TestComponent from './components/TestComponent';
+import { TestComponent } from './components/TestComponent';
 import { PrivateRoute } from '@/components/layout/PrivateRoute';
 import { PublicRoute } from '@/components/layout/PublicRoute';
 import { LoginPage } from './pages/LoginPage';

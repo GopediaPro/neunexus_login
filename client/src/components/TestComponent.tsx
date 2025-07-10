@@ -14,7 +14,7 @@ interface FormData {
   authTable: AuthTableRow[];
 }
 
-const TestComponent = () => { 
+export const TestComponent = () => { 
   const { control, handleSubmit } = useForm<FormData>({
     defaultValues: {
       authTable: [
@@ -140,5 +140,3 @@ const TestComponent = () => {
     </div>
   );
 };
-
-export default TestComponent;
