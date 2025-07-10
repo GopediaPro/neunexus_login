@@ -34,3 +34,9 @@ export type {
 export type {
   IUser,
 } from './user.types';
+
+export type {
+  OrderItem,
+  OrderResponse,
+  OrderRegisterForm
+} from './order.types';

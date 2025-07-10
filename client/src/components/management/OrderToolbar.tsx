@@ -1,17 +1,31 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Input } from "../ui/input";
 import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
+import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
+import type { OrderRegisterForm } from "@/shared/types";
 
-export const OrderToolbar = () => {
+interface OrderToolbarProps {
+  onTemplateChange: (templateCode: string) => void;
+}
+
+export const OrderToolbar = ({ onTemplateChange }: OrderToolbarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const naviagte = useNavigate();
+  const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
 
   const handleIconClick = () => {
     inputRef.current?.focus();
   }
+
+  const handleOrderRegisterSubmit = (data: OrderRegisterForm) => {
+    if (data.selectedTemplate) {
+      onTemplateChange(data.selectedTemplate);
+    }
+    setIsOrderRegisterModalOpen(false);
+  };
 
   return (
     <>
@@ -52,12 +66,18 @@ export const OrderToolbar = () => {
         </div> 
 
         <div className="flex items-center gap-2">
-          <Button variant="light" className="py-5">주문 등록</Button>
+          <Button variant="light" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 등록</Button>
           <Button variant="light" className="py-5">판매가 수정</Button>
           <Button variant="light" className="py-5">카테고리 수정</Button>
           <Button variant="light" className="py-5">옵션별칭 수정</Button>
         </div>
       </div>
+
+      <OrderRegisterModal
+        isOpen={isOrderRegisterModalOpen}
+        onClose={() => setIsOrderRegisterModalOpen(false)}
+        onSubmit={handleOrderRegisterSubmit}
+      />
     </>
   );
 };
