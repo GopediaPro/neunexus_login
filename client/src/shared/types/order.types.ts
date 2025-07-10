@@ -68,3 +68,55 @@ export interface OrderRegisterForm {
     order_date?: string;
   };
 }
+
+export interface OrderData {
+  id: number;
+  order_id: string;
+  mall_order_id: string;
+  product_name: string;
+  receive_name: string;
+  receive_cel: string;
+  sale_cnt: number;
+  pay_cost: number;
+  expected_payout: number;
+  service_fee: number;
+  delv_cost: number;
+  fld_dsp: string;
+  receive_addr: string;
+  delv_msg: string;
+  sku_value: string;
+  process_dt: string;
+  created_at: string;
+}
+
+export interface BulkCreateRequest {
+  items: BulkCreateOrderItem[];
+}
+
+export interface BulkUpdateRequest {
+  items: BulkUpdateOrderItem[];
+}
+
+export interface BulkDeleteRequest {
+  ids: number[];
+}
+
+export interface BulkOperationResponse {
+  success: boolean;
+  message?: string;
+  data?: any;
+  errors?: Array<{
+    index?: number;
+    id?: number;
+    message: string;
+    field?: string;
+  }>;
+}
+
+export type BulkCreateOrderItem = Omit<OrderItem, 'id' | 'created_at' | 'updated_at'> & {
+  id?: number;
+};
+
+export type BulkUpdateOrderItem = Partial<OrderItem> & {
+  id: number;
+};

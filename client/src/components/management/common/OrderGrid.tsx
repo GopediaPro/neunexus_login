@@ -1,28 +1,40 @@
-import { useCallback, useMemo, useRef } from "react";
-import type { ColDef, GridReadyEvent } from "ag-grid-community";
-import { useOrders } from "@/hooks/orderManagement/useOrders";
+import { useCallback, useMemo, useRef, useState } from "react";
+import type { ColDef, GridApi, GridReadyEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 
 interface OrderGridProps {
-  templateCode: string;
+  rowData: any[];
+  gridApi?: GridApi | null;
+  setGridApi?: (api: GridApi | null) => void;
+  onSelectionChanged?: (selectedRows: any[]) => void;
 }
 
-export const OrderGrid = ({ templateCode }: OrderGridProps) => {
+export const OrderGrid = ({
+  rowData,
+  setGridApi,
+  onSelectionChanged
+}: OrderGridProps) => {
   const gridRef = useRef<AgGridReact>(null);
-  const { data: ordersData, isLoading} = useOrders({ templateCode });
-
-  const rowData = useMemo(() => {
-    if (ordersData?.items && ordersData.items.length > 0) {
-      if (ordersData.items[0]?.data) {
-        const actualData = ordersData.items[0].data;
-        return actualData || [];
-      }
-    }
-    
-    return [];
-  }, [ordersData]);
+  const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
 
   const columnDefs: ColDef[] = useMemo(() => [
+    {
+      field: 'checkbox',
+      headerName: '',
+      checkboxSelection: true,
+      headerCheckboxSelection: true,
+      headerCheckboxSelectionFilteredOnly: true,
+      width: 50,
+      maxWidth: 50,
+      pinned: 'left',
+      lockPosition: 'left',
+      cellClass: 'ag-cell-centered',
+      suppressMovable: true,
+      filter: false,
+      sortable: false,
+      resizable: false,
+      editable: false
+    },
     {
       field: 'order_id',
       headerName: '주문ID',
@@ -31,16 +43,20 @@ export const OrderGrid = ({ templateCode }: OrderGridProps) => {
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'mall_order_id',
       headerName: '몰주문ID',
-      width: 120,
+      width: 150,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'product_name',
@@ -50,138 +66,177 @@ export const OrderGrid = ({ templateCode }: OrderGridProps) => {
       floatingFilterComponentParams: {
         suppressFilterButton: true
       },
-      tooltipField: 'product_name'
+      tooltipField: 'product_name',
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'receive_name',
       headerName: '받는분',
-      width: 100,
+      width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'receive_cel',
       headerName: '연락처',
-      width: 120,
+      width: 150,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'sale_cnt',
       headerName: '수량',
-      width: 80,
+      width: 100,
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       },
-      cellClass: 'ag-cell-centered'
+      cellClass: 'ag-cell-centered',
+      editable: true,
+      cellEditor: 'agNumberCellEditor',
+      cellEditorParams: {
+        min: 0,
+        max: 9999
+      }
     },
     {
       field: 'pay_cost',
       headerName: '결제금액',
-      width: 120,
+      width: 150,
       valueFormatter: (params) => {
         return params.value ? `${Number(params.value).toLocaleString()}원` : '';
       },
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agNumberCellEditor',
     },
     {
       field: 'expected_payout',
       headerName: '예상정산금',
-      width: 120,
+      width: 150,
       valueFormatter: (params) => {
         return params.value ? `${Number(params.value).toLocaleString()}원` : '';
       },
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
+      },
+      editable: true,
+      cellEditor: 'agNumberCellEditor',
+      cellEditorParams: {
+        min: 0
       }
     },
     {
       field: 'service_fee',
       headerName: '서비스수수료',
-      width: 120,
+      width: 150,
       valueFormatter: (params) => {
         return params.value ? `${Number(params.value).toLocaleString()}원` : '';
       },
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
+      },
+      editable: true,
+      cellEditor: 'agNumberCellEditor',
+      cellEditorParams: {
+        min: 0
       }
     },
     {
       field: 'delv_cost',
       headerName: '배송비',
-      width: 100,
+      width: 120,
       valueFormatter: (params) => {
         return params.value ? `${Number(params.value).toLocaleString()}원` : '';
       },
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
+      },
+      editable: true,
+      cellEditor: 'agNumberCellEditor',
+      cellEditorParams: {
+        min: 0
       }
     },
     {
       field: 'fld_dsp',
       headerName: '판매처',
-      width: 150,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'receive_addr',
-      headerName: '배송주소',
-      width: 200,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      tooltipField: 'receive_addr'
-    },
-    {
-      field: 'delv_msg',
-      headerName: '배송메모',
       width: 180,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       },
-      tooltipField: 'delv_msg'
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
-      field: 'sku_value',
-      headerName: 'SKU정보',
+      field: 'receive_addr',
+      headerName: '배송주소',
+      width: 250,
+      filter: 'agTextColumnFilter',
+      floatingFilterComponentParams: {
+        suppressFilterButton: true
+      },
+      tooltipField: 'receive_addr',
+      editable: true,
+      cellEditor: 'agTextCellEditor'
+    },
+    {
+      field: 'delv_msg',
+      headerName: '배송메모',
       width: 200,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
       },
-      tooltipField: 'sku_value'
+      tooltipField: 'delv_msg',
+      editable: true,
+      cellEditor: 'agTextCellEditor'
+    },
+    {
+      field: 'sku_value',
+      headerName: 'SKU정보',
+      width: 250,
+      filter: 'agTextColumnFilter',
+      floatingFilterComponentParams: {
+        suppressFilterButton: true
+      },
+      tooltipField: 'sku_value',
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'process_dt',
       headerName: '처리일시',
-      width: 120,
+      width: 150,
       valueFormatter: (params) =>
         params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
       filter: 'agDateColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agDateCellEditor'
     },
     {
       field: 'created_at',
       headerName: '생성일시',
-      width: 120,
+      width: 150,
       valueFormatter: (params) =>
         params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
       filter: 'agDateColumnFilter',
@@ -208,17 +263,51 @@ export const OrderGrid = ({ templateCode }: OrderGridProps) => {
     rowHeight: 40,
     rowSelection: "multiple" as const,
     domLayout: "normal" as const,
-    suppressRowClickSelection: true
+    suppressRowClickSelection: true,
+    enterMovesDown: true,
+    enterMovesDownAfterEdit: true,
+    singleClickEdit: true,
+    stopEditingWhenCellsLoseFocus: true
   }), []);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
+    if (setGridApi) {
+      setGridApi(params.api);
+    } else {
+      setInternalGridApi(params.api);
+    }
+    
     setTimeout(() => {
       if (params.api) {
         params.api.sizeColumnsToFit();
       }
     }, 100);
-  }, []);
+  }, [setGridApi]);
 
+  const onSelectionChangedCallback = useCallback((event: any) => {
+    const selectedRows = event.api.getSelectedRows();
+    
+    if (onSelectionChanged) {
+      onSelectionChanged(selectedRows);
+    }
+  }, [onSelectionChanged]);
+
+  if (!rowData) {
+    return (
+      <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4">
+            <svg className="w-16 h-16 mx-auto text-text-base-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-text-base-500 mb-2">주문 관리 시스템</h3>
+          <p className="text-text-base-400 mb-1">템플릿을 선택하여 주문 데이터를 조회하세요</p>
+          <p className="text-sm text-text-base-300">'주문 등록' 버튼을 클릭하여 시작하세요</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100">
@@ -228,8 +317,8 @@ export const OrderGrid = ({ templateCode }: OrderGridProps) => {
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         onGridReady={onGridReady}
+        onSelectionChanged={onSelectionChangedCallback}
         {...gridOptions}
-        loading={isLoading}
         getRowId={(params) => params.data.id.toString()}
       />
     </div>

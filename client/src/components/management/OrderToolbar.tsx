@@ -6,15 +6,24 @@ import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
 import type { OrderRegisterForm } from "@/shared/types";
-
+import { useOrderGridActions } from "@/utils/useOrderGridActions";
+import { useBulkDeleteOrders } from "@/hooks/orderManagement/useOrders";
 interface OrderToolbarProps {
   onTemplateChange: (templateCode: string) => void;
+  gridApi: any;
+  originalData: any[];
+  selectedRows: any[];
 }
 
-export const OrderToolbar = ({ onTemplateChange }: OrderToolbarProps) => {
+export const OrderToolbar = ({ onTemplateChange, gridApi, originalData, selectedRows }: OrderToolbarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const naviagte = useNavigate();
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
+
+  // const bulkCreateMutation = useBulkCreateOrders();
+  // const bulkUpdateMutation = useBulkUpdateOrders();
+  const bulkDeleteMutation = useBulkDeleteOrders();
+  const { addNewRow, deleteSelectedRows } = useOrderGridActions(gridApi);
 
   const handleIconClick = () => {
     inputRef.current?.focus();
@@ -26,6 +35,62 @@ export const OrderToolbar = ({ onTemplateChange }: OrderToolbarProps) => {
     }
     setIsOrderRegisterModalOpen(false);
   };
+
+  const handleOrderDelete = async () => {
+    if (selectedRows.length === 0) {
+      return;
+    }
+    
+    const confirmMessage = selectedRows.length === 1 
+      ? `주문 "${selectedRows[0].order_id || '신규 주문'}"을 삭제하시겠습니까?`
+      : `선택된 ${selectedRows.length}개 주문을 삭제하시겠습니까?`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      const idsToDelete = selectedRows
+        .map(row => row.id)
+        .filter(id => id != null);
+
+      if (idsToDelete.length === 0) {
+        alert('삭제할 수 있는 유효한 주문이 없습니다.');
+        return;
+      }
+
+      await bulkDeleteMutation.mutateAsync({
+        ids: idsToDelete
+      });
+
+      if (gridApi) {
+        gridApi.applyTransaction({
+          remove: selectedRows
+        });
+        gridApi.deselectAll();
+      }
+      
+    } catch (error) {
+      console.error('주문 삭제 실패:', error);
+    }
+  };
+
+  const handleRowDelete = () => {
+    if (selectedRows.length === 0) {
+      return;
+    }
+    
+    const confirmMessage = selectedRows.length === 1 
+      ? `주문 "${selectedRows[0].order_id || '신규 주문'}"을 삭제하시겠습니까?`
+      : `선택된 ${selectedRows.length}개 주문을 삭제하시겠습니까?`;
+    
+    if (confirm(confirmMessage)) {
+      deleteSelectedRows();
+    }
+  };
+
+  const isDeleteDisabled = selectedRows.length === 0 || bulkDeleteMutation.isPending;
+  const isRowDeleteDisabled = selectedRows.length === 0;
 
   return (
     <>
@@ -66,10 +131,20 @@ export const OrderToolbar = ({ onTemplateChange }: OrderToolbarProps) => {
         </div> 
 
         <div className="flex items-center gap-2">
-          <Button variant="light" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 등록</Button>
-          <Button variant="light" className="py-5">판매가 수정</Button>
-          <Button variant="light" className="py-5">카테고리 수정</Button>
-          <Button variant="light" className="py-5">옵션별칭 수정</Button>
+          <Button variant="light" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 호출</Button>
+          <Button variant="light" className="py-5">주문 추가</Button>
+          <Button variant="light" className="py-5">주문 수정</Button>
+          <Button variant="light" 
+            className={`py-5 ${isDeleteDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={handleOrderDelete}
+            disabled={isDeleteDisabled}
+          >
+          {bulkDeleteMutation.isPending ? '삭제 중...' : `주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
+          </Button>
+          <Button variant="light" className="py-5" onClick={addNewRow}>행 추가</Button>
+          <Button variant="light" className="py-5" onClick={handleRowDelete} disabled={isRowDeleteDisabled}>
+            행 삭제{selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}
+          </Button>
         </div>
       </div>
 
