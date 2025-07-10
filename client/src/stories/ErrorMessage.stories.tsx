@@ -90,32 +90,32 @@ export const ErrorTypes: Story = {
   render: () => (
     <div className="space-y-4">
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">필수 입력 에러</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">필수 입력 에러</h3>
         <ErrorMessage message="이 필드는 필수 입력 항목입니다" />
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">형식 검증 에러</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">형식 검증 에러</h3>
         <ErrorMessage message="올바른 이메일 형식을 입력해주세요" />
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">길이 검증 에러</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">길이 검증 에러</h3>
         <ErrorMessage message="비밀번호는 최소 8자 이상이어야 합니다" />
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">패턴 검증 에러</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">패턴 검증 에러</h3>
         <ErrorMessage message="비밀번호는 영문과 숫자를 포함해야 합니다" />
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">서버 에러</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">서버 에러</h3>
         <ErrorMessage message="이미 사용 중인 이메일입니다" />
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">네트워크 에러</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">네트워크 에러</h3>
         <ErrorMessage message="네트워크 연결을 확인해주세요" />
       </div>
     </div>
@@ -133,13 +133,13 @@ export const ErrorTypes: Story = {
 export const WithInput: Story = {
   render: () => (
     <div className="space-y-4">
-      <h3 className="text-font-primary font-medium">Input + ErrorMessage 조합</h3>
+      <h3 className="text-text-base-500 font-medium">Input + ErrorMessage 조합</h3>
       <div className="space-y-1">
         <input
           type="email"
           placeholder="your@email.com"
           defaultValue="invalid-email"
-          className="flex h-[3.125rem] w-full rounded-lg border border-stroke-base-100 bg-fill-alt-100 text-input-font px-3 py-3 text-caption focus-visible:outline-none placeholder:text-text-base-400"
+          className="flex h-[3.125rem] w-full rounded-lg border border-stroke-base-100 bg-fill-base-100 text-text-base-500 px-3 py-3 text-caption focus-visible:outline-none placeholder:text-text-base-300"
         />
         <ErrorMessage message="유효한 이메일 형식을 입력해주세요" />
       </div>

@@ -47,15 +47,15 @@ export const Sizes: Story = {
     <div className="flex items-center gap-4">
       <div className="flex flex-col items-center gap-2">
         <Toggle size="sm" defaultChecked={false} />
-        <span className="text-sm text-gray-600">Small</span>
+        <span className="text-sm text-text-base-300">Small</span>
       </div>
       <div className="flex flex-col items-center gap-2">
         <Toggle size="md" defaultChecked={false} />
-        <span className="text-sm text-gray-600">Medium</span>
+        <span className="text-sm text-text-base-300">Medium</span>
       </div>
       <div className="flex flex-col items-center gap-2">
         <Toggle size="lg" defaultChecked={false} />
-        <span className="text-sm text-gray-600">Large</span>
+        <span className="text-sm text-text-base-300">Large</span>
       </div>
     </div>
   ),
@@ -66,15 +66,15 @@ export const States: Story = {
     <div className="grid grid-cols-3 gap-6">
       <div className="flex flex-col items-center gap-2">
         <Toggle defaultChecked={false} />
-        <span className="text-sm text-gray-600">Off</span>
+        <span className="text-sm text-text-base-300">Off</span>
       </div>
       <div className="flex flex-col items-center gap-2">
         <Toggle defaultChecked={true} />
-        <span className="text-sm text-gray-600">On</span>
+        <span className="text-sm text-text-base-300">On</span>
       </div>
       <div className="flex flex-col items-center gap-2">
         <Toggle defaultChecked={false} disabled />
-        <span className="text-sm text-gray-600">Disabled</span>
+        <span className="text-sm text-text-base-300">Disabled</span>
       </div>
     </div>
   ),
@@ -104,7 +104,7 @@ export const Controlled: Story = {
           checked={isChecked} 
           onCheckedChange={setIsChecked}
         />
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-text-base-300">
           상태: {isChecked ? '켜짐' : '꺼짐'}
         </p>
         <button 
@@ -122,7 +122,7 @@ export const AllVariants: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-gray-700">Small</h3>
+        <h3 className="text-sm font-medium text-text-base-300">Small</h3>
         <div className="flex items-center gap-4">
           <Toggle size="sm" defaultChecked={false} />
           <Toggle size="sm" defaultChecked={true} />
@@ -132,7 +132,7 @@ export const AllVariants: Story = {
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-gray-700">Medium</h3>
+        <h3 className="text-sm font-medium text-text-base-300">Medium</h3>
         <div className="flex items-center gap-4">
           <Toggle size="md" defaultChecked={false} />
           <Toggle size="md" defaultChecked={true} />
@@ -142,7 +142,7 @@ export const AllVariants: Story = {
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-gray-700">Large</h3>
+        <h3 className="text-sm font-medium text-text-base-300">Large</h3>
         <div className="flex items-center gap-4">
           <Toggle size="lg" defaultChecked={false} />
           <Toggle size="lg" defaultChecked={true} />
@@ -158,15 +158,15 @@ export const WithLabels: Story = {
   render: () => (
     <div className="space-y-4">
       <div className="flex items-center justify-between w-64">
-        <span className="text-sm font-medium text-gray-700">알림 받기</span>
+        <span className="text-sm font-medium text-text-base-300">알림 받기</span>
         <Toggle defaultChecked={true} />
       </div>
       <div className="flex items-center justify-between w-64">
-        <span className="text-sm font-medium text-gray-700">다크 모드</span>
+        <span className="text-sm font-medium text-text-base-300">다크 모드</span>
         <Toggle defaultChecked={false} />
       </div>
       <div className="flex items-center justify-between w-64">
-        <span className="text-sm font-medium text-gray-700">자동 저장</span>
+        <span className="text-sm font-medium text-text-base-300">자동 저장</span>
         <Toggle defaultChecked={true} />
       </div>
     </div>

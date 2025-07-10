@@ -183,17 +183,17 @@ export const AllStates: Story = {
   render: () => (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">기본 상태</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">기본 상태</h3>
         <Input placeholder="기본 상태 Input" />
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">포커스 상태</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">포커스 상태</h3>
         <Input placeholder="포커스된 Input" variant="focused" />
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">에러 상태</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">에러 상태</h3>
         <Input 
           placeholder="에러 상태 Input" 
           error="에러가 발생했습니다" 
@@ -202,7 +202,7 @@ export const AllStates: Story = {
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">도움말 포함</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">도움말 포함</h3>
         <Input 
           placeholder="도움말이 있는 Input" 
           helperText="이것은 도움말 텍스트입니다"
@@ -210,7 +210,7 @@ export const AllStates: Story = {
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">비밀번호 (토글)</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">비밀번호 (토글)</h3>
         <Input 
           type="password" 
           placeholder="비밀번호" 
@@ -219,7 +219,7 @@ export const AllStates: Story = {
       </div>
       
       <div>
-        <h3 className="mb-2 text-font-primary font-medium">비활성화 상태</h3>
+        <h3 className="mb-2 text-text-base-500 font-medium">비활성화 상태</h3>
         <Input 
           placeholder="비활성화된 Input" 
           disabled 
@@ -256,7 +256,7 @@ export const Interactive: Story = {
     
     return (
       <div className="space-y-4">
-        <h3 className="text-font-primary font-medium">실시간 검증 예제</h3>
+        <h3 className="text-text-base-500 font-medium">실시간 검증 예제</h3>
         <Input
           type="email"
           placeholder="이메일을 입력하세요"
@@ -265,7 +265,7 @@ export const Interactive: Story = {
           error={error}
           helperText="'@'를 포함한 이메일 형식을 입력해주세요"
         />
-        <p className="text-sm text-font-tertiary">
+        <p className="text-sm text-text-base-300">
           입력값: {value || '(없음)'}
         </p>
       </div>
