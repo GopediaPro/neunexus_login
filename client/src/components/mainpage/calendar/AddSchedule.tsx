@@ -9,6 +9,7 @@ import { FormField } from '@/components/ui/FormField';
 import { Input } from '@/components/ui/input';
 import type { CalendarEvent } from './ScheduleCalendar';
 import { COLOR_OPTIONS } from '@/constant/calendar';
+import { Textarea } from '@/components/ui/Textarea';
 
 interface AddScheduleProps {
   isOpen: boolean;
@@ -119,8 +120,8 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {event?.start && (
-              <div className="p-3 bg-fill-base-100 rounded-lg">
-                <div className="text-md font-bold text-primary-500">
+              <div className="p-3 bg-primary-300 rounded-lg">
+                <div className="text-h4 text-primary-500">
                   {getFormattedDate()}
                 </div>
               </div>
@@ -136,6 +137,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                   id='title'
                   placeholder="일정 이름을 입력하세요..."
                   error={errors.title?.message}
+                  className='bg-fill-base-100'
                   {...field}
                 />
               )}
@@ -154,6 +156,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                         id='startTime'
                         type='time'
                         error={errors.startTime?.message}
+                        className='bg-fill-base-100'
                         {...field}
                       />
                     )}
@@ -171,6 +174,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                         id="endTime"
                         type="time"
                         error={errors.endTime?.message}
+                        className='bg-fill-base-100'
                         {...field}
                       />
                     )}
@@ -214,11 +218,12 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
               control={control}
               error={errors.memo?.message}
               render={(field) => (
-                <textarea
-                  id="memo"
+                <Textarea
                   placeholder="메모를 입력하세요..."
                   rows={3}
-                  className="w-full px-3 py-2.5 bg-fill-base-100 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                  error={!!errors.memo}
+                  helperText={errors.memo?.message}
+                  className='bg-fill-base-100'
                   {...field}
                 />
               )}

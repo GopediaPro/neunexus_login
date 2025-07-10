@@ -154,7 +154,7 @@ export const ScheduleContainer = () => {
 
       <Modal isOpen={isScheduleModalOpen} onClose={handleCloseScheduleModal} size="5xl">
         <div className="bg-fill-base-100 rounded-2xl">
-          <Modal.Header className="border-b p-4 px-6">
+          <Modal.Header className="border-b border-stroke-base-100 p-4 px-6">
             <Modal.Title>일정 관리</Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>

@@ -19,7 +19,7 @@ export const HeaderLayout = () => {
     };
 
   return (
-    <header className="px-4 py-3">
+    <header className="px-4 pt-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button onClick={toggle}>
