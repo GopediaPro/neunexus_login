@@ -14,7 +14,6 @@ interface FormData {
   authTable: AuthTableRow[];
 }
 
-
 const TestComponent = () => { 
   const { control, handleSubmit } = useForm<FormData>({
     defaultValues: {
@@ -47,7 +46,7 @@ const TestComponent = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">인증기준 예외 관리 테이블</h2>
+      <h2 className="text-h4 mb-4">인증기준 예외 관리 테이블</h2>
       
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="border border-stroke-base-100 rounded-lg overflow-hidden">
@@ -132,7 +131,7 @@ const TestComponent = () => {
           
           <Button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white"
+            className="px-4 py-2 bg-primary-500 text-text-contrast-500"
           >
             저장
           </Button>
