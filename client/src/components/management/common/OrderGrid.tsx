@@ -7,15 +7,18 @@ interface OrderGridProps {
   gridApi?: GridApi | null;
   setGridApi?: (api: GridApi | null) => void;
   onSelectionChanged?: (selectedRows: any[]) => void;
+  onDataChanged?: (changedRows: any[]) => void;
 }
 
 export const OrderGrid = ({
   rowData,
   setGridApi,
-  onSelectionChanged
+  onSelectionChanged,
+  onDataChanged
 }: OrderGridProps) => {
   const gridRef = useRef<AgGridReact>(null);
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
+  const [changedRows, setChangedRows] = useState<Set<string>>(new Set());
 
   const columnDefs: ColDef[] = useMemo(() => [
     {
@@ -292,6 +295,33 @@ export const OrderGrid = ({
     }
   }, [onSelectionChanged]);
 
+  const onCellValueChanged = useCallback((event: any) => {
+    const rowId = event.data.id?.toString();
+    if (rowId) {
+      setChangedRows(prev => new Set(prev).add(rowId));
+      
+      if (onDataChanged && event.api) {
+        const allChangedRowsData = Array.from(changedRows).map(id => {
+          const rowNode = event.api.getRowNode(id);
+          return rowNode?.data;
+        }).filter(Boolean);
+
+        if (!allChangedRowsData.find(row => row.id?.toString() === rowId)) {
+          allChangedRowsData.push(event.data);
+        }
+        
+        onDataChanged(allChangedRowsData);
+      }
+    }
+  }, [onDataChanged, changedRows]);
+
+  const clearChangedRows = useCallback(() => {
+    setChangedRows(new Set());
+    if (onDataChanged) {
+      onDataChanged([]);
+    }
+  }, [onDataChanged]);
+
   if (!rowData) {
     return (
       <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100 flex items-center justify-center">
@@ -318,6 +348,8 @@ export const OrderGrid = ({
         defaultColDef={defaultColDef}
         onGridReady={onGridReady}
         onSelectionChanged={onSelectionChangedCallback}
+        onCellValueChanged={onCellValueChanged}
+        onRowDataUpdated={clearChangedRows}
         {...gridOptions}
         getRowId={(params) => params.data.id.toString()}
       />

@@ -16,6 +16,7 @@ export const OrderLayout = () => {
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
   const [originalData, setOriginalData] = useState<any[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [changedRows, setChangedRows] = useState<any[]>([]);
 
   const { data: ordersData } = useOrders({ templateCode: currentTemplate });
 
@@ -47,6 +48,10 @@ export const OrderLayout = () => {
     setSelectedRows(selectedRowsData);
   }, []);
 
+  const handleDataChanged = useCallback((changedRowsData: any[]) => {
+    setChangedRows(changedRowsData);
+  }, []);
+
   return (
     <div className="min-h-screen">
       {isOpen ? (
@@ -59,6 +64,8 @@ export const OrderLayout = () => {
               gridApi={gridApi} 
               originalData={originalData} 
               selectedRows={selectedRows}
+              currentTemplate={currentTemplate}
+              changedRows={changedRows}
             />
             <div className="flex-1 p-4">
               <OrderGrid
@@ -66,6 +73,7 @@ export const OrderLayout = () => {
                 gridApi={gridApi}
                 setGridApi={setGridApi}
                 onSelectionChanged={handleSelectionChanged}
+                onDataChanged={handleDataChanged}
               />
             </div>
           </div>
@@ -73,18 +81,21 @@ export const OrderLayout = () => {
       ) : (
         <div className="flex flex-col min-h-screen bg-fill-base-100">
           <HeaderManagement title="상품/주문 관리 시스템" />
-          <OrderToolbar 
-            onTemplateChange={handleTemplateChange} 
-            gridApi={gridApi} 
-            originalData={originalData} 
-            selectedRows={selectedRows}
-          />
+            <OrderToolbar 
+              onTemplateChange={handleTemplateChange} 
+              gridApi={gridApi} 
+              originalData={originalData} 
+              selectedRows={selectedRows}
+              currentTemplate={currentTemplate}
+              changedRows={changedRows}
+            />
           <div className="flex-1 p-4 pl-6">
             <OrderGrid
               rowData={originalData}
               gridApi={gridApi}
               setGridApi={setGridApi} 
               onSelectionChanged={handleSelectionChanged}
+              onDataChanged={handleDataChanged}
             />
           </div>
         </div>
