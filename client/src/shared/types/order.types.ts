@@ -120,3 +120,14 @@ export type BulkCreateOrderItem = Omit<OrderItem, 'id' | 'created_at' | 'updated
 export type BulkUpdateOrderItem = Partial<OrderItem> & {
   id: number;
 };
+
+export interface ExcelUploadRequest {
+  template_code: string;
+  file: File | null;
+}
+
+export interface ExcelUploadResponse {
+  file_url: string;
+  object_name: string;
+  template_code: string;
+}

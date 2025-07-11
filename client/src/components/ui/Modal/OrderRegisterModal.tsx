@@ -4,7 +4,7 @@ import { SelectSearchInput } from "@/components/management/common/SelectSearchIn
 import { templateOptions } from "@/constant";
 import { Button } from "@/components/ui/Button";
 import { Modal } from ".";
-import { ModalBody, ModalCloseButton, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
+import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
 
 interface OrderRegisterModalProps {
   isOpen: boolean;

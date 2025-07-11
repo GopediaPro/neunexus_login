@@ -8,6 +8,7 @@ import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
 import type { OrderRegisterForm } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
 import { useBulkCreateOrders, useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
+import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 
 interface OrderToolbarProps {
   onTemplateChange: (templateCode: string) => void;
@@ -22,11 +23,12 @@ export const OrderToolbar = ({
   gridApi,
   selectedRows,
   currentTemplate,
-  changedRows = [] 
+  changedRows = [],
 }: OrderToolbarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
+  const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
 
   const bulkCreateMutation = useBulkCreateOrders();
   const bulkUpdateMutation = useBulkUpdateOrders();
@@ -280,6 +282,9 @@ export const OrderToolbar = ({
           <Button variant="light" className="py-5" onClick={handleRowDelete} disabled={isRowDeleteDisabled}>
             행 삭제{selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}
           </Button>
+          <Button variant="light" className="py-5" onClick={() => setIsExcelUploadModalOpen(true)}>
+            엑셀 업로드
+          </Button>
         </div>
       </div>
 
@@ -287,6 +292,11 @@ export const OrderToolbar = ({
         isOpen={isOrderRegisterModalOpen}
         onClose={() => setIsOrderRegisterModalOpen(false)}
         onSubmit={handleOrderRegisterSubmit}
+      />
+
+      <ExcelUploadModal
+        isOpen={isExcelUploadModalOpen}
+        onClose={() => setIsExcelUploadModalOpen(false)}
       />
     </>
   );

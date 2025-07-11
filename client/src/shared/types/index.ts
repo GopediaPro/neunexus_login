@@ -46,4 +46,6 @@ export type {
   BulkDeleteRequest,
   BulkOperationResponse,
   OrderData,
+  ExcelUploadRequest,
+  ExcelUploadResponse,
 } from './order.types';
