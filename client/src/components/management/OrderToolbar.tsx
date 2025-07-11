@@ -132,62 +132,16 @@ export const OrderToolbar = ({
       await bulkUpdateMutation.mutateAsync({
         items: changedRows.map(row => ({
           id: row.id,
-          process_dt: row.process_dt || new Date().toISOString(),
-          
-          form_name: row.form_name || "",
-          seq: row.seq || 0,
           idx: row.idx || "",
-          
+          form_name: row.form_name || "",
           order_id: row.order_id || "",
-          mall_order_id: row.mall_order_id || "",
-          
-          product_id: row.product_id || "",
           product_name: row.product_name || "",
-          mall_product_id: row.mall_product_id || "",
-          item_name: row.item_name || "",
-          sku_value: row.sku_value || "",
-          sku_alias: row.sku_alias || "",
-          sku_no: row.sku_no || "",
-          barcode: row.barcode || "",
-          model_name: row.model_name || "",
-          erp_model_name: row.erp_model_name || "",
-          location_nm: row.location_nm || "",
-          
           sale_cnt: Number(row.sale_cnt) || 0,
           pay_cost: Number(row.pay_cost) || 0,
           delv_cost: Number(row.delv_cost) || 0,
           total_cost: Number(row.total_cost) || 0,
-          total_delv_cost: Number(row.total_delv_cost) || 0,
-          expected_payout: Number(row.expected_payout) || 0,
-          etc_cost: Number(row.etc_cost) || 0,
-          price_formula: row.price_formula || "",
-          service_fee: Number(row.service_fee) || 0,
-          
-          sum_p_ea: Number(row.sum_p_ea) || 0,
-          sum_expected_payout: Number(row.sum_expected_payout) || 0,
-          sum_pay_cost: Number(row.sum_pay_cost) || 0,
-          sum_delv_cost: Number(row.sum_delv_cost) || 0,
-          sum_total_cost: Number(row.sum_total_cost) || 0,
-          
           receive_name: row.receive_name || "",
-          receive_cel: row.receive_cel || "",
-          receive_tel: row.receive_tel || "",
-          receive_addr: row.receive_addr || "",
-          receive_zipcode: row.receive_zipcode || "",
-          delivery_payment_type: row.delivery_payment_type || "",
-          delv_msg: row.delv_msg || "",
-          delivery_id: row.delivery_id || "",
-          delivery_class: row.delivery_class || "",
-          invoice_no: row.invoice_no || "",
-          
-          fld_dsp: row.fld_dsp || "",
-          order_etc_6: row.order_etc_6 || "",
-          order_etc_7: row.order_etc_7 || "",
-          etc_msg: row.etc_msg || "",
-          free_gift: row.free_gift || "",
-          
-          created_at: row.created_at || new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          receive_cel: row.receive_cel || ""
         })) as any
       });
 
