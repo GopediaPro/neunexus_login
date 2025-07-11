@@ -7,11 +7,11 @@ import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
 import type { OrderRegisterForm } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
-import { useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
+import { useBulkCreateOrders, useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
+
 interface OrderToolbarProps {
   onTemplateChange: (templateCode: string) => void;
   gridApi: any;
-  originalData: any[];
   selectedRows: any[];
   currentTemplate: string;
   changedRows?: any[];
@@ -20,16 +20,15 @@ interface OrderToolbarProps {
 export const OrderToolbar = ({ 
   onTemplateChange,
   gridApi,
-  originalData,
   selectedRows,
   currentTemplate,
   changedRows = [] 
 }: OrderToolbarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
 
-  // const bulkCreateMutation = useBulkCreateOrders();
+  const bulkCreateMutation = useBulkCreateOrders();
   const bulkUpdateMutation = useBulkUpdateOrders();
   const bulkDeleteMutation = useBulkDeleteOrders();
   const { addNewRow, deleteSelectedRows } = useOrderGridActions(gridApi);
@@ -43,6 +42,111 @@ export const OrderToolbar = ({
       onTemplateChange(data.selectedTemplate);
     }
     setIsOrderRegisterModalOpen(false);
+  };
+
+  const handleOrderCreate = async () => {
+    if (!gridApi) return;
+
+    const allRows: any[] = [];
+    gridApi.forEachNode((node: any) => {
+      allRows.push(node.data);
+    });
+
+    const newRows = allRows.filter(row => 
+      row.id && String(row.id).startsWith('temp_')
+    );
+
+    if (newRows.length === 0) {
+      alert('생성할 새로운 주문이 없습니다.');
+      return;
+    }
+
+    const invalidRows = newRows.filter(row => {
+      return !row.order_id?.trim() || !row.product_name?.trim() || !row.sale_cnt || row.sale_cnt <= 0;
+    });
+
+    if (invalidRows.length > 0) {
+      alert('주문ID, 상품명, 수량은 필수 입력 사항입니다.');
+      return;
+    }
+
+    const confirmMessage = newRows.length === 1 
+      ? `주문 "${newRows[0].order_id}"을 생성하시겠습니까?`
+      : `새로운 ${newRows.length}개 주문을 생성하시겠습니까?`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      await bulkCreateMutation.mutateAsync({
+        items: newRows.map(row => ({ 
+          process_dt: row.process_dt ? row.process_dt.replace('Z', '') : new Date().toISOString().replace('Z', ''),
+          
+          form_name: row.form_name || currentTemplate || "",
+          seq: row.seq || 0,
+          idx: row.idx || `ORDER${Date.now()}`,
+          
+          order_id: row.order_id || "",
+          mall_order_id: row.mall_order_id || "",
+          
+          product_id: row.product_id || "",
+          product_name: row.product_name || "",
+          mall_product_id: row.mall_product_id || "",
+          item_name: row.item_name || "",
+          sku_value: row.sku_value || "",
+          sku_alias: row.sku_alias || "",
+          sku_no: row.sku_no || "",
+          barcode: row.barcode || "",
+          model_name: row.model_name || "",
+          erp_model_name: row.erp_model_name || "",
+          location_nm: row.location_nm || "",
+          
+          sale_cnt: Number(row.sale_cnt) || 0,
+          pay_cost: Number(row.pay_cost) || 0,
+          delv_cost: Number(row.delv_cost) || 0,
+          total_cost: Number(row.total_cost) || 0,
+          total_delv_cost: Number(row.total_delv_cost) || 0,
+          expected_payout: Number(row.expected_payout) || 0,
+          etc_cost: Number(row.etc_cost) || 0,
+          price_formula: row.price_formula || "",
+          service_fee: Number(row.service_fee) || 0,
+          
+          sum_p_ea: Number(row.sum_p_ea) || 0,
+          sum_expected_payout: Number(row.sum_expected_payout) || 0,
+          sum_pay_cost: Number(row.sum_pay_cost) || 0,
+          sum_delv_cost: Number(row.sum_delv_cost) || 0,
+          sum_total_cost: Number(row.sum_total_cost) || 0,
+          
+          receive_name: row.receive_name || "",
+          receive_cel: row.receive_cel || "",
+          receive_tel: row.receive_tel || "",
+          receive_addr: row.receive_addr || "",
+          receive_zipcode: row.receive_zipcode || "",
+          delivery_payment_type: row.delivery_payment_type || "",
+          delv_msg: row.delv_msg || "",
+          delivery_id: row.delivery_id || "",
+          delivery_class: row.delivery_class || "",
+          invoice_no: row.invoice_no || "",
+          
+          fld_dsp: row.fld_dsp || "",
+          order_etc_6: row.order_etc_6 || "",
+          order_etc_7: row.order_etc_7 || "",
+          etc_msg: row.etc_msg || "",
+          free_gift: row.free_gift || ""
+        })) as any
+      });
+
+      if (gridApi) {
+        gridApi.applyTransaction({
+          remove: newRows
+        });
+      }
+      
+    } catch (error) {
+      console.error('주문 생성 실패:', error);
+      alert('주문 생성에 실패했습니다.');
+    }
   };
 
   const handleOrderUpdate = async () => {
@@ -69,20 +173,16 @@ export const OrderToolbar = ({
     try {
       await bulkUpdateMutation.mutateAsync({
         items: changedRows.map(row => ({
-          // 기본 필수 필드
           id: row.id,
           process_dt: row.process_dt || new Date().toISOString(),
           
-          // 폼 및 순서 관련
           form_name: row.form_name || "",
           seq: row.seq || 0,
           idx: row.idx || "",
           
-          // 주문 정보
           order_id: row.order_id || "",
           mall_order_id: row.mall_order_id || "",
           
-          // 상품 정보
           product_id: row.product_id || "",
           product_name: row.product_name || "",
           mall_product_id: row.mall_product_id || "",
@@ -95,7 +195,6 @@ export const OrderToolbar = ({
           erp_model_name: row.erp_model_name || "",
           location_nm: row.location_nm || "",
           
-          // 수량 및 가격 정보
           sale_cnt: Number(row.sale_cnt) || 0,
           pay_cost: Number(row.pay_cost) || 0,
           delv_cost: Number(row.delv_cost) || 0,
@@ -106,14 +205,12 @@ export const OrderToolbar = ({
           price_formula: row.price_formula || "",
           service_fee: Number(row.service_fee) || 0,
           
-          // 합계 정보
           sum_p_ea: Number(row.sum_p_ea) || 0,
           sum_expected_payout: Number(row.sum_expected_payout) || 0,
           sum_pay_cost: Number(row.sum_pay_cost) || 0,
           sum_delv_cost: Number(row.sum_delv_cost) || 0,
           sum_total_cost: Number(row.sum_total_cost) || 0,
           
-          // 배송 정보
           receive_name: row.receive_name || "",
           receive_cel: row.receive_cel || "",
           receive_tel: row.receive_tel || "",
@@ -125,20 +222,17 @@ export const OrderToolbar = ({
           delivery_class: row.delivery_class || "",
           invoice_no: row.invoice_no || "",
           
-          // 기타 정보
           fld_dsp: row.fld_dsp || "",
           order_etc_6: row.order_etc_6 || "",
           order_etc_7: row.order_etc_7 || "",
           etc_msg: row.etc_msg || "",
           free_gift: row.free_gift || "",
           
-          // 타임스탬프
           created_at: row.created_at || new Date().toISOString(),
           updated_at: new Date().toISOString()
         })) as any
       });
 
-      // 그리드 새로고침
       if (gridApi) {
         gridApi.refreshCells();
         gridApi.deselectAll();
@@ -202,6 +296,7 @@ export const OrderToolbar = ({
     }
   };
 
+  const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
   const isDeleteDisabled = selectedRows.length === 0 || bulkDeleteMutation.isPending;
   const isRowDeleteDisabled = selectedRows.length === 0;
@@ -211,7 +306,7 @@ export const OrderToolbar = ({
       <div>
         <div className="px-6 bg-fill-base-200">
           <div className="flex gap-2 border-b border-stroke-base-100">
-            <button onClick={() => naviagte(ROUTERS.PRODUCT_MANAGAMENT)} className="px-4 py-2 text-text-base-400 text-h3 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">상품관리</button>
+            <button onClick={() => navigate(ROUTERS.PRODUCT_MANAGAMENT)} className="px-4 py-2 text-text-base-400 text-h3 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">상품관리</button>
             <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h3 border-b-2 border-primary-500">주문관리</button>
           </div>
         </div>
@@ -246,7 +341,14 @@ export const OrderToolbar = ({
 
         <div className="flex items-center gap-2">
           <Button variant="light" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 호출</Button>
-          <Button variant="light" className="py-5">주문 추가</Button>
+          <Button 
+            variant="light" 
+            className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={handleOrderCreate}
+            disabled={isCreateDisabled}
+          >
+            {bulkCreateMutation.isPending ? '생성 중...' : '주문 생성'}
+          </Button>
           <Button 
             variant="light" 
             className={`py-5 ${isUpdateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}

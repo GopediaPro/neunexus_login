@@ -70,7 +70,7 @@ export interface OrderRegisterForm {
 }
 
 export interface OrderData {
-  id: number;
+  id: string;
   order_id: string;
   mall_order_id: string;
   product_name: string;

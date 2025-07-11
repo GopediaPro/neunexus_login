@@ -6,10 +6,13 @@ export const useOrderGridActions = (gridApi: GridApi | null) => {
 
   const addNewRow = useCallback(async () => {
     if (!gridApi) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
     try {
       const newRow: OrderData = {
-        id: Date.now(),
+        id: `temp_${Date.now()}`,
         order_id: '',
         mall_order_id: '',
         product_name: '',
@@ -24,8 +27,8 @@ export const useOrderGridActions = (gridApi: GridApi | null) => {
         receive_addr: '',
         delv_msg: '',
         sku_value: '',
-        process_dt: new Date().toISOString(),
-        created_at: new Date().toISOString()
+        process_dt: today.toISOString().replace('Z', ''),
+        created_at: new Date().toISOString().replace('Z', '')
       };
       
       const result = gridApi.applyTransaction({

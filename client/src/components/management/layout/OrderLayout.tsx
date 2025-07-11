@@ -62,7 +62,6 @@ export const OrderLayout = () => {
             <OrderToolbar 
               onTemplateChange={handleTemplateChange} 
               gridApi={gridApi} 
-              originalData={originalData} 
               selectedRows={selectedRows}
               currentTemplate={currentTemplate}
               changedRows={changedRows}
@@ -84,7 +83,6 @@ export const OrderLayout = () => {
             <OrderToolbar 
               onTemplateChange={handleTemplateChange} 
               gridApi={gridApi} 
-              originalData={originalData} 
               selectedRows={selectedRows}
               currentTemplate={currentTemplate}
               changedRows={changedRows}

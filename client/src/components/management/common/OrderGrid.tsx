@@ -20,6 +20,49 @@ export const OrderGrid = ({
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
   const [changedRows, setChangedRows] = useState<Set<string>>(new Set());
 
+  const createPriceColumn = (field: string, headerName: string, width: number = 150) => ({
+    field,
+    headerName,
+    width,
+    valueFormatter: (params: any) => {
+      const value = params.value;
+      if (value === null || value === undefined || value === '') return '';
+      const numValue = typeof value === 'string' ? parseFloat(value) : Number(value);
+      return isNaN(numValue) ? '' : `${numValue.toLocaleString()}원`;
+    },
+    valueParser: (params: any) => {
+      const value = params.newValue;
+      if (value === null || value === undefined || value === '') return null;
+      
+      const cleanValue = String(value).replace(/[원,]/g, '').trim();
+      const numValue = parseFloat(cleanValue);
+      
+      return isNaN(numValue) ? null : numValue;
+    },
+    valueSetter: (params: any) => {
+      const value = params.newValue;
+      let parsedValue = null;
+      
+      if (value !== null && value !== undefined && value !== '') {
+        const cleanValue = String(value).replace(/[원,]/g, '').trim();
+        const numValue = parseFloat(cleanValue);
+        parsedValue = isNaN(numValue) ? null : numValue;
+      }
+      
+      params.data[field] = parsedValue;
+      return true;
+    },
+    filter: 'agNumberColumnFilter',
+    floatingFilterComponentParams: {
+      suppressFilterButton: true
+    },
+    editable: true,
+    cellEditor: 'agTextCellEditor',
+    cellEditorParams: {
+      maxLength: 20
+    }
+  });
+
   const columnDefs: ColDef[] = useMemo(() => [
     {
       field: 'checkbox',
@@ -111,71 +154,10 @@ export const OrderGrid = ({
         max: 9999
       }
     },
-    {
-      field: 'pay_cost',
-      headerName: '결제금액',
-      width: 150,
-      valueFormatter: (params) => {
-        return params.value ? `${Number(params.value).toLocaleString()}원` : '';
-      },
-      filter: 'agNumberColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agNumberCellEditor',
-    },
-    {
-      field: 'expected_payout',
-      headerName: '예상정산금',
-      width: 150,
-      valueFormatter: (params) => {
-        return params.value ? `${Number(params.value).toLocaleString()}원` : '';
-      },
-      filter: 'agNumberColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agNumberCellEditor',
-      cellEditorParams: {
-        min: 0
-      }
-    },
-    {
-      field: 'service_fee',
-      headerName: '서비스수수료',
-      width: 150,
-      valueFormatter: (params) => {
-        return params.value ? `${Number(params.value).toLocaleString()}원` : '';
-      },
-      filter: 'agNumberColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agNumberCellEditor',
-      cellEditorParams: {
-        min: 0
-      }
-    },
-    {
-      field: 'delv_cost',
-      headerName: '배송비',
-      width: 120,
-      valueFormatter: (params) => {
-        return params.value ? `${Number(params.value).toLocaleString()}원` : '';
-      },
-      filter: 'agNumberColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agNumberCellEditor',
-      cellEditorParams: {
-        min: 0
-      }
-    },
+    createPriceColumn('pay_cost', '결제금액'),
+    createPriceColumn('expected_payout', '예상정산금'),
+    createPriceColumn('service_fee', '서비스수수료'),
+    createPriceColumn('delv_cost', '배송비', 120),
     {
       field: 'fld_dsp',
       headerName: '판매처',
