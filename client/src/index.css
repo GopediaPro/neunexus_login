@@ -81,7 +81,7 @@
     --text-body-s-weight: 400;
     --text-body-s-line-height: 20px;
 
-    --text-button-size: 16px;
+    --text-button-size: 20px;
     --text-button-weight: 600;
     --text-button-line-height: 24px;
 
@@ -117,6 +117,8 @@
     --stroke-base-200: 0 0% 85%; /* #D9D9D9 */
     --stroke-base-300: 0 0% 66%; /* #A9A9A9 */
 
+    --primary-100: 0 0% 94%; /* #F0F0F0 */
+    --primary-200: 213 100% 94%; /* #8FB7E7 */
     --primary-300: 213 59% 72%; /* #8FB7E7 */
     --primary-400: 213 27% 54%; /* #6484AE */
     --primary-500: 213 74% 42%; /* #1C63B9 */
@@ -155,6 +157,8 @@
     --accent-green-100: 152 45% 20%; /* #1D4435 */
     --accent-green-500: 152 73% 46%; /* #20CD66 */
 
+    --primary-100: 0 0% 75%; /* #BCDDFC */
+    --primary-200: 210 100% 93%; /* #E0EFFF */
     --primary-300: 210 79% 67%; /* #8FB7E7 */
     --primary-400: 210 67% 49%; /* #2D84CD */
     --primary-500: 210 77% 53%; /* #1F7DE5 */

@@ -5,3 +5,4 @@ export { menuItems } from "./menu";
 export { ROUTERS } from "./route";
 export { sectionOptions } from "./sectionOptions";
 export { sidebarMenu } from "./sidebar";
+export { templateOptions } from "./order";

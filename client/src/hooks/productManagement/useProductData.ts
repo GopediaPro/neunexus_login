@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "@/api/getProducts";
+import { getProducts } from "@/api/product/getProducts";
 
 export const useProductData = () => {
   const [searchParams] = useSearchParams();

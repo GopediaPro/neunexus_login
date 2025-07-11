@@ -16,7 +16,7 @@ export type {
   ISignupRequest,
   ICreateUserRequest,
   IUserCredential,
-  IAuthResponse,
+  IAuthResponse,  
   ApiResponse,
   AuthError,
 } from './auth.types';
@@ -34,3 +34,16 @@ export type {
 export type {
   IUser,
 } from './user.types';
+
+export type {
+  OrderItem,
+  OrderResponse,
+  OrderRegisterForm,
+  BulkCreateOrderItem,
+  BulkUpdateOrderItem,
+  BulkCreateRequest,
+  BulkUpdateRequest,
+  BulkDeleteRequest,
+  BulkOperationResponse,
+  OrderData,
+} from './order.types';

@@ -47,6 +47,7 @@ export default {
 					'text-base-500': 'hsl(var(--text-base-500))',
 					'text-contrast-500': 'hsl(var(--text-contrast-500))',
 
+					'primary-200': 'hsl(var(--primary-200))',
 					'primary-300': 'hsl(var(--primary-300))',
 					'primary-400': 'hsl(var(--primary-400))',
 					'primary-500': 'hsl(var(--primary-500))',
