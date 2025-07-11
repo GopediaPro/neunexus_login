@@ -47,7 +47,6 @@ export const OrderRegisterModal = ({
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalHeader>
         <ModalTitle>주문 등록</ModalTitle>
-        <ModalCloseButton />
       </ModalHeader>
 
       <ModalBody className="h-[300px]">
