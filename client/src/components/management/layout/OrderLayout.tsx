@@ -52,6 +52,14 @@ export const OrderLayout = () => {
     setChangedRows(changedRowsData);
   }, []);
 
+  const handleRefreshGrid = useCallback(() => {
+    if (gridApi) {
+      gridApi.refreshInfiniteCache();
+      gridApi.purgeInfiniteCache();
+      gridApi.refreshCells();
+    }
+  }, [gridApi]);
+
   return (
     <div className="min-h-screen">
       {isOpen ? (
@@ -65,6 +73,7 @@ export const OrderLayout = () => {
               selectedRows={selectedRows}
               currentTemplate={currentTemplate}
               changedRows={changedRows}
+              onRefreshGrid={handleRefreshGrid}
             />
             <div className="flex-1 p-4">
               <OrderGrid
@@ -86,6 +95,7 @@ export const OrderLayout = () => {
               selectedRows={selectedRows}
               currentTemplate={currentTemplate}
               changedRows={changedRows}
+              onRefreshGrid={handleRefreshGrid}
             />
           <div className="flex-1 p-4 pl-6">
             <OrderGrid

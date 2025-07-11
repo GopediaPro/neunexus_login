@@ -58,7 +58,6 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
   const handleFormSubmit = async (data: ExcelUploadRequest) => {
     if (!data.template_code) return;
     if (!selectedFile) return;
-    console.log(data);
 
     setIsUploading(true);
 

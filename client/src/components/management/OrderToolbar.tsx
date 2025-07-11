@@ -16,6 +16,7 @@ interface OrderToolbarProps {
   selectedRows: any[];
   currentTemplate: string;
   changedRows?: any[];
+  onRefreshGrid?: () => void;
 }
 
 export const OrderToolbar = ({ 
@@ -24,6 +25,7 @@ export const OrderToolbar = ({
   selectedRows,
   currentTemplate,
   changedRows = [],
+  onRefreshGrid
 }: OrderToolbarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -210,6 +212,16 @@ export const OrderToolbar = ({
     }
   };
 
+  const handleExcelUploadSuccess = () => {
+    if (onRefreshGrid) {
+      onRefreshGrid();
+    } else if (gridApi) {
+      gridApi.refreshInfiniteCache();
+      gridApi.purgeInfiniteCache();
+      gridApi.refreshCells();
+    }
+  };
+
   const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
   const isDeleteDisabled = selectedRows.length === 0 || bulkDeleteMutation.isPending;
@@ -297,6 +309,7 @@ export const OrderToolbar = ({
       <ExcelUploadModal
         isOpen={isExcelUploadModalOpen}
         onClose={() => setIsExcelUploadModalOpen(false)}
+        onSuccess={handleExcelUploadSuccess}
       />
     </>
   );

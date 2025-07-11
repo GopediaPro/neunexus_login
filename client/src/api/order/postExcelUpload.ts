@@ -17,16 +17,15 @@ export const postExcelUpload =  async (data: ExcelUploadRequest) => {
   formData.append('template_code', data.template_code);
   formData.append('file', data.file);
 
-  const multipartClient = httpClient.create({
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-    timeout: 30000,
-  });
-
-  const res = await multipartClient.post<ExcelUploadResponse>(
-    API_END_POINT.DOWN_FORM_EXCEL_UPLOAD, formData
-  )
-
-  return res.data;
+  const response = await httpClient.post<ExcelUploadResponse>(
+    API_END_POINT.DOWN_FORM_EXCEL_UPLOAD, 
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      timeout: 30000
+    }
+  );
+  return response.data;
 };
