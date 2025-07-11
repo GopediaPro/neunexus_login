@@ -49,3 +49,8 @@ export type {
   ExcelUploadRequest,
   ExcelUploadResponse,
 } from './order.types';
+
+export type {
+  ProductData,
+  ProductContextValue,
+} from './product.types';

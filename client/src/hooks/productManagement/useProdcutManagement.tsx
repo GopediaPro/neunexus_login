@@ -1,12 +1,38 @@
+import { useState, useCallback } from "react";
 import { useProductData } from "./useProductData";
 import { useProductGrid } from "./useProductGrid";
+import type { ProductTab } from "@/contexts/ProductContext";
 
 export const useProductManagement = () => {
-  const productDataHook = useProductData();
+  const [search, setSearch] = useState("");
+  const [activeProductTab, setActiveProductTab] = useState<ProductTab>("registration");
+  const [page, setPage] = useState(1);
+
+  const productDataHook = useProductData({ search, page });
   const productGridHook = useProductGrid();
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearch(value);
+    setPage(1);
+  }, []);
+
+  const handleTabChange = useCallback((tab: ProductTab) => {
+    setActiveProductTab(tab);
+    setPage(1);
+  }, []);
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
 
   return {
     ...productDataHook,
     ...productGridHook,
+    search,
+    setSearch: handleSearchChange,
+    activeProductTab,
+    setActiveProductTab: handleTabChange,
+    page,
+    setPage: handlePageChange,
   };
 };
