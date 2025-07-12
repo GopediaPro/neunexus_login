@@ -14,7 +14,7 @@ export const MenuSidebarLayout = () => {
   } = useMenuSideabar();
 
   return (
-    <div className="flex flex-col sidebar-left-width bg-fill-base-100 h-full border-r border-stroke-base-100">
+    <div className="flex flex-col w-sidebar-left 2xl:w-sidebar-left-2xl bg-fill-base-100 h-full border-r border-stroke-base-100">
       <div className="flex justify-center mt-4 cursor-pointer" onClick={handleLogoClick}>
         <Logo className="w-24 h-12" />
       </div>

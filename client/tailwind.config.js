@@ -28,6 +28,16 @@ export default {
 					'screen-xl': '1280px',
 					'screen-2xl': '1600px'
 				},
+				width: {
+					'sidebar-left': '184px',
+					'sidebar-left-2xl': '240px',
+					'sidebar-right': '288px',
+					'sidebar-right-2xl': '320px'
+				},
+				gridTemplateColumns: {
+					'sidebar-layout': '184px 1fr',
+					'sidebar-layout-2xl': '240px 1fr'
+				},
 				colors: {
 					'fill-base-100': 'hsl(var(--fill-base-100))',
 					'fill-base-200': 'hsl(var(--fill-base-200))',

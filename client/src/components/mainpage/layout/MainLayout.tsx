@@ -10,7 +10,7 @@ export const MainLayout = () => {
   return (
     <div className="marker:min-h-screen bg-fill-base-200">
       {isOpen ? (
-        <div className="grid grid-sidebar-layout min-h-screen">
+        <div className="grid grid-cols-sidebar-layout 2xl:grid-cols-sidebar-layout-2xl min-h-screen">
           <MenuSidebarLayout />
           <div className="flex flex-col">
             <HeaderLayout />

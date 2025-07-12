@@ -89,8 +89,6 @@
     --text-caption-weight: 400;
     --text-caption-line-height: 18px;
 
-    --left-sidebar-width: 184px;
-    --right-sidebar-width: 288px;
     --disabled-opacity: 0.5;
     --transition-duration: 0.2s;
 
@@ -204,17 +202,6 @@
 }
 
 /* 레이아웃 유틸 */
-.sidebar-left-width {
-  width: var(--left-sidebar-width);
-}
-
-.sidebar-right-width {
-  width: var(--right-sidebar-width);
-}
-
-.grid-sidebar-layout {
-  grid-template-columns: var(--left-sidebar-width) 1fr;
-}
 
 .transition-common {
   transition: all var(--transition-duration) ease-in-out;
