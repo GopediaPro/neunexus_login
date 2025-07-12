@@ -6,5 +6,5 @@ export const API_END_POINT = {
   DOWN_FORM_ORDERS_BULK_CREATE: '/api/v1/down-form-orders/bulk',
   DOWN_FORM_ORDERS_BULK_UPDATE: '/api/v1/down-form-orders/bulk',
   DOWN_FORM_ORDERS_BULK_DELETE: '/api/v1/down-form-orders/bulk', 
-  DOWN_FORM_EXCEL_UPLOAD: '/api/v1/erp_macro/excel-run-macro',
+  DOWN_FORM_EXCEL_UPLOAD: '/api/v1/erp-macro/excel-run-macro',
 } as const;

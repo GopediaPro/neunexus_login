@@ -22,7 +22,7 @@ export const postExcelUpload =  async (data: ExcelUploadRequest) => {
     formData,
     {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': undefined
       },
       timeout: 30000
     }
