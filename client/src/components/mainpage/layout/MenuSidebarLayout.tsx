@@ -7,8 +7,9 @@ export const MenuSidebarLayout = () => {
   const {
     MenuItems,
     userProfile,
-    toggleSubmenu,
     handleSubMenuClick,
+    handleMenuHover,
+    handleMenuLeave,
     handleLogout,
     handleLogoClick,
   } = useMenuSideabar();
@@ -35,25 +36,56 @@ export const MenuSidebarLayout = () => {
       <div className="flex-1 py-4">
         <nav className="flex flex-col">
           {MenuItems.map((item) => (
-            <div key={item.id} className="mb-1">
+            <div
+              key={item.id}
+              className="mb-1"
+              onMouseEnter={() => handleMenuHover(item.id)}
+              onMouseLeave={() => handleMenuLeave(item.id)}
+            >
               <SidebarMenuButton 
                 text={item.label}
                 hasSubmenu={item.hasSubmenu}
-                isActive={item.isExpanded}
-                onClick={() => item.hasSubmenu ? toggleSubmenu(item.id) : undefined}
+                isActive={item.isHovered}
               />
-                {item.hasSubmenu && item.isExpanded && item.submenu && (
-                  <div className="w-[90%] flex flex-col gap-2 bg-fill-alt-100 mx-auto">
+              {item.hasSubmenu && item.submenu && (
+                <div 
+                  className={`w-[90%] mx-auto transition-all duration-700 ease-in-out overflow-hidden ${
+                    item.isHovered 
+                      ? 'max-h-96 opacity-100' 
+                      : 'max-h-0 opacity-0'
+                  }`}
+                  onMouseEnter={() => handleMenuHover(item.id)}
+                  onMouseLeave={() => handleMenuLeave(item.id)}
+                >
+                  <div className={`flex flex-col gap-1 bg-fill-alt-100 rounded-b-[10px] pb-2 pt-1 transition-transform duration-700 ease-in-out ${
+                    item.isHovered 
+                      ? 'transform translate-y-0 scale-y-100' 
+                      : 'transform -translate-y-2 scale-y-95'
+                  }`}
+                  style={{ transformOrigin: 'top' }}
+                  >
                     {item.submenu.map((subItem, i) => (
-                      <SubMenuItem 
+                      <div
                         key={i}
-                        text={subItem}
-                        parentText={item.label}
-                        onClick={() => handleSubMenuClick(subItem)}
-                      />
+                        className={`transition-all duration-700 ease-in-out ${
+                          item.isHovered 
+                            ? 'opacity-100 translate-x-0' 
+                            : 'opacity-0 -translate-x-4'
+                        }`}
+                        style={{ 
+                          transitionDelay: item.isHovered ? `${i * 100}ms` : '0ms' 
+                        }}
+                      >
+                        <SubMenuItem 
+                          text={subItem}
+                          parentText={item.label}
+                          onClick={() => handleSubMenuClick(subItem)}
+                        />
+                      </div>
                     ))}
                   </div>
-                )}
+                </div>
+              )}
             </div>
           ))}
         </nav>

@@ -3,7 +3,10 @@ export interface ILeftMenuButtonProps {
   hasSubmenu?: boolean;
   isActive?: boolean;
   onClick?: () => void;
+  onHover?: () => void;
   className?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 export interface ISubMenuItemProps {
@@ -18,5 +21,6 @@ export interface IMenuItemType {
   label: string;
   hasSubmenu?: boolean;
   isExpanded?: boolean;
+  isHovered?: boolean;
   submenu?: string[];
 }
