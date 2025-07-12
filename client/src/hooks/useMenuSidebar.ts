@@ -91,7 +91,7 @@ export const useMenuSideabar = () => {
         window.location.href = 'https://rpa.lyckabc.xyz';
         break;
       case '상품 등록':
-        navigate(ROUTERS.PRODUCT_MANAGAMENT);
+        navigate(ROUTERS.PRODUCT_MANAGEMENT);
         break;
       case '주문 목록':
         navigate(ROUTERS.ORDER_MANAGEMENT);

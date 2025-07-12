@@ -24,12 +24,12 @@ export const ProductLayout = () => {
     <ProductProvider>
       <div className="min-h-screen">
         {isOpen ? (
-          <div className="grid grid-cols-[183px_1fr] min-h-screen">
+          <div className="grid grid-cols-sidebar-layout 2xl:grid-cols-sidebar-layout-2xl min-h-screen">
             <MenuSidebarLayout />
             <div className="flex flex-col">
               <HeaderManagement title="상품/주문 관리 시스템" />
               <ProductToolbar />
-              <div className="flex-1 p-4">
+              <div className="flex-1 p-4 bg-fill-base-100">
                 <ProductGrid />
               </div>
             </div>
