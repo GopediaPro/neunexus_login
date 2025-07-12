@@ -48,6 +48,9 @@ export type {
   OrderData,
   ExcelUploadRequest,
   ExcelUploadResponse,
+  OrderTab,
+  OrderContextValue,
+  UseOrderGridParams,
 } from './order.types';
 
 export type {

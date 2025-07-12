@@ -9,28 +9,24 @@ import type { OrderRegisterForm } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
 import { useBulkCreateOrders, useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
+import { useOrderContext } from "@/contexts/OrderContext";
 
-interface OrderToolbarProps {
-  onTemplateChange: (templateCode: string) => void;
-  gridApi: any;
-  selectedRows: any[];
-  currentTemplate: string;
-  changedRows?: any[];
-  onRefreshGrid?: () => void;
-}
-
-export const OrderToolbar = ({ 
-  onTemplateChange,
-  gridApi,
-  selectedRows,
-  currentTemplate,
-  changedRows = [],
-  onRefreshGrid
-}: OrderToolbarProps) => {
+export const OrderToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
   const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
+
+  const {
+    search,
+    setSearch,
+    setActiveOrderTab,
+    currentTemplate,
+    setCurrentTemplate,
+    gridApi,
+    selectedRows,
+    changedRows,
+  } = useOrderContext();
 
   const bulkCreateMutation = useBulkCreateOrders();
   const bulkUpdateMutation = useBulkUpdateOrders();
@@ -39,11 +35,11 @@ export const OrderToolbar = ({
 
   const handleIconClick = () => {
     inputRef.current?.focus();
-  }
+  };
 
   const handleOrderRegisterSubmit = (data: OrderRegisterForm) => {
     if (data.selectedTemplate) {
-      onTemplateChange(data.selectedTemplate);
+      setCurrentTemplate(data.selectedTemplate);
     }
     setIsOrderRegisterModalOpen(false);
   };
@@ -213,9 +209,7 @@ export const OrderToolbar = ({
   };
 
   const handleExcelUploadSuccess = () => {
-    if (onRefreshGrid) {
-      onRefreshGrid();
-    } else if (gridApi) {
+    if (gridApi) {
       gridApi.refreshInfiniteCache();
       gridApi.purgeInfiniteCache();
       gridApi.refreshCells();
@@ -239,12 +233,16 @@ export const OrderToolbar = ({
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
           <Button 
             size="lg" 
-            className={`border border-stroke-base-100 transition-colors`}>
+            className={`border border-stroke-base-100 transition-colors`}
+            onClick={() => setActiveOrderTab("registration")}
+          >
             주문등록
           </Button>
           <Button 
             size="lg" 
-            className={`border border-stroke-base-100 transition-colors`}>
+            className={`border border-stroke-base-100 transition-colors`}
+            onClick={() => setActiveOrderTab("bulk-registration")}
+          >
             대량주문등록
           </Button>
         </div>
@@ -260,6 +258,8 @@ export const OrderToolbar = ({
           <Input
             ref={inputRef}
             type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
             placeholder="전체 검색 (상품명, ID, 고객명 등)"
             className="w-[280px] pl-4 h-10 bg-fill-alt-100 border-none relative"
           />
