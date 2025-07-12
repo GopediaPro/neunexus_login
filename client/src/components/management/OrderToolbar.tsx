@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Input } from "../ui/input";
-import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
 import type { OrderRegisterForm } from "@/shared/types";
@@ -13,7 +12,6 @@ import { useOrderContext } from "@/contexts/OrderContext";
 
 export const OrderToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
   const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
 
