@@ -278,13 +278,13 @@ export const OrderGrid = () => {
       setChangedRowsState(prev => new Set(prev).add(rowId));
       
       if (setChangedRows) {
-        const allChangedRowsData = Array.from(changedRowsState).map(id => {
+        let allChangedRowsData = Array.from(changedRowsState).map(id => {
           const rowNode = event.api.getRowNode(id);
           return rowNode?.data;
         }).filter(Boolean);
 
         if (!allChangedRowsData.find(row => row.id?.toString() === rowId)) {
-          allChangedRowsData.push(event.data);
+          allChangedRowsData = [...allChangedRowsData, event.data];
         }
         
         setChangedRows(allChangedRowsData);

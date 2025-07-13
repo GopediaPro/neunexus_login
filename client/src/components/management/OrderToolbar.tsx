@@ -45,9 +45,9 @@ export const OrderToolbar = () => {
   const handleOrderCreate = async () => {
     if (!gridApi) return;
 
-    const allRows: any[] = [];
+    let allRows: any[] = [];
     gridApi.forEachNode((node: any) => {
-      allRows.push(node.data);
+      allRows = [...allRows, node.data];
     });
 
     const newRows = allRows.filter(row => 
