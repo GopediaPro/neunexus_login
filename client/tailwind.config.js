@@ -70,6 +70,10 @@ export default {
 					'accent-red-500': 'hsl(var(--accent-red-500))',
 					'accent-green-100': 'hsl(var(--accent-green-100))',
 					'accent-green-500': 'hsl(var(--accent-green-500))',
+					'accent-blue-100': 'hsl(var(--accent-blue-100))',
+					'accent-yellow-400': 'hsl(var(--accent-yellow-400))',
+					'accent-purple-400': 'hsl(var(--accent-purple-400))',
+					'accent-purple-500': 'hsl(var(--accent-purple-500))',
 
 					'background': 'hsl(var(--background))',
 					'foreground': 'hsl(var(--foreground))',

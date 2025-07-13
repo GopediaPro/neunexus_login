@@ -99,9 +99,15 @@
     --text-contrast-500: 0 0% 99%; /* #FDFDFD */
 
     --accent-red-100: 0 100% 98%; /* #FFF9F9 */
+    --accent-red-400: 356 85% 64%; /* #F54A58 */
     --accent-red-500: 0 85% 50%; /* #E61514 */
     --accent-green-100: 120 100% 98%; /* #F4FFF4 */
+    --accent-green-400: 120 50% 51%; /* #43C843 */
     --accent-green-500: 120 48% 36%; /* #318131 */
+    --accent-blue-100: 210 100% 94%; /* #E0EFFF */
+    --accent-yellow-400: 45 100% 67%; /* #FFD058 */
+    --accent-purple-400: 254 60% 58%; /* #8A54D7 */
+    --accent-purple-500: 254 60% 58%; /* #8A54D7 */
 
     --fill-base-100: 0 0% 99%; /* #FDFDFD */
     --fill-base-200: 200 8% 94%; /* #EBEEEF */
@@ -151,9 +157,15 @@
     --text-contrast-500: 0 0% 99%; /* #FDFDFD */
 
     --accent-red-100: 0 18% 25%; /* #473838 */
+    --accent-red-400: 356 80% 67%; /* #EB5E6A */
     --accent-red-500: 356 91% 72%; /* #F97B82 */
     --accent-green-100: 152 45% 20%; /* #1D4435 */
+    --accent-green-400: 120 48% 45%; /* #45B745 */
     --accent-green-500: 152 73% 46%; /* #20CD66 */
+    --accent-blue-100: 195 20% 12%; /* #151C1E */
+    --accent-yellow-400: 45 100% 67%; /* #FFD058 */
+    --accent-purple-400: 254 70% 75%; /* #B387F2 */
+    --accent-purple-500: 254 60% 58%; /* #8A54D7 */
 
     --primary-100: 0 0% 75%; /* #BCDDFC */
     --primary-200: 210 100% 93%; /* #E0EFFF */
