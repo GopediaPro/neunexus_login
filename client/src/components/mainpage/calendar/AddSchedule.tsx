@@ -120,7 +120,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {event?.start && (
-              <div className="p-3 bg-primary-300 rounded-lg">
+              <div className="p-3 bg-accent-blue-100 rounded-lg">
                 <div className="text-h4 text-primary-500">
                   {getFormattedDate()}
                 </div>

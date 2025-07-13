@@ -226,7 +226,7 @@
 
 /* 캘린더 CSS */
 .rbc-day-bg.rbc-today {
-  background-color: hsl(var(--primary-300)) !important;
+  background-color: hsl(var(--accent-blue-100)) !important;
 }
 .rbc-off-range-bg {
   background-color: hsl(var(--fill-base-100)) !important;
