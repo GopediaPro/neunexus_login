@@ -32,7 +32,9 @@ export default {
 					'sidebar-left': '184px',
 					'sidebar-left-2xl': '240px',
 					'sidebar-right': '288px',
-					'sidebar-right-2xl': '320px'
+					'sidebar-right-2xl': '320px',
+					'screen-xl': '1280px',
+					'screen-2xl': '1600px'
 				},
 				gridTemplateColumns: {
 					'sidebar-layout': '184px 1fr',

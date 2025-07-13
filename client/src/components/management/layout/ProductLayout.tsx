@@ -22,7 +22,7 @@ export const ProductLayout = () => {
 
   return (
     <ProductProvider>
-      <div className="min-h-screen">
+      <div className="min-w-screen-xl min-h-screen">
         {isOpen ? (
           <div className="grid grid-cols-sidebar-layout 2xl:grid-cols-sidebar-layout-2xl min-h-screen">
             <MenuSidebarLayout />
