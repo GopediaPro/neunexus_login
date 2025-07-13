@@ -103,7 +103,8 @@ export const LoginPage = () => {
 
             <Button
               type="submit"
-              nameType="sidebarMenu"
+              variant="default"
+              size="auth"
               loading={isSubmitting}
               className="!mt-[10px]"
               disabled={isSubmitting}          

@@ -75,10 +75,10 @@ export const SignupPage = () => {
                 <span className="text-caption">{errors.root.message}</span>
               </div>
             )}
-
             <Button
               type="submit"
-              nameType="sidebarMenu"
+              variant="default"
+              size="auth"
               loading={isSubmitting}
               className="!mt-[40px]"
             >

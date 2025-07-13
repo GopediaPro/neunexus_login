@@ -13,7 +13,7 @@ export const ThemeToggle = () => {
   if (!mounted) return;
   
   return (
-    <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} nameType="sidebarMenu">
+    <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} variant="light">
       {theme === 'dark' ? '화이트모드로 전환' : '다크모드로 전환'}
     </Button>
   )

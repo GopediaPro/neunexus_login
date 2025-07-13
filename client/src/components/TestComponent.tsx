@@ -122,8 +122,8 @@ export const TestComponent = () => {
         <div className="mt-4 flex gap-2">
           <Button
             type="button"
+            variant="secondary"
             onClick={handleAddRow}
-            nameType="sidebarMenu"
             className="px-4 py-2"
           >
             + 행 추가
@@ -131,7 +131,7 @@ export const TestComponent = () => {
           
           <Button
             type="submit"
-            nameType="sidebarMenu"
+            variant="default"
             className="px-4 py-2 bg-primary-500 text-text-contrast-500"
           >
             저장

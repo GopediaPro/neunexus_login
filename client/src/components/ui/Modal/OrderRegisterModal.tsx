@@ -78,14 +78,14 @@ export const OrderRegisterModal = ({
       <ModalFooter>
         <Button
           type="button"
-          nameType="sidebarMenu"
+          variant="light"
           onClick={handleCancel}
         >
           취소
         </Button>
         <Button
           type="button"
-          nameType="sidebarMenu"
+          variant="default"
           onClick={handleSubmit(handleFormSubmit)}
           disabled={!selectedTemplate}
         >

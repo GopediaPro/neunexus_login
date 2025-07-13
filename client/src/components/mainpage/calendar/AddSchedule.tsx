@@ -243,7 +243,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
           {isEditMode && onDelete && (
               <Button
                 type="button"
-                nameType="sidebarMenu"
+                variant="light"
                 onClick={handleDelete}
                 className="text-text-base-500 border-stroke-base-100 hover:bg-fill-alt-100"
               >
@@ -252,7 +252,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
             )}
           <Button
             type="submit"
-            nameType="sidebarMenu"
+            variant="default"
             onClick={handleSubmit(onSubmit)}
             loading={isSubmitting}
             disabled={isSubmitting}

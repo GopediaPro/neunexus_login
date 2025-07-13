@@ -146,7 +146,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
       <ModalFooter>
         <Button
           type="button"
-          nameType="sidebarMenu"
+          variant="light"
           onClick={handleClose}
           disabled={isUploading}
         >
@@ -154,7 +154,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
         </Button>
         <Button
           type="button"
-          nameType="sidebarMenu"
+          variant="default"
           onClick={handleSubmit(handleFormSubmit)}
           disabled={!templateCode || !selectedFile || isUploading}
         >
