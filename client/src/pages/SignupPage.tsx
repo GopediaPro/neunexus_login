@@ -78,8 +78,7 @@ export const SignupPage = () => {
 
             <Button
               type="submit"
-              variant="default"
-              size="auth"
+              nameType="sidebarMenu"
               loading={isSubmitting}
               className="!mt-[40px]"
             >

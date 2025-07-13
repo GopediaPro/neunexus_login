@@ -1,52 +1,33 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Loader } from "lucide-react";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[0.5rem] text-button transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary-500 text-text-contrast-500 shadow hover:bg-primary-600",
-        destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
-        outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary-500 underline-offset-4 hover:underline",
-        focus: "bg-primary-500 text-text-contrast-500 hover:bg-primary-600",
-        light: "bg-fill-base-100 text-text-base-500 border border-stroke-base-100 hover:bg-fill-alt-100",
-      },
-      size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        auth: "h-16 w-full px-2.5 py-[18px] rounded-xl text-xl font-bold tracking-[0.06px]",
-        icon: "h-9 w-9",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-);
+const buttonPadding = {
+  ctaDefault: "px-5 py-4 rounded-xl text-h3",
+  ctaCompact: "px-5 py-3 rounded-xl text-h3",
+  sidebarMenu: "px-3 py-4 rounded-lg text-h3",
+  tabSm: "px-2 py-1 rounded-md text-h3",
+  tabMd: "px-5 py-4 rounded-xl text-h3",
+  viewBtn: "px-4 py-1 rounded-lg text-h3",
+};
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
+  nameType?: keyof typeof buttonPadding;
   loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, loading, children, disabled, ...props }, ref) => {
+  ({ className, asChild = false, loading, children, disabled, nameType = "ctaDefault", ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          "inline-flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+          buttonPadding[nameType],
+          className
+        )}
         ref={ref}
         disabled={loading || disabled}
         {...props}
@@ -61,4 +42,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+export { Button };

@@ -14,11 +14,9 @@ export const MiniCalendar = ({ selectedDate, onDateSelect, events }: MiniCalenda
   
   const weekDates = useMemo(() => {
     const centerDate = moment(selectedDate);
-    const dates = [];
-    for (let i = -2; i <= 2; i++) {
-      dates.push(moment(centerDate).add(i, 'days'));
-    }
-    return dates;
+    return Array.from({ length: 5 }, (_, i) => 
+      moment(centerDate).add(i - 2, 'days')
+    );
   }, [selectedDate]);
 
   const getEventCount = (date: moment.Moment) => {

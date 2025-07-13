@@ -32,7 +32,7 @@ export const ProductToolbar = () => {
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
           <Button
             onClick={() => setActiveProductTab("registration")}
-            size="lg"
+            nameType="sidebarMenu"
             className={`border border-stroke-base-100 transition-colors ${
               activeProductTab === "registration"
                 ? "bg-primary-300 text-text-contrast-500"
@@ -42,7 +42,7 @@ export const ProductToolbar = () => {
           </Button>
           <Button
             onClick={() => setActiveProductTab("bulk-registration")}
-            size="lg"
+            nameType="sidebarMenu"
             className={`border border-stroke-base-100 transition-colors ${
               activeProductTab === "bulk-registration"
                 ? "bg-primary-300 text-text-contrast-500"
@@ -71,10 +71,10 @@ export const ProductToolbar = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="light" className="py-5">상품 등록</Button>
-          <Button variant="light" className="py-5">판매가 수정</Button>
-          <Button variant="light" className="py-5">카테고리 수정</Button>
-          <Button variant="light" className="py-5">옵션별칭 수정</Button>
+          <Button nameType="sidebarMenu" className="py-5">상품 등록</Button>
+          <Button nameType="sidebarMenu" className="py-5">판매가 수정</Button>
+          <Button nameType="sidebarMenu" className="py-5">카테고리 수정</Button>
+          <Button nameType="sidebarMenu" className="py-5">옵션별칭 수정</Button>
         </div>
       </div>
     </>

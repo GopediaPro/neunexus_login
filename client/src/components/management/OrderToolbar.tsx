@@ -230,14 +230,14 @@ export const OrderToolbar = () => {
         </div>
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
           <Button 
-            size="lg" 
+            nameType="sidebarMenu"
             className={`border border-stroke-base-100 transition-colors`}
             onClick={() => setActiveOrderTab("registration")}
           >
             주문등록
           </Button>
           <Button 
-            size="lg" 
+            nameType="sidebarMenu"
             className={`border border-stroke-base-100 transition-colors`}
             onClick={() => setActiveOrderTab("bulk-registration")}
           >
@@ -264,9 +264,9 @@ export const OrderToolbar = () => {
         </div> 
 
         <div className="flex items-center gap-2">
-          <Button variant="light" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 호출</Button>
+          <Button nameType="sidebarMenu" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 호출</Button>
           <Button 
-            variant="light" 
+            nameType="sidebarMenu" 
             className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={handleOrderCreate}
             disabled={isCreateDisabled}
@@ -274,25 +274,25 @@ export const OrderToolbar = () => {
             {bulkCreateMutation.isPending ? '생성 중...' : '주문 생성'}
           </Button>
           <Button 
-            variant="light" 
+            nameType="sidebarMenu" 
             className={`py-5 ${isUpdateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={handleOrderUpdate}
             disabled={isUpdateDisabled}
           >
             {bulkUpdateMutation.isPending ? '수정 중...' : `주문 수정${changedRows.length > 0 ? ` (${changedRows.length})` : ''}`}
           </Button>
-          <Button variant="light" 
+          <Button nameType="sidebarMenu" 
             className={`py-5 ${isDeleteDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={handleOrderDelete}
             disabled={isDeleteDisabled}
           >
           {bulkDeleteMutation.isPending ? '삭제 중...' : `주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
           </Button>
-          <Button variant="light" className="py-5" onClick={addNewRow}>행 추가</Button>
-          <Button variant="light" className="py-5" onClick={handleRowDelete} disabled={isRowDeleteDisabled}>
+          <Button nameType="sidebarMenu" className="py-5" onClick={addNewRow}>행 추가</Button>
+          <Button nameType="sidebarMenu" className="py-5" onClick={handleRowDelete} disabled={isRowDeleteDisabled}>
             행 삭제{selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}
           </Button>
-          <Button variant="light" className="py-5" onClick={() => setIsExcelUploadModalOpen(true)}>
+          <Button nameType="sidebarMenu" className="py-5" onClick={() => setIsExcelUploadModalOpen(true)}>
             엑셀 업로드
           </Button>
         </div>

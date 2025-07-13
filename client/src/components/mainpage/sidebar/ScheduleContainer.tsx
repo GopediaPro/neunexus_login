@@ -139,7 +139,7 @@ export const ScheduleContainer = () => {
                     : `${moment(selectedDate).format('M월 D일')} 일정이 없습니다`
                   }
                   <Button
-                    size="sm"
+                    nameType="sidebarMenu"
                     onClick={() => handleOpenEventModal()}
                     className="mt-2 text-text-contrast-500 text-xs"
                   >
