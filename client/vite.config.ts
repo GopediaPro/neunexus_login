@@ -22,4 +22,13 @@ export default defineConfig({
       plugins: [tailwindcss, autoprefixer],
     },
   },
+  build: {
+    rollupOptions: {
+      treeshake: false,
+      output: {
+        manualChunks: undefined,
+      }
+    },
+    minify: false,
+  },
 })
