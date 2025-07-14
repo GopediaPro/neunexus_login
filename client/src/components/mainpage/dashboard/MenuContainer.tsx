@@ -33,14 +33,14 @@ export const MenuContainer = () => {
             key={item.id}
             icon={<Icon name={item.icon} style="w-7 h-7 text-text-base-300" />}
             label={item.label}
-            className="flex-shrink-0 2xl:mb-4 bg-fill-base-100 hover:bg-fill-alt-100"
+            className="flex-shrink-0 2xl:mb-4"
           />
         ))}
         
         {availableMenuItems.length > 0 && (
           <MenuBox
             icon={<Icon name="plus" style="w-8 h-8 text-text-base-300" />}
-            className="opacity-50 hover:opacity-100 flex-shrink-0 bg-fill-base-100 hover:bg-fill-alt-100"
+            className="opacity-50 hover:opacity-100 flex-shrink-0"
             onClick={handleAddClick}
           />
         )}
