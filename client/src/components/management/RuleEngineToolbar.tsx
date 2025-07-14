@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export const RuleEngineToolbar = () => {
   const [activeTab, setActiveTab] = useState<'product' | 'order'>('product');
 
   return (
     <div className="flex justify-between items-center px-4 py-2 bg-white border rounded">
-      {/* 왼쪽 탭 */}
       <div className="flex gap-2">
         <button
           onClick={() => setActiveTab('product')}
@@ -29,7 +28,6 @@ export const RuleEngineToolbar = () => {
         </button>
       </div>
 
-      {/* 오른쪽 상태 */}
       <div className="flex items-center gap-4 text-sm">
         <StatusIndicator label="DB 연결상태" />
         <StatusIndicator label="룰 엔진 작동상태" />
