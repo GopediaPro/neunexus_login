@@ -1,6 +1,7 @@
 import type { SelectOption } from "@/components/management/common/SelectSearchInput";
 
 export const templateOptions: SelectOption[] = [
+  { value: 'all', label: '전체' },
   { value: 'gmarket_erp', label: 'G마켓 ERP' },
   { value: 'gmarket_bundle', label: 'G마켓 Bundle' },
   { value: 'basic_erp', label: 'Basic ERP' },

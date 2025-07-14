@@ -8,13 +8,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 export const orderKeys = {
   all: ['orders'] as const,
   lists: () => [...orderKeys.all, 'list'] as const,
-  list: (templateCode: string) => [...orderKeys.lists(), templateCode] as const,
+  list: (templateCode: string, search?: string, page?: number) => [...orderKeys.lists(), templateCode, search, page] as const,
 }
 
-export const useOrders = ({ templateCode }: { templateCode: string }) => {
+export const useOrders = ({ templateCode, search = '', page = 1 }: { templateCode: string; search?: string; page?: number }) => {
   return useQuery({
-    queryKey: ['orders', templateCode],
-    queryFn: () => getDownFormOrders({ template_code: templateCode }),
+    queryKey: ['orders', templateCode, search, page],
+    queryFn: () => getDownFormOrders({ template_code: templateCode, search, page }),
     enabled: !!templateCode && templateCode !== ''
   })
 };

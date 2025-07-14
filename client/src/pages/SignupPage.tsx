@@ -75,7 +75,6 @@ export const SignupPage = () => {
                 <span className="text-caption">{errors.root.message}</span>
               </div>
             )}
-
             <Button
               type="submit"
               variant="default"

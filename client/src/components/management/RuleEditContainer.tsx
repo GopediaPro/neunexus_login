@@ -51,7 +51,7 @@ export const RuleEditContainer = () => {
   };
 
   return (
-    <div className="flex border border-stroke-base-100 rounded-[10px] bg-fill-base-100 overflow-hidden min-h-[683px]">
+    <div className="flex border border-stroke-base-100 rounded-md bg-fill-base-100 overflow-hidden min-h-[683px]">
       <div className="flex-1 p-6 bg-fill-base-100 border-stroke-base-100">
         <div className="mb-6">
           <h2 className="text-h4 text-text-base-500 mb-2 flex items-center">
@@ -60,7 +60,7 @@ export const RuleEditContainer = () => {
           <p className="text-text-base-400">룰을 선택하고 값을 수정해주세요.</p>
         </div>
 
-        <div className="p-6 border border-stroke-base-100 rounded-[10px]">
+        <div className="p-6 border border-stroke-base-100 rounded-md">
           <form onSubmit={handleSubmit(handleSave)}>
             <div className="space-y-6">
             <FormField
@@ -154,7 +154,7 @@ export const RuleEditContainer = () => {
           <p className="text-gray-600">입력한 룰이 상품 데이터에 적용된 결과를 확인할 수 있습니다.</p>
         </div>
 
-        <div className="space-y-6 border border-stroke-base-100 rounded-[10px] p-4 min-h-[683px] bg-fill-base-200">
+        <div className="space-y-6 border border-stroke-base-100 rounded-md p-4 min-h-[683px] bg-fill-base-200">
           <div>
             <label className="block text-sm font-medium text-text-base-400 mb-2">
               입력 데이터

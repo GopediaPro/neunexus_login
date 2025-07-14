@@ -1,24 +1,19 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { ColDef, GridApi, GridReadyEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
+import { useOrderContext } from "@/contexts/OrderContext";
 
-interface OrderGridProps {
-  rowData: any[];
-  gridApi?: GridApi | null;
-  setGridApi?: (api: GridApi | null) => void;
-  onSelectionChanged?: (selectedRows: any[]) => void;
-  onDataChanged?: (changedRows: any[]) => void;
-}
+export const OrderGrid = () => {
+  const {
+    orderData,
+    setGridApi,
+    setSelectedRows,
+    setChangedRows,
+  } = useOrderContext();
 
-export const OrderGrid = ({
-  rowData,
-  setGridApi,
-  onSelectionChanged,
-  onDataChanged
-}: OrderGridProps) => {
   const gridRef = useRef<AgGridReact>(null);
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
-  const [changedRows, setChangedRows] = useState<Set<string>>(new Set());
+  const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
 
   const createPriceColumn = (field: string, headerName: string, width: number = 150) => ({
     field,
@@ -272,39 +267,39 @@ export const OrderGrid = ({
   const onSelectionChangedCallback = useCallback((event: any) => {
     const selectedRows = event.api.getSelectedRows();
     
-    if (onSelectionChanged) {
-      onSelectionChanged(selectedRows);
+    if (setSelectedRows) {
+      setSelectedRows(selectedRows);
     }
-  }, [onSelectionChanged]);
+  }, [setSelectedRows]);
 
   const onCellValueChanged = useCallback((event: any) => {
     const rowId = event.data.id?.toString();
     if (rowId) {
-      setChangedRows(prev => new Set(prev).add(rowId));
+      setChangedRowsState(prev => new Set(prev).add(rowId));
       
-      if (onDataChanged && event.api) {
-        const allChangedRowsData = Array.from(changedRows).map(id => {
+      if (setChangedRows) {
+        let allChangedRowsData = Array.from(changedRowsState).map(id => {
           const rowNode = event.api.getRowNode(id);
           return rowNode?.data;
         }).filter(Boolean);
 
         if (!allChangedRowsData.find(row => row.id?.toString() === rowId)) {
-          allChangedRowsData.push(event.data);
+          allChangedRowsData = [...allChangedRowsData, event.data];
         }
         
-        onDataChanged(allChangedRowsData);
+        setChangedRows(allChangedRowsData);
       }
     }
-  }, [onDataChanged, changedRows]);
+  }, [setChangedRows, changedRowsState]);
 
   const clearChangedRows = useCallback(() => {
-    setChangedRows(new Set());
-    if (onDataChanged) {
-      onDataChanged([]);
+    setChangedRowsState(new Set());
+    if (setChangedRows) {
+      setChangedRows([]);
     }
-  }, [onDataChanged]);
+  }, [setChangedRows]);
 
-  if (!rowData) {
+  if (!orderData) {
     return (
       <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100 flex items-center justify-center">
         <div className="text-center">
@@ -325,7 +320,7 @@ export const OrderGrid = ({
     <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100">
       <AgGridReact
         ref={gridRef}
-        rowData={rowData}
+        rowData={orderData}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         onGridReady={onGridReady}

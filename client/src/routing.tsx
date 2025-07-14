@@ -33,7 +33,7 @@ const privateRouteList = [
     element: <TestComponent />,
   },
   {
-    path: ROUTERS.PRODUCT_MANAGAMENT,
+    path: ROUTERS.PRODUCT_MANAGEMENT,
     element: <ProductManagementPage />
   },
   {

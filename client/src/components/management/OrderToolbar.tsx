@@ -2,31 +2,29 @@ import { useRef, useState } from "react";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Input } from "../ui/input";
-import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
 import type { OrderRegisterForm } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
 import { useBulkCreateOrders, useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
+import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
+import { useOrderContext } from "@/contexts/OrderContext";
 
-interface OrderToolbarProps {
-  onTemplateChange: (templateCode: string) => void;
-  gridApi: any;
-  selectedRows: any[];
-  currentTemplate: string;
-  changedRows?: any[];
-}
-
-export const OrderToolbar = ({ 
-  onTemplateChange,
-  gridApi,
-  selectedRows,
-  currentTemplate,
-  changedRows = [] 
-}: OrderToolbarProps) => {
+export const OrderToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
+  const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
+
+  const {
+    search,
+    setSearch,
+    setActiveOrderTab,
+    currentTemplate,
+    setCurrentTemplate,
+    gridApi,
+    selectedRows,
+    changedRows,
+  } = useOrderContext();
 
   const bulkCreateMutation = useBulkCreateOrders();
   const bulkUpdateMutation = useBulkUpdateOrders();
@@ -35,11 +33,11 @@ export const OrderToolbar = ({
 
   const handleIconClick = () => {
     inputRef.current?.focus();
-  }
+  };
 
   const handleOrderRegisterSubmit = (data: OrderRegisterForm) => {
     if (data.selectedTemplate) {
-      onTemplateChange(data.selectedTemplate);
+      setCurrentTemplate(data.selectedTemplate);
     }
     setIsOrderRegisterModalOpen(false);
   };
@@ -47,9 +45,9 @@ export const OrderToolbar = ({
   const handleOrderCreate = async () => {
     if (!gridApi) return;
 
-    const allRows: any[] = [];
+    let allRows: any[] = [];
     gridApi.forEachNode((node: any) => {
-      allRows.push(node.data);
+      allRows = [...allRows, node.data];
     });
 
     const newRows = allRows.filter(row => 
@@ -208,6 +206,14 @@ export const OrderToolbar = ({
     }
   };
 
+  const handleExcelUploadSuccess = () => {
+    if (gridApi) {
+      gridApi.refreshInfiniteCache();
+      gridApi.purgeInfiniteCache();
+      gridApi.refreshCells();
+    }
+  };
+
   const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
   const isDeleteDisabled = selectedRows.length === 0 || bulkDeleteMutation.isPending;
@@ -215,22 +221,26 @@ export const OrderToolbar = ({
 
   return (
     <>
-      <div>
-        <div className="px-6 bg-fill-base-200">
+      <div className="bg-fill-base-100">
+        <div className="px-6">
           <div className="flex gap-2 border-b border-stroke-base-100">
-            <button onClick={() => navigate(ROUTERS.PRODUCT_MANAGAMENT)} className="px-4 py-2 text-text-base-400 text-h3 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">상품관리</button>
+            <button onClick={() => window.location.href = ROUTERS.PRODUCT_MANAGEMENT} className="px-4 py-2 text-text-base-400 text-h3 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">상품관리</button>
             <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h3 border-b-2 border-primary-500">주문관리</button>
           </div>
         </div>
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
           <Button 
-            size="lg" 
-            className={`border border-stroke-base-100 transition-colors`}>
+            variant="light"
+            className={`border border-stroke-base-100 transition-colors`}
+            onClick={() => setActiveOrderTab("registration")}
+          >
             주문등록
           </Button>
           <Button 
-            size="lg" 
-            className={`border border-stroke-base-100 transition-colors`}>
+            variant="light"
+            className={`border border-stroke-base-100 transition-colors`}
+            onClick={() => setActiveOrderTab("bulk-registration")}
+          >
             대량주문등록
           </Button>
         </div>
@@ -246,6 +256,8 @@ export const OrderToolbar = ({
           <Input
             ref={inputRef}
             type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
             placeholder="전체 검색 (상품명, ID, 고객명 등)"
             className="w-[280px] pl-4 h-10 bg-fill-alt-100 border-none relative"
           />
@@ -280,6 +292,9 @@ export const OrderToolbar = ({
           <Button variant="light" className="py-5" onClick={handleRowDelete} disabled={isRowDeleteDisabled}>
             행 삭제{selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}
           </Button>
+          <Button variant="light" className="py-5" onClick={() => setIsExcelUploadModalOpen(true)}>
+            엑셀 업로드
+          </Button>
         </div>
       </div>
 
@@ -287,6 +302,12 @@ export const OrderToolbar = ({
         isOpen={isOrderRegisterModalOpen}
         onClose={() => setIsOrderRegisterModalOpen(false)}
         onSubmit={handleOrderRegisterSubmit}
+      />
+
+      <ExcelUploadModal
+        isOpen={isExcelUploadModalOpen}
+        onClose={() => setIsExcelUploadModalOpen(false)}
+        onSuccess={handleExcelUploadSuccess}
       />
     </>
   );

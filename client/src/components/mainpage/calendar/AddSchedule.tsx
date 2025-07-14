@@ -120,7 +120,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {event?.start && (
-              <div className="p-3 bg-primary-300 rounded-lg">
+              <div className="p-3 bg-accent-blue-100 rounded-lg">
                 <div className="text-h4 text-primary-500">
                   {getFormattedDate()}
                 </div>
@@ -243,7 +243,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
           {isEditMode && onDelete && (
               <Button
                 type="button"
-                variant="outline"
+                variant="light"
                 onClick={handleDelete}
                 className="text-text-base-500 border-stroke-base-100 hover:bg-fill-alt-100"
               >
@@ -252,6 +252,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
             )}
           <Button
             type="submit"
+            variant="default"
             onClick={handleSubmit(onSubmit)}
             loading={isSubmitting}
             disabled={isSubmitting}

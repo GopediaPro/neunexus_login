@@ -44,7 +44,7 @@ export const AutomationContainer = () => {
   };
 
   return (
-    <div className='flex-1 border border-stroke-base-100 rounded-[10px] overflow-hidden'>
+    <div className='flex-1 border border-stroke-base-100 rounded-md overflow-hidden'>
       <StatusCard title="자동화 현황" onViewAll={() => navigate('/')}>
         <div className="flex flex-col gap-3 py-3">
           {automationItems.map((item) => (

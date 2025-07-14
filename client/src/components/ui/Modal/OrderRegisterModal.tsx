@@ -4,7 +4,7 @@ import { SelectSearchInput } from "@/components/management/common/SelectSearchIn
 import { templateOptions } from "@/constant";
 import { Button } from "@/components/ui/Button";
 import { Modal } from ".";
-import { ModalBody, ModalCloseButton, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
+import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
 
 interface OrderRegisterModalProps {
   isOpen: boolean;
@@ -47,7 +47,6 @@ export const OrderRegisterModal = ({
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalHeader>
         <ModalTitle>주문 등록</ModalTitle>
-        <ModalCloseButton />
       </ModalHeader>
 
       <ModalBody className="h-[300px]">
@@ -86,6 +85,7 @@ export const OrderRegisterModal = ({
         </Button>
         <Button
           type="button"
+          variant="default"
           onClick={handleSubmit(handleFormSubmit)}
           disabled={!selectedTemplate}
         >

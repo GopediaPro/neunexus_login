@@ -5,7 +5,7 @@ import { SalesStatus } from "@/components/mainpage/dashboard/SalesStatus";
 
 export const Dashboard = () => {
   return (
-    <div className="flex flex-col shadow-xl border border-stroke-base-100 rounded-[10px] overflow-hidden">
+    <div className="flex flex-col shadow-xl border border-stroke-base-100 rounded-md overflow-hidden">
       <div className="grid grid-cols-2">
         <div className="relative">
           <SalesStatus />

@@ -15,14 +15,18 @@ export const SidebarMenuButton = ({
   isActive = false,
   onClick,
   className = '',
+  onMouseEnter,
+  onMouseLeave,
 }: ILeftMenuButtonProps) => {
   const icon = textToIconMap[text];
 
   return (
     <button
-      className={`w-[90%] text-left p-3 rounded-[10px] transition-all duration-200 text-h4
+      className={`w-[90%] text-left p-3 rounded-md transition-all duration-200 text-h4
         flex items-center gap-2 mx-auto hover:bg-fill-alt-200 ${isActive && "bg-fill-alt-200"} ${className}`}
       onClick={onClick}
+      onMouseEnter={hasSubmenu ? onMouseEnter : undefined}
+      onMouseLeave={hasSubmenu ? onMouseLeave : undefined}
       type="button"
     >
       <div className="flex items-center gap-3">
@@ -62,4 +66,4 @@ export const SubMenuItem = ({
       )}
     </button>
   );
-}
+};

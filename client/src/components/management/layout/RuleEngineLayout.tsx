@@ -17,7 +17,7 @@ export const RuleEngineLayout = () => {
   }, [close]);
 
   return (
-    <div className="min-h-screen bg-fill-base-100">
+    <div className="min-w-screen-xl min-h-screen bg-fill-base-100">
       {isOpen ? (
         <div className="grid grid-cols-[183px_1fr] min-h-screen">
           <MenuSidebarLayout />

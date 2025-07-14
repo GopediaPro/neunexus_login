@@ -8,12 +8,17 @@ export interface ProductListResponse {
   page_size: string;
 }
 
+export interface GetProductsParams {
+  search: string;
+  page: number;
+}
+
 export const getProducts = async (
-  page: number
+  params: GetProductsParams
 ): Promise<ProductListResponse> => {
   try {
     const response = await httpClient.get(API_END_POINT.PRODUCTS, {
-      params: { page }
+      params
     });
 
     return response.data;

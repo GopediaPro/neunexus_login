@@ -1,3 +1,6 @@
+import type { ProductTab } from "@/contexts/ProductContext";
+import type { ColDef } from "ag-grid-community";
+
 export interface ProductData {
   id: number;
   goods_nm: string;
@@ -13,4 +16,22 @@ export interface ProductData {
   char_2_nm: string;
   char_2_val: string;
   created_at: string;
+}
+
+export interface ProductContextValue {
+  search: string;
+  setSearch: (value: string) => void;
+  activeProductTab: ProductTab;
+  setActiveProductTab: (tab: ProductTab) => void;
+  page: number;
+  setPage: (page: number) => void;
+  productData: ProductData[];
+  isLoading: boolean;
+  error: unknown;
+  refreshProducts: () => void;
+  gridRef: any;
+  columnDefs: ColDef<ProductData>[];
+  defaultColDef: ColDef<ProductData>;
+  gridOptions: any;
+  onGridReady: (params: any) => void;
 }

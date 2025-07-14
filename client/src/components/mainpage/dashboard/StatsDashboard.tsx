@@ -25,7 +25,7 @@ const StatsItem = ({ iconName, value, label }: StatsItemProps) => {
 export const StatsDashboard = () => {
 
   return (
-    <div className="bg-primary-500 rounded-[10px] p-2 px-16">
+    <div className="bg-primary-500 rounded-md p-2 px-16">
       <div className="flex justify-between 2xl:justify-center 2xl:gap-20 cursor-pointer">
         {statsItems.map((item, index) => (
           <StatsItem

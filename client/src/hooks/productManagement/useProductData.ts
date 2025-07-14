@@ -1,16 +1,16 @@
 import { useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/api/product/getProducts";
 
-export const useProductData = () => {
-  const [searchParams] = useSearchParams();
+interface UseProductDataParams {
+  search: string;
+  page: number;
+}
 
-  const page = parseInt(searchParams.get('page') || '1');
-
+export const useProductData = ({ search, page }: UseProductDataParams) => {
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['products', page],
-    queryFn: () => getProducts(page),
+    queryKey: ['products', search, page],
+    queryFn: () => getProducts({ search, page }),
     retry: 3,
     retryDelay: 1000,
     staleTime: 5 * 60 * 1000,

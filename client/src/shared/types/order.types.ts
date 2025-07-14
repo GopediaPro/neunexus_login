@@ -1,3 +1,5 @@
+import type { GridApi } from "ag-grid-community";
+
 export interface OrderItem {
   id: number;
   idx: string;
@@ -120,3 +122,46 @@ export type BulkCreateOrderItem = Omit<OrderItem, 'id' | 'created_at' | 'updated
 export type BulkUpdateOrderItem = Partial<OrderItem> & {
   id: number;
 };
+
+export interface ExcelUploadRequest {
+  template_code: string;
+  file: File | null;
+}
+
+export interface ExcelUploadResponse {
+  file_url: string;
+  object_name: string;
+  template_code: string;
+}
+
+export type OrderTab = "registration" | "bulk-registration";
+
+export interface OrderContextValue {
+  search: string;
+  setSearch: (value: string) => void;
+  activeOrderTab: OrderTab;
+  setActiveOrderTab: (tab: OrderTab) => void;
+  page: number;
+  setPage: (page: number) => void;
+  currentTemplate: string;
+  setCurrentTemplate: (template: string) => void;
+  orderData: any[];
+  isLoading: boolean;
+  error: unknown;
+  refreshOrders: () => void;
+  gridApi: GridApi | null;
+  setGridApi: (api: GridApi | null) => void;
+  selectedRows: any[];
+  setSelectedRows: (rows: any[]) => void;
+  changedRows: any[];
+  setChangedRows: (rows: any[]) => void;
+};
+
+export interface UseOrderGridParams {
+  gridApi: GridApi | null;
+  setGridApi: (api: GridApi | null) => void;
+  selectedRows: any[];
+  setSelectedRows: (rows: any[]) => void;
+  changedRows: any[];
+  setChangedRows: (rows: any[]) => void;
+}
