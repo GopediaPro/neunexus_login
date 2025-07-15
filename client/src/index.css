@@ -270,20 +270,19 @@
 }
 
 /* 날짜 버튼 focus 스타일 */
-.mini-calendar-date:focus {
-  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+.mini-calendar-date.today {
+  @apply bg-primary-200 text-primary-600 border border-stroke-base-100;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
-/* 반응형 스타일 */
-@media (max-width: 640px) {
-  .mini-calendar-date {
-    @apply min-w-[40px] p-1.5;
-  }
-  
-  .mini-calendar-date span {
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
+.mini-calendar-date.today:hover {
+  @apply bg-primary-200 text-primary-800;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.mini-calendar-date.selected.today {
+  @apply bg-primary-600 text-white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
 }
 
 /* 스크롤 바 */
