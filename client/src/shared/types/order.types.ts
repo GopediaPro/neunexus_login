@@ -123,15 +123,47 @@ export type BulkUpdateOrderItem = Partial<OrderItem> & {
   id: number;
 };
 
-export interface ExcelUploadRequest {
+export interface ExcelUploadFilters {
+  order_date_from: string;
+  order_date_to: string;
+}
+
+export interface ExcelUploadRequestData {
   template_code: string;
-  file: File | null;
+  created_by: string;
+  filters: ExcelUploadFilters;
+  source_table: string;
+}
+
+export interface ExcelUploadRequest {
+  request: ExcelUploadRequestData;
+  file: File;
 }
 
 export interface ExcelUploadResponse {
   file_url: string;
   object_name: string;
   template_code: string;
+}
+
+export interface ExcelUploadFilters {
+  order_date_from: string;
+  order_date_to: string;
+}
+
+export interface ExcelUploadRequestData {
+  template_code: string;
+  created_by: string;
+  filters: ExcelUploadFilters;
+  source_table: string;
+}
+
+export interface ExcelUploadFormData {
+  template_code: string;
+  order_date_from: string;
+  order_date_to: string;
+  source_table: string;
+  file: File | null;
 }
 
 export type OrderTab = "registration" | "bulk-registration";

@@ -11,6 +11,7 @@ import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
 import { getBatchInfoAll } from "@/api/order/getBatchInfoAll";
+import { useAuthContext } from "@/contexts";
 
 export const OrderToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -19,6 +20,7 @@ export const OrderToolbar = () => {
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
   const [batchInfoData, setBatchInfoData] = useState<BatchInfoResponse | null>(null);
   const [isBatchInfoLoading, setIsBatchInfoLoading] = useState(false);
+  const { user } = useAuthContext();
 
   const {
     search,
@@ -323,6 +325,7 @@ export const OrderToolbar = () => {
         isOpen={isExcelUploadModalOpen}
         onClose={() => setIsExcelUploadModalOpen(false)}
         onSuccess={handleExcelUploadSuccess}
+        createdBy={user?.preferred_username || 'testuser'}
       />
 
       <BatchInfoModal

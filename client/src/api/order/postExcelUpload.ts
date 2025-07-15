@@ -2,7 +2,7 @@ import { API_END_POINT } from "@/constant";
 import { httpClient } from "@/shared/axios";
 
 interface ExcelUploadRequest {
-  template_code: string;
+  request: string;
   file: File;
 }
 
@@ -14,7 +14,8 @@ interface ExcelUploadResponse {
 
 export const postExcelUpload =  async (data: ExcelUploadRequest) => {
   const formData = new FormData();
-  formData.append('template_code', data.template_code);
+
+  formData.append('request', data.request);
   formData.append('file', data.file);
 
   const response = await httpClient.post<ExcelUploadResponse>(
