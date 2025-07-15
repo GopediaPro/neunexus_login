@@ -109,7 +109,7 @@ export const useMenuSideabar = () => {
   };
 
   const handleLogoClick = () => {
-    navigate('/');
+    window.location.href = '/';
   };
 
   return {

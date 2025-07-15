@@ -1,9 +1,11 @@
 import { deleteBulkDownFormOrders } from "@/api/order/deleteBulkDownFormOrders";
+import { getBatchInfoAll } from "@/api/order/getBatchInfoAll";
+import { getBatchInfoLatest } from "@/api/order/getBatchInfoLatest";
 import { getDownFormOrders } from "@/api/order/getDownFormOrders"
 import { postBulkDownFormOrders } from "@/api/order/postBulkDownFormOrders";
 import { putBlukDownFormOrders } from "@/api/order/putBlukDownFormOrders";
-import type { BulkCreateRequest, BulkDeleteRequest, BulkUpdateRequest } from "@/shared/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import type { BatchInfoParams, BatchInfoResponse, BulkCreateRequest, BulkDeleteRequest, BulkUpdateRequest } from "@/shared/types";
+import { useMutation, useQuery, useQueryClient, type UseQueryOptions } from "@tanstack/react-query"
 
 export const orderKeys = {
   all: ['orders'] as const,
@@ -60,3 +62,28 @@ export const useBulkDeleteOrders = () => {
     }
   })
 }
+
+export const useBatchInfoAll = (
+  params?: BatchInfoParams,
+  options?: UseQueryOptions<BatchInfoResponse>
+) => {
+  return useQuery({
+    queryKey: ['batchInfo', 'all', params],
+    queryFn: () => getBatchInfoAll(params),
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};
+
+
+export const useBatchInfoLatest = (
+  params?: BatchInfoParams,
+  options?: UseQueryOptions<BatchInfoResponse>
+) => {
+  return useQuery({
+    queryKey: ['batchInfo', 'latest', params],
+    queryFn: () => getBatchInfoLatest(params),
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+};

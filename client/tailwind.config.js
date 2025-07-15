@@ -45,6 +45,7 @@ export default {
 					'fill-base-200': 'hsl(var(--fill-base-200))',
 					'fill-alt-100': 'hsl(var(--fill-alt-100))',
 					'fill-alt-200': 'hsl(var(--fill-alt-200))',
+					'fill-alt-300': 'hsl(var(--fill-alt-300, 0 0% 90%))',
 
 					'icon-base-300': 'hsl(var(--icon-base-300))',
 					'icon-base-400': 'hsl(var(--icon-base-400))',
@@ -64,6 +65,8 @@ export default {
 					'primary-400': 'hsl(var(--primary-400))',
 					'primary-500': 'hsl(var(--primary-500))',
 					'primary-600': 'hsl(var(--primary-600))',
+					'primary-100': 'hsl(var(--primary-100))',
+					'primary-800': 'hsl(var(--primary-800, 213 74% 22%))',
 
 					'error-100': 'hsl(var(--error-100))',
 					'error-500': 'hsl(var(--error-500))',
