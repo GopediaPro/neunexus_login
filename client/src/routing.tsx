@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { ROUTERS } from './constant/route';
 import Layout from './Layout';
-import TestComponent from './components/TestComponent';
+import { TestComponent } from './components/TestComponent';
 import { PrivateRoute } from '@/components/layout/PrivateRoute';
 import { PublicRoute } from '@/components/layout/PublicRoute';
 import { LoginPage } from './pages/LoginPage';
@@ -10,6 +10,7 @@ import { MainPage } from './pages/MainPage';
 import { ProductManagementPage } from './pages/ProductManagementPage';
 import { OrderManagementPage } from './pages/OrderManagementPage';
 import { RuleEngineManagementPage } from './pages/RuleEngineManagementPage';
+import { Error } from './components/ui/Error';
 
 const publicRouteList = [
   {
@@ -32,7 +33,7 @@ const privateRouteList = [
     element: <TestComponent />,
   },
   {
-    path: ROUTERS.PRODUCT_MANAGAMENT,
+    path: ROUTERS.PRODUCT_MANAGEMENT,
     element: <ProductManagementPage />
   },
   {
@@ -62,4 +63,8 @@ export const router = createBrowserRouter([
       </PublicRoute>
     ),
   })),
+  {
+    path: '*',
+    element: <Error /> //
+  }
 ]);

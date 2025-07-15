@@ -19,10 +19,10 @@ export const SalesStatus = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-0.5 text-body-s border border-border-default rounded ${
+            className={`px-4 py-0.5 text-body-s border border-stroke-base-100 rounded ${
               activeTab === tab
-                ? "bg-page-sidebar-menu-bg-hover text-page-blue-400"
-                : "bg-page-sidebar-bg text-page-font-tertiary hover:bg-page-sidebar-menu-bg-hover"
+                ? "bg-fill-alt-200 text-primary-500"
+                : "bg-fill-base-100 text-text-base-400 hover:bg-fill-alt-200"
             }`}
           >
             {tab}
@@ -31,7 +31,7 @@ export const SalesStatus = () => {
       </div>
   
       <div className="space-y-2">
-        <div className="grid grid-cols-3 gap-4 text-h6 text-page-font-primary pb-2">
+        <div className="grid grid-cols-3 gap-4 text-h6 text-text-base-500 pb-2">
           <span>품목코드</span>
           <span className="text-right">재고수량</span>
           <span className="text-right">재고금액</span>
@@ -40,9 +40,9 @@ export const SalesStatus = () => {
         <ScrollTable height="h-36">
           {salesData.map((item) => (
             <div key={item.id} className="grid grid-cols-3 gap-4 text-body-s py-2">
-              <span className="text-page-font-primary">{item.productCode}</span>
-              <span className="text-right text-page-font-primary">{item.quantity.toLocaleString()}</span>
-              <span className="text-right text-page-font-primary">{item.amount.toLocaleString()}...</span>
+              <span className="text-text-base-500">{item.productCode}</span>
+              <span className="text-right text-text-base-500">{item.quantity.toLocaleString()}</span>
+              <span className="text-right text-text-base-500">{item.amount.toLocaleString()}...</span>
             </div>
           ))}
         </ScrollTable>

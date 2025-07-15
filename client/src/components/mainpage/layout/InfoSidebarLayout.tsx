@@ -4,7 +4,7 @@ import { OrganizationContainer } from "../sidebar/OrganizationContainer";
 
 export const InfoSidebarLayout = () => {
   return (
-    <div className={`sidebar-right-width min-w-[293px] min-h-[930px] bg-page-sidebar-bg p-1 shadow-xl border rounded-[10px] space-y-6`}>
+    <div className={`min-w-[288px] w-sidebar-right 2xl:w-sidebar-right-2xl h-[926px] bg-fill-base-100 p-1 shadow-xl border border-stroke-base-100 rounded-md space-y-6`}>
       <NotificationContainer />
       <ScheduleContainer />
       <OrganizationContainer />

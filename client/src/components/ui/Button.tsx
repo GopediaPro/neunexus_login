@@ -9,21 +9,23 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-page-button-primary text-page-button-font shadow hover:bg-page-button-primary-hover",
+        default: "bg-primary-500 text-text-contrast-500 shadow hover:bg-primary-600",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-page-button-primary underline-offset-4 hover:underline",
-        focus: "bg-page-button-primary text-page-button-font hover:bg-page-button-primary-hover",
-        light: "bg-page-card-bg text-page-font-primary border border-page-input-border hover:bg-gray-100",
+        link: "text-primary-500 underline-offset-4 hover:underline",
+        focus: "bg-primary-500 text-text-contrast-500 hover:bg-primary-600",
+        light: "bg-fill-base-100 text-text-base-500 border border-stroke-base-100 hover:bg-fill-alt-100",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
-        auth: "h-16 w-full px-2.5 py-[18px] rounded-xl text-xl font-bold tracking-[0.06px]",
-        icon: "h-9 w-9",
+        default: "h-[48px] px-8 py-4 text-[16px]",
+        compact: "h-[48px] px-8 py-3 text-[12px]", 
+        sidebar: "h-[32px] px-4 py-2 text-[16px]",
+        tabSm: "h-8 px-2 py-1 text-[12px]",
+        tabMd: "h-[40px] px-5 py-4 text-[16px]",
+        view: "px-1 py-3 text-[10px] text-text-base-400 rounded-lg",
+        auth: "h-14 w-full px-2.5 py-[18px] rounded-xl text-body-m tracking-[0.06px]"
       },
     },
     defaultVariants: {

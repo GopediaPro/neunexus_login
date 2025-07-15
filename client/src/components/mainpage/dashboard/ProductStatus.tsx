@@ -14,8 +14,8 @@ export const ProductStatus = () => {
       <div className="space-y-4 mt-2">
         {productData.map((item, index) => (
           <div key={item.id} className="flex items-center justify-between">
-            <span className="text-page-font-primary text-body-l">{labels[index]}</span>
-            <span className="text-body-s text-page-blue-400">
+            <span className="text-text-base-500 text-body-l">{labels[index]}</span>
+            <span className="text-body-s text-primary-500">
               {item.value.toLocaleString()} 건
             </span>
           </div>

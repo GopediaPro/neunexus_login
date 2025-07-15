@@ -28,86 +28,77 @@ export default {
 					'screen-xl': '1280px',
 					'screen-2xl': '1600px'
 				},
+				width: {
+					'sidebar-left': '184px',
+					'sidebar-left-2xl': '240px',
+					'sidebar-right': '288px',
+					'sidebar-right-2xl': '320px',
+					'screen-xl': '1280px',
+					'screen-2xl': '1600px'
+				},
+				gridTemplateColumns: {
+					'sidebar-layout': '184px 1fr',
+					'sidebar-layout-2xl': '240px 1fr'
+				},
 				colors: {
-					background: 'hsl(var(--background))',
-					foreground: 'hsl(var(--foreground))',
-					
-					// 페이지 공통 색상
-					'page-bg': 'var(--page-bg)',
-					'page-card-bg': 'var(--page-card-bg)',
-					'page-button-primary': 'var(--page-button-primary)',
-					'page-button-primary-hover': 'var(--page-button-primary-hover)',
-					'page-button-primary-loading': 'var(--page-button-primary-loading)',
-					'page-error': 'var(--page-error)',
-					'page-error-input-bg': 'var(--page-error-input-bg)',
-					'page-input-bg': 'var(--page-input-bg)',
-					'page-input-font': 'var(--page-input-font)',
-					'page-input-border': 'var(--page-input-border)',
-					'page-input-title': 'var(--page-input-title)',
-					'page-button-font': 'var(--page-button-font)',
-					'page-font-primary': 'var(--page-font-primary)',
-					'page-font-secondary': 'var(--page-font-secondary)',
+					'fill-base-100': 'hsl(var(--fill-base-100))',
+					'fill-base-200': 'hsl(var(--fill-base-200))',
+					'fill-alt-100': 'hsl(var(--fill-alt-100))',
+					'fill-alt-200': 'hsl(var(--fill-alt-200))',
+					'fill-alt-300': 'hsl(var(--fill-alt-300, 0 0% 90%))',
 
-					'page-blue-400': 'var(--page-blue-400)',
-					'page-blue-300': 'var(--page-blue-300)',
-					'page-blue-200': 'var(--page-blue-200)',
-					
-					'gray-100': 'hsl(var(--gray-100))',
-					'gray-200': 'hsl(var(--gray-200))',
-					'gray-300': 'hsl(var(--gray-300))',
-					'gray-400': 'hsl(var(--gray-400))',
-					'gray-500': 'hsl(var(--gray-500))',
+					'icon-base-300': 'hsl(var(--icon-base-300))',
+					'icon-base-400': 'hsl(var(--icon-base-400))',
 
-					// 메인페이지 전용 색상
-					'page-sidebar-bg': 'var(--page-sidebar-bg)',
-					'page-sidebar-menu-bg-default': 'var(--page-sidebar-menu-bg-default)',
-					'page-sidebar-menu-bg-hover': 'var(--page-sidebar-menu-bg-hover)',
-					'page-sidebar-menu-list-bg': 'var(--page-sidebar-menu-list-bg)',
-					'page-feature-button-icon-default': 'var(--page-feature-button-icon-default)',
-					'page-feature-button-icon-hover': 'var(--page-feature-button-icon-hover)',
-					'page-font-tertiary': 'var(--page-font-tertiary)',
-					'page-font-muted': 'var(--page-font-muted)',
-					'page-button-border': 'var(--page-button-border)',
-					'page-divider-border': 'var(--page-divider-border)',
-					'page-toggle-on-bg': 'var(--page-toggle-on-bg)',
-					'page-toggle-off-bg': 'var(--page-toggle-off-bg)',
-					'page-input-bar-scroll-bg': 'var(--page-input-bar-scroll-bg)',
+					'stroke-base-100': 'hsl(var(--stroke-base-100))',
+					'stroke-base-200': 'hsl(var(--stroke-base-200))',
+					'stroke-base-300': 'hsl(var(--stroke-base-300))',
 
-					'border-default': 'hsl(var(--border-default))',
+					'text-base-200': 'hsl(var(--text-base-200))',
+					'text-base-300': 'hsl(var(--text-base-300))',
+					'text-base-400': 'hsl(var(--text-base-400))',
+					'text-base-500': 'hsl(var(--text-base-500))',
+					'text-contrast-500': 'hsl(var(--text-contrast-500))',
 
-					primary: 'hsl(var(--web-primary))',
-					secondary: 'hsl(var(--web-secondary))',
+					'primary-200': 'hsl(var(--primary-200))',
+					'primary-300': 'hsl(var(--primary-300))',
+					'primary-400': 'hsl(var(--primary-400))',
+					'primary-500': 'hsl(var(--primary-500))',
+					'primary-600': 'hsl(var(--primary-600))',
+					'primary-100': 'hsl(var(--primary-100))',
+					'primary-800': 'hsl(var(--primary-800, 213 74% 22%))',
 
-					card: {
-						DEFAULT: 'hsl(var(--card))',
-						foreground: 'hsl(var(--card-foreground))'
-					},
-					popover: {
-						DEFAULT: 'hsl(var(--popover))',
-						foreground: 'hsl(var(--popover-foreground))'
-					},
-					muted: {
-						DEFAULT: 'hsl(var(--muted))',
-						foreground: 'hsl(var(--muted-foreground))'
-					},
-					accent: {
-						DEFAULT: 'hsl(var(--accent))',
-						foreground: 'hsl(var(--accent-foreground))'
-					},
-					destructive: {
-						DEFAULT: 'hsl(var(--destructive))',
-						foreground: 'hsl(var(--destructive-foreground))'
-					},
-					border: 'hsl(var(--border))',
-					input: 'hsl(var(--input))',
-					ring: 'hsl(var(--ring))',
-					chart: {
-						'1': 'hsl(var(--chart-1))',
-						'2': 'hsl(var(--chart-2))',
-						'3': 'hsl(var(--chart-3))',
-						'4': 'hsl(var(--chart-4))',
-						'5': 'hsl(var(--chart-5))'
-					}
+					'error-100': 'hsl(var(--error-100))',
+					'error-500': 'hsl(var(--error-500))',
+
+					'accent-red-100': 'hsl(var(--accent-red-100))',
+					'accent-red-500': 'hsl(var(--accent-red-500))',
+					'accent-green-100': 'hsl(var(--accent-green-100))',
+					'accent-green-500': 'hsl(var(--accent-green-500))',
+					'accent-blue-100': 'hsl(var(--accent-blue-100))',
+					'accent-yellow-400': 'hsl(var(--accent-yellow-400))',
+					'accent-purple-400': 'hsl(var(--accent-purple-400))',
+					'accent-purple-500': 'hsl(var(--accent-purple-500))',
+
+					'background': 'hsl(var(--background))',
+					'foreground': 'hsl(var(--foreground))',
+					'card': 'hsl(var(--card))',
+					'card-foreground': 'hsl(var(--card-foreground))',
+					'popover': 'hsl(var(--popover))',
+					'popover-foreground': 'hsl(var(--popover-foreground))',
+					'primary': 'hsl(var(--primary-500))',
+					'primary-foreground': 'hsl(var(--text-contrast-500))',
+					'secondary': 'hsl(var(--primary-400))',
+					'secondary-foreground': 'hsl(var(--text-contrast-500))',
+					'muted': 'hsl(var(--muted))',
+					'muted-foreground': 'hsl(var(--muted-foreground))',
+					'accent': 'hsl(var(--accent))',
+					'accent-foreground': 'hsl(var(--accent-foreground))',
+					'destructive': 'hsl(var(--destructive))',
+					'destructive-foreground': 'hsl(var(--destructive-foreground))',
+					'border': 'hsl(var(--border))',
+					'input': 'hsl(var(--input))',
+					'ring': 'hsl(var(--ring))',
 				}
 			}
 		},

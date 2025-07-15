@@ -1,5 +1,5 @@
-import { useProductManagement } from "@/hooks";
 import { AgGridReact } from "ag-grid-react";
+import { useProductContext } from "@/contexts/ProductContext";
 
 export const ProductGrid = () => {
   const {
@@ -8,8 +8,8 @@ export const ProductGrid = () => {
     columnDefs,
     defaultColDef,
     gridOptions,
-    onGridReady
-  } = useProductManagement();
+    onGridReady,
+  } = useProductContext();
 
   return (
     <div className="ag-theme-alpine w-full h-[calc(100vh-60px)]">

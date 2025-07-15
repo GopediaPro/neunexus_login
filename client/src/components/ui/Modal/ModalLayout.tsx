@@ -3,7 +3,7 @@ import type { ModalBodyProps, ModalCloseButtonProps, ModalFooterProps, ModalHead
 
 export const ModalHeader = ({ children, className }: ModalHeaderProps) => {
   return (
-    <div className={`flex items-center justify-between p-3 bg-page-bg ${className} `}>
+    <div className={`flex items-center justify-between p-3 bg-fill-base-100 ${className} `}>
       {children}
     </div>
   );
@@ -11,7 +11,7 @@ export const ModalHeader = ({ children, className }: ModalHeaderProps) => {
 
 export const ModalTitle = ({ children, className }: ModalTitleProps) => {
   return (
-    <h2 className={`text-xl font-semibold text-font-primary bg-page-bg ${className}`}>
+    <h2 className={`text-xl font-semibold text-text-base-500 bg-fill-base-100 ${className}`}>
       {children}
     </h2>
   );
@@ -23,7 +23,7 @@ export const ModalCloseButton = ({ className }: ModalCloseButtonProps) => {
   return (
     <button
       onClick={onClose}
-      className={`text-font-tertiary hover:text-font-primary text-2xl leading-none transition-colors ${className}`}
+      className={`text-text-base-300 hover:text-text-base-500 text-2xl leading-none transition-colors ${className}`}
       aria-label="모달 닫기"
     >
       <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,7 +36,7 @@ export const ModalCloseButton = ({ className }: ModalCloseButtonProps) => {
 
 export const ModalBody = ({ children, className }: ModalBodyProps) => {
   return (
-    <div className={`p-6 bg-page-bg overflow-y-auto flex-1 ${className}`}>
+    <div className={`p-6 bg-fill-base-100 overflow-y-auto flex-1 ${className}`}>
       {children}
     </div>
   );
@@ -44,7 +44,7 @@ export const ModalBody = ({ children, className }: ModalBodyProps) => {
 
 export const ModalFooter = ({ children, className }: ModalFooterProps) => {
   return (
-    <div className={`flex items-center justify-end bg-page-bg space-x-2 p-6 ${className}`}>
+    <div className={`flex items-center justify-end bg-fill-base-100 space-x-2 p-6 ${className}`}>
       {children}
     </div>
   );

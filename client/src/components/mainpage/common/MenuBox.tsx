@@ -1,3 +1,4 @@
+import { adaptiveLineBreak } from "@/utils/menubox";
 import type { ReactNode } from "react"
 
 interface MenuBoxProps {
@@ -13,24 +14,33 @@ export const MenuBox = ({
   onClick, 
   className
 }: MenuBoxProps) => {
-  
+  const formattedLabel = label ? adaptiveLineBreak(label) : '';
+
   return (
     <>
-      <button
-        onClick={onClick}
-        className={`
-          relative flex justify-center items-center w-[4.65rem] h-[4.65rem]
-          bg-page-sidebar-bg border border-border-default  rounded-xl
-          ${className}
-        `}
-      >
-        <div className="w-9 h-9 flex items-center justify-center mb-1 text-page-font-muted">
-          {icon}
-        </div>
-        <span className="absolute bottom-[-22px] text-h6 text-center leading-tight text-page-font-primary">
-          {label}
-        </span>
-      </button>
+      <div className={`flex flex-col items-center ${className}`}>
+        <button
+          onClick={onClick}
+          className={`
+            relative flex justify-center items-center w-[4.65rem] h-[4.65rem]
+            border border-stroke-base-100 rounded-xl bg-fill-base-100
+          `}
+        >
+          <div className="w-9 h-9 flex items-center justify-center mb-1 text-text-base-400">
+            {icon}
+          </div>
+        </button>
+        {label && (
+          <span
+            className="
+              mt-1 text-h6 text-center leading-tight text-text-base-500
+              break-all w-[4.65rem] min-h-[1.5em]
+            "
+          >
+            {formattedLabel}
+          </span>
+        )}
+      </div>
     </>
   )
 }

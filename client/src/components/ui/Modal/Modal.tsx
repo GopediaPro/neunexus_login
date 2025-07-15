@@ -53,7 +53,7 @@ export const ModalRoot = ({ children, isOpen, onClose, size }: ModalProps) => {
           onClick={onClose}
         >
           <div 
-            className={`bg-page-bg rounded-lg shadow-xl ${getSizeClass()} w-full max-h-[90vh] overflow-hidden`}
+            className={`bg-fill-base-100 rounded-lg shadow-xl ${getSizeClass()} w-full max-h-[90vh] overflow-hidden`}
             onClick={(e) => e.stopPropagation()}
           >
             {children}

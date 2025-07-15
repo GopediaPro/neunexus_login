@@ -123,7 +123,7 @@ const CompleteFormExample = () => {
       <button
         type="submit"
         disabled={!isValid}
-        className="w-full bg-web-primary text-font-white py-3 rounded-lg hover:bg-web-secondary transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-primary-500 text-text-contrast-500 py-3 rounded-lg hover:bg-primary-300 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
       >
         제출
       </button>

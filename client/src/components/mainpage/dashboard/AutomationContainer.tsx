@@ -44,7 +44,7 @@ export const AutomationContainer = () => {
   };
 
   return (
-    <div className='flex-1 border border-border-default rounded-[10px] overflow-hidden'>
+    <div className='flex-1 bg-fill-base-100 border border-stroke-base-100 rounded-md overflow-hidden'>
       <StatusCard title="자동화 현황" onViewAll={() => navigate('/')}>
         <div className="flex flex-col gap-3 py-3">
           {automationItems.map((item) => (
@@ -53,10 +53,10 @@ export const AutomationContainer = () => {
               className="flex justify-between items-center w-full"
             >
               <div className="flex flex-col justify-center">
-                <div className="text-body-l text-neutral-600">
+                <div className="text-body-l text-text-base-500">
                   {item.title}
                 </div>
-                <div className="text-body-s text-neutral-500">
+                <div className="text-body-s text-text-base-400">
                   {item.description}
                 </div>
               </div>

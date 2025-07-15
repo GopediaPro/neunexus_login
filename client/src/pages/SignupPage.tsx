@@ -13,11 +13,10 @@ export const SignupPage = () => {
   } = useSignup();
 
   return (
-    <div className="w-full h-screen bg-page-bg shadow-xl flex justify-center items-center">
-      <div className="w-[590px] p-24 bg-page-card-bg rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-border-default">
-        
+    <div className="w-full h-screen bg-fill-base-200 shadow-xl flex justify-center items-center">
+      <div className="w-[590px] p-24 rounded-3xl bg-fill-base-100 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-stroke-base-100">
         <div className="w-full space-y-8">
-          <h1 className="text-page-font-primary text-h2">
+          <h1 className="text-text-base-500 text-h2">
             회원가입
           </h1>
           
@@ -72,11 +71,10 @@ export const SignupPage = () => {
             />
 
             {errors.root && (
-              <div className="flex items-center pt-1 pl-1 text-sm text-page-error">
+              <div className="flex items-center pt-1 pl-1 text-sm text-error-500">
                 <span className="text-caption">{errors.root.message}</span>
               </div>
             )}
-
             <Button
               type="submit"
               variant="default"
@@ -89,12 +87,12 @@ export const SignupPage = () => {
           </form>
           
           <div className="flex justify-center items-center gap-1">
-            <span className="text-page-font-primary text-body-s">
+            <span className="text-text-base-500 text-body-s">
               이미 계정이 있으신가요?
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-page-button-primary text-body-s underline hover:text-page-button-primary-hover transition-colors"
+              className="px-2.5 py-3 text-primary-500 text-body-s underline hover:text-primary-600 transition-colors"
               onClick={handleLoginClick}
             >
               로그인

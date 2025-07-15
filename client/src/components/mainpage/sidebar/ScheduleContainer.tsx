@@ -124,8 +124,8 @@ export const ScheduleContainer = () => {
                     style={{ backgroundColor: event.color || '#3b82f6' }}
                   ></div>
                   <div className="flex-1">
-                    <div className="text-body-l text-page-font-primary">{event.title}</div>
-                    <div className="text-body-s text-page-font-tertiary">
+                    <div className="text-body-l text-text-base-500">{event.title}</div>
+                    <div className="text-body-s text-text-base-300">
                       {moment(event.start).format('HH:mm')}
                     </div>
                   </div>
@@ -133,15 +133,16 @@ export const ScheduleContainer = () => {
               ))}
               
               {displayEvents.length === 0 && (
-                <div className="flex flex-col items-center justify-center text-sm text-page-font-tertiary py-4">
+                <div className="flex flex-col items-center justify-center text-sm text-text-base-300 py-4">
                   {moment(selectedDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD') 
                     ? '오늘 일정이 없습니다'
                     : `${moment(selectedDate).format('M월 D일')} 일정이 없습니다`
                   }
                   <Button
-                    size="sm"
+                    variant="light"
+                    size="sidebar"
                     onClick={() => handleOpenEventModal()}
-                    className="mt-2 text-white text-xs"
+                    className="mt-2 bg-primary-500 text-text-contrast-500 hover:bg-primary-600"
                   >
                     + 추가하기
                   </Button>
@@ -153,8 +154,8 @@ export const ScheduleContainer = () => {
       </StatusCard>
 
       <Modal isOpen={isScheduleModalOpen} onClose={handleCloseScheduleModal} size="5xl">
-        <div className="bg-white rounded-2xl">
-          <Modal.Header className="border-b p-4 px-6">
+        <div className="bg-fill-base-100 rounded-2xl">
+          <Modal.Header className="border-b border-stroke-base-100 p-4 px-6">
             <Modal.Title>일정 관리</Modal.Title>
             <Modal.CloseButton />
           </Modal.Header>

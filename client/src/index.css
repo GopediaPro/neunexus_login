@@ -45,6 +45,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
+    --background: var(--fill-base-100);
+    --foreground: var(--text-base-500);
+
     --text-h1-size: 32px;
     --text-h1-weight: 700;
     --text-h1-line-height: 1.2;
@@ -78,7 +81,7 @@
     --text-body-s-weight: 400;
     --text-body-s-line-height: 20px;
 
-    --text-button-size: 16px;
+    --text-button-size: 20px;
     --text-button-weight: 600;
     --text-button-line-height: 24px;
 
@@ -86,108 +89,124 @@
     --text-caption-weight: 400;
     --text-caption-line-height: 18px;
 
-    --left-sidebar-width: 183px;
-    --right-sidebar-width: 286px;
     --disabled-opacity: 0.5;
     --transition-duration: 0.2s;
 
-    /* 모든 페이지의 공통 색상 */
-    --page-bg: #F9F8FD;
-    --page-card-bg: #FFFFFF;
-    --page-button-primary: #1E6ECF;
-    --page-button-primary-hover: #1C63B9;
-    --page-button-primary-loading: #6291CF;
-    --page-error: #F04848;
-    --page-error-input-bg: #FFF9F9;
-    --page-input-bg: #FFFFFF;
-    --page-input-font: #555555;
-    --page-input-border: #A9A9A9;
-    --page-input-title: #555555;
-    --page-button-font: #FFFFFF;
-    --page-font-primary: #111111;
-    --page-font-secondary: #222222;
+    --text-base-200: 0 0% 66%; /* #A9A9A9 */
+    --text-base-300: 0 0% 46%; /* #757575 */
+    --text-base-400: 0 0% 20%; /* #333333 */
+    --text-base-500: 0 0% 7%; /* #111111 */
+    --text-contrast-500: 0 0% 99%; /* #FDFDFD */
 
-    --page-sidebar-bg: #FFFFFF;
-    --page-sidebar-menu-bg-default: #FFFFFF;
-    --page-sidebar-menu-bg-hover: #E4ECF6;
-    --page-sidebar-menu-list-bg: #F9F9F9;
-    --page-feature-button-icon-default: #777777;
-    --page-feature-button-icon-hover: #333333;
-    --page-font-tertiary: #555555;
-    --page-font-muted: #777777;
-    --page-button-border: #D9D9D9;
-    --page-divider-border: #E9E9E9;
-    --page-toggle-on-bg: #1E6ECF;
-    --page-toggle-off-bg: #D9D9D9;
-    --page-input-bar-scroll-bg: #F3F3F3;
-    
-    --page-blue-400: #1E6ECF;
-    --page-blue-300: #8FB7E7;
-    --page-blue-200: #E0EEFF;
+    --accent-red-100: 0 100% 98%; /* #FFF9F9 */
+    --accent-red-400: 356 85% 64%; /* #F54A58 */
+    --accent-red-500: 0 85% 50%; /* #E61514 */
+    --accent-green-100: 120 100% 98%; /* #F4FFF4 */
+    --accent-green-400: 120 50% 51%; /* #43C843 */
+    --accent-green-500: 120 48% 36%; /* #318131 */
+    --accent-blue-100: 210 100% 94%; /* #E0EFFF */
+    --accent-yellow-400: 45 100% 67%; /* #FFD058 */
+    --accent-purple-400: 254 60% 58%; /* #8A54D7 */
+    --accent-purple-500: 254 60% 58%; /* #8A54D7 */
 
-    --gray-100: 0 0% 95%;
-    --gray-200: 0 0% 91%;
-    --gray-300: 0 0% 85%;
-    --gray-400: 0 0% 66%;
-    --gray-500: 240 2% 32%;
+    --fill-base-100: 0 0% 99%; /* #FDFDFD */
+    --fill-base-200: 200 8% 94%; /* #EBEEEF */
+    --fill-alt-100: 0 0% 95%; /* #F3F3F3 */
+    --fill-alt-200: 195 14% 96%; /* #F4F7F8 */
 
-    /* Tailwind 호환 코드 */
-    --background: var(--page-bg);
-    --foreground: var(--page-font-primary);
-    --card: var(--page-card-bg);
-    --card-foreground: var(--page-font-primary);
+    --icon-base-300: 0 0% 46%; /* #757575 */
+    --icon-base-400: 0 0% 20%; /* #333333 */
 
-    --border-default: 0 0% 85%;
+    --stroke-base-100: 0 0% 91%; /* #E9E9E9 */
+    --stroke-base-200: 0 0% 85%; /* #D9D9D9 */
+    --stroke-base-300: 0 0% 66%; /* #A9A9A9 */
+
+    --primary-100: 0 0% 94%; /* #F0F0F0 */
+    --primary-200: 213 100% 94%; /* #8FB7E7 */
+    --primary-300: 213 59% 72%; /* #8FB7E7 */
+    --primary-400: 213 27% 54%; /* #6484AE */
+    --primary-500: 213 74% 42%; /* #1C63B9 */
+    --primary-600: 213 78% 46%; /* #1E5ECF */
+
+    --error-100: 0 100% 98%; /* #FFF9F9 */
+    --error-500: 0 85% 50%; /* #E61514 */
+
+    /* Shadcn UI */
+    --card: var(--fill-base-100);
+    --card-foreground: var(--text-base-500);
+    --popover: var(--fill-base-100);
+    --popover-foreground: var(--text-base-500);
+    --muted: var(--fill-alt-100);
+    --muted-foreground: var(--text-base-300);
+    --accent: var(--primary-600);
+    --accent-foreground: var(--text-contrast-500);
+    --destructive: var(--error-500);
+    --destructive-foreground: var(--text-contrast-500);
+    --border: var(--stroke-base-200);
+    --input: var(--fill-alt-200);
+    --ring: var(--primary-600);
   }
   .dark {
-    --page-bg: #27313A;
-    --page-card-bg: #3C454D;
-    --page-button-primary: #228BFF;
-    --page-button-primary-hover: #1F7DE5;
-    --page-button-primary-loading: #5F97E5;
-    --page-error: #FF4D4F;
-    --page-error-input-bg: #423639;
-    --page-input-bg: #2F363D;
-    --page-input-font: #DDE2E7;
-    --page-input-border: #4A535B;
-    --page-input-title: #D9D9D9;
-    --page-button-font: #FFFFFF;
-    --page-font-primary: #FFFFFF;
-    --page-font-secondary: #F1F3F5;
+    --background: var(--fill-base-100);
+    --foreground: var(--text-base-500);
 
-    --page-sidebar-bg: #3C454D;
-    --page-sidebar-menu-bg-default: #3C454D;
-    --page-sidebar-menu-bg-hover: #343D46;
-    --page-sidebar-menu-list-bg: #565D65;
-    --page-feature-button-icon-default: #DDE2E7;
-    --page-feature-button-icon-hover: #FFFFFF;
-    --page-font-tertiary: #E6E9EC;
-    --page-font-muted: #DDE2E7;
-    --page-button-border: #5F666D;
-    --page-divider-border: #555D65;
-    --page-toggle-on-bg: #1E6ECF;
-    --page-toggle-off-bg: #A9A9A9;
-    --page-input-bar-scroll-bg: #27313A;
+    --text-base-200: 212 11% 82%; /* #CAD0D5 */
+    --text-base-300: 212 18% 87%; /* #DDE2E7 */
+    --text-base-400: 210 7% 95%; /* #F1F3F5 */
+    --text-base-500: 0 0% 99%; /* #FDFDFD */
+    --text-contrast-500: 0 0% 99%; /* #FDFDFD */
 
-    --page-blue-400: #228BFF;
-    --page-blue-300: #8FB7E7;
-    --page-blue-200: #E0EEFF;
+    --accent-red-100: 0 18% 25%; /* #473838 */
+    --accent-red-400: 356 80% 67%; /* #EB5E6A */
+    --accent-red-500: 356 91% 72%; /* #F97B82 */
+    --accent-green-100: 152 45% 20%; /* #1D4435 */
+    --accent-green-400: 120 48% 45%; /* #45B745 */
+    --accent-green-500: 152 73% 46%; /* #20CD66 */
+    --accent-blue-100: 195 20% 12%; /* #151C1E */
+    --accent-yellow-400: 45 100% 67%; /* #FFD058 */
+    --accent-purple-400: 254 70% 75%; /* #B387F2 */
+    --accent-purple-500: 254 60% 58%; /* #8A54D7 */
 
-    --background: var(--page-bg);
-    --foreground: var(--page-font-primary);
-    --card: var(--page-card-bg);
-    --card-foreground: var(--page-font-primary);
+    --primary-100: 0 0% 75%; /* #BCDDFC */
+    --primary-200: 210 100% 93%; /* #E0EFFF */
+    --primary-300: 210 79% 67%; /* #8FB7E7 */
+    --primary-400: 210 67% 49%; /* #2D84CD */
+    --primary-500: 210 77% 53%; /* #1F7DE5 */
+    --primary-600: 206 77% 53%; /* #2190EC */
+    --error-100: 0 18% 25%; /* #473838 */
+    --error-500: 356 91% 72%; /* #F97B82 */
 
-    --border-default: 207 6% 39%;
-  }
+    --fill-base-100: 195 20% 16%; /* #1E282A */
+    --fill-base-200: 195 20% 12%; /* #151C1E */
+    --fill-alt-100: var(--fill-base-200); /* #151C1E */
+    --fill-alt-200: 195 17% 13%; /* #192224 */
 
-  * {
-    @apply border-border-default;
+    --icon-base-300: 212 18% 87%; /* #DDE2E7 */
+    --icon-base-400: 0 0% 99%; /* #FDFDFD */
+
+    --stroke-base-100: 195 12% 24%; /* #364446 */
+    --stroke-base-200: 200 9% 27%; /* #3F464C */
+    --stroke-base-300: 204 11% 33%; /* #4A535B */
+
+    /* Shadcn UI */
+    --card: var(--fill-base-100);
+    --card-foreground: var(--text-base-500);
+    --popover: var(--fill-base-100);
+    --popover-foreground: var(--text-base-500);
+    --muted: var(--stroke-base-100);
+    --muted-foreground: var(--text-base-200);
+    --accent: var(--primary-600);
+    --accent-foreground: var(--text-contrast-500);
+    --destructive: var(--error-500);
+    --destructive-foreground: var(--text-contrast-500);
+    --border: var(--stroke-base-200);
+    --input: var(--fill-alt-200);
+    --ring: var(--primary-600);
   }
   
   body {
-    background-color: var(--page-bg);
-    color: var(--page-font-primary);
+    background-color: var(--background);
+    color: var(--foreground);
     margin: 0;
     padding: 0;
     transition: background-color var(--transition-duration) ease;
@@ -195,17 +214,6 @@
 }
 
 /* 레이아웃 유틸 */
-.sidebar-left-width {
-  width: var(--left-sidebar-width);
-}
-
-.sidebar-right-width {
-  width: var(--right-sidebar-width);
-}
-
-.grid-sidebar-layout {
-  grid-template-columns: var(--left-sidebar-width) 1fr;
-}
 
 .transition-common {
   transition: all var(--transition-duration) ease-in-out;
@@ -217,70 +225,20 @@
 }
 
 /* 캘린더 CSS */
-@layer components {
-  .rbc-calendar {
-    @apply font-sans;
-  }
+.rbc-day-bg.rbc-today {
+  background-color: hsl(var(--accent-blue-100)) !important;
+}
+.rbc-off-range-bg {
+  background-color: hsl(var(--fill-base-100)) !important;
+}
 
-  .rbc-toolbar {
-    @apply mb-4 flex flex-wrap gap-2 justify-between items-center;
-  }
+.rbc-off-range .rbc-date-cell {
+  color: hsl(var(--text-base-300)) !important;
+  opacity: 0.5 !important;
+}
 
-  .rbc-toolbar button {
-    @apply border border-gray-300 bg-white text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-50 transition-colors;
-  }
-
-  .rbc-toolbar button:hover {
-    @apply bg-gray-50;
-  }
-
-  .rbc-toolbar button.rbc-active {
-    @apply bg-blue-500 text-white border-blue-500;
-  }
-
-  .rbc-toolbar-label {
-    @apply text-lg font-semibold text-gray-900;
-  }
-
-  .rbc-month-view {
-    @apply border border-gray-200 rounded-lg overflow-hidden;
-  }
-
-  .rbc-header {
-    @apply bg-gray-50 text-gray-700 py-3 px-2 font-medium text-sm border-b border-gray-200;
-  }
-
-  .rbc-date-cell {
-    @apply text-gray-900 font-medium;
-  }
-
-  .rbc-off-range-bg {
-    @apply bg-gray-100;
-  }
-
-  .rbc-off-range .rbc-date-cell {
-    @apply text-gray-400;
-  }
-
-  .rbc-today {
-    @apply bg-blue-50;
-  }
-
-  .rbc-day-bg:hover {
-    @apply bg-gray-50;
-  }
-
-  .rbc-event {
-    @apply rounded text-white text-xs font-medium;
-  }
-
-  .rbc-event:hover {
-    @apply opacity-90;
-  }
-
-  .rbc-event.rbc-selected {
-    @apply ring-2 ring-blue-500;
-  }
+.rbc-calendar * {
+  border-color: hsl(var(--stroke-base-100)) !important;
 }
 
 /* 미니 캘린더 */
@@ -312,20 +270,19 @@
 }
 
 /* 날짜 버튼 focus 스타일 */
-.mini-calendar-date:focus {
-  @apply outline-none ring-2 ring-page-blue-300 ring-offset-2;
+.mini-calendar-date.today {
+  @apply bg-primary-200 text-primary-600 border border-stroke-base-100;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
-/* 반응형 스타일 */
-@media (max-width: 640px) {
-  .mini-calendar-date {
-    @apply min-w-[40px] p-1.5;
-  }
-  
-  .mini-calendar-date span {
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
+.mini-calendar-date.today:hover {
+  @apply bg-primary-200 text-primary-800;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.mini-calendar-date.selected.today {
+  @apply bg-primary-600 text-white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
 }
 
 /* 스크롤 바 */
@@ -334,16 +291,73 @@
 }
 
 .always-show-scrollbar::-webkit-scrollbar-track {
-  background: #e5e7eb;
+  background: var(--fill-base-200);
   border-radius: 3px;
 }
 
 .always-show-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--page-blue-400, #60a5fa);
+  background: var(--primary-500);
   border-radius: 3px;
   min-height: 20px;
 }
 
 .always-show-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--page-blue-500, #3b82f6);
+  background: var(--primary-600);
+}
+
+/* 그리드 전체 배경 */
+.ag-theme-alpine {
+  --ag-background-color: hsl(var(--fill-base-100)) !important;
+  --ag-foreground-color: hsl(var(--text-base-500)) !important;
+  --ag-border-color: hsl(var(--stroke-base-100)) !important;
+  --ag-row-border-color: hsl(var(--stroke-base-100)) !important;
+  --ag-cell-horizontal-border: hsl(var(--stroke-base-100)) !important;
+}
+
+/* 헤더 배경 */
+.ag-theme-alpine .ag-header {
+  background-color: hsl(var(--fill-base-100)) !important;
+}
+
+/* 헤더 셀 배경 */
+.ag-theme-alpine .ag-header-cell {
+  background-color: hsl(var(--fill-base-100)) !important;
+}
+
+/* 행 배경 */
+.ag-theme-alpine .ag-row {
+  background-color: hsl(var(--fill-base-100)) !important;
+}
+
+/* 짝수/홀수 행 배경 통일 */
+.ag-theme-alpine .ag-row-even,
+.ag-theme-alpine .ag-row-odd {
+  background-color: hsl(var(--fill-base-100)) !important;
+}
+
+/* 셀 배경 */
+.ag-theme-alpine .ag-cell {
+  background-color: hsl(var(--fill-base-100)) !important;
+  color: hsl(var(--text-base-500)) !important;
+}
+
+/* 선택된 행 배경 (원하는 경우) */
+.ag-theme-alpine .ag-row-selected {
+  background-color: hsl(var(--primary-300)) !important;
+}
+
+/* 호버 상태 배경 */
+.ag-theme-alpine .ag-row:hover {
+  background-color: hsl(var(--fill-alt-100)) !important;
+}
+
+/* 필터/메뉴 배경 */
+.ag-theme-alpine .ag-menu,
+.ag-theme-alpine .ag-filter-toolpanel {
+  background-color: hsl(var(--fill-base-100)) !important;
+}
+
+/* 페이지네이션 배경 */
+.ag-theme-alpine .ag-paging-panel {
+  background-color: hsl(var(--fill-base-100)) !important;
 }

@@ -9,6 +9,7 @@ import { FormField } from '@/components/ui/FormField';
 import { Input } from '@/components/ui/input';
 import type { CalendarEvent } from './ScheduleCalendar';
 import { COLOR_OPTIONS } from '@/constant/calendar';
+import { Textarea } from '@/components/ui/Textarea';
 
 interface AddScheduleProps {
   isOpen: boolean;
@@ -110,7 +111,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="2xl">
-      <div className="bg-white rounded-2xl">
+      <div className="bg-fill-base-100 rounded-2xl">
         <Modal.Header>
           <Modal.Title>일정 추가</Modal.Title>
           <Modal.CloseButton />
@@ -119,8 +120,8 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {event?.start && (
-              <div className="p-3 bg-page-card-bg rounded-lg">
-                <div className="text-md font-bold text-page-blue-400">
+              <div className="p-3 bg-accent-blue-100 rounded-lg">
+                <div className="text-h4 text-primary-500">
                   {getFormattedDate()}
                 </div>
               </div>
@@ -136,6 +137,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                   id='title'
                   placeholder="일정 이름을 입력하세요..."
                   error={errors.title?.message}
+                  className='bg-fill-base-100'
                   {...field}
                 />
               )}
@@ -154,12 +156,13 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                         id='startTime'
                         type='time'
                         error={errors.startTime?.message}
+                        className='bg-fill-base-100'
                         {...field}
                       />
                     )}
                   />
                 </div>
-                <div className="text-font-tertiary mt-5">~</div>
+                <div className="text-text-base-400 mt-5">~</div>
                 <div className="flex-1">
                   <FormField
                     name="endTime"
@@ -171,6 +174,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                         id="endTime"
                         type="time"
                         error={errors.endTime?.message}
+                        className='bg-fill-base-100'
                         {...field}
                       />
                     )}
@@ -193,15 +197,15 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                       onClick={() => field.onChange(color.value)}
                       className={`flex items-center space-x-3 p-2 pr-4 rounded-[8px] border transition-all ${
                         selectedCategory === color.value
-                          ? 'border-web-primary bg-page-card-bg'
-                          : 'border-border-default hover:bg-page-card-bg'
+                          ? 'border-primary-500 bg-fill-base-100'
+                          : 'border-stroke-base-100 hover:bg-fill-alt-100'
                       }`}
                     >
                       <div 
                         className="w-4 h-4 rounded-full"
                         style={{ backgroundColor: color.value }}
                       />
-                      <span className="text-sm text-font-primary">{color.name}</span>
+                      <span className="text-sm text-text-base-500">{color.name}</span>
                     </button>
                   ))}
                 </div>
@@ -214,19 +218,20 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
               control={control}
               error={errors.memo?.message}
               render={(field) => (
-                <textarea
-                  id="memo"
+                <Textarea
                   placeholder="메모를 입력하세요..."
                   rows={3}
-                  className="w-full px-3 py-2.5 bg-page-input-bg border border-border-default rounded-md focus:outline-none focus:ring-2 focus:ring-web-primary focus:border-transparent resize-none"
+                  error={!!errors.memo}
+                  helperText={errors.memo?.message}
+                  className='bg-fill-base-100'
                   {...field}
                 />
               )}
             />
 
             {(errors.title || errors.startTime || errors.endTime || errors.category) && (
-              <div className="p-3 bg-red-50 rounded-lg">
-                <div className="text-sm text-red-800">
+              <div className="p-3 bg-fill-alt-100 rounded-lg">
+                <div className="text-sm text-text-base-500">
                   입력 정보를 확인해주세요.
                 </div>
               </div>
@@ -238,15 +243,16 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
           {isEditMode && onDelete && (
               <Button
                 type="button"
-                variant="outline"
+                variant="light"
                 onClick={handleDelete}
-                className="text-red-600 border-red-200 hover:bg-red-50"
+                className="text-text-base-500 border-stroke-base-100 hover:bg-fill-alt-100"
               >
                 삭제
               </Button>
             )}
           <Button
             type="submit"
+            variant="default"
             onClick={handleSubmit(onSubmit)}
             loading={isSubmitting}
             disabled={isSubmitting}
