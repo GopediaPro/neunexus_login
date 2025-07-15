@@ -165,3 +165,36 @@ export interface UseOrderGridParams {
   changedRows: any[];
   setChangedRows: (rows: any[]) => void;
 }
+
+export interface BatchInfoData {
+  batch_id: number;
+  original_filename: string;
+  file_name: string;
+  file_url: string;
+  file_size: number;
+  order_date_from: string; 
+  order_date_to: string;   
+  order_status: string | null;
+  error_message: string | null;
+  created_by: string;
+  created_at: string;      
+  updated_at: string;      
+}
+
+export interface BatchInfoItem {
+  data: BatchInfoData[];
+  status: string | null;
+  message: string | null;
+}
+
+export interface BatchInfoResponse {
+  total: number;
+  page: number;
+  page_size: number;
+  items: BatchInfoItem[];
+}
+
+export interface BatchInfoParams {
+  page?: number;
+  page_size?: number;
+}

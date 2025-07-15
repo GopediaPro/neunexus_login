@@ -4,16 +4,21 @@ import { Icon } from "../ui/Icon";
 import { Input } from "../ui/input";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
-import type { OrderRegisterForm } from "@/shared/types";
+import type { BatchInfoResponse, OrderRegisterForm } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
 import { useBulkCreateOrders, useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
+import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
+import { getBatchInfoAll } from "@/api/order/getBatchInfoAll";
 
 export const OrderToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
   const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
+  const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
+  const [batchInfoData, setBatchInfoData] = useState<BatchInfoResponse | null>(null);
+  const [isBatchInfoLoading, setIsBatchInfoLoading] = useState(false);
 
   const {
     search,
@@ -29,7 +34,7 @@ export const OrderToolbar = () => {
   const bulkCreateMutation = useBulkCreateOrders();
   const bulkUpdateMutation = useBulkUpdateOrders();
   const bulkDeleteMutation = useBulkDeleteOrders();
-  const { addNewRow, deleteSelectedRows } = useOrderGridActions(gridApi);
+  const { addNewRow } = useOrderGridActions(gridApi);
 
   const handleIconClick = () => {
     inputRef.current?.focus();
@@ -192,20 +197,6 @@ export const OrderToolbar = () => {
     }
   };
 
-  const handleRowDelete = () => {
-    if (selectedRows.length === 0) {
-      return;
-    }
-    
-    const confirmMessage = selectedRows.length === 1 
-      ? `주문 "${selectedRows[0].order_id || '신규 주문'}"을 삭제하시겠습니까?`
-      : `선택된 ${selectedRows.length}개 주문을 삭제하시겠습니까?`;
-    
-    if (confirm(confirmMessage)) {
-      deleteSelectedRows();
-    }
-  };
-
   const handleExcelUploadSuccess = () => {
     if (gridApi) {
       gridApi.refreshInfiniteCache();
@@ -214,10 +205,29 @@ export const OrderToolbar = () => {
     }
   };
 
+  const handleBatchInfoAll = async () => {
+    try {
+      setIsBatchInfoLoading(true);
+      
+      const batchInfo = await getBatchInfoAll({
+        page: 1,
+        page_size: 100
+      });
+
+      setBatchInfoData(batchInfo);
+      setIsBatchInfoModalOpen(true);
+
+    } catch (error) {
+      console.error('배치 정보 조회 실패:', error);
+      alert('배치 정보를 불러오는데 실패했습니다.');
+    } finally {
+      setIsBatchInfoLoading(false);
+    }
+  };
+
   const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
   const isDeleteDisabled = selectedRows.length === 0 || bulkDeleteMutation.isPending;
-  const isRowDeleteDisabled = selectedRows.length === 0;
 
   return (
     <>
@@ -289,11 +299,16 @@ export const OrderToolbar = () => {
           {bulkDeleteMutation.isPending ? '삭제 중...' : `주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
           </Button>
           <Button variant="light" className="py-5" onClick={addNewRow}>행 추가</Button>
-          <Button variant="light" className="py-5" onClick={handleRowDelete} disabled={isRowDeleteDisabled}>
-            행 삭제{selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}
-          </Button>
           <Button variant="light" className="py-5" onClick={() => setIsExcelUploadModalOpen(true)}>
             엑셀 업로드
+          </Button>
+          <Button 
+            variant="light" 
+            className="py-5"
+            disabled={isBatchInfoLoading}
+            onClick={handleBatchInfoAll}
+          >
+            배치 정보
           </Button>
         </div>
       </div>
@@ -308,6 +323,12 @@ export const OrderToolbar = () => {
         isOpen={isExcelUploadModalOpen}
         onClose={() => setIsExcelUploadModalOpen(false)}
         onSuccess={handleExcelUploadSuccess}
+      />
+
+      <BatchInfoModal
+        isOpen={isBatchInfoModalOpen}
+        onClose={() => setIsBatchInfoModalOpen(false)}
+        batchInfo={batchInfoData}
       />
     </>
   );

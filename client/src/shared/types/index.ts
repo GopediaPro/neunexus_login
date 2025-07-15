@@ -51,6 +51,10 @@ export type {
   OrderTab,
   OrderContextValue,
   UseOrderGridParams,
+  BatchInfoData,
+  BatchInfoItem,
+  BatchInfoResponse,
+  BatchInfoParams,
 } from './order.types';
 
 export type {

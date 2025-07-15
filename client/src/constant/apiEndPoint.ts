@@ -7,4 +7,6 @@ export const API_END_POINT = {
   DOWN_FORM_ORDERS_BULK_UPDATE: '/api/v1/down-form-orders/bulk',
   DOWN_FORM_ORDERS_BULK_DELETE: '/api/v1/down-form-orders/bulk', 
   DOWN_FORM_EXCEL_UPLOAD: '/api/v1/macro/excel-run-macro',
+  DOWN_FORM_BATCH_INFO_ALL: '/api/v1/macro/get-batch-info-all',
+  DOWN_FORM_BATCH_INFO_LATEST: '/api/v1/macro/get-batch-info-latest',
 } as const;
