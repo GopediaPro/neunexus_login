@@ -70,7 +70,6 @@ export const MiniCalendar = ({ selectedDate, onDateSelect, events }: MiniCalenda
         </button>
         
         {weekDates.map((date, index) => {
-          const eventCount = getEventCount(date);
           const isCurrentDay = isToday(date);
           const isSelectedDay = isSelected(date);
           
