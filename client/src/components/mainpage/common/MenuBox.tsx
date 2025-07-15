@@ -23,7 +23,7 @@ export const MenuBox = ({
           onClick={onClick}
           className={`
             relative flex justify-center items-center w-[4.65rem] h-[4.65rem]
-            border border-stroke-base-100 rounded-xl
+            border border-stroke-base-100 rounded-xl bg-fill-base-100
           `}
         >
           <div className="w-9 h-9 flex items-center justify-center mb-1 text-text-base-400">

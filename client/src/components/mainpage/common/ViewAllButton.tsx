@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { ChevronRight } from "lucide-react";
 
 interface ViewAllButtonProps {
   text?: string;
@@ -10,9 +11,9 @@ export const ViewAllButton = ({
   onClick, 
 }: ViewAllButtonProps) => {
   let textWidth = '';
-  if (text.split('').length === 2) textWidth = 'w-14 h-6';
-  else if (text.split('').length === 3) textWidth = 'w-16 h-6';
-  else if (text.split('').length === 4) textWidth = 'w-20 h-6';
+  if (text.split('').length === 2) textWidth = 'w-16 h-7';
+  else if (text.split('').length === 3) textWidth = 'w-18 h-7';
+  else if (text.split('').length === 4) textWidth = 'w-22 h-7';
 
   return (
     <Button
@@ -24,9 +25,7 @@ export const ViewAllButton = ({
       <span>
         {text}
       </span>
-      <svg width="6" height="8" viewBox="0 0 6 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1.5835 7L4.5835 4L1.5835 1" stroke="#555555" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
+      <ChevronRight size={16} strokeWidth={2} className="text-[#555]" />
     </Button>
   );
 };
