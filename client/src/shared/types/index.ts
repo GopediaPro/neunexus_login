@@ -55,6 +55,9 @@ export type {
   BatchInfoItem,
   BatchInfoResponse,
   BatchInfoParams,
+  ExcelUploadRequestData,
+  ExcelUploadFilters,
+  ExcelUploadFormData,
 } from './order.types';
 
 export type {
