@@ -140,8 +140,9 @@ export const ScheduleContainer = () => {
                   }
                   <Button
                     variant="light"
+                    size="sidebar"
                     onClick={() => handleOpenEventModal()}
-                    className="mt-2 text-text-contrast-500 text-xs"
+                    className="mt-2 bg-primary-500 text-text-contrast-500 hover:bg-primary-600"
                   >
                     + 추가하기
                   </Button>
