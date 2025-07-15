@@ -70,6 +70,7 @@ export const MiniCalendar = ({ selectedDate, onDateSelect, events }: MiniCalenda
         </button>
         
         {weekDates.map((date, index) => {
+          const eventCount = getEventCount(date);
           const isCurrentDay = isToday(date);
           const isSelectedDay = isSelected(date);
           
@@ -89,6 +90,9 @@ export const MiniCalendar = ({ selectedDate, onDateSelect, events }: MiniCalenda
             >
               {date.format('D')}
               
+              {eventCount > 0 && (
+                <div className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-primary-600" />
+              )}
             </button>
           );
         })}
