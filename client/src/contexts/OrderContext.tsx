@@ -6,18 +6,12 @@ import type { GridApi } from "ag-grid-community";
 const OrderContext = createContext<OrderContextValue | undefined>(undefined);
 
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
-  const [search, setSearchState] = useState("");
   const [activeOrderTab, setActiveOrderTabState] = useState<OrderTab>("registration");
   const [page, setPageState] = useState(1);
   const [currentTemplate, setCurrentTemplateState] = useState("");
   const [gridApi, setGridApiState] = useState<GridApi | null>(null);
   const [selectedRows, setSelectedRowsState] = useState<any[]>([]);
   const [changedRows, setChangedRowsState] = useState<any[]>([]);
-
-  const setSearch = useCallback((value: string) => {
-    setSearchState(value);
-    setPageState(1);
-  }, []);
 
   const setActiveOrderTab = useCallback((tab: OrderTab) => {
     setActiveOrderTabState(tab);
@@ -33,11 +27,9 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setPageState(1);
   }, []);
 
-  const { orderData, isLoading, error, refreshOrders } = useOrderData({ search, page, currentTemplate });
+  const { orderData, isLoading, error, refreshOrders } = useOrderData({ page, currentTemplate });
 
   const value: OrderContextValue = {
-    search,
-    setSearch,
     activeOrderTab,
     setActiveOrderTab,
     page,

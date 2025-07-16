@@ -1,4 +1,4 @@
-import { Modal } from '../Modal';
+import { Modal } from '.';
 import { Button } from '../Button';
 import type { BatchInfoData, BatchInfoResponse } from '@/shared/types';
 
@@ -8,10 +8,10 @@ interface BatchInfoModalProps {
   batchInfo: BatchInfoResponse | null;
 }
 
-export const BatchInfoModal = ({
+export const BatchInfoAllModal = ({
   isOpen,
   onClose,
-  batchInfo,
+  batchInfo
 }: BatchInfoModalProps) => {
   if (!batchInfo) return null;
 

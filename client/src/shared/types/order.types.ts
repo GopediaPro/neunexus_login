@@ -169,8 +169,6 @@ export interface ExcelUploadFormData {
 export type OrderTab = "registration" | "bulk-registration";
 
 export interface OrderContextValue {
-  search: string;
-  setSearch: (value: string) => void;
   activeOrderTab: OrderTab;
   setActiveOrderTab: (tab: OrderTab) => void;
   page: number;

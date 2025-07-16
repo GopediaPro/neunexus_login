@@ -1,7 +1,5 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/Button";
-import { Icon } from "../ui/Icon";
-import { Input } from "../ui/input";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
 import type { BatchInfoResponse, OrderRegisterForm } from "@/shared/types";
@@ -9,38 +7,39 @@ import { useOrderGridActions } from "@/utils/useOrderGridActions";
 import { useBulkCreateOrders, useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
-import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
+import { BatchInfoAllModal } from "../ui/Modal/BatchInfoAllModal";
 import { getBatchInfoAll } from "@/api/order/getBatchInfoAll";
 import { useAuthContext } from "@/contexts";
+import { Dropdown } from "../ui/Dropdown";
+import { ChevronDown } from "lucide-react";
+import { getBatchInfoLatest } from "@/api/order/getBatchInfoLatest";
+import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
 
 export const OrderToolbar = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
   const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
+  const [isBatchInfoAllModalOpen, setIsBatchInfoAllModalOpen] = useState(false);
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
-  const [batchInfoData, setBatchInfoData] = useState<BatchInfoResponse | null>(null);
-  const [isBatchInfoLoading, setIsBatchInfoLoading] = useState(false);
+  const [batchInfoAllData, setBatchInfoAllData] = useState<BatchInfoResponse | null>(null);
+  const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
+  const [isBatchInfoAllLoading, setIsBatchInfoAllLoading] = useState(false);
+  const [isSelectedBatchLoading, setIsSelectedBatchLoading] = useState(false);
   const { user } = useAuthContext();
 
   const {
-    search,
-    setSearch,
     setActiveOrderTab,
     currentTemplate,
     setCurrentTemplate,
     gridApi,
     selectedRows,
     changedRows,
+    activeOrderTab,
   } = useOrderContext();
 
   const bulkCreateMutation = useBulkCreateOrders();
   const bulkUpdateMutation = useBulkUpdateOrders();
   const bulkDeleteMutation = useBulkDeleteOrders();
   const { addNewRow } = useOrderGridActions(gridApi);
-
-  const handleIconClick = () => {
-    inputRef.current?.focus();
-  };
 
   const handleOrderRegisterSubmit = (data: OrderRegisterForm) => {
     if (data.selectedTemplate) {
@@ -209,23 +208,62 @@ export const OrderToolbar = () => {
 
   const handleBatchInfoAll = async () => {
     try {
-      setIsBatchInfoLoading(true);
+      setIsBatchInfoAllLoading(true);
       
       const batchInfo = await getBatchInfoAll({
         page: 1,
         page_size: 100
       });
 
-      setBatchInfoData(batchInfo);
-      setIsBatchInfoModalOpen(true);
+      setBatchInfoAllData(batchInfo);
+      setIsBatchInfoAllModalOpen(true);
 
     } catch (error) {
       console.error('배치 정보 조회 실패:', error);
       alert('배치 정보를 불러오는데 실패했습니다.');
     } finally {
-      setIsBatchInfoLoading(false);
+      setIsBatchInfoAllLoading(false);
     }
   };
+
+  const handleSelectedBatchInfo = async () => {
+    try {
+      setIsSelectedBatchLoading(true);
+
+      const batchInfo = await getBatchInfoLatest({
+        page: 1,
+        page_size: 100
+      });
+
+      setSelectedBatchInfoData(batchInfo);
+      setIsBatchInfoModalOpen(true);
+
+    } catch (error) {
+      console.error('선택 주문 배치 정보 조회 실패:', error);
+    } finally {
+      setIsSelectedBatchLoading(false);
+    }
+  };
+
+  const handleDataItems = [
+    {
+      label: '주문파일 업로드',
+      onClick: () => setIsExcelUploadModalOpen(true),
+      icon: 'upload'
+    },
+    {
+      label: '전체 배치 정보',
+      onClick: handleBatchInfoAll,
+      disabled: isBatchInfoAllLoading,
+      icon: 'list'
+    },
+    {
+      label: '선택 주문 배치 정보',
+      onClick: handleSelectedBatchInfo,
+      disabled: isSelectedBatchLoading,
+      icon: 'filter'
+    },
+  ]
 
   const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
@@ -241,19 +279,25 @@ export const OrderToolbar = () => {
           </div>
         </div>
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
-          <Button 
-            variant="light"
-            className={`border border-stroke-base-100 transition-colors`}
+          <Button
             onClick={() => setActiveOrderTab("registration")}
-          >
-            주문등록
-          </Button>
-          <Button 
             variant="light"
-            className={`border border-stroke-base-100 transition-colors`}
+            className={`border border-stroke-base-100 transition-colors ${
+              activeOrderTab === "registration"
+                ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
+                : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
+            }`}>
+            ERP
+          </Button>
+          <Button
             onClick={() => setActiveOrderTab("bulk-registration")}
-          >
-            대량주문등록
+            variant="light"
+            className={`border border-stroke-base-100 transition-colors ${
+              activeOrderTab === "bulk-registration"
+                ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
+                : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
+            }`}>
+            합포장
           </Button>
         </div>
         <div className="mt-6 px-6">
@@ -261,57 +305,53 @@ export const OrderToolbar = () => {
         </div>
       </div>
       <div className="flex items-center gap-4 px-6 pt-5 bg-fill-base-100">
-        <div className="flex items-center w-[320px] h-10 bg-fill-alt-100 rounded-md px-3">
-          <Icon name="search" ariaLabel="검색" 
-            onClick={handleIconClick}
-            style="w-5 h-5 text-text-base-400 cursor-pointer flex-shrink-0"/>
-          <Input
-            ref={inputRef}
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="전체 검색 (상품명, ID, 고객명 등)"
-            className="w-[280px] pl-4 h-10 bg-fill-alt-100 border-none relative"
-          />
-        </div> 
-
-        <div className="flex items-center gap-2">
-          <Button variant="light" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 호출</Button>
-          <Button 
-            variant="light" 
-            className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-            onClick={handleOrderCreate}
-            disabled={isCreateDisabled}
-          >
-            {bulkCreateMutation.isPending ? '생성 중...' : '주문 생성'}
-          </Button>
-          <Button 
-            variant="light" 
-            className={`py-5 ${isUpdateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-            onClick={handleOrderUpdate}
-            disabled={isUpdateDisabled}
-          >
-            {bulkUpdateMutation.isPending ? '수정 중...' : `주문 수정${changedRows.length > 0 ? ` (${changedRows.length})` : ''}`}
-          </Button>
-          <Button variant="light" 
-            className={`py-5 ${isDeleteDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-            onClick={handleOrderDelete}
-            disabled={isDeleteDisabled}
-          >
-          {bulkDeleteMutation.isPending ? '삭제 중...' : `주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
-          </Button>
-          <Button variant="light" className="py-5" onClick={addNewRow}>행 추가</Button>
-          <Button variant="light" className="py-5" onClick={() => setIsExcelUploadModalOpen(true)}>
-            엑셀 업로드
-          </Button>
-          <Button 
-            variant="light" 
-            className="py-5"
-            disabled={isBatchInfoLoading}
-            onClick={handleBatchInfoAll}
-          >
-            배치 정보
-          </Button>
+        <div className="w-full flex justify-between items-center gap-2">
+          <div className="flex gap-2">
+            <Button 
+              variant="light" 
+              className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onClick={handleOrderCreate}
+              disabled={isCreateDisabled}
+            >
+              {bulkCreateMutation.isPending ? '등록 중...' : '주문 등록'}
+            </Button>
+            <Button variant="light" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 불러오기</Button>
+            <Button 
+              variant="light" 
+              className={`py-5 ${isUpdateDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
+              onClick={handleOrderUpdate}
+              disabled={isUpdateDisabled}
+            >
+              {bulkUpdateMutation.isPending ? '수정 중...' : `선택주문 수정${changedRows.length > 0 ? ` (${changedRows.length})` : ''}`}
+            </Button>
+            <Button variant="light" 
+              className={`py-5 ${isDeleteDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
+              onClick={handleOrderDelete}
+              disabled={isDeleteDisabled}
+            >
+            {bulkDeleteMutation.isPending ? '삭제 중...' : `주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="light" className="py-5" onClick={addNewRow}>행 추가</Button>
+            <Button variant="light" className="py-5" onClick={() => setIsExcelUploadModalOpen(true)}>
+              엑셀 업로드
+            </Button>
+            <Dropdown
+              trigger={
+                <Button 
+                  variant="light" 
+                  className="py-5 flex items-center gap-1"
+                  disabled={isBatchInfoAllLoading}
+                >
+                  {isBatchInfoAllLoading ? '로딩 중...' : '데이터 관리'}
+                  <ChevronDown size={24} className="text-text-base-400" />
+                </Button>
+              }
+              items={handleDataItems}
+              align="right"
+            />
+          </div>
         </div>
       </div>
 
@@ -328,10 +368,16 @@ export const OrderToolbar = () => {
         createdBy={user?.preferred_username || 'testuser'}
       />
 
+      <BatchInfoAllModal
+        isOpen={isBatchInfoAllModalOpen}
+        onClose={() => setIsBatchInfoAllModalOpen(false)}
+        batchInfo={batchInfoAllData}
+      />
+
       <BatchInfoModal
         isOpen={isBatchInfoModalOpen}
         onClose={() => setIsBatchInfoModalOpen(false)}
-        batchInfo={batchInfoData}
+        batchInfo={selectedBatchInfoData}
       />
     </>
   );
