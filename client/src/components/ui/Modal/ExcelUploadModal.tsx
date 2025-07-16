@@ -7,6 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 import type { ExcelUploadFormData } from "@/shared/types";
 import { Modal } from ".";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
+import { ResultModal } from "./ResultModal";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;
@@ -18,6 +19,13 @@ interface ExcelUploadModalProps {
 export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: ExcelUploadModalProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [uploadResult, setUploadResult] = useState<{
+    type: 'success' | 'error';
+    title: string;
+    message: string;
+    url?: string;
+  } | null>(null);
 
   const {
     control,
@@ -46,14 +54,25 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
     
     if (!allowedExtensions.includes(fileExtension)) {
+      setUploadResult({
+        type: 'error',
+        title: '파일 형식 오류',
+        message: '지원되지 않는 파일 형식입니다.\n.xlsx 또는 .xls 파일만 업로드 가능합니다.'
+      });
+      setShowResultModal(true);
       return;
     }
 
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
+      setUploadResult({
+        type: 'error',
+        title: '파일 크기 초과',
+        message: '파일 크기가 10MB를 초과합니다.\n더 작은 파일을 선택해주세요.'
+      });
+      setShowResultModal(true);
       return;
     }
-
 
     setSelectedFile(file);
     setValue('file', file);
@@ -76,15 +95,29 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
         source_table: data.source_table
       };
       
-      await postExcelUpload({
+      const response = await postExcelUpload({
         request: JSON.stringify(requestData),
         file: data.file
       });
 
+      setUploadResult({
+        type: 'success',
+        title: '업로드 완료',
+        message: `엑셀 파일이 성공적으로 업로드되었습니다.\n\n파일명: ${selectedFile.name}\n업로드 시간: ${new Date().toLocaleString('ko-KR')}`,
+        url: response.file_url || response.file_url
+      });
+      setShowResultModal(true);
+
       onSuccess?.();
-      handleClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+
+      setUploadResult({
+        type: 'error',
+        title: '업로드 실패',
+        message: `파일 업로드에 실패했습니다.\n\n오류 내용: ${error.message || '알 수 없는 오류가 발생했습니다.'}\n\n다시 시도해주세요.`
+      });
+      setShowResultModal(true);
     } finally {
       setIsUploading(false);
     }
@@ -93,7 +126,16 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
   const handleClose = () => {
     reset();
     setSelectedFile(null);
+    setUploadResult(null);
     onClose();
+  };
+
+  const handleResultModalClose = () => {
+    setShowResultModal(false);
+    if (uploadResult?.type === 'success') {
+      handleClose();
+    }
+    setUploadResult(null);
   }
 
   const isFormValid = 
@@ -102,152 +144,165 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
     watchedValues.order_date_to && 
     selectedFile;
 
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <ModalHeader>
-        <ModalTitle>엑셀 업로드</ModalTitle>
-      </ModalHeader>
+    <>
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+        <ModalHeader>
+          <ModalTitle>엑셀 업로드</ModalTitle>
+        </ModalHeader>
 
-      <ModalBody className="h-[500px]">
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-          <div className="space-y-2">
-            <label className="block text-caption text-text-base-500">
-              템플릿 선택 <span className="text-error-base-500">*</span>
-            </label>
-            <Controller
-              name="template_code"
-              control={control}
-              rules={{ required: '템플릿을 선택해주세요' }}
-              render={({ field }) => (
-                <SelectSearchInput
-                  options={templateOptions}
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="템플릿을 선택하세요"
-                />
-              )}
-            />
-            {errors.template_code && (
-              <p className="text-sm text-error-500">{errors.template_code.message}</p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <ModalBody className="h-[500px]">
+          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
             <div className="space-y-2">
               <label className="block text-caption text-text-base-500">
-                시작 날짜 <span className="text-error-base-500">*</span>
+                템플릿 선택 <span className="text-error-base-500">*</span>
               </label>
               <Controller
-                name="order_date_from"
+                name="template_code"
                 control={control}
-                rules={{ required: '시작 날짜를 선택해주세요' }}
+                rules={{ required: '템플릿을 선택해주세요' }}
                 render={({ field }) => (
-                  <input
-                    type="date"
-                    {...field}
-                    className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  <SelectSearchInput
+                    options={templateOptions}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="템플릿을 선택하세요"
                   />
                 )}
               />
-              {errors.order_date_from && (
-                <p className="text-sm text-error-500">{errors.order_date_from.message}</p>
+              {errors.template_code && (
+                <p className="text-sm text-error-500">{errors.template_code.message}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-caption text-text-base-500">
-                종료 날짜 <span className="text-error-base-500">*</span>
-              </label>
-              <Controller
-                name="order_date_to"
-                control={control}
-                rules={{ required: '종료 날짜를 선택해주세요' }}
-                render={({ field }) => (
-                  <input
-                    type="date"
-                    {...field}
-                    className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                )}
-              />
-              {errors.order_date_to && (
-                <p className="text-sm text-error-500">{errors.order_date_to.message}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-caption text-text-base-500">
-              소스 테이블 <span className="text-error-base-500">*</span>
-            </label>
-            <Controller
-              name="source_table"
-              control={control}
-              rules={{ required: '소스 테이블을 입력해주세요' }}
-              render={({ field }) => (
-                <input
-                  type="text"
-                  {...field}
-                  className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="receive_orders"
-                />
-              )}
-            />
-            {errors.source_table && (
-              <p className="text-sm text-error-500">{errors.source_table.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-caption text-text-base-500">
-              Excel 파일 <span className="text-error-500">*</span>
-            </label>
-            <Controller
-              name="file"
-              control={control}
-              rules={{ required: '파일을 선택해주세요' }}
-              render={() => (
-                <div className="space-y-2">
-                  <input
-                    type="file"
-                    accept=".xlsx,.xls"
-                    onChange={handleFileChange}
-                    className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {selectedFile && (
-                    <p className="text-sm text-gray-600">
-                      선택된 파일: {selectedFile.name}
-                    </p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="block text-caption text-text-base-500">
+                  시작 날짜 <span className="text-error-base-500">*</span>
+                </label>
+                <Controller
+                  name="order_date_from"
+                  control={control}
+                  rules={{ required: '시작 날짜를 선택해주세요' }}
+                  render={({ field }) => (
+                    <input
+                      type="date"
+                      {...field}
+                      className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
                   )}
-                </div>
-              )}
-            />
-            {errors.file && (
-              <p className="text-sm text-error-500">{errors.file.message}</p>
-            )}
-          </div>
-        </form>
-      </ModalBody>
+                />
+                {errors.order_date_from && (
+                  <p className="text-sm text-error-500">{errors.order_date_from.message}</p>
+                )}
+              </div>
 
-      <ModalFooter>
-        <Button
-          type="button"
-          variant="light"
-          onClick={handleClose}
-          disabled={isUploading}
-        >
-          취소
-        </Button>
-        <Button
-          type="button"
-          variant="default"
-          onClick={handleSubmit(handleFormSubmit)}
-          disabled={!isFormValid || isUploading}
-        >
-          {isUploading ? '업로드 중...' : '업로드'}
-        </Button>
-      </ModalFooter>
-    </Modal>
+              <div className="space-y-2">
+                <label className="block text-caption text-text-base-500">
+                  종료 날짜 <span className="text-error-base-500">*</span>
+                </label>
+                <Controller
+                  name="order_date_to"
+                  control={control}
+                  rules={{ required: '종료 날짜를 선택해주세요' }}
+                  render={({ field }) => (
+                    <input
+                      type="date"
+                      {...field}
+                      className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  )}
+                />
+                {errors.order_date_to && (
+                  <p className="text-sm text-error-500">{errors.order_date_to.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-caption text-text-base-500">
+                소스 테이블 <span className="text-error-base-500">*</span>
+              </label>
+              <Controller
+                name="source_table"
+                control={control}
+                rules={{ required: '소스 테이블을 입력해주세요' }}
+                render={({ field }) => (
+                  <input
+                    type="text"
+                    {...field}
+                    className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="receive_orders"
+                  />
+                )}
+              />
+              {errors.source_table && (
+                <p className="text-sm text-error-500">{errors.source_table.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-caption text-text-base-500">
+                Excel 파일 <span className="text-error-500">*</span>
+              </label>
+              <Controller
+                name="file"
+                control={control}
+                rules={{ required: '파일을 선택해주세요' }}
+                render={() => (
+                  <div className="space-y-2">
+                    <input
+                      type="file"
+                      accept=".xlsx,.xls"
+                      onChange={handleFileChange}
+                      className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {selectedFile && (
+                      <p className="text-sm text-gray-600">
+                        선택된 파일: {selectedFile.name}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+              {errors.file && (
+                <p className="text-sm text-error-500">{errors.file.message}</p>
+              )}
+            </div>
+          </form>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="light"
+            onClick={handleClose}
+            disabled={isUploading}
+          >
+            취소
+          </Button>
+          <Button
+            type="button"
+            variant="default"
+            onClick={handleSubmit(handleFormSubmit)}
+            disabled={!isFormValid || isUploading}
+          >
+            {isUploading ? '업로드 중...' : '업로드'}
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      {uploadResult && (
+        <ResultModal
+          isOpen={showResultModal}
+          onClose={handleResultModalClose}
+          type={uploadResult.type}
+          title={uploadResult.title}
+          message={uploadResult.message}
+          url={uploadResult.url}
+          urlLabel="다운로드 링크"
+        />
+      )}
+    </>
   )
 }

@@ -217,8 +217,7 @@ export const OrderToolbar = () => {
           });
           gridApi.deselectAll();
         }
-        
-        alert('선택된 주문이 삭제되었습니다.');
+        // toast.success('선택된 주문이 삭제되었습니다.'); 추후 toast 구현
       }
 
       if (deleteAction === 'bulk' || deleteAction === 'duplicate') {
@@ -231,7 +230,6 @@ export const OrderToolbar = () => {
 
     } catch (error) {
       console.error('삭제 실패:', error);
-      alert('삭제 작업에 실패했습니다.');
     } finally {
       setIsBulkDeleting(false);
       setIsConfirmDeleteModalOpen(false);
