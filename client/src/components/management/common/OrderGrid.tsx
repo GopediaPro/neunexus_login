@@ -15,7 +15,7 @@ export const OrderGrid = () => {
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
   const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
 
-  const createPriceColumn = (field: string, headerName: string, width: number = 150) => ({
+  const createPriceColumn = (field: string, headerName: string, width: number) => ({
     field,
     headerName,
     width,
@@ -231,7 +231,7 @@ export const OrderGrid = () => {
     sortable: true,
     filter: true,
     floatingFilter: true,
-    minWidth: 100,
+    minWidth: 120
   }), []);
 
   const gridOptions = useMemo(() => ({
