@@ -35,8 +35,8 @@ export const ProductToolbar = () => {
             variant="light"
             className={`border border-stroke-base-100 transition-colors ${
               activeProductTab === "registration"
-                ? "bg-accent-blue-100 text-text-contrast-500"
-                : "text-text-base-200 hover:text-text-contrast-500 bg-fill-base-100"
+                ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
+                : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
             }`}>
             상품등록
           </Button>
@@ -45,8 +45,8 @@ export const ProductToolbar = () => {
             variant="light"
             className={`border border-stroke-base-100 transition-colors ${
               activeProductTab === "bulk-registration"
-                ? "bg-accent-blue-100 text-text-contrast-500"
-                : "text-text-base-200 hover:text-text-contrast-500 bg-fill-base-100"
+                ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
+                : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
             }`}>
             대량상품등록
           </Button>
@@ -56,7 +56,7 @@ export const ProductToolbar = () => {
         </div>
       </div>
       <div className="flex items-center gap-4 px-6 pt-5 bg-fill-base-100">
-        <div className="flex items-center w-[320px] h-10 bg-fill-alt-100 rounded-md px-3">
+        <div className="flex items-center w-[320px] h-12 bg-fill-alt-100 rounded-md px-3">
           <Icon name="search" ariaLabel="검색"
             onClick={handleIconClick}
             style="w-5 h-5 text-text-base-400 cursor-pointer flex-shrink-0"/>
@@ -66,7 +66,7 @@ export const ProductToolbar = () => {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="전체 검색 (상품명, ID, 고객명 등)"
-            className="w-[280px] pl-4 h-10 bg-fill-alt-100 border-none relative"
+            className="w-[280px] pl-4 bg-fill-alt-100 border-none relative h-12"
           />
         </div>
 
