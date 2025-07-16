@@ -252,13 +252,13 @@ export const OrderToolbar = () => {
       icon: 'upload'
     },
     {
-      label: '전체 배치 정보',
+      label: '전체 업로드 결과조회',
       onClick: handleBatchInfoAll,
       disabled: isBatchInfoAllLoading,
       icon: 'list'
     },
     {
-      label: '선택 주문 배치 정보',
+      label: '최근 업로드 결과조회',
       onClick: handleSelectedBatchInfo,
       disabled: isSelectedBatchLoading,
       icon: 'filter'
