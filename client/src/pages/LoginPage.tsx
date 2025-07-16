@@ -106,7 +106,7 @@ export const LoginPage = () => {
               variant="default"
               size="auth"
               loading={isSubmitting}
-              className="!mt-[10px]"
+              className="!mt-[10px] !text-text-contrast-500"
               disabled={isSubmitting}          
             >
               <span>로그인</span>

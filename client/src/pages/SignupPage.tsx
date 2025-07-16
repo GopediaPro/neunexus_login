@@ -80,7 +80,7 @@ export const SignupPage = () => {
               variant="default"
               size="auth"
               loading={isSubmitting}
-              className="!mt-[40px]"
+              className="!mt-[40px] !text-text-contrast-500"
             >
               회원가입
             </Button>
