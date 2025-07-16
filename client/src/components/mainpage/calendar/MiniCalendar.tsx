@@ -81,17 +81,17 @@ export const MiniCalendar = ({ selectedDate, onDateSelect, events }: MiniCalenda
               className={`
                 relative flex items-center justify-center text-text-base-400 w-8 h-7 rounded-full text-h6 transition-all
                 ${isSelectedDay 
-                  ? 'text-primary-600 text-h5' 
+                  ? '!text-primary-600 !text-h5' 
                   : isCurrentDay
-                    ? 'bg-fill-alt-100 text-primary-500'
-                    : ''
+                    ? 'bg-fill-alt-100 !text-primary-500 !text-h6'
+                    : '!text-text-base-400 !text-h6'
                 }
               `}
             >
               {date.format('D')}
               
               {eventCount > 0 && (
-                <div className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-primary-600" />
+                <div className="absolute -bottom-0.5 w-1 h-1 rounded-full" />
               )}
             </button>
           );
