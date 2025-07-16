@@ -24,7 +24,7 @@ const buttonVariants = cva(
         sidebar: "h-[32px] px-4 py-2 text-[16px]",
         tabSm: "h-8 px-2 py-1 text-[12px]",
         tabMd: "h-[40px] px-5 py-4 text-[16px]",
-        view: "px-1 py-3 text-[10px] text-text-base-400 rounded-lg",
+        view: "px-1 py-2 text-[10px] text-text-base-400 rounded-full",
         auth: "h-14 w-full px-2.5 py-[18px] rounded-xl text-body-m tracking-[0.06px]"
       },
     },

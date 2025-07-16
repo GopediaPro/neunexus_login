@@ -14,16 +14,23 @@ import { Dropdown } from "../ui/Dropdown";
 import { ChevronDown } from "lucide-react";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoLatest";
 import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
+import { Icon } from "../ui/Icon";
+import { deleteBulkAll } from "@/api/order/deleteBulkAll";
+import { deleteBulkDuplicate } from "@/api/order/deleteBulkDuplicate";
+import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
   const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
   const [isBatchInfoAllModalOpen, setIsBatchInfoAllModalOpen] = useState(false);
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
+  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [batchInfoAllData, setBatchInfoAllData] = useState<BatchInfoResponse | null>(null);
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
   const [isBatchInfoAllLoading, setIsBatchInfoAllLoading] = useState(false);
   const [isSelectedBatchLoading, setIsSelectedBatchLoading] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [deleteAction, setDeleteAction] = useState<'bulk' | 'duplicate' | 'selected' | null>(null);
   const { user } = useAuthContext();
 
   const {
@@ -159,42 +166,76 @@ export const OrderToolbar = () => {
     }
   };
 
-  const handleOrderDelete = async () => {
+  const handleOrderDelete = () => {
     if (selectedRows.length === 0) {
       return;
     }
     
-    const confirmMessage = selectedRows.length === 1 
-      ? `주문 "${selectedRows[0].order_id || '신규 주문'}"을 삭제하시겠습니까?`
-      : `선택된 ${selectedRows.length}개 주문을 삭제하시겠습니까?`;
-    
-    if (!confirm(confirmMessage)) {
-      return;
-    }
+    setDeleteAction('selected');
+    setIsConfirmDeleteModalOpen(true);
+  };
+
+  const handleBulkDeleteConfirm = () => {
+    setDeleteAction('bulk');
+    setIsConfirmDeleteModalOpen(true);
+  };
+
+  const handleDuplicateDeleteConfirm = () => {
+    setDeleteAction('duplicate');
+    setIsConfirmDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteAction) return;
 
     try {
-      const idsToDelete = selectedRows
-        .map(row => row.id)
-        .filter(id => id != null);
-
-      if (idsToDelete.length === 0) {
-        alert('삭제할 수 있는 유효한 주문이 없습니다.');
-        return;
-      }
-
-      await bulkDeleteMutation.mutateAsync({
-        ids: idsToDelete
-      });
-
-      if (gridApi) {
-        gridApi.applyTransaction({
-          remove: selectedRows
-        });
-        gridApi.deselectAll();
-      }
+      setIsBulkDeleting(true);
       
+      if (deleteAction === 'bulk') {
+        await deleteBulkAll();
+        alert('일괄 삭제가 완료되었습니다.');
+      } else if (deleteAction === 'duplicate') {
+        await deleteBulkDuplicate();
+        alert('중복 삭제가 완료되었습니다.');
+      } else if (deleteAction === 'selected') {
+        const idsToDelete = selectedRows
+          .map(row => row.id)
+          .filter(id => id != null);
+
+        if (idsToDelete.length === 0) {
+          alert('삭제할 수 있는 유효한 주문이 없습니다.');
+          return;
+        }
+
+        await bulkDeleteMutation.mutateAsync({
+          ids: idsToDelete
+        });
+
+        if (gridApi) {
+          gridApi.applyTransaction({
+            remove: selectedRows
+          });
+          gridApi.deselectAll();
+        }
+        
+        alert('선택된 주문이 삭제되었습니다.');
+      }
+
+      if (deleteAction === 'bulk' || deleteAction === 'duplicate') {
+        if (gridApi) {
+          gridApi.refreshInfiniteCache();
+          gridApi.purgeInfiniteCache();
+          gridApi.refreshCells();
+        }
+      }
+
     } catch (error) {
-      console.error('주문 삭제 실패:', error);
+      console.error('삭제 실패:', error);
+      alert('삭제 작업에 실패했습니다.');
+    } finally {
+      setIsBulkDeleting(false);
+      setIsConfirmDeleteModalOpen(false);
+      setDeleteAction(null);
     }
   };
 
@@ -263,7 +304,43 @@ export const OrderToolbar = () => {
       disabled: isSelectedBatchLoading,
       icon: 'filter'
     },
-  ]
+  ];
+
+  const handleBlukItems = [
+    {
+      label: '일괄 삭제',
+      onClick: handleBulkDeleteConfirm,
+      icon: 'trash'
+    },
+    {
+      label: '중복 삭제',
+      onClick: handleDuplicateDeleteConfirm,
+      icon: 'trash'
+    }
+  ];
+
+  const getDeleteModalContent = () => {
+    if (deleteAction === 'bulk') {
+      return {
+        title: '일괄 삭제 확인',
+        message: `모든 주문 데이터가 삭제됩니다.
+         정말 삭제하시겠습니까?`
+      };
+    } else if (deleteAction === 'duplicate') {
+      return {
+        title: '중복 삭제 확인',
+        message: `중복된 주문 데이터가 삭제됩니다. 정말 삭제하시겠습니까?`
+      };
+    } else if (deleteAction === 'selected') {
+      const count = selectedRows.length;
+      const orderName = count === 1 ? `"${selectedRows[0].order_id || '신규 주문'}"` : `${count}개 주문`;
+      return {
+        title: '선택 주문 삭제 확인',
+        message: `선택된 ${orderName}을 삭제하시겠습니까?`
+      };
+    }
+    return { title: '', message: '' };
+  };
 
   const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
@@ -309,38 +386,59 @@ export const OrderToolbar = () => {
           <div className="flex gap-2">
             <Button 
               variant="light" 
+              size="sidebar"
               className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
               onClick={handleOrderCreate}
               disabled={isCreateDisabled}
             >
+              <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
               {bulkCreateMutation.isPending ? '등록 중...' : '주문 등록'}
             </Button>
-            <Button variant="light" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>주문 불러오기</Button>
+            <Button variant="light" size="sidebar" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>
+              <Icon name="folder" ariaLabel="folder" style="w-6 h-6 ml-[-2px]" />
+              주문 불러오기
+            </Button>
             <Button 
               variant="light" 
+              size="sidebar"
               className={`py-5 ${isUpdateDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
               onClick={handleOrderUpdate}
               disabled={isUpdateDisabled}
             >
+              <Icon name="edit" ariaLabel="edit" style="w-4 h-4" />
               {bulkUpdateMutation.isPending ? '수정 중...' : `선택주문 수정${changedRows.length > 0 ? ` (${changedRows.length})` : ''}`}
             </Button>
             <Button variant="light" 
+              size="sidebar"
               className={`py-5 ${isDeleteDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
               onClick={handleOrderDelete}
               disabled={isDeleteDisabled}
             >
-            {bulkDeleteMutation.isPending ? '삭제 중...' : `주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
+              <Icon name="trash" ariaLabel="trash" style="w-5 h-5" />
+              {bulkDeleteMutation.isPending ? '삭제 중...' : `개별 주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
             </Button>
           </div>
           <div className="flex gap-2">
-            <Button variant="light" className="py-5" onClick={addNewRow}>행 추가</Button>
-            <Button variant="light" className="py-5" onClick={() => setIsExcelUploadModalOpen(true)}>
-              엑셀 업로드
-            </Button>
+            <Button variant="light" size="sidebar" className="py-5" onClick={addNewRow}>행 추가</Button>
             <Dropdown
               trigger={
                 <Button 
                   variant="light" 
+                  size="sidebar"
+                  className="py-5 flex items-center gap-1"
+                >
+                  일괄 작업
+                  <ChevronDown size={24} className="text-text-base-400" />
+                </Button>
+              }
+              items={handleBlukItems}
+              align="right"
+            />
+            <Dropdown
+              trigger={
+                <Button 
+                  variant="light" 
+                  size="sidebar"
                   className="py-5 flex items-center gap-1"
                   disabled={isBatchInfoAllLoading}
                 >
@@ -378,6 +476,18 @@ export const OrderToolbar = () => {
         isOpen={isBatchInfoModalOpen}
         onClose={() => setIsBatchInfoModalOpen(false)}
         batchInfo={selectedBatchInfoData}
+      />
+
+      <ConfirmDeleteModal
+        isOpen={isConfirmDeleteModalOpen}
+        onClose={() => {
+          setIsConfirmDeleteModalOpen(false);
+          setDeleteAction(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title={getDeleteModalContent().title}
+        message={getDeleteModalContent().message}
+        isLoading={isBulkDeleting}
       />
     </>
   );
