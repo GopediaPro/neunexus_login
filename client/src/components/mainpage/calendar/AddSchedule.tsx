@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import moment from 'moment';
 import { Button } from '@/components/ui/Button';
@@ -10,10 +10,6 @@ import { Input } from '@/components/ui/input';
 import type { CalendarEvent } from './ScheduleCalendar';
 import { COLOR_OPTIONS } from '@/constant/calendar';
 import { Textarea } from '@/components/ui/Textarea';
-
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { ko } from 'date-fns/locale';
 
 interface AddScheduleProps {
   isOpen: boolean;
@@ -42,9 +38,6 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
     }
   });
 
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-
   const selectedCategory = watch('category');
   const isEditMode = event && event.id;
 
@@ -57,8 +50,6 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
         category: event.color || '#3b82f6',
         memo: event.desc || ''
       });
-      setStartDate(event.start ? new Date(event.start) : new Date());
-      setEndDate(event.end ? new Date(event.end) : new Date());
     } else if (isOpen) {
       reset({
         title: '',
@@ -67,20 +58,18 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
         category: '#3b82f6',
         memo: ''
       });
-      setStartDate(new Date());
-      setEndDate(new Date());
     }
   }, [isOpen, event, reset]);
 
   const onSubmit = async (data: ScheduleFormData) => {
     try {
-      if (!startDate || !endDate) return;
-
+      const eventDate = event?.start ? moment(event.start).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
+      
       const eventData = {
         id: event?.id || Date.now().toString(),
         title: data.title.trim(),
-        start: new Date(`${moment(startDate).format('YYYY-MM-DD')} ${data.startTime}`),
-        end: new Date(`${moment(endDate).format('YYYY-MM-DD')} ${data.endTime}`),
+        start: new Date(`${eventDate} ${data.startTime}`),
+        end: new Date(`${eventDate} ${data.endTime}`),
         desc: data.memo,
         color: data.category
       };
@@ -108,12 +97,15 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
 
   const getFormattedDate = () => {
     if (!event?.start) return '';
+    
     const date = moment(event.start);
     const year = date.format('YYYY');
     const month = date.format('M');
     const day = date.format('D');
     const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+
     const dayOfWeek = weekdays[date.day()];
+    
     return `${year}년 ${month}월 ${day}일이 ${dayOfWeek}요일`;
   };
 
@@ -129,7 +121,9 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {event?.start && (
               <div className="p-3 bg-accent-blue-100 rounded-lg">
-                <div className="text-h4 text-primary-500">{getFormattedDate()}</div>
+                <div className="text-h4 text-primary-500">
+                  {getFormattedDate()}
+                </div>
               </div>
             )}
 
@@ -140,89 +134,52 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
               error={errors.title?.message}
               render={(field) => (
                 <Input
-                  id="title"
+                  id='title'
                   placeholder="일정 이름을 입력하세요..."
                   error={errors.title?.message}
-                  className="bg-fill-base-100"
+                  className='bg-fill-base-100'
                   {...field}
                 />
               )}
             />
 
-            <div className="space-y-2">
-              <div className="flex space-x-4">
+            <div>
+              <div className="flex items-center space-x-3">
                 <div className="flex-1">
-                  <label className="text-sm font-medium text-text-base-500 mb-1">시작 날짜</label>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    locale={ko}
-                    dateFormat="yyyy.MM.dd"
-                    className="w-full border rounded px-3 py-2 bg-fill-base-100"
+                  <FormField
+                    name="startTime"
+                    label="시작 시간"
+                    control={control}
+                    error={errors.startTime?.message}
+                    render={(field) => (
+                      <Input
+                        id='startTime'
+                        type='time'
+                        error={errors.startTime?.message}
+                        className='bg-fill-base-100'
+                        {...field}
+                      />
+                    )}
                   />
                 </div>
+                <div className="text-text-base-400 mt-5">~</div>
                 <div className="flex-1">
-                  <label className="text-sm font-medium text-text-base-500 mb-1">종료 날짜</label>
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    locale={ko}
-                    dateFormat="yyyy.MM.dd"
-                    minDate={startDate}
-                    className="w-full border rounded px-3 py-2 bg-fill-base-100"
+                  <FormField
+                    name="endTime"
+                    label="종료 시간"
+                    control={control}
+                    error={errors.endTime?.message}
+                    render={(field) => (
+                      <Input
+                        id="endTime"
+                        type="time"
+                        error={errors.endTime?.message}
+                        className='bg-fill-base-100'
+                        {...field}
+                      />
+                    )}
                   />
                 </div>
-              </div>
-
-              <Button
-                type="button"
-                variant="light"
-                className="text-sm border border-primary-200"
-                onClick={() => {
-                  const today = new Date();
-                  setStartDate(today);
-                  setEndDate(today);
-                }}
-              >
-                오늘로 설정
-              </Button>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <div className="flex-1">
-                <FormField
-                  name="startTime"
-                  label="시작 시간"
-                  control={control}
-                  error={errors.startTime?.message}
-                  render={(field) => (
-                    <Input
-                      id="startTime"
-                      type="time"
-                      error={errors.startTime?.message}
-                      className="bg-fill-base-100"
-                      {...field}
-                    />
-                  )}
-                />
-              </div>
-              <div className="text-text-base-400 mt-5">~</div>
-              <div className="flex-1">
-                <FormField
-                  name="endTime"
-                  label="종료 시간"
-                  control={control}
-                  error={errors.endTime?.message}
-                  render={(field) => (
-                    <Input
-                      id="endTime"
-                      type="time"
-                      error={errors.endTime?.message}
-                      className="bg-fill-base-100"
-                      {...field}
-                    />
-                  )}
-                />
               </div>
             </div>
 
@@ -244,7 +201,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                           : 'border-stroke-base-100 hover:bg-fill-alt-100'
                       }`}
                     >
-                      <div
+                      <div 
                         className="w-4 h-4 rounded-full"
                         style={{ backgroundColor: color.value }}
                       />
@@ -266,7 +223,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                   rows={3}
                   error={!!errors.memo}
                   helperText={errors.memo?.message}
-                  className="bg-fill-base-100"
+                  className='bg-fill-base-100'
                   {...field}
                 />
               )}
@@ -274,7 +231,9 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
 
             {(errors.title || errors.startTime || errors.endTime || errors.category) && (
               <div className="p-3 bg-fill-alt-100 rounded-lg">
-                <div className="text-sm text-text-base-500">입력 정보를 확인해주세요.</div>
+                <div className="text-sm text-text-base-500">
+                  입력 정보를 확인해주세요.
+                </div>
               </div>
             )}
           </form>
@@ -282,22 +241,22 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
 
         <Modal.Footer>
           {isEditMode && onDelete && (
-            <Button
-              type="button"
-              variant="light"
-              onClick={handleDelete}
-              className="text-text-base-500 border-stroke-base-100 hover:bg-fill-alt-100"
-            >
-              삭제
-            </Button>
-          )}
+              <Button
+                type="button"
+                variant="light"
+                onClick={handleDelete}
+                className="text-text-base-500 border-stroke-base-100 hover:bg-fill-alt-100"
+              >
+                삭제
+              </Button>
+            )}
           <Button
             type="submit"
             variant="default"
             onClick={handleSubmit(onSubmit)}
             loading={isSubmitting}
             disabled={isSubmitting}
-            className="rounded-[8px]"
+            className='rounded-[8px]'
           >
             {isEditMode ? '수정' : '저장'}
           </Button>
