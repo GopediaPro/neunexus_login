@@ -39,7 +39,7 @@ export const OrganizationContainer = () => {
       <div className="space-y-3 py-4">
         <ScrollTable height="h-40">
           {filteredMembers.map((member) => (
-            <div key={member.id} className="flex items-center gap-2 mb-2.5">
+            <div key={member.id} className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-fill-alt-100 rounded-full flex items-center justify-center">
                 <div className="w-6 h-6 text-text-base-400" />
               </div>
