@@ -15,7 +15,7 @@ export const OrderGrid = () => {
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
   const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
 
-  const createPriceColumn = (field: string, headerName: string, width: number = 150) => ({
+  const createPriceColumn = (field: string, headerName: string, width: number) => ({
     field,
     headerName,
     width,
@@ -79,7 +79,7 @@ export const OrderGrid = () => {
     {
       field: 'order_id',
       headerName: '주문ID',
-      width: 120,
+      width: 160,
       pinned: 'left',
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
@@ -91,7 +91,7 @@ export const OrderGrid = () => {
     {
       field: 'mall_order_id',
       headerName: '몰주문ID',
-      width: 150,
+      width: 160,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -102,7 +102,7 @@ export const OrderGrid = () => {
     {
       field: 'product_name',
       headerName: '상품명',
-      width: 250,
+      width: 240,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -125,7 +125,7 @@ export const OrderGrid = () => {
     {
       field: 'receive_cel',
       headerName: '연락처',
-      width: 150,
+      width: 160,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -136,7 +136,7 @@ export const OrderGrid = () => {
     {
       field: 'sale_cnt',
       headerName: '수량',
-      width: 100,
+      width: 160,
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -149,9 +149,9 @@ export const OrderGrid = () => {
         max: 9999
       }
     },
-    createPriceColumn('pay_cost', '결제금액'),
-    createPriceColumn('expected_payout', '예상정산금'),
-    createPriceColumn('service_fee', '서비스수수료'),
+    createPriceColumn('pay_cost', '결제금액', 120),
+    createPriceColumn('expected_payout', '예상정산금', 120),
+    createPriceColumn('service_fee', '서비스수수료', 120),
     createPriceColumn('delv_cost', '배송비', 120),
     {
       field: 'fld_dsp',
@@ -231,7 +231,7 @@ export const OrderGrid = () => {
     sortable: true,
     filter: true,
     floatingFilter: true,
-    minWidth: 100,
+    minWidth: 120
   }), []);
 
   const gridOptions = useMemo(() => ({

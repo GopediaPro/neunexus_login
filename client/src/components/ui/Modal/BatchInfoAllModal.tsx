@@ -1,4 +1,4 @@
-import { Modal } from '../Modal';
+import { Modal } from '.';
 import { Button } from '../Button';
 import type { BatchInfoData, BatchInfoResponse } from '@/shared/types';
 
@@ -8,10 +8,10 @@ interface BatchInfoModalProps {
   batchInfo: BatchInfoResponse | null;
 }
 
-export const BatchInfoModal = ({
+export const BatchInfoAllModal = ({
   isOpen,
   onClose,
-  batchInfo,
+  batchInfo
 }: BatchInfoModalProps) => {
   if (!batchInfo) return null;
 
@@ -46,7 +46,7 @@ export const BatchInfoModal = ({
       
       <Modal.Body>
         <div className="space-y-4">
-          <div className="text-body-s text-text-base-400">
+          <div className="text-sm text-text-base-400">
             총 {batchInfo.total}개의 배치 정보 (페이지 {batchInfo.page}/{Math.ceil(batchInfo.total / batchInfo.page_size)})
           </div>
           
@@ -98,8 +98,8 @@ export const BatchInfoModal = ({
                     
                     {batch.error_message && (
                       <div className="mt-3 p-2 bg-fill-error-100 border border-stroke-error-100 rounded">
-                        <span className="text-body-s  text-error-500">오류 메시지:</span>
-                        <p className="text-body-s text-error-500">{batch.error_message}</p>
+                          <span className="text-body-s font-medium text-text-error-500">오류 메시지:</span>
+                        <p className="text-body-s text-text-error-500">{batch.error_message}</p>
                       </div>
                     )}
                     

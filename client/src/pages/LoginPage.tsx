@@ -106,7 +106,7 @@ export const LoginPage = () => {
               variant="default"
               size="auth"
               loading={isSubmitting}
-              className="!mt-[10px]"
+              className="!mt-[10px] !text-text-contrast-500"
               disabled={isSubmitting}          
             >
               <span>로그인</span>
@@ -119,7 +119,7 @@ export const LoginPage = () => {
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-primary-500 text-body-s underline hover:text-primary-600 transition-colors"
+              className="px-2.5 py-3 text-primary-500 text-body-s underline hover:text-primary-700 transition-colors"
               onClick={handleSignupClick}
             >
               회원가입

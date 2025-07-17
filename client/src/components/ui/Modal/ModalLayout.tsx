@@ -3,7 +3,7 @@ import type { ModalBodyProps, ModalCloseButtonProps, ModalFooterProps, ModalHead
 
 export const ModalHeader = ({ children, className }: ModalHeaderProps) => {
   return (
-    <div className={`flex items-center justify-between p-3 bg-fill-base-100 ${className} `}>
+    <div className={`flex items-center justify-between px-6 py-4 bg-fill-base-100 ${className} `}>
       {children}
     </div>
   );

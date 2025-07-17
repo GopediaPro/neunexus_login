@@ -25,8 +25,8 @@ export const ProductToolbar = () => {
       <div className="bg-fill-base-100">
         <div className="px-6">
           <div className="flex gap-2 border-b border-stroke-base-100">
-            <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h3 border-b-2 border-primary-500">상품관리</button>
-            <button onClick={() => navigate(ROUTERS.ORDER_MANAGEMENT)} className="px-4 py-4 text-text-base-400 text-h3 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">주문관리</button>
+            <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h2 border-b-2 border-primary-500">상품관리</button>
+            <button onClick={() => navigate(ROUTERS.ORDER_MANAGEMENT)} className="px-4 py-4 text-text-base-400 text-h2 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">주문관리</button>
           </div>
         </div>
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
@@ -35,8 +35,8 @@ export const ProductToolbar = () => {
             variant="light"
             className={`border border-stroke-base-100 transition-colors ${
               activeProductTab === "registration"
-                ? "bg-accent-blue-100 text-text-contrast-500"
-                : "text-text-base-200 hover:text-text-contrast-500 bg-fill-base-100"
+                ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
+                : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
             }`}>
             상품등록
           </Button>
@@ -45,8 +45,8 @@ export const ProductToolbar = () => {
             variant="light"
             className={`border border-stroke-base-100 transition-colors ${
               activeProductTab === "bulk-registration"
-                ? "bg-accent-blue-100 text-text-contrast-500"
-                : "text-text-base-200 hover:text-text-contrast-500 bg-fill-base-100"
+                ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
+                : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
             }`}>
             대량상품등록
           </Button>
@@ -56,7 +56,7 @@ export const ProductToolbar = () => {
         </div>
       </div>
       <div className="flex items-center gap-4 px-6 pt-5 bg-fill-base-100">
-        <div className="flex items-center w-[320px] h-10 bg-fill-alt-100 rounded-md px-3">
+        <div className="flex items-center w-[320px] h-12 bg-fill-alt-100 rounded-md px-3">
           <Icon name="search" ariaLabel="검색"
             onClick={handleIconClick}
             style="w-5 h-5 text-text-base-400 cursor-pointer flex-shrink-0"/>
@@ -66,7 +66,7 @@ export const ProductToolbar = () => {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="전체 검색 (상품명, ID, 고객명 등)"
-            className="w-[280px] pl-4 h-10 bg-fill-alt-100 border-none relative"
+            className="w-[280px] pl-4 bg-fill-alt-100 border-none relative h-12"
           />
         </div>
 

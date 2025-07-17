@@ -72,10 +72,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 "focus:border-primary-500 focus:text-text-base-500"
               ],
               currentVariant === 'focused' && [
-                "border-primary-500 text-text-base-500"
+                "border-[2px] border-primary-500 text-text-base-500"
               ],
               currentVariant === 'error' && [
-                "border-error-500",
+                "border-[2px] border-error-500",
                 "focus:border-error-500 focus:text-text-base-500"
               ],
 

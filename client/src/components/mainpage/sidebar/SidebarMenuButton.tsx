@@ -20,6 +20,19 @@ export const SidebarMenuButton = ({
 }: ILeftMenuButtonProps) => {
   const icon = textToIconMap[text];
 
+  const getIconSize = (name: string) => {
+    switch (name) {
+      case 'product':
+        return 'w-6 h-6';
+      case 'order':
+        return 'w-8 h-8 ml-[-5px]';
+      case 'service':
+        return 'w-7 h-7 ml-[-2px]';
+      default:
+        return 'w-6 h-6';
+    }
+  };
+
   return (
     <button
       className={`w-[90%] text-left p-3 rounded-md transition-all duration-200 text-h4
@@ -32,7 +45,7 @@ export const SidebarMenuButton = ({
       <div className="flex items-center gap-3">
         {icon && (
           <div className={`text-lg ${isActive ? "text-primary-500" : "text-text-base-200"}`}>
-            <Icon name={icon} ariaLabel={icon} style={`w-6 h-6 ${isActive? "text-primary-500" : "text-text-base-200"}`} />
+            <Icon name={icon} ariaLabel={icon} style={`${getIconSize(icon)} ${isActive? "text-primary-500" : "text-text-base-200"}`} />
           </div>
         )}
         <span className={`${isActive ? "text-primary-500" : "text-text-base-500"} font-medium`}>{text}</span>
@@ -62,7 +75,7 @@ export const SubMenuItem = ({
     >
       {text}
       {subText === '서비스' && (
-        <Icon name="redirect" ariaLabel="redirect" style="w-4 h-4" />
+        <Icon name="redirect" ariaLabel="redirect" style="w-6 h-6" />
       )}
     </button>
   );
