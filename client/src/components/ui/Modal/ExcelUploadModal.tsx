@@ -3,11 +3,13 @@ import { templateOptions } from "@/constant";
 import { useState, type ChangeEvent } from "react";
 import { Button } from "../Button";
 import { postExcelUpload } from "@/api/order/postExcelUpload";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import type { ExcelUploadFormData } from "@/shared/types";
 import { Modal } from ".";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
 import { ResultModal } from "./ResultModal";
+import { FormField } from "../FormField";
+import { Input } from "../input";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;
@@ -154,101 +156,84 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
         <ModalBody className="h-[500px]">
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
             <div className="space-y-2">
-              <label className="block text-caption text-text-base-500">
-                템플릿 선택 <span className="text-error-base-500">*</span>
-              </label>
-              <Controller
+              <FormField
                 name="template_code"
+                label="템플릿 선택"
                 control={control}
-                rules={{ required: '템플릿을 선택해주세요' }}
-                render={({ field }) => (
-                  <SelectSearchInput
-                    options={templateOptions}
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="템플릿을 선택하세요"
-                  />
+                render={(field) => (
+                    <SelectSearchInput
+                      options={templateOptions}
+                      value={field.value as string}
+                      onChange={field.onChange}
+                      placeholder="템플릿을 선택하세요"
+                    />
                 )}
+                error={errors.template_code?.message}
               />
-              {errors.template_code && (
-                <p className="text-sm text-error-500">{errors.template_code.message}</p>
-              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="block text-caption text-text-base-500">
-                  시작 날짜 <span className="text-error-base-500">*</span>
-                </label>
-                <Controller
-                  name="order_date_from"
-                  control={control}
-                  rules={{ required: '시작 날짜를 선택해주세요' }}
-                  render={({ field }) => (
-                    <input
-                      type="date"
-                      {...field}
-                      className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  )}
-                />
-                {errors.order_date_from && (
-                  <p className="text-sm text-error-500">{errors.order_date_from.message}</p>
+              <FormField
+                name="order_date_from"
+                label="시작 날짜"
+                control={control}
+                render={(field) => (
+                  <Input
+                    id="시작 날짜"
+                    type="date"
+                    className="bg-fill-base-100"
+                    {...field}
+                    value={field.value as string}
+                  />
                 )}
+                error={errors.order_date_from?.message}
+              />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-caption text-text-base-500">
-                  종료 날짜 <span className="text-error-base-500">*</span>
-                </label>
-                <Controller
+                <FormField
                   name="order_date_to"
+                  label="종료 날짜"
                   control={control}
-                  rules={{ required: '종료 날짜를 선택해주세요' }}
-                  render={({ field }) => (
-                    <input
+                  render={(field) => (
+                    <Input
+                      id="종료 날짜"
                       type="date"
+                      className="bg-fill-base-100"
                       {...field}
-                      className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={field.value as string}
                     />
                   )}
+                  error={errors.order_date_to?.message}
                 />
-                {errors.order_date_to && (
-                  <p className="text-sm text-error-500">{errors.order_date_to.message}</p>
-                )}
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-caption text-text-base-500">
-                소스 테이블 <span className="text-error-base-500">*</span>
-              </label>
-              <Controller
+              <FormField
                 name="source_table"
+                label="소스 테이블"
                 control={control}
-                rules={{ required: '소스 테이블을 입력해주세요' }}
-                render={({ field }) => (
-                  <input
+                render={(field) => (
+                  <Input
+                    id="소스 테이블"
                     type="text"
-                    {...field}
-                    className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="receive_orders"
+                    className="bg-fill-base-100"
+                    {...field}
+                    value={field.value as string}
                   />
                 )}
+                error={errors.source_table?.message}
               />
-              {errors.source_table && (
-                <p className="text-sm text-error-500">{errors.source_table.message}</p>
-              )}
             </div>
 
             <div className="space-y-2">
-              <label className="block text-caption text-text-base-500">
-                Excel 파일 <span className="text-error-500">*</span>
-              </label>
-              <Controller
+              <FormField
                 name="file"
                 control={control}
-                rules={{ required: '파일을 선택해주세요' }}
+                label="Excel 파일"
                 render={() => (
                   <div className="space-y-2">
                     <input
@@ -258,16 +243,14 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
                       className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     {selectedFile && (
-                      <p className="text-sm text-gray-600">
+                      <p className="text-body-s text-gray-600">
                         선택된 파일: {selectedFile.name}
                       </p>
                     )}
                   </div>
                 )}
+                error={errors.file?.message}
               />
-              {errors.file && (
-                <p className="text-sm text-error-500">{errors.file.message}</p>
-              )}
             </div>
           </form>
         </ModalBody>

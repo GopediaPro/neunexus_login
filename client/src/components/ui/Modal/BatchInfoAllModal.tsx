@@ -60,20 +60,20 @@ export const BatchInfoAllModal = ({
                   >
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="font-semibold text-text-base-500">
+                        <h3 className="text-body-s text-text-base-500">
                           배치 ID: {batch.batch_id}
                         </h3>
-                        <p className="text-sm text-text-base-400">
+                        <p className="text-body-s text-text-base-400">
                           생성자: {batch.created_by}
                         </p>
                       </div>
-                      <div className="text-right text-sm text-text-base-300">
+                      <div className="text-right text-body-s text-text-base-300">
                         <div>생성: {formatDate(batch.created_at)}</div>
                         <div>수정: {formatDate(batch.updated_at)}</div>
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 gap-4 text-body-s">
                       <div>
                         <span className="font-medium">원본 파일명:</span>
                         <p className="text-text-base-400">{batch.original_filename}</p>
@@ -98,21 +98,19 @@ export const BatchInfoAllModal = ({
                     
                     {batch.error_message && (
                       <div className="mt-3 p-2 bg-fill-error-100 border border-stroke-error-100 rounded">
-                        <span className="text-sm font-medium text-text-error-500">오류 메시지:</span>
-                        <p className="text-sm text-text-error-500">{batch.error_message}</p>
+                          <span className="text-body-s font-medium text-text-error-500">오류 메시지:</span>
+                        <p className="text-body-s text-text-error-500">{batch.error_message}</p>
                       </div>
                     )}
                     
                     <div className="mt-3 flex gap-2">
                       <Button
-                        variant="light"
                         size="compact"
                         onClick={() => handleDownload(batch.file_url, batch.original_filename)}
                       >
                         파일 다운로드
                       </Button>
                       <Button
-                        variant="light"
                         size="compact"
                         onClick={() => window.open(batch.file_url, '_blank')}
                       >

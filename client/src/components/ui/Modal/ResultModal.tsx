@@ -28,9 +28,9 @@ export const ResultModal = ({
       case 'success':
         return <Icon name="check" ariaLabel="success" style="w-6 h-6 text-text-success-500" />;
       case 'error':
-        return <Icon name="alert" ariaLabel="error" style="w-6 h-6 text-text-error-500" />;
+        return <Icon name="alert" ariaLabel="error" style="w-6 h-6 text-error-500" />;
       case 'warning':
-        return <Icon name="alert" ariaLabel="warning" style="w-6 h-6 text-text-warning-500" />;
+        return <Icon name="alert" ariaLabel="warning" style="w-6 h-6 text-error-500" />;
       case 'info':
       default:
         return <Icon name="info" ariaLabel="info" style="w-6 h-6 text-primary-500" />;
@@ -96,11 +96,10 @@ export const ResultModal = ({
                     type="text"
                     value={url}
                     readOnly
-                    className="flex-1 p-2 text-sm bg-fill-base-100 border border-stroke-base-100 rounded text-text-base-400"
+                    className="flex-1 p-2 text-body-s bg-fill-base-100 border border-stroke-base-100 rounded text-text-base-400"
                   />
                   {showCopyButton && (
                     <Button
-                      variant="light"
                       size="compact"
                       onClick={handleCopyUrl}
                       className="shrink-0"
@@ -114,7 +113,6 @@ export const ResultModal = ({
               
               <div className="flex gap-2">
                 <Button
-                  variant="light"
                   size="compact"
                   onClick={handleOpenUrl}
                   className="flex items-center gap-1"

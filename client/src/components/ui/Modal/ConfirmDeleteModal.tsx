@@ -38,7 +38,6 @@ export const ConfirmDeleteModal = ({
       <Modal.Footer>
         <div className="flex gap-2 justify-end">
           <Button 
-            variant="light" 
             onClick={onClose}
             disabled={isLoading}
           >
@@ -47,7 +46,7 @@ export const ConfirmDeleteModal = ({
           <Button 
             onClick={onConfirm}
             disabled={isLoading}
-            className="bg-fill-error-500 hover:bg-fill-error-600 bg-error-100 text-text-contrast-200"
+            className="bg-error-500 hover:bg-error-600 text-text-contrast-200"
           >
             {isLoading ? '삭제 중...' : '삭제'}
           </Button>
