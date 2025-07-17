@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useOrders } from "@/hooks/orderManagement/useOrders";
+import { useOrderList } from "./useOrderList";
 
 interface UseOrderDataParams {
   page: number;
@@ -7,7 +7,7 @@ interface UseOrderDataParams {
 }
 
 export const useOrderData = ({ page, currentTemplate }: UseOrderDataParams) => {
-  const { data, isLoading, error, refetch } = useOrders({ templateCode: currentTemplate, page });
+  const { data, isLoading, error, refetch } = useOrderList({ templateCode: currentTemplate, page });
 
   const orderData = data?.items?.[0]?.data || [];
 

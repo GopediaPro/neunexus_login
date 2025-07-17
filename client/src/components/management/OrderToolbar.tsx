@@ -4,7 +4,6 @@ import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
 import type { BatchInfoResponse, OrderRegisterForm } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
-import { useBulkCreateOrders, useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { BatchInfoAllModal } from "../ui/Modal/BatchInfoAllModal";
@@ -18,6 +17,7 @@ import { Icon } from "../ui/Icon";
 import { deleteBulkAll } from "@/api/order/deleteBulkAll";
 import { deleteBulkDuplicate } from "@/api/order/deleteBulkDuplicate";
 import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
+import { useOrderCreate, useOrderUpdate, useOrderDelete } from '@/hooks/orderManagement';
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
@@ -43,9 +43,9 @@ export const OrderToolbar = () => {
     activeOrderTab,
   } = useOrderContext();
 
-  const bulkCreateMutation = useBulkCreateOrders();
-  const bulkUpdateMutation = useBulkUpdateOrders();
-  const bulkDeleteMutation = useBulkDeleteOrders();
+  const bulkCreateMutation = useOrderCreate();
+  const bulkUpdateMutation = useOrderUpdate();
+  const bulkDeleteMutation = useOrderDelete();
   const { addNewRow } = useOrderGridActions(gridApi);
 
   const handleOrderRegisterSubmit = (data: OrderRegisterForm) => {
@@ -284,39 +284,6 @@ export const OrderToolbar = () => {
     }
   };
 
-  const handleDataItems = [
-    {
-      label: '주문파일 업로드',
-      onClick: () => setIsExcelUploadModalOpen(true),
-      icon: 'upload'
-    },
-    {
-      label: '전체 업로드 결과조회',
-      onClick: handleBatchInfoAll,
-      disabled: isBatchInfoAllLoading,
-      icon: 'list'
-    },
-    {
-      label: '최근 업로드 결과조회',
-      onClick: handleSelectedBatchInfo,
-      disabled: isSelectedBatchLoading,
-      icon: 'filter'
-    },
-  ];
-
-  const handleBlukItems = [
-    {
-      label: '일괄 삭제',
-      onClick: handleBulkDeleteConfirm,
-      icon: 'trash'
-    },
-    {
-      label: '중복 삭제',
-      onClick: handleDuplicateDeleteConfirm,
-      icon: 'trash'
-    }
-  ];
-
   const getDeleteModalContent = () => {
     if (deleteAction === 'bulk') {
       return {
@@ -339,6 +306,34 @@ export const OrderToolbar = () => {
     }
     return { title: '', message: '' };
   };
+
+  const handleDataItems = [
+    {
+      label: '주문파일 업로드',
+      onClick: () => setIsExcelUploadModalOpen(true),
+    },
+    {
+      label: '전체 업로드 결과조회',
+      onClick: handleBatchInfoAll,
+      disabled: isBatchInfoAllLoading,
+    },
+    {
+      label: '최근 업로드 결과조회',
+      onClick: handleSelectedBatchInfo,
+      disabled: isSelectedBatchLoading,
+    },
+  ];
+
+  const handleBlukItems = [
+    {
+      label: '일괄 삭제',
+      onClick: handleBulkDeleteConfirm,
+    },
+    {
+      label: '중복 삭제',
+      onClick: handleDuplicateDeleteConfirm,
+    }
+  ];
 
   const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
