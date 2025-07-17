@@ -25,8 +25,8 @@ export const ProductToolbar = () => {
       <div className="bg-fill-base-100">
         <div className="px-6">
           <div className="flex gap-2 border-b border-stroke-base-100">
-            <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h3 border-b-2 border-primary-500">상품관리</button>
-            <button onClick={() => navigate(ROUTERS.ORDER_MANAGEMENT)} className="px-4 py-4 text-text-base-400 text-h3 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">주문관리</button>
+            <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h2 border-b-2 border-primary-500">상품관리</button>
+            <button onClick={() => navigate(ROUTERS.ORDER_MANAGEMENT)} className="px-4 py-4 text-text-base-400 text-h2 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">주문관리</button>
           </div>
         </div>
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">

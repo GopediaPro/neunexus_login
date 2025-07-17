@@ -70,10 +70,10 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
         sizeClasses[size],
         isChecked
           ? 'bg-primary-500 hover:bg-primary-600'
-          : 'bg-fill-alt-100 hover:bg-fill-alt-200',
+          : 'bg-text-base-200 hover:bg-text-base-300',
         disabled && [
           'cursor-not-allowed opacity-50',
-          isChecked ? 'bg-fill-alt-100' : 'bg-fill-alt-100',
+          isChecked ? 'bg-text-base-200' : 'bg-text-base-200',
         ],
         className
       )}
