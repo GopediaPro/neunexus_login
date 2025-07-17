@@ -233,7 +233,7 @@
 }
 
 .rbc-off-range .rbc-date-cell {
-  color: hsl(var(--text-base-300)) !important;
+  color: hsl(var(--text-contrast-500)) !important;
   opacity: 0.5 !important;
 }
 
