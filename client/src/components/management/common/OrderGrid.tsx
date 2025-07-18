@@ -67,20 +67,15 @@ export const OrderGrid = () => {
       headerCheckboxSelectionFilteredOnly: true,
       width: 50,
       maxWidth: 50,
-      pinned: 'left',
-      lockPosition: 'left',
       cellClass: 'ag-cell-centered',
       suppressMovable: true,
       filter: false,
-      sortable: false,
-      resizable: false,
       editable: false
     },
     {
       field: 'order_id',
       headerName: '주문ID',
       width: 160,
-      pinned: 'left',
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -222,6 +217,12 @@ export const OrderGrid = () => {
       filter: 'agDateColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
+      },
+      cellStyle: {
+        borderRight: 'none'
+      },
+      headerCellStyle: {
+        borderRight: 'none'
       }
     }
   ], []);
@@ -256,12 +257,6 @@ export const OrderGrid = () => {
     } else {
       setInternalGridApi(params.api);
     }
-    
-    setTimeout(() => {
-      if (params.api) {
-        params.api.sizeColumnsToFit();
-      }
-    }, 100);
   }, [setGridApi]);
 
   const onSelectionChangedCallback = useCallback((event: any) => {

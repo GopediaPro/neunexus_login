@@ -33,5 +33,4 @@ export interface ProductContextValue {
   columnDefs: ColDef<ProductData>[];
   defaultColDef: ColDef<ProductData>;
   gridOptions: any;
-  onGridReady: (params: any) => void;
 }

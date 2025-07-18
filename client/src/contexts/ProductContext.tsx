@@ -28,7 +28,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const { productData, isLoading, error, refreshProducts } = useProductData({ search, page });
-  const { gridRef, columnDefs, defaultColDef, gridOptions, onGridReady } = useProductGrid();
+  const { gridRef, columnDefs, defaultColDef, gridOptions } = useProductGrid();
 
   const value: ProductContextValue = {
     search,
@@ -45,7 +45,6 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     columnDefs,
     defaultColDef,
     gridOptions,
-    onGridReady,
   };
 
   return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>;
