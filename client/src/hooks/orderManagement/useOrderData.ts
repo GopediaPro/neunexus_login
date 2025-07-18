@@ -1,19 +1,28 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useOrderList } from "./useOrderList";
 
 interface UseOrderDataParams {
   page: number;
-  currentTemplate: string;
 }
 
-export const useOrderData = ({ page, currentTemplate }: UseOrderDataParams) => {
-  const { data, isLoading, error, refetch } = useOrderList({ templateCode: currentTemplate, page });
+export const useOrderData = ({ page }: UseOrderDataParams) => {
+  const { data, isLoading, error, refetch } = useOrderList({ page });
 
-  const orderData = data?.items?.[0]?.data || [];
+  const orderData = useMemo(() => {
+    return data?.items?.map((item: { item: any; }) => item.item).filter(Boolean) || [];
+  }, [data?.items]);
 
   const refreshOrders = useCallback(() => {
     refetch();
   }, [refetch]);
+
+
+console.log('useOrderData - API Response:', {
+    rawData: data,
+    extractedOrderData: orderData,
+    itemsLength: data?.items?.length,
+    orderDataLength: orderData.length
+  });
 
   return {
     orderData,

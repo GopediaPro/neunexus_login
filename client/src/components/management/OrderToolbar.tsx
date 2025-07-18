@@ -14,8 +14,7 @@ import { ChevronDown } from "lucide-react";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoLatest";
 import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
 import { Icon } from "../ui/Icon";
-import { deleteBulkAll } from "@/api/order/deleteBulkAll";
-import { deleteBulkDuplicate } from "@/api/order/deleteBulkDuplicate";
+import { deleteAll, deleteDuplicate } from "@/api/order";
 import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
 import { useOrderCreate, useOrderUpdate, useOrderDelete } from '@/hooks/orderManagement';
 import { toast } from "sonner";
@@ -206,10 +205,10 @@ export const OrderToolbar = () => {
       setIsBulkDeleting(true);
       
       if (deleteAction === 'bulk') {
-        await deleteBulkAll();
+        await deleteAll();
         toast.success('일괄 삭제가 완료되었습니다.');
       } else if (deleteAction === 'duplicate') {
-        await deleteBulkDuplicate();
+        await deleteDuplicate();
         toast.success('중복 삭제가 완료되었습니다.');
       } else if (deleteAction === 'selected') {
         const idsToDelete = selectedRows

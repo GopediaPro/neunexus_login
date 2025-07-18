@@ -12,14 +12,14 @@ interface ExcelUploadResponse {
   template_code: string;
 }
 
-export const postExcelUpload =  async (data: ExcelUploadRequest) => {
+export const postExcelToMinio =  async (data: ExcelUploadRequest) => {
   const formData = new FormData();
 
   formData.append('request', data.request);
   formData.append('file', data.file);
 
   const response = await httpClient.post<ExcelUploadResponse>(
-    API_END_POINT.DOWN_FORM_EXCEL_UPLOAD, 
+    API_END_POINT.DOWN_FORM_EXCEL_TO_MINIO, 
     formData,
     {
       headers: {

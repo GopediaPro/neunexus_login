@@ -1,10 +1,9 @@
 import { getDownFormOrders } from "@/api/order/getDownFormOrders";
 import { useQuery } from "@tanstack/react-query";
 
-export const useOrderList = ({ templateCode, search = '', page = 1 }: { templateCode: string; search?: string; page?: number }) => {
+export const useOrderList = ({ page = 1 }: { page?: number }) => {
   return useQuery({
-    queryKey: ['orders', templateCode, search, page],
-    queryFn: () => getDownFormOrders({ template_code: templateCode, search, page }),
-    enabled: !!templateCode && templateCode !== ''
+    queryKey: ['orders', page],
+    queryFn: () => getDownFormOrders({ skip: (page - 1) * 200, limit: 200 }),
   });
 }; 

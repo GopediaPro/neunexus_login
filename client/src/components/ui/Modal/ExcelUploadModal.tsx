@@ -2,7 +2,6 @@ import { SelectSearchInput } from "@/components/management/common/SelectSearchIn
 import { templateOptions } from "@/constant";
 import { useState, type ChangeEvent } from "react";
 import { Button } from "../Button";
-import { postExcelUpload } from "@/api/order/postExcelUpload";
 import { useForm } from "react-hook-form";
 import type { ExcelUploadFormData } from "@/shared/types";
 import { Modal } from ".";
@@ -10,6 +9,7 @@ import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
 import { ResultModal } from "./ResultModal";
 import { FormField } from "../FormField";
 import { Input } from "../input";
+import { postExcelToMinio } from "@/api/order";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;
@@ -97,7 +97,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
         source_table: data.source_table
       };
       
-      const response = await postExcelUpload({
+      const response = await postExcelToMinio({
         request: JSON.stringify(requestData),
         file: data.file
       });
