@@ -24,6 +24,7 @@ export const OrderToolbar = () => {
   const [isBatchInfoAllModalOpen, setIsBatchInfoAllModalOpen] = useState(false);
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+  const [isExcelToDbModalOpen, setIsExcelToDbModalOpen] = useState(false);
   const [batchInfoAllData, setBatchInfoAllData] = useState<BatchInfoResponse | null>(null);
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
   const [isBatchInfoAllLoading, setIsBatchInfoAllLoading] = useState(false);
@@ -173,6 +174,16 @@ export const OrderToolbar = () => {
     }
   };
 
+  const handleSaveToDb = () => {
+    toast.success('db에 저장이 완료되었습니다.');
+
+    if (gridApi) {
+      gridApi.refreshInfiniteCache();
+      gridApi.purgeInfiniteCache();
+      gridApi.refreshCells();
+    }
+  };
+
   const handleBatchInfoAll = async () => {
     try {
       setIsBatchInfoAllLoading(true);
@@ -239,6 +250,10 @@ export const OrderToolbar = () => {
     {
       label: '주문파일 업로드',
       onClick: () => setIsExcelUploadModalOpen(true),
+    },
+    {
+      label: 'db에 저장',
+      onClick: () => setIsExcelToDbModalOpen(true),
     },
     {
       label: '전체 업로드 결과조회',
@@ -384,6 +399,14 @@ export const OrderToolbar = () => {
         isOpen={isExcelUploadModalOpen}
         onClose={() => setIsExcelUploadModalOpen(false)}
         onSuccess={handleExcelUploadSuccess}
+        mode="minio"
+      />
+
+      <ExcelUploadModal
+        isOpen={isExcelToDbModalOpen}
+        onClose={() => setIsExcelToDbModalOpen(false)}
+        onSuccess={handleSaveToDb}
+        mode="database"
       />
 
       <BatchInfoAllModal

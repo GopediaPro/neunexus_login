@@ -24,3 +24,20 @@ export const REQUIRED_FIELDS_BY_TEMPLATE: Record<FormTemplate, (keyof OrderItem)
   wemakeprice_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
   tmon_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
 };
+
+export const modalConfig = {
+  minio: {
+    title: '엑셀 업로드',
+    submitText: '업로드',
+    loadingText: '업로드 중...',
+    successTitle: '업로드 완료',
+    requiresDates: true
+  },
+  database: {
+    title: 'DB에 저장',
+    submitText: 'DB에 저장',
+    loadingText: 'DB 저장 중...',
+    successTitle: 'DB 저장 완료',
+    requiresDates: false
+  }
+};

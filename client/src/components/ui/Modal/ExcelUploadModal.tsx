@@ -9,15 +9,17 @@ import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
 import { ResultModal } from "./ResultModal";
 import { FormField } from "../FormField";
 import { Input } from "../input";
-import { postExcelToMinio } from "@/api/order";
+import { postExcelToDb, postExcelToMinio } from "@/api/order";
+import { modalConfig } from "@/constant/order";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  mode?: 'minio' | 'database';
 }
 
-export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModalProps) => {
+export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'minio' }: ExcelUploadModalProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
@@ -46,6 +48,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
   });
 
   const watchedValues = watch();
+  const config = modalConfig[mode];
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -80,33 +83,46 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
   }
 
   const handleFormSubmit = async (data: ExcelUploadFormData) => {
-    if (!data.template_code || !data.file || !data.order_date_from || !data.order_date_to) return;
     if (!selectedFile) return;
-
     setIsUploading(true);
 
     try {
-      const response = await postExcelToMinio({
-        template_code: data.template_code,
-        file: data.file
-      });
+      if (mode === 'minio') {
+        if (!data.template_code || !data.file || !data.order_date_from || !data.order_date_to) return;
+        const response = await postExcelToMinio({
+          template_code: data.template_code,
+          file: data.file
+        });
 
-      setUploadResult({
-        type: 'success',
-        title: '업로드 완료',
-        message: `엑셀 파일이 성공적으로 업로드되었습니다.\n\n파일명: ${selectedFile.name}\n업로드 시간: ${new Date().toLocaleString('ko-KR')}`,
-        url: response.file_url || response.file_url
-      });
+        setUploadResult({
+          type: 'success',
+          title: '업로드 완료',
+          message: `엑셀 파일이 성공적으로 업로드되었습니다.\n\n파일명: ${selectedFile.name}\n업로드 시간: ${new Date().toLocaleString('ko-KR')}`,
+          url: response.file_url || response.file_url
+        });
+      } else if (mode === 'database') {
+        if (!data.template_code || !data.file) return;
+        const response = await postExcelToDb({
+          template_code: data.template_code,
+          file: data.file
+        });
+
+        setUploadResult({
+          type: 'success',
+          title: 'DB 저장 완료',
+          message: `엑셀 파일이 성공적으로 DB에 저장되었습니다.\n\n파일명: ${selectedFile.name}\n저장 시간: ${new Date().toLocaleString('ko-KR')}`,
+          url: response.file_url || response.file_url
+        }); 
+      }
       setShowResultModal(true);
-
       onSuccess?.();
     } catch (error: any) {
       console.error(error);
 
       setUploadResult({
         type: 'error',
-        title: '업로드 실패',
-        message: `파일 업로드에 실패했습니다.\n\n오류 내용: ${error.message || '알 수 없는 오류가 발생했습니다.'}\n\n다시 시도해주세요.`
+        title: mode === 'minio' ? '업로드 실패' : 'DB 저장 실패',
+        message: `${mode === 'minio' ? '파일 업로드' : 'DB 저장'}에 실패했습니다.\n\n오류 내용: ${error.message || '알 수 없는 오류가 발생했습니다.'}\n\n다시 시도해주세요.`
       });
       setShowResultModal(true);
     } finally {
@@ -129,11 +145,12 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
     setUploadResult(null);
   }
 
-  const isFormValid = 
-    watchedValues.template_code && 
-    watchedValues.order_date_from && 
-    watchedValues.order_date_to && 
-    selectedFile;
+  const isFormValid = mode === 'minio' 
+    ? watchedValues.template_code && 
+      watchedValues.order_date_from && 
+      watchedValues.order_date_to && 
+      selectedFile
+    : watchedValues.template_code && selectedFile;
 
   return (
     <>
@@ -160,63 +177,66 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
                 error={errors.template_code?.message}
               />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-              <FormField
-                name="order_date_from"
-                label="시작 날짜"
-                control={control}
-                render={(field) => (
-                  <Input
-                    id="시작 날짜"
-                    type="date"
-                    className="bg-fill-base-100"
-                    {...field}
-                    value={field.value as string}
+            {mode === 'minio' && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                  <FormField
+                    name="order_date_from"
+                    label="시작 날짜"
+                    control={control}
+                    render={(field) => (
+                      <Input
+                        id="시작 날짜"
+                        type="date"
+                        className="bg-fill-base-100"
+                        {...field}
+                        value={field.value as string}
+                      />
+                    )}
+                    error={errors.order_date_from?.message}
                   />
-                )}
-                error={errors.order_date_from?.message}
-              />
-              </div>
+                  </div>
 
-              <div className="space-y-2">
-                <FormField
-                  name="order_date_to"
-                  label="종료 날짜"
-                  control={control}
-                  render={(field) => (
-                    <Input
-                      id="종료 날짜"
-                      type="date"
-                      className="bg-fill-base-100"
-                      {...field}
-                      value={field.value as string}
+                  <div className="space-y-2">
+                    <FormField
+                      name="order_date_to"
+                      label="종료 날짜"
+                      control={control}
+                      render={(field) => (
+                        <Input
+                          id="종료 날짜"
+                          type="date"
+                          className="bg-fill-base-100"
+                          {...field}
+                          value={field.value as string}
+                        />
+                      )}
+                      error={errors.order_date_to?.message}
                     />
-                  )}
-                  error={errors.order_date_to?.message}
-                />
-              </div>
-            </div>
+                  </div>
+                </div>
 
-            <div className="space-y-2">
-              <FormField
-                name="source_table"
-                label="소스 테이블"
-                control={control}
-                render={(field) => (
-                  <Input
-                    id="소스 테이블"
-                    type="text"
-                    placeholder="receive_orders"
-                    className="bg-fill-base-100"
-                    {...field}
-                    value={field.value as string}
+                <div className="space-y-2">
+                  <FormField
+                    name="source_table"
+                    label="소스 테이블"
+                    control={control}
+                    render={(field) => (
+                      <Input
+                        id="소스 테이블"
+                        type="text"
+                        placeholder="receive_orders"
+                        className="bg-fill-base-100"
+                        {...field}
+                        value={field.value as string}
+                      />
+                    )}
+                    error={errors.source_table?.message}
                   />
-                )}
-                error={errors.source_table?.message}
-              />
-            </div>
+                </div>
+              </>
+            )}
 
             <div className="space-y-2">
               <FormField
@@ -233,7 +253,10 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
                     />
                     {selectedFile && (
                       <p className="text-body-s text-gray-600">
-                        선택된 파일: {selectedFile.name}
+                        {mode === 'minio' 
+                          ? '파일을 Minio 스토리지에 업로드합니다.'
+                          : '엑셀 데이터를 직접 데이터베이스에 저장합니다.'
+                        }
                       </p>
                     )}
                   </div>
@@ -259,7 +282,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModa
             onClick={handleSubmit(handleFormSubmit)}
             disabled={!isFormValid || isUploading}
           >
-            {isUploading ? '업로드 중...' : '업로드'}
+            {isUploading ? config.loadingText : config.submitText}
           </Button>
         </ModalFooter>
       </Modal>
