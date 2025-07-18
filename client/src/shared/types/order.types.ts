@@ -59,6 +59,17 @@ export interface OrderResponse {
   limit?: number;
 }
 
+export interface OrderRegisterData {
+  selectedTemplate: string;
+  orderData: any[];
+}
+
+
+export interface OrderRegisterFormData {
+  selectedTemplate: string;
+  orderData: any[];
+}
+
 export interface OrderRegisterForm {
   selectedTemplate: string;
   orderData: {

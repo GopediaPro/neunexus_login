@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../ui/Button";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
-import type { BatchInfoResponse, OrderRegisterForm } from "@/shared/types";
+import type { BatchInfoResponse } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
@@ -14,7 +14,7 @@ import { ChevronDown } from "lucide-react";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoLatest";
 import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
 import { Icon } from "../ui/Icon";
-import { deleteAll, deleteDuplicate } from "@/api/order";
+import { deleteAll, deleteDuplicate, getDownFormOrdersPagination } from "@/api/order";
 import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
 import { useOrderCreate, useOrderUpdate, useOrderDelete } from '@/hooks/orderManagement';
 import { toast } from "sonner";
@@ -48,9 +48,27 @@ export const OrderToolbar = () => {
   const bulkDeleteMutation = useOrderDelete();
   const { addNewRow } = useOrderGridActions(gridApi);
 
-  const handleOrderRegisterSubmit = (data: OrderRegisterForm) => {
-    if (data.selectedTemplate) {
-      setCurrentTemplate(data.selectedTemplate);
+  const handleOrderRegisterSubmit = async (selectedTemplate: string) => {
+    try {
+      const response = await getDownFormOrdersPagination({
+        page: 1,
+        page_size: 200,
+        template_code: selectedTemplate,
+      });
+
+      const orderData = response.items?.map((item: any) => item.item) || [];
+
+      if (orderData.length === 0) {
+        toast.error('템플릿에 해당하는 주문 데이터가 없습니다.');
+        return;
+      }
+
+      setCurrentTemplate(selectedTemplate);
+      toast.dismiss();
+      toast.success(`${orderData.length}개의 주문을 불러왔습니다.`);
+    } catch (error) {
+      console.error('주문 등록 실패:', error);
+      toast.error('주문 등록에 실패했습니다.');
     }
     setIsOrderRegisterModalOpen(false);
   };
