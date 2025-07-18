@@ -42,7 +42,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
     }
   });
 
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date | undefined | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
 
   const selectedCategory = watch('category');
@@ -173,19 +173,6 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                   />
                 </div>
               </div>
-
-              <Button
-                type="button"
-                variant="light"
-                className="text-sm border border-primary-200"
-                onClick={() => {
-                  const today = new Date();
-                  setStartDate(today);
-                  setEndDate(today);
-                }}
-              >
-                오늘로 설정
-              </Button>
             </div>
 
             <div className="flex items-center space-x-3">
