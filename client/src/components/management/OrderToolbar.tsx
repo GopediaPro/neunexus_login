@@ -15,7 +15,7 @@ import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
 import { Icon } from "../ui/Icon";
 import { deleteAll, deleteDuplicate, getDownFormOrdersPagination } from "@/api/order";
 import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
-import { useOrderCreate, useOrderUpdate, useOrderDelete, handleOrderCreate } from '@/hooks/orderManagement';
+import { useOrderCreate, useOrderUpdate, useOrderDelete, handleOrderCreate, handleOrderUpdate } from '@/hooks/orderManagement';
 import { toast } from "sonner";
 
 export const OrderToolbar = () => {
@@ -38,6 +38,7 @@ export const OrderToolbar = () => {
     selectedRows,
     changedRows,
     activeOrderTab,
+    currentTemplate,
   } = useOrderContext();
 
   const bulkCreateMutation = useOrderCreate();
@@ -72,57 +73,12 @@ export const OrderToolbar = () => {
 
   const handleOrderCreateClick = () => {
     if (!gridApi) return;
-    handleOrderCreate(gridApi, bulkCreateMutation);
+    handleOrderCreate(gridApi, bulkCreateMutation, currentTemplate);
   }
 
-  const handleOrderUpdate = async () => {
-    if (changedRows.length === 0) {
-      toast.error('수정할 수 있는 유효한 주문이 없습니다.');
-      return;
-    }
-
-    const invalidRows = changedRows.filter(row => {
-      return !row.order_id?.trim() || !row.product_name?.trim() || !row.sale_cnt || row.sale_cnt <= 0;
-    });
-
-    if (invalidRows.length > 0) {
-      toast.error('주문ID, 상품명, 수량은 필수 입력 사항입니다.');
-      return;
-    }
-
-    const confirmMessage = changedRows.length === 1 
-      ? `주문 "${changedRows[0].order_id}"을 수정하시겠습니까?`
-      : `선택된 ${changedRows.length}개 주문을 수정하시겠습니까?`;
-    
-    if (!confirm(confirmMessage)) {
-      return;
-    }
-
-    try {
-      await bulkUpdateMutation.mutateAsync({
-        items: changedRows.map(row => ({
-          id: row.id,
-          idx: row.idx || "",
-          form_name: row.form_name || "",
-          order_id: row.order_id || "",
-          product_name: row.product_name || "",
-          sale_cnt: Number(row.sale_cnt) || 0,
-          pay_cost: Number(row.pay_cost) || 0,
-          delv_cost: Number(row.delv_cost) || 0,
-          total_cost: Number(row.total_cost) || 0,
-          receive_name: row.receive_name || "",
-          receive_cel: row.receive_cel || ""
-        })) as any
-      });
-
-      if (gridApi) {
-        gridApi.refreshCells();
-        gridApi.deselectAll();
-      }
-      
-    } catch (error) {
-      console.error('주문 수정 실패:', error);
-    }
+  const handleOrderUpdateClick = async () => {
+    if (!gridApi) return;
+    handleOrderUpdate(changedRows, bulkUpdateMutation, currentTemplate, gridApi);
   };
 
   const handleOrderDelete = () => {
@@ -367,7 +323,7 @@ export const OrderToolbar = () => {
               variant="light" 
               size="sidebar"
               className={`py-5 ${isUpdateDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
-              onClick={handleOrderUpdate}
+              onClick={handleOrderUpdateClick}
               disabled={isUpdateDisabled}
             >
               <Icon name="edit" ariaLabel="edit" style="w-4 h-4" />
