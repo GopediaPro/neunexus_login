@@ -15,10 +15,9 @@ interface ExcelUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  createdBy: string;
 }
 
-export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: ExcelUploadModalProps) => {
+export const ExcelUploadModal = ({ isOpen, onClose, onSuccess }: ExcelUploadModalProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
@@ -87,18 +86,8 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
     setIsUploading(true);
 
     try {
-      const requestData = {
-        template_code: data.template_code,
-        created_by: createdBy,
-        filters: {
-          order_date_from: data.order_date_from,
-          order_date_to: data.order_date_to
-        },
-        source_table: data.source_table
-      };
-      
       const response = await postExcelToMinio({
-        request: JSON.stringify(requestData),
+        template_code: data.template_code,
         file: data.file
       });
 

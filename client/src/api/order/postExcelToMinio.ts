@@ -2,7 +2,7 @@ import { API_END_POINT } from "@/constant";
 import { httpClient } from "@/shared/axios";
 
 interface ExcelUploadRequest {
-  request: string;
+  template_code: string;
   file: File;
 }
 
@@ -15,7 +15,7 @@ interface ExcelUploadResponse {
 export const postExcelToMinio =  async (data: ExcelUploadRequest) => {
   const formData = new FormData();
 
-  formData.append('request', data.request);
+  formData.append('template_code', data.template_code);
   formData.append('file', data.file);
 
   const response = await httpClient.post<ExcelUploadResponse>(

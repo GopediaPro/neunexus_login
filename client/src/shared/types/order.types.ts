@@ -239,3 +239,49 @@ export interface BatchInfoParams {
   page?: number;
   page_size?: number;
 }
+
+export interface DownFormBulkCreateResponseItem {
+  item: OrderItem;
+  status: 'success' | 'error';
+  message: string;
+  errors?: Array<{
+    field: string;
+    message: string;
+  }>;
+}
+
+export interface DownFormBulkCreateResponse {
+  items: DownFormBulkCreateResponseItem[];
+  summary?: {
+    total: number;
+    success: number;
+    failed: number;
+  };
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: Array<{
+    index: number;
+    field: string;
+    message: string;
+    value?: any;
+  }>;
+}
+
+export type FormTemplate = 
+  | 'gmarket_erp'
+  | 'coupang_erp'
+  | 'auction_erp'
+  | 'interpark_erp'
+  | 'wemakeprice_erp'
+  | 'tmon_erp';
+
+export type OrderStatus = 
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled'
+  | 'returned';

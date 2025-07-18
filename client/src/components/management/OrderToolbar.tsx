@@ -8,7 +8,6 @@ import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { BatchInfoAllModal } from "../ui/Modal/BatchInfoAllModal";
 import { getBatchInfoAll } from "@/api/order/getBatchInfoAll";
-import { useAuthContext } from "@/contexts";
 import { Dropdown } from "../ui/Dropdown";
 import { ChevronDown } from "lucide-react";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoLatest";
@@ -16,7 +15,7 @@ import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
 import { Icon } from "../ui/Icon";
 import { deleteAll, deleteDuplicate, getDownFormOrdersPagination } from "@/api/order";
 import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
-import { useOrderCreate, useOrderUpdate, useOrderDelete } from '@/hooks/orderManagement';
+import { useOrderCreate, useOrderUpdate, useOrderDelete, handleOrderCreate } from '@/hooks/orderManagement';
 import { toast } from "sonner";
 
 export const OrderToolbar = () => {
@@ -31,11 +30,9 @@ export const OrderToolbar = () => {
   const [isSelectedBatchLoading, setIsSelectedBatchLoading] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [deleteAction, setDeleteAction] = useState<'bulk' | 'duplicate' | 'selected' | null>(null);
-  const { user } = useAuthContext();
 
   const {
     setActiveOrderTab,
-    currentTemplate,
     setCurrentTemplate,
     gridApi,
     selectedRows,
@@ -73,68 +70,10 @@ export const OrderToolbar = () => {
     setIsOrderRegisterModalOpen(false);
   };
 
-  const handleOrderCreate = async () => {
+  const handleOrderCreateClick = () => {
     if (!gridApi) return;
-
-    let allRows: any[] = [];
-    gridApi.forEachNode((node: any) => {
-      allRows = [...allRows, node.data];
-    });
-
-    const newRows = allRows.filter(row => 
-      row.id && String(row.id).startsWith('temp_')
-    );
-
-    if (newRows.length === 0) {
-      toast.error('생성할 새로운 주문이 없습니다.');
-      return;
-    }
-
-    const invalidRows = newRows.filter(row => {
-      return !row.order_id?.trim() || !row.product_name?.trim() || !row.sale_cnt || row.sale_cnt <= 0;
-    });
-
-    if (invalidRows.length > 0) {
-      toast.error('주문ID, 상품명, 수량은 필수 입력 사항입니다.');
-      return;
-    }
-
-    const confirmMessage = newRows.length === 1 
-      ? `주문 "${newRows[0].order_id}"을 생성하시겠습니까?`
-      : `새로운 ${newRows.length}개 주문을 생성하시겠습니까?`;
-    
-    if (!confirm(confirmMessage)) {
-      return;
-    }
-
-    try {
-      await bulkCreateMutation.mutateAsync({
-        items: newRows.map(row => ({ 
-          idx: row.idx || `ORDER${Date.now()}`,
-          form_name: row.form_name || currentTemplate || "",
-          order_id: row.order_id || "",
-          product_name: row.product_name || "",
-          sale_cnt: Number(row.sale_cnt) || 0,
-          pay_cost: Number(row.pay_cost) || 0,
-          delv_cost: Number(row.delv_cost) || 0,
-          total_cost: Number(row.total_cost) || 0,
-          receive_name: row.receive_name || "",
-          receive_cel: row.receive_cel || "",
-          receive_addr: row.receive_addr || ""
-        })) as any
-      });
-
-      if (gridApi) {
-        gridApi.applyTransaction({
-          remove: newRows
-        });
-      }
-      
-    } catch (error) {
-      console.error('주문 생성 실패:', error);
-      toast.error('주문 생성에 실패했습니다.');
-    }
-  };
+    handleOrderCreate(gridApi, bulkCreateMutation);
+  }
 
   const handleOrderUpdate = async () => {
     if (changedRows.length === 0) {
@@ -414,7 +353,7 @@ export const OrderToolbar = () => {
               variant="light" 
               size="sidebar"
               className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-              onClick={handleOrderCreate}
+              onClick={handleOrderCreateClick}
               disabled={isCreateDisabled}
             >
               <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
@@ -489,7 +428,6 @@ export const OrderToolbar = () => {
         isOpen={isExcelUploadModalOpen}
         onClose={() => setIsExcelUploadModalOpen(false)}
         onSuccess={handleExcelUploadSuccess}
-        createdBy={user?.preferred_username || 'testuser'}
       />
 
       <BatchInfoAllModal
