@@ -18,6 +18,7 @@ import { deleteBulkAll } from "@/api/order/deleteBulkAll";
 import { deleteBulkDuplicate } from "@/api/order/deleteBulkDuplicate";
 import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
 import { useOrderCreate, useOrderUpdate, useOrderDelete } from '@/hooks/orderManagement';
+import { toast } from "sonner";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
@@ -68,7 +69,7 @@ export const OrderToolbar = () => {
     );
 
     if (newRows.length === 0) {
-      alert('생성할 새로운 주문이 없습니다.');
+      toast.error('생성할 새로운 주문이 없습니다.');
       return;
     }
 
@@ -77,7 +78,7 @@ export const OrderToolbar = () => {
     });
 
     if (invalidRows.length > 0) {
-      alert('주문ID, 상품명, 수량은 필수 입력 사항입니다.');
+      toast.error('주문ID, 상품명, 수량은 필수 입력 사항입니다.');
       return;
     }
 
@@ -114,12 +115,13 @@ export const OrderToolbar = () => {
       
     } catch (error) {
       console.error('주문 생성 실패:', error);
-      alert('주문 생성에 실패했습니다.');
+      toast.error('주문 생성에 실패했습니다.');
     }
   };
 
   const handleOrderUpdate = async () => {
     if (changedRows.length === 0) {
+      toast.error('수정할 수 있는 유효한 주문이 없습니다.');
       return;
     }
 
@@ -128,6 +130,7 @@ export const OrderToolbar = () => {
     });
 
     if (invalidRows.length > 0) {
+      toast.error('주문ID, 상품명, 수량은 필수 입력 사항입니다.');
       return;
     }
 
@@ -168,6 +171,7 @@ export const OrderToolbar = () => {
 
   const handleOrderDelete = () => {
     if (selectedRows.length === 0) {
+      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
       return;
     }
     
@@ -176,11 +180,21 @@ export const OrderToolbar = () => {
   };
 
   const handleBulkDeleteConfirm = () => {
+    if (selectedRows.length === 0) {
+      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
+      return;
+    }
+
     setDeleteAction('bulk');
     setIsConfirmDeleteModalOpen(true);
   };
 
   const handleDuplicateDeleteConfirm = () => {
+    if (selectedRows.length === 0) {
+      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
+      return;
+    }
+
     setDeleteAction('duplicate');
     setIsConfirmDeleteModalOpen(true);
   };
@@ -193,17 +207,17 @@ export const OrderToolbar = () => {
       
       if (deleteAction === 'bulk') {
         await deleteBulkAll();
-        alert('일괄 삭제가 완료되었습니다.');
+        toast.success('일괄 삭제가 완료되었습니다.');
       } else if (deleteAction === 'duplicate') {
         await deleteBulkDuplicate();
-        alert('중복 삭제가 완료되었습니다.');
+        toast.success('중복 삭제가 완료되었습니다.');
       } else if (deleteAction === 'selected') {
         const idsToDelete = selectedRows
           .map(row => row.id)
           .filter(id => id != null);
 
         if (idsToDelete.length === 0) {
-          alert('삭제할 수 있는 유효한 주문이 없습니다.');
+          toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
           return;
         }
 
@@ -217,7 +231,7 @@ export const OrderToolbar = () => {
           });
           gridApi.deselectAll();
         }
-        // toast.success('선택된 주문이 삭제되었습니다.'); 추후 toast 구현
+        toast.success('선택된 주문이 삭제되었습니다.');
       }
 
       if (deleteAction === 'bulk' || deleteAction === 'duplicate') {
@@ -238,6 +252,8 @@ export const OrderToolbar = () => {
   };
 
   const handleExcelUploadSuccess = () => {
+    toast.success('업로드가 완료되었습니다.');
+
     if (gridApi) {
       gridApi.refreshInfiniteCache();
       gridApi.purgeInfiniteCache();
@@ -259,7 +275,7 @@ export const OrderToolbar = () => {
 
     } catch (error) {
       console.error('배치 정보 조회 실패:', error);
-      alert('배치 정보를 불러오는데 실패했습니다.');
+      toast.error('배치 정보를 불러오는데 실패했습니다.');
     } finally {
       setIsBatchInfoAllLoading(false);
     }

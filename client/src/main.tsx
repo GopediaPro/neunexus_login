@@ -6,6 +6,8 @@ import { ThemeProvider } from 'next-themes'
 import { AuthProvider } from '@/contexts/auth'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import App from '@/App'
+import { Toaster } from 'sonner'
+
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -22,6 +24,17 @@ const renderApp = () => {
           <StrictMode>
             <App />
           </StrictMode>
+          <Toaster 
+            richColors
+            position='top-right'
+            duration={2000}
+            closeButton={true}
+            toastOptions={{
+              style: {
+                zIndex: 9999,
+              },
+            }}
+          />
         </ThemeProvider>
       </ReactQueryProvider>
     </AuthProvider>,
