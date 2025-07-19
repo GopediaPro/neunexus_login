@@ -47,6 +47,24 @@ export const OrderToolbar = () => {
   const bulkDeleteMutation = useOrderDelete();
   const { addNewRow } = useOrderGridActions(gridApi);
 
+  const refreshGrid = () => {
+    if (!gridApi) return;
+    
+    const rowModelType = gridApi.getGridOption('rowModelType');
+    
+    if (rowModelType === 'infinite') {
+      gridApi.refreshInfiniteCache();
+      gridApi.purgeInfiniteCache();
+    } else if (rowModelType === 'clientSide') {
+      gridApi.refreshCells();
+      gridApi.redrawRows();
+    } else if (rowModelType === 'serverSide') {
+      gridApi.refreshServerSide();
+    } else {
+      gridApi.refreshCells();
+    }
+  };
+
   const handleOrderRegisterSubmit = async (selectedTemplate: string) => {
     try {
       const response = await getDownFormOrdersPagination({
@@ -148,11 +166,7 @@ export const OrderToolbar = () => {
       }
 
       if (deleteAction === 'bulk' || deleteAction === 'duplicate') {
-        if (gridApi) {
-          gridApi.refreshInfiniteCache();
-          gridApi.purgeInfiniteCache();
-          gridApi.refreshCells();
-        }
+        refreshGrid();
       }
 
     } catch (error) {
@@ -166,22 +180,12 @@ export const OrderToolbar = () => {
 
   const handleExcelUploadSuccess = () => {
     toast.success('업로드가 완료되었습니다.');
-
-    if (gridApi) {
-      gridApi.refreshInfiniteCache();
-      gridApi.purgeInfiniteCache();
-      gridApi.refreshCells();
-    }
+    refreshGrid();
   };
 
   const handleSaveToDb = () => {
     toast.success('db에 저장이 완료되었습니다.');
-
-    if (gridApi) {
-      gridApi.refreshInfiniteCache();
-      gridApi.purgeInfiniteCache();
-      gridApi.refreshCells();
-    }
+    refreshGrid();
   };
 
   const handleBatchInfoAll = async () => {
