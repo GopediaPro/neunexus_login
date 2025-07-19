@@ -3,14 +3,14 @@ import { templateOptions } from "@/constant";
 import { useState, type ChangeEvent } from "react";
 import { Button } from "../Button";
 import { useForm } from "react-hook-form";
-import type { ExcelUploadFormData } from "@/shared/types";
 import { Modal } from ".";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
 import { ResultModal } from "./ResultModal";
 import { FormField } from "../FormField";
 import { Input } from "../input";
 import { postExcelToDb, postExcelToMinio } from "@/api/order";
-import { modalConfig } from "@/constant/order";
+import { modalConfig } from "@/constant/order"
+import type { ExcelUploadFormData } from "@/shared/types";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;

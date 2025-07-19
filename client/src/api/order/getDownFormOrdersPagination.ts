@@ -1,25 +1,6 @@
 import { API_END_POINT } from "@/constant";
 import { httpClient } from "@/shared/axios";
-
-interface GetDownFormOrdersPaginationParams {
-  page?: number;
-  page_size?: number;
-  template_code?: string;
-}
-
-// 리팩토링때 any 타입 제거 후 repsonse값 넣어야함
-interface DownFormOrderResponse {
-  item: any;
-  status: string;
-  message: string;
-}
-
-interface PaginationResponse {
-  total: number;
-  page: number;
-  page_size: number;
-  items: DownFormOrderResponse[];
-}
+import type { GetDownFormOrdersPaginationParams, PaginationResponse } from "@/shared/types";
 
 export const getDownFormOrdersPagination = async ({ 
   page = 1, 

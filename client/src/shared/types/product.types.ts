@@ -18,6 +18,22 @@ export interface ProductData {
   created_at: string;
 }
 
+export interface ProductListResponse {
+  products: ProductData[];
+  current_page: number;
+  page_size: string;
+}
+
+export interface GetProductsParams {
+  search: string;
+  page: number;
+}
+
+export interface UseProductDataParams {
+  search: string;
+  page: number;
+}
+
 export interface ProductContextValue {
   search: string;
   setSearch: (value: string) => void;

@@ -122,8 +122,8 @@ export const OrderToolbar = () => {
         await deleteAll();
         toast.success('일괄 삭제가 완료되었습니다.');
       } else if (deleteAction === 'duplicate') {
-        await deleteDuplicate();
-        toast.success('중복 삭제가 완료되었습니다.');
+        const response = await deleteDuplicate();
+        toast.success(response.message);
       } else if (deleteAction === 'selected') {
         const idsToDelete = selectedRows
           .map(row => row.id)

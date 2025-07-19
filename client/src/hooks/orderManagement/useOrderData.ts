@@ -1,9 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useOrderList } from "./useOrderList";
-
-interface UseOrderDataParams {
-  page: number;
-}
+import type { UseOrderDataParams } from "@/shared/types";
 
 export const useOrderData = ({ page }: UseOrderDataParams) => {
   const { data, isLoading, error, refetch } = useOrderList({ page });
