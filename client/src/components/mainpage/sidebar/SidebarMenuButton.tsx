@@ -35,7 +35,7 @@ export const SidebarMenuButton = ({
 
   return (
     <button
-      className={`w-[90%] text-left p-3 rounded-md transition-all duration-200 text-h4
+      className={`w-[95%] text-left p-3 rounded-md transition-all duration-200 text-h4
         flex items-center gap-2 mx-auto hover:bg-fill-alt-200 group h-12 ${
         isActive && "bg-fill-alt-200"
       } ${className}`}
