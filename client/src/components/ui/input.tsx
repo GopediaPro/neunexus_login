@@ -57,9 +57,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               "focus-visible:outline-none",
               "disabled:cursor-not-allowed disabled:opacity-50",
 
-              !error && "bg-fill-alt-200",
-              error && "bg-error-100",
-              "text-text-base-500",
+              !error && "text-text-base-500 bg-fill-alt-200",
+              error && "bg-error-100 text-error-500",
 
               currentVariant === 'default' && !error && "placeholder:text-text-base-400",
               currentVariant === 'focused' && !error && "placeholder:text-primary-500",
@@ -76,7 +75,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               ],
               currentVariant === 'error' && [
                 "border-[2px] border-error-500",
-                "focus:border-error-500 focus:text-text-base-500"
+                "focus:border-error-500 focus:text-error-500"
               ],
 
               onIcons && "pr-10",
