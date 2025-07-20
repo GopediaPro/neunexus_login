@@ -28,7 +28,7 @@ export const OrderLayout = () => {
             <div className="flex flex-col">
               <HeaderManagement title="상품/주문 관리 시스템" />
               <OrderToolbar />
-              <div className="flex-1 p-4 bg-fill-base-100">
+              <div className="flex-1 p-4 px-6 bg-fill-base-100">
                 <OrderGrid />
               </div>
             </div>
@@ -37,7 +37,7 @@ export const OrderLayout = () => {
           <div className="flex flex-col min-h-screen bg-fill-base-100">
             <HeaderManagement title="상품/주문 관리 시스템" />
             <OrderToolbar />
-            <div className="flex-1 p-4 pl-6">
+            <div className="flex-1 p-4 px-6">
               <OrderGrid />
             </div>
           </div>
