@@ -73,7 +73,7 @@ export const OrderToolbar = () => {
         template_code: selectedTemplate,
       });
 
-      const orderData = response.items?.map((item: any) => item.item) || [];
+      const orderData = response.items?.map((item: any) => item.content) || [];
 
       if (orderData.length === 0) {
         toast.error('템플릿에 해당하는 주문 데이터가 없습니다.');

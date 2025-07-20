@@ -38,6 +38,7 @@ export const ConfirmDeleteModal = ({
       <Modal.Footer>
         <div className="flex gap-2 justify-end">
           <Button 
+            variant="secondary"
             onClick={onClose}
             disabled={isLoading}
           >
