@@ -80,6 +80,8 @@ export default {
 					'accent-purple-400': 'hsl(var(--accent-purple-400))',
 					'accent-purple-500': 'hsl(var(--accent-purple-500))',
 
+					'disabled-blue-100': 'hsl(var(--disabled-blue-100))',
+
 					'background': 'hsl(var(--background))',
 					'foreground': 'hsl(var(--foreground))',
 					'card': 'hsl(var(--card))',

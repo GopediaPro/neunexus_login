@@ -51,6 +51,7 @@ export const LoginPage = () => {
                   type="password"
                   placeholder="비밀번호"
                   error={errors.password?.message}
+                  showPasswordToggle={true}
                   {...field}
                 />
               )}
