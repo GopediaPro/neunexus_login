@@ -69,6 +69,7 @@ export default {
 					'primary-800': 'hsl(var(--primary-800, 213 74% 22%))',
 
 					'error-100': 'hsl(var(--error-100))',
+					'error-400': 'hsl(var(--error-400))',
 					'error-500': 'hsl(var(--error-500))',
 
 					'accent-red-100': 'hsl(var(--accent-red-100))',
