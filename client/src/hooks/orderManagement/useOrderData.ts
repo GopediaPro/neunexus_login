@@ -1,15 +1,14 @@
-import { useCallback } from "react";
-import { useOrders } from "@/hooks/orderManagement/useOrders";
+import { useCallback, useMemo } from "react";
+import { useOrderList } from "./useOrderList";
+import type { UseOrderDataParams } from "@/shared/types";
 
-interface UseOrderDataParams {
-  page: number;
-  currentTemplate: string;
-}
+export const useOrderData = ({ page }: UseOrderDataParams) => {
+  const { data, isLoading, error, refetch } = useOrderList({ page });
 
-export const useOrderData = ({ page, currentTemplate }: UseOrderDataParams) => {
-  const { data, isLoading, error, refetch } = useOrders({ templateCode: currentTemplate, page });
-
-  const orderData = data?.items?.[0]?.data || [];
+  const orderData = useMemo(() => {
+    if (!data?.items) return [];
+    return data?.items?.map((item: { item: any; }) => item.item).filter(Boolean);
+  }, [data]);
 
   const refreshOrders = useCallback(() => {
     refetch();

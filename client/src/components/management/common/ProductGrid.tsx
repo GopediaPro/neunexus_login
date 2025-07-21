@@ -8,7 +8,6 @@ export const ProductGrid = () => {
     columnDefs,
     defaultColDef,
     gridOptions,
-    onGridReady,
   } = useProductContext();
 
   return (
@@ -18,7 +17,6 @@ export const ProductGrid = () => {
         rowData={productData || []}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
-        onGridReady={onGridReady}
         {...gridOptions}
       />
     </div>

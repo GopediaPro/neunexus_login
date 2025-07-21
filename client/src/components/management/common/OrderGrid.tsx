@@ -60,27 +60,9 @@ export const OrderGrid = () => {
 
   const columnDefs: ColDef[] = useMemo(() => [
     {
-      field: 'checkbox',
-      headerName: '',
-      checkboxSelection: true,
-      headerCheckboxSelection: true,
-      headerCheckboxSelectionFilteredOnly: true,
-      width: 50,
-      maxWidth: 50,
-      pinned: 'left',
-      lockPosition: 'left',
-      cellClass: 'ag-cell-centered',
-      suppressMovable: true,
-      filter: false,
-      sortable: false,
-      resizable: false,
-      editable: false
-    },
-    {
       field: 'order_id',
       headerName: '주문ID',
       width: 160,
-      pinned: 'left',
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -222,7 +204,9 @@ export const OrderGrid = () => {
       filter: 'agDateColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      headerClass: 'border-r-0'
+      
     }
   ], []);
 
@@ -241,11 +225,16 @@ export const OrderGrid = () => {
     animateRows: true,
     headerHeight: 45,
     rowHeight: 40,
-    rowSelection: "multiple" as const,
+    rowSelection: {
+      mode: "multiRow" as const,
+      checkboxes: true,
+      headerCheckbox: true,
+      enableClickSelection: true,
+      selectAll: "filtered" as const
+    },
     domLayout: "normal" as const,
-    suppressRowClickSelection: true,
-    enterMovesDown: true,
-    enterMovesDownAfterEdit: true,
+    enterNavigatesVertically: true,
+    enterNavigatesVerticallyAfterEdit: true,
     singleClickEdit: true,
     stopEditingWhenCellsLoseFocus: true
   }), []);
@@ -256,12 +245,6 @@ export const OrderGrid = () => {
     } else {
       setInternalGridApi(params.api);
     }
-    
-    setTimeout(() => {
-      if (params.api) {
-        params.api.sizeColumnsToFit();
-      }
-    }, 100);
   }, [setGridApi]);
 
   const onSelectionChangedCallback = useCallback((event: any) => {

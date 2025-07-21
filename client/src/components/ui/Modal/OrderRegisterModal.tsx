@@ -1,15 +1,19 @@
-import type { OrderRegisterForm } from "@/shared/types";
 import { useForm, Controller } from "react-hook-form";
 import { SelectSearchInput } from "@/components/management/common/SelectSearchInput";
 import { templateOptions } from "@/constant";
 import { Button } from "@/components/ui/Button";
 import { Modal } from ".";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
+import { toast } from "sonner";
+
+interface OrderFormData {
+  selectedTemplate: string;
+}
 
 interface OrderRegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: OrderRegisterForm) => void;
+  onSubmit: (selectedTemplate: string) => void;
 }
 
 export const OrderRegisterModal = ({ 
@@ -21,19 +25,20 @@ export const OrderRegisterModal = ({
     control,
     handleSubmit,
     formState: { errors },
-    reset,
-    watch
-  } = useForm<OrderRegisterForm>({
+    reset
+  } = useForm<OrderFormData>({
     defaultValues: {
       selectedTemplate: '',
-      orderData: {}
     }
   });
 
-  const selectedTemplate = watch('selectedTemplate');
+  const handleFormSubmit = (data: OrderFormData) => {
+    if (!data.selectedTemplate) {
+      toast.error('템플릿을 선택해주세요.');
+      return;
+    }
 
-  const handleFormSubmit = (data: OrderRegisterForm) => {
-    onSubmit(data);
+    onSubmit(data.selectedTemplate);
     reset();
     onClose();
   };
@@ -52,8 +57,8 @@ export const OrderRegisterModal = ({
       <ModalBody className="h-[300px]">
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-text-base-500">
-              템플릿 선택 <span className="text-red-500">*</span>
+            <label className="block text-body-s text-text-base-500">
+              템플릿 선택 <span className="text-error-500">*</span>
             </label>
             <Controller
               name="selectedTemplate"
@@ -69,7 +74,7 @@ export const OrderRegisterModal = ({
               )}
             />
             {errors.selectedTemplate && (
-              <p className="text-sm text-red-500">{errors.selectedTemplate.message}</p>
+              <p className="text-sm text-error-500">{errors.selectedTemplate.message}</p>
             )}
           </div>
         </form>
@@ -87,7 +92,6 @@ export const OrderRegisterModal = ({
           type="button"
           variant="default"
           onClick={handleSubmit(handleFormSubmit)}
-          disabled={!selectedTemplate}
         >
           등록
         </Button>

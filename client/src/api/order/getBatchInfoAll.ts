@@ -8,7 +8,7 @@ export const getBatchInfoAll = async (params?: BatchInfoParams): Promise<BatchIn
   if (params?.page) searchParams.append('page', params.page.toString());
   if (params?.page_size) searchParams.append('page_size', params.page_size.toString());
 
-  const response = await httpClient.get(`${API_END_POINT.DOWN_FORM_BATCH_INFO_ALL}?${searchParams}`);
+  const response = await httpClient.get(`${API_END_POINT.DOWN_FORM_ORDERS_PAGINATION}?${searchParams}`);
 
   return response.data;
 }

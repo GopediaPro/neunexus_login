@@ -27,7 +27,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setPageState(1);
   }, []);
 
-  const { orderData, isLoading, error, refreshOrders } = useOrderData({ page, currentTemplate });
+  const { orderData, isLoading, error, refreshOrders } = useOrderData({ page });
 
   const value: OrderContextValue = {
     activeOrderTab,

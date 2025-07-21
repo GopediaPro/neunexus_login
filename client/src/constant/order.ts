@@ -1,4 +1,5 @@
 import type { SelectOption } from "@/components/management/common/SelectSearchInput";
+import type { FormTemplate, OrderItem } from "@/shared/types";
 
 export const templateOptions: SelectOption[] = [
   { value: 'all', label: '전체' },
@@ -14,3 +15,29 @@ export const templateOptions: SelectOption[] = [
   { value: 'star_brand_erp', label: 'Star Brand ERP' },
   { value: 'star_brand_bundle', label: 'Star Brand Bundle' }
 ];
+
+export const REQUIRED_FIELDS_BY_TEMPLATE: Record<FormTemplate, (keyof OrderItem)[]> = {
+  gmarket_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
+  coupang_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name', 'receive_name'],
+  auction_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
+  interpark_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
+  wemakeprice_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
+  tmon_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
+};
+
+export const modalConfig = {
+  minio: {
+    title: '엑셀 업로드',
+    submitText: '업로드',
+    loadingText: '업로드 중...',
+    successTitle: '업로드 완료',
+    requiresDates: true
+  },
+  database: {
+    title: 'DB에 저장',
+    submitText: 'DB에 저장',
+    loadingText: 'DB 저장 중...',
+    successTitle: 'DB 저장 완료',
+    requiresDates: false
+  }
+};

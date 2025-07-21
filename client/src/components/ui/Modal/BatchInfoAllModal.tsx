@@ -46,11 +46,11 @@ export const BatchInfoAllModal = ({
       
       <Modal.Body>
         <div className="space-y-4">
-          <div className="text-sm text-text-base-400">
+          <div className="text-body-s text-text-base-400">
             총 {batchInfo.total}개의 배치 정보 (페이지 {batchInfo.page}/{Math.ceil(batchInfo.total / batchInfo.page_size)})
           </div>
           
-          <div className="max-h-96 overflow-y-auto space-y-4">
+          <div className="flex flex-col gap-4 max-h-96 overflow-y-auto">
             {batchInfo.items.map((item, itemIndex) => (
               <div key={itemIndex}>
                 {item.data.map((batch: BatchInfoData) => (

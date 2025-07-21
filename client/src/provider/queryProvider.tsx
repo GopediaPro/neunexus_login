@@ -1,7 +1,10 @@
 // provider/queryProvider 
+import { getErrorByCode } from '@/utils/getErrorByCode';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AxiosError } from 'axios';
 import React, { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ReactQueryProviderProps {
   children: React.ReactNode;
@@ -20,6 +23,15 @@ function ReactQueryProvider({
           retryOnMount: true,
           refetchOnReconnect: false,
           retry: false,
+        },
+        mutations: {
+          throwOnError: false,
+          onError: (error) => {
+            if (error instanceof AxiosError) {
+              const { description } = getErrorByCode(error);
+              toast.error(description);
+            }
+          }
         },
       },
     }),

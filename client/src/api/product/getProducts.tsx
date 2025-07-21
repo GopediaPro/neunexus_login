@@ -1,17 +1,6 @@
 import { httpClient } from '@/shared/axios';
 import { API_END_POINT } from '@/constant/apiEndPoint';
-import type { ProductData } from '@/shared/types/product.types';
-
-export interface ProductListResponse {
-  products: ProductData[];
-  current_page: number;
-  page_size: string;
-}
-
-export interface GetProductsParams {
-  search: string;
-  page: number;
-}
+import type { ProductListResponse, GetProductsParams } from '@/shared/types';
 
 export const getProducts = async (
   params: GetProductsParams

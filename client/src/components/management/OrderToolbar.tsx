@@ -2,22 +2,21 @@ import { useState } from "react";
 import { Button } from "../ui/Button";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
-import type { BatchInfoResponse, OrderRegisterForm } from "@/shared/types";
+import type { BatchInfoResponse } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
-import { useBulkCreateOrders, useBulkDeleteOrders, useBulkUpdateOrders } from "@/hooks/orderManagement/useOrders";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { BatchInfoAllModal } from "../ui/Modal/BatchInfoAllModal";
 import { getBatchInfoAll } from "@/api/order/getBatchInfoAll";
-import { useAuthContext } from "@/contexts";
 import { Dropdown } from "../ui/Dropdown";
 import { ChevronDown } from "lucide-react";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoLatest";
 import { BatchInfoModal } from "../ui/Modal/BatchInfoModal";
 import { Icon } from "../ui/Icon";
-import { deleteBulkAll } from "@/api/order/deleteBulkAll";
-import { deleteBulkDuplicate } from "@/api/order/deleteBulkDuplicate";
+import { deleteAll, deleteDuplicate, getDownFormOrdersPagination } from "@/api/order";
 import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
+import { useOrderCreate, useOrderUpdate, useOrderDelete, handleOrderCreate, handleOrderUpdate } from '@/hooks/orderManagement';
+import { toast } from "sonner";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
@@ -25,149 +24,67 @@ export const OrderToolbar = () => {
   const [isBatchInfoAllModalOpen, setIsBatchInfoAllModalOpen] = useState(false);
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+  const [isExcelToDbModalOpen, setIsExcelToDbModalOpen] = useState(false);
   const [batchInfoAllData, setBatchInfoAllData] = useState<BatchInfoResponse | null>(null);
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
   const [isBatchInfoAllLoading, setIsBatchInfoAllLoading] = useState(false);
   const [isSelectedBatchLoading, setIsSelectedBatchLoading] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [deleteAction, setDeleteAction] = useState<'bulk' | 'duplicate' | 'selected' | null>(null);
-  const { user } = useAuthContext();
 
   const {
     setActiveOrderTab,
-    currentTemplate,
     setCurrentTemplate,
     gridApi,
     selectedRows,
     changedRows,
     activeOrderTab,
+    currentTemplate,
   } = useOrderContext();
 
-  const bulkCreateMutation = useBulkCreateOrders();
-  const bulkUpdateMutation = useBulkUpdateOrders();
-  const bulkDeleteMutation = useBulkDeleteOrders();
+  const bulkCreateMutation = useOrderCreate();
+  const bulkUpdateMutation = useOrderUpdate();
+  const bulkDeleteMutation = useOrderDelete();
   const { addNewRow } = useOrderGridActions(gridApi);
 
-  const handleOrderRegisterSubmit = (data: OrderRegisterForm) => {
-    if (data.selectedTemplate) {
-      setCurrentTemplate(data.selectedTemplate);
+  const handleOrderRegisterSubmit = async (selectedTemplate: string) => {
+    try {
+      const response = await getDownFormOrdersPagination({
+        page: 1,
+        page_size: 200,
+        template_code: selectedTemplate,
+      });
+
+      const orderData = response.items?.map((item: any) => item.item) || [];
+
+      if (orderData.length === 0) {
+        toast.error('템플릿에 해당하는 주문 데이터가 없습니다.');
+        return;
+      }
+
+      setCurrentTemplate(selectedTemplate);
+      toast.dismiss();
+      toast.success(`${orderData.length}개의 주문을 불러왔습니다.`);
+    } catch (error) {
+      console.error('주문 등록 실패:', error);
+      toast.error('주문 등록에 실패했습니다.');
     }
     setIsOrderRegisterModalOpen(false);
   };
 
-  const handleOrderCreate = async () => {
+  const handleOrderCreateClick = () => {
     if (!gridApi) return;
+    handleOrderCreate(gridApi, bulkCreateMutation, currentTemplate);
+  }
 
-    let allRows: any[] = [];
-    gridApi.forEachNode((node: any) => {
-      allRows = [...allRows, node.data];
-    });
-
-    const newRows = allRows.filter(row => 
-      row.id && String(row.id).startsWith('temp_')
-    );
-
-    if (newRows.length === 0) {
-      alert('생성할 새로운 주문이 없습니다.');
-      return;
-    }
-
-    const invalidRows = newRows.filter(row => {
-      return !row.order_id?.trim() || !row.product_name?.trim() || !row.sale_cnt || row.sale_cnt <= 0;
-    });
-
-    if (invalidRows.length > 0) {
-      alert('주문ID, 상품명, 수량은 필수 입력 사항입니다.');
-      return;
-    }
-
-    const confirmMessage = newRows.length === 1 
-      ? `주문 "${newRows[0].order_id}"을 생성하시겠습니까?`
-      : `새로운 ${newRows.length}개 주문을 생성하시겠습니까?`;
-    
-    if (!confirm(confirmMessage)) {
-      return;
-    }
-
-    try {
-      await bulkCreateMutation.mutateAsync({
-        items: newRows.map(row => ({ 
-          idx: row.idx || `ORDER${Date.now()}`,
-          form_name: row.form_name || currentTemplate || "",
-          order_id: row.order_id || "",
-          product_name: row.product_name || "",
-          sale_cnt: Number(row.sale_cnt) || 0,
-          pay_cost: Number(row.pay_cost) || 0,
-          delv_cost: Number(row.delv_cost) || 0,
-          total_cost: Number(row.total_cost) || 0,
-          receive_name: row.receive_name || "",
-          receive_cel: row.receive_cel || "",
-          receive_addr: row.receive_addr || ""
-        })) as any
-      });
-
-      if (gridApi) {
-        gridApi.applyTransaction({
-          remove: newRows
-        });
-      }
-      
-    } catch (error) {
-      console.error('주문 생성 실패:', error);
-      alert('주문 생성에 실패했습니다.');
-    }
-  };
-
-  const handleOrderUpdate = async () => {
-    if (changedRows.length === 0) {
-      return;
-    }
-
-    const invalidRows = changedRows.filter(row => {
-      return !row.order_id?.trim() || !row.product_name?.trim() || !row.sale_cnt || row.sale_cnt <= 0;
-    });
-
-    if (invalidRows.length > 0) {
-      return;
-    }
-
-    const confirmMessage = changedRows.length === 1 
-      ? `주문 "${changedRows[0].order_id}"을 수정하시겠습니까?`
-      : `선택된 ${changedRows.length}개 주문을 수정하시겠습니까?`;
-    
-    if (!confirm(confirmMessage)) {
-      return;
-    }
-
-    try {
-      await bulkUpdateMutation.mutateAsync({
-        items: changedRows.map(row => ({
-          id: row.id,
-          idx: row.idx || "",
-          form_name: row.form_name || "",
-          order_id: row.order_id || "",
-          product_name: row.product_name || "",
-          sale_cnt: Number(row.sale_cnt) || 0,
-          pay_cost: Number(row.pay_cost) || 0,
-          delv_cost: Number(row.delv_cost) || 0,
-          total_cost: Number(row.total_cost) || 0,
-          receive_name: row.receive_name || "",
-          receive_cel: row.receive_cel || ""
-        })) as any
-      });
-
-      if (gridApi) {
-        gridApi.refreshCells();
-        gridApi.deselectAll();
-      }
-      
-    } catch (error) {
-      console.error('주문 수정 실패:', error);
-    }
+  const handleOrderUpdateClick = async () => {
+    if (!gridApi) return;
+    handleOrderUpdate(changedRows, bulkUpdateMutation, currentTemplate, gridApi);
   };
 
   const handleOrderDelete = () => {
     if (selectedRows.length === 0) {
+      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
       return;
     }
     
@@ -176,11 +93,21 @@ export const OrderToolbar = () => {
   };
 
   const handleBulkDeleteConfirm = () => {
+    if (selectedRows.length === 0) {
+      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
+      return;
+    }
+
     setDeleteAction('bulk');
     setIsConfirmDeleteModalOpen(true);
   };
 
   const handleDuplicateDeleteConfirm = () => {
+    if (selectedRows.length === 0) {
+      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
+      return;
+    }
+
     setDeleteAction('duplicate');
     setIsConfirmDeleteModalOpen(true);
   };
@@ -192,18 +119,18 @@ export const OrderToolbar = () => {
       setIsBulkDeleting(true);
       
       if (deleteAction === 'bulk') {
-        await deleteBulkAll();
-        alert('일괄 삭제가 완료되었습니다.');
+        await deleteAll();
+        toast.success('일괄 삭제가 완료되었습니다.');
       } else if (deleteAction === 'duplicate') {
-        await deleteBulkDuplicate();
-        alert('중복 삭제가 완료되었습니다.');
+        const response = await deleteDuplicate();
+        toast.success(response.message);
       } else if (deleteAction === 'selected') {
         const idsToDelete = selectedRows
           .map(row => row.id)
           .filter(id => id != null);
 
         if (idsToDelete.length === 0) {
-          alert('삭제할 수 있는 유효한 주문이 없습니다.');
+          toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
           return;
         }
 
@@ -217,7 +144,7 @@ export const OrderToolbar = () => {
           });
           gridApi.deselectAll();
         }
-        // toast.success('선택된 주문이 삭제되었습니다.'); 추후 toast 구현
+        toast.success('선택된 주문이 삭제되었습니다.');
       }
 
       if (deleteAction === 'bulk' || deleteAction === 'duplicate') {
@@ -238,6 +165,18 @@ export const OrderToolbar = () => {
   };
 
   const handleExcelUploadSuccess = () => {
+    toast.success('업로드가 완료되었습니다.');
+
+    if (gridApi) {
+      gridApi.refreshInfiniteCache();
+      gridApi.purgeInfiniteCache();
+      gridApi.refreshCells();
+    }
+  };
+
+  const handleSaveToDb = () => {
+    toast.success('db에 저장이 완료되었습니다.');
+
     if (gridApi) {
       gridApi.refreshInfiniteCache();
       gridApi.purgeInfiniteCache();
@@ -259,7 +198,7 @@ export const OrderToolbar = () => {
 
     } catch (error) {
       console.error('배치 정보 조회 실패:', error);
-      alert('배치 정보를 불러오는데 실패했습니다.');
+      toast.error('배치 정보를 불러오는데 실패했습니다.');
     } finally {
       setIsBatchInfoAllLoading(false);
     }
@@ -284,39 +223,6 @@ export const OrderToolbar = () => {
     }
   };
 
-  const handleDataItems = [
-    {
-      label: '주문파일 업로드',
-      onClick: () => setIsExcelUploadModalOpen(true),
-      icon: 'upload'
-    },
-    {
-      label: '전체 업로드 결과조회',
-      onClick: handleBatchInfoAll,
-      disabled: isBatchInfoAllLoading,
-      icon: 'list'
-    },
-    {
-      label: '최근 업로드 결과조회',
-      onClick: handleSelectedBatchInfo,
-      disabled: isSelectedBatchLoading,
-      icon: 'filter'
-    },
-  ];
-
-  const handleBlukItems = [
-    {
-      label: '일괄 삭제',
-      onClick: handleBulkDeleteConfirm,
-      icon: 'trash'
-    },
-    {
-      label: '중복 삭제',
-      onClick: handleDuplicateDeleteConfirm,
-      icon: 'trash'
-    }
-  ];
-
   const getDeleteModalContent = () => {
     if (deleteAction === 'bulk') {
       return {
@@ -339,6 +245,38 @@ export const OrderToolbar = () => {
     }
     return { title: '', message: '' };
   };
+
+  const handleDataItems = [
+    {
+      label: '주문파일 업로드',
+      onClick: () => setIsExcelUploadModalOpen(true),
+    },
+    {
+      label: 'db에 저장',
+      onClick: () => setIsExcelToDbModalOpen(true),
+    },
+    {
+      label: '전체 업로드 결과조회',
+      onClick: handleBatchInfoAll,
+      disabled: isBatchInfoAllLoading,
+    },
+    {
+      label: '최근 업로드 결과조회',
+      onClick: handleSelectedBatchInfo,
+      disabled: isSelectedBatchLoading,
+    },
+  ];
+
+  const handleBlukItems = [
+    {
+      label: '일괄 삭제',
+      onClick: handleBulkDeleteConfirm,
+    },
+    {
+      label: '중복 삭제',
+      onClick: handleDuplicateDeleteConfirm,
+    }
+  ];
 
   const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
@@ -386,7 +324,7 @@ export const OrderToolbar = () => {
               variant="light" 
               size="sidebar"
               className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-              onClick={handleOrderCreate}
+              onClick={handleOrderCreateClick}
               disabled={isCreateDisabled}
             >
               <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
@@ -400,7 +338,7 @@ export const OrderToolbar = () => {
               variant="light" 
               size="sidebar"
               className={`py-5 ${isUpdateDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
-              onClick={handleOrderUpdate}
+              onClick={handleOrderUpdateClick}
               disabled={isUpdateDisabled}
             >
               <Icon name="edit" ariaLabel="edit" style="w-4 h-4" />
@@ -461,7 +399,14 @@ export const OrderToolbar = () => {
         isOpen={isExcelUploadModalOpen}
         onClose={() => setIsExcelUploadModalOpen(false)}
         onSuccess={handleExcelUploadSuccess}
-        createdBy={user?.preferred_username || 'testuser'}
+        mode="minio"
+      />
+
+      <ExcelUploadModal
+        isOpen={isExcelToDbModalOpen}
+        onClose={() => setIsExcelToDbModalOpen(false)}
+        onSuccess={handleSaveToDb}
+        mode="database"
       />
 
       <BatchInfoAllModal
