@@ -168,7 +168,7 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
                     onChange={(date) => setEndDate(date)}
                     locale={ko}
                     dateFormat="yyyy.MM.dd"
-                    minDate={startDate}
+                    minDate={startDate ?? new Date()}
                     className="w-full border rounded px-3 py-2 bg-fill-base-100"
                   />
                 </div>

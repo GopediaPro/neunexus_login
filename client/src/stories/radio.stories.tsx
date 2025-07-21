@@ -29,11 +29,11 @@ export const Default: Story = {
   render: (args) => (
     <RadioGroup.Root defaultValue="1">
       <div className="flex items-center space-x-2">
-        <Radio value="1" {...args} />
+        <Radio {...args} value="1" />
         <label>옵션 1</label>
       </div>
       <div className="flex items-center space-x-2">
-        <Radio value="2" {...args} />
+        <Radio {...args} value="2" />
         <label>옵션 2</label>
       </div>
     </RadioGroup.Root>
@@ -54,11 +54,11 @@ export const Disabled: Story = {
   render: (args) => (
     <RadioGroup.Root defaultValue="1">
       <div className="flex items-center space-x-2">
-        <Radio value="1" {...args} disabled />
+        <Radio {...args} value="1" disabled />
         <label>옵션 1</label>
       </div>
       <div className="flex items-center space-x-2">
-        <Radio value="2" {...args} disabled />
+        <Radio {...args} value="2" disabled />
         <label>옵션 2</label>
       </div>
     </RadioGroup.Root>
