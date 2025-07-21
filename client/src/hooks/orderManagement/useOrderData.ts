@@ -7,7 +7,7 @@ export const useOrderData = ({ page }: UseOrderDataParams) => {
 
   const orderData = useMemo(() => {
     if (!data?.items) return [];
-    return data?.items?.map((item: { item: any; }) => item.item).filter(Boolean);
+    return data?.items?.map((item: { content: any; }) => item.content).filter(Boolean);
   }, [data]);
 
   const refreshOrders = useCallback(() => {

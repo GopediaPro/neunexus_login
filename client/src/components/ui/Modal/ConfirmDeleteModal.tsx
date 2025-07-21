@@ -26,7 +26,6 @@ export const ConfirmDeleteModal = ({
           <Icon name="alert" ariaLabel="alert" style="w-5 h-5 text-error-500" />
           {title}
         </Modal.Title>
-        <Modal.CloseButton />
       </Modal.Header>
       
       <Modal.Body>
@@ -38,15 +37,17 @@ export const ConfirmDeleteModal = ({
       <Modal.Footer>
         <div className="flex gap-2 justify-end">
           <Button 
+            variant="outline"
             onClick={onClose}
             disabled={isLoading}
+            className="border-2 border-stroke-base-200 text-text-base-500"
           >
             취소
           </Button>
           <Button 
             onClick={onConfirm}
             disabled={isLoading}
-            className="bg-error-500 hover:bg-error-600 text-text-contrast-200"
+            className="bg-error-400 hover:bg-error-500 text-text-contrast-500"
           >
             {isLoading ? '삭제 중...' : '삭제'}
           </Button>

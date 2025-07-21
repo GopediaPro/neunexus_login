@@ -23,11 +23,11 @@ export const SidebarMenuButton = ({
   const getIconSize = (name: string) => {
     switch (name) {
       case 'product':
-        return 'w-6 h-6';
+        return 'w-5 h-5';
       case 'order':
-        return 'w-8 h-8 ml-[-5px]';
+        return 'w-7 h-7';
       case 'service':
-        return 'w-7 h-7 ml-[-2px]';
+        return 'w-6 h-6';
       default:
         return 'w-6 h-6';
     }
@@ -35,8 +35,10 @@ export const SidebarMenuButton = ({
 
   return (
     <button
-      className={`w-[90%] text-left p-3 rounded-md transition-all duration-200 text-h4
-        flex items-center gap-2 mx-auto hover:bg-fill-alt-200 ${isActive && "bg-fill-alt-200"} ${className}`}
+      className={`w-[95%] text-left p-3 rounded-md transition-all duration-200 text-h4
+        flex items-center gap-2 mx-auto hover:bg-fill-alt-200 group h-12 ${
+        isActive && "bg-fill-alt-200"
+      } ${className}`}
       onClick={onClick}
       onMouseEnter={hasSubmenu ? onMouseEnter : undefined}
       onMouseLeave={hasSubmenu ? onMouseLeave : undefined}
@@ -44,16 +46,36 @@ export const SidebarMenuButton = ({
     >
       <div className="flex items-center gap-3">
         {icon && (
-          <div className={`text-lg ${isActive ? "text-primary-500" : "text-text-base-200"}`}>
-            <Icon name={icon} ariaLabel={icon} style={`${getIconSize(icon)} ${isActive? "text-primary-500" : "text-text-base-200"}`} />
+          <div className={`w-7 h-7 flex items-center justify-center transition-colors duration-200 ${
+            isActive ? "text-primary-500" : "text-text-base-200 group-hover:text-primary-500"
+          }`}>
+            <Icon 
+              name={icon} 
+              ariaLabel={icon} 
+              style={`${getIconSize(icon)} transition-colors duration-200 ${
+                isActive 
+                  ? "text-primary-500" 
+                  : "text-text-base-200 group-hover:text-primary-500"
+              }`} 
+            />
           </div>
         )}
-        <span className={`${isActive ? "text-primary-500" : "text-text-base-500"} font-medium`}>{text}</span>
+        <span className={`transition-colors duration-200 text-h4 ${
+          isActive 
+            ? "text-primary-500" 
+            : "text-text-base-500 group-hover:text-primary-500"
+        }`}>
+          {text}
+        </span>
       </div>
       {hasSubmenu && (
         <ChevronRight
           className={`w-6 h-6 ml-auto transition-all duration-300 ease-in-out transform
-            ${isActive ? "text-primary-500 rotate-90" : "text-text-base-200 rotate-0"}`}
+            ${
+              isActive 
+                ? "text-primary-500 rotate-90" 
+                : "text-text-base-200 group-hover:text-primary-500 rotate-0 group-hover:rotate-90"
+            }`}
         />
       )}
     </button>
@@ -71,11 +93,11 @@ export const SubMenuItem = ({
   return (
     <button
       onClick={onClick}
-      className={`flex justify-between w-full px-5 py-2 text-left text-text-base-400 text-h4 hover:text-primary-500 hover:bg-fill-alt-200 transition-colors duration-200 mx-auto ${className}`}
+      className={`group flex justify-between w-full px-5 py-2 h-12 text-left text-text-base-400 text-h4 hover:text-primary-500 hover:bg-fill-alt-200 transition-colors duration-200 mx-auto ${className}`}
     >
       {text}
       {subText === '서비스' && (
-        <Icon name="redirect" ariaLabel="redirect" style="w-6 h-6" />
+        <Icon name="redirect" ariaLabel="redirect" style="w-4 h-4 transition-colors duration-200 group-hover:text-primary-500" />
       )}
     </button>
   );

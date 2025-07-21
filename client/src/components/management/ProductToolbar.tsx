@@ -55,8 +55,8 @@ export const ProductToolbar = () => {
           <span className="text-h2">상품등록</span>
         </div>
       </div>
-      <div className="flex items-center gap-4 px-6 pt-5 bg-fill-base-100">
-        <div className="flex items-center w-[320px] h-12 bg-fill-alt-100 rounded-md px-3">
+      <div className="flex items-center gap-2 px-6 pt-5 bg-fill-base-100">
+        <div className="flex items-center w-[320px] h-12 bg-fill-alt-100 rounded-md pl-2">
           <Icon name="search" ariaLabel="검색"
             onClick={handleIconClick}
             style="w-5 h-5 text-text-base-400 cursor-pointer flex-shrink-0"/>

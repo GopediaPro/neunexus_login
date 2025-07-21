@@ -27,20 +27,20 @@ export const HeaderLayout = () => {
           </button>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex justify-center items-center w-9 h-9 bg-primary-500 text-text-contrast-500 rounded-full">
-            <Icon name="search" ariaLabel="검색" style="w-[18px] h-[18px] text-white" />
+          <button className="group flex justify-center items-center w-9 h-9 bg-primary-500 hover:bg-text-contrast-500 text-text-contrast-500 rounded-full">
+            <Icon name="search" ariaLabel="검색" style="w-[18px] h-[18px] text-white group-hover:text-primary-500" />
           </button>
-          <button className="flex justify-center items-center w-9 h-9 bg-primary-500 text-text-contrast-500 rounded-full">
-            <Icon name="message" ariaLabel="검색" style="w-[18px] h-[18px] text-white" />
+          <button className="group flex justify-center items-center w-9 h-9 bg-primary-500 hover:bg-text-contrast-500 text-text-contrast-500 rounded-full">
+            <Icon name="message" ariaLabel="검색" style="w-[18px] h-[18px] text-white group-hover:text-primary-500" />
           </button>
-          <button className="flex justify-center items-center w-9 h-9 bg-primary-500 text-text-contrast-500 rounded-full">
-            <Icon name="bell" ariaLabel="검색" style="w-[18px] h-[18px] text-white" />
+          <button className="group flex justify-center items-center w-9 h-9 bg-primary-500 hover:bg-text-contrast-500 text-text-contrast-500 rounded-full">
+            <Icon name="bell" ariaLabel="검색" style="w-[18px] h-[18px] text-white group-hover:text-primary-500" />
           </button>
           <button 
-            className="flex justify-center items-center w-9 h-9 bg-primary-500 text-text-contrast-500 rounded-full"
+            className="group flex justify-center items-center w-9 h-9 bg-primary-500 hover:bg-text-contrast-500 text-text-contrast-500 rounded-full"
             onClick={handleLogout}
           >
-            <Icon name="exit" ariaLabel="검색" style="w-[18px] h-[18px] text-white" />
+            <Icon name="exit" ariaLabel="검색" style="w-[18px] h-[18px] text-white group-hover:text-primary-500" />
           </button>
         </div>
       </div>

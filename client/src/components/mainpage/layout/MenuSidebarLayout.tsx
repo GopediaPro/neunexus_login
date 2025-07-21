@@ -57,7 +57,7 @@ export const MenuSidebarLayout = () => {
                   onMouseEnter={() => handleMenuHover(item.id)}
                   onMouseLeave={() => handleMenuLeave(item.id)}
                 >
-                  <div className={`flex flex-col gap-1 bg-fill-alt-100 rounded-b-[10px] pb-2 pt-1 transition-transform duration-700 ease-in-out ${
+                  <div className={`flex flex-col gap-1 bg-fill-alt-200 rounded-b-[10px] pb-2 pt-1 transition-transform duration-700 ease-in-out ${
                     item.isHovered 
                       ? 'transform translate-y-0 scale-y-100' 
                       : 'transform -translate-y-2 scale-y-95'
