@@ -94,8 +94,8 @@ export const ResultModal = ({
             <Icon name="upload-check" style="w-[100px] h-[100px] text-primary-500" />
           </div>
 
-          <div className="w-full text-center space-y-4">
-            <h3 className="flex flex-col gap-1">
+          <div className="flex flex-col items-center gap-10 w-full text-center">
+            <h3 className="flex flex-col gap-1 w-full">
               <p className="text-h2 text-primary-500 font-bold">
                 {title}
               </p>
@@ -103,7 +103,7 @@ export const ResultModal = ({
                 {messages[0]}
               </p>
             </h3>
-            <div className="flex items-center gap-4 border-2 border-stroke-base-100 p-2 rounded-lg">
+            <div className="flex items-center w-full gap-4 border-2 border-stroke-base-100 p-2 rounded-lg">
               <div className="bg-accent-blue-100 rounded-lg p-3">
                 <Icon name="document" ariaLabel="document" style="w-5 h-5 text-primary-500" />
               </div>
