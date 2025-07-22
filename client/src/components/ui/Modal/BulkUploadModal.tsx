@@ -308,17 +308,6 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-h3 text-text-base-700">파일 목록</h2>
-            <div className="flex items-center gap-2">
-              <label className="flex items-center gap-2 text-sm text-text-base-500">
-                <input
-                  type="checkbox"
-                  checked={selectedFiles.length === files.length && files.length > 0}
-                  onChange={(e) => handleSelectAll(e.target.checked)}
-                  className="w-4 h-4"
-                />
-                전체 선택
-              </label>
-            </div>
           </div>
           <div className="flex gap-2">
             <Button
@@ -326,7 +315,7 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
               className={`py-1 px-4 ${
                 activeTab === 'bulk' 
                   ? 'bg-primary-500 text-text-contrast-500' 
-                  : 'bg-fill-alt-200 text-text-base-500'
+                  : 'bg-fill-alt-200 text-text-base-500 hover:bg-fill-alt-300'
               }`}
             >
               일괄파일처리 ({waitingFiles.length}개)
@@ -336,7 +325,7 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
               className={`py-1 px-4 ${
                 activeTab === 'individual' 
                   ? 'bg-primary-500 text-text-contrast-500' 
-                  : 'bg-fill-alt-200 text-text-base-500'
+                  : 'bg-fill-alt-200 text-text-base-500 hover:bg-fill-alt-300'
               }`}
             >
               선택파일 처리 ({selectedWaitingFiles.length}개)
