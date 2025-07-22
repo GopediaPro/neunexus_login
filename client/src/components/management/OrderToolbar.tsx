@@ -260,12 +260,12 @@ export const OrderToolbar = () => {
       onClick: () => setIsExcelToDbModalOpen(true),
     },
     {
-      label: '전체 업로드 결과조회',
+      label: '전체 업로드 결과',
       onClick: handleBatchInfoAll,
       disabled: isBatchInfoAllLoading,
     },
     {
-      label: '최근 업로드 결과조회',
+      label: '최근 업로드 결과',
       onClick: handleSelectedBatchInfo,
       disabled: isSelectedBatchLoading,
     },
