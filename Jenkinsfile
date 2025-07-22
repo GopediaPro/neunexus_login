@@ -63,6 +63,9 @@ pipeline {
                     } else if (env.BRANCH_NAME.contains('docker')) {
                         env.DEPLOY_ENV = 'development'
                         env.DEPLOY_SERVER_USER_HOST = 'root@${DEV_DOMAIN}'
+                        env.ACTUAL_SSH_CREDENTIAL_ID = SSH_CREDENTIAL_ID_DEV
+                        env.ACTUAL_DEPLOY_SERVER_PORT = DEV_DEPLOY_SERVER_PORT
+                        env.ACTUAL_DOMAIN = DEV_DOMAIN
                         echo "🐳 Docker 브랜치 감지: ${env.BRANCH_NAME}"
                         DOCKER_SAFE_BRANCH_NAME = 'docker'
                     } else {
