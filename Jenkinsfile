@@ -12,7 +12,7 @@ pipeline {
         // Docker Registry 설정
         DOCKER_REGISTRY = 'registry.lyckabc.xyz'
         IMAGE_NAME = 'neunexus_login'
-        DOMAIN = 'lyckabc.xyz'
+        DOMAIN = 'alohastudio.co.kr'
         DEV_DOMAIN = 'lyckabc.xyz'
         SUBDOMAIN = 'portal'
         
@@ -22,7 +22,8 @@ pipeline {
         
         // 인증 정보
         REGISTRY_CREDENTIAL_ID = 'docker-registry-credentials'
-        SSH_CREDENTIAL_ID = 'lyckabc-ssh-key-id'
+        SSH_CREDENTIAL_ID = 'alohastudio-ssh-key-id'
+        SSH_CREDENTIAL_ID_DEV = 'lyckabc-ssh-key-id'
         DOCKER_REGISTRY_ID = 'docker-registry-id'
         DOCKER_REGISTRY_PW = 'docker-registry-pw'
         LOGIN_ENV_FILE = 'login-env-file' // .env
@@ -31,7 +32,8 @@ pipeline {
         DOCKER_COMPOSE_ENV_FILE_ID = 'login-docker-compose-env-file' // .env.docker
         
         // 배포 서버 설정 (브랜치별로 동적 설정)
-        DEPLOY_SERVER_PORT = '50022'
+        DEPLOY_SERVER_PORT = '5022'
+        DEV_DEPLOY_SERVER_PORT = '50022'
         
         // 브랜치별 설정을 위한 변수
         IS_DEPLOYABLE = "${env.BRANCH_NAME in ['main', 'dev'] || env.BRANCH_NAME.contains('docker') ? 'true' : 'false'}"
@@ -49,12 +51,21 @@ pipeline {
                     if (env.BRANCH_NAME == 'main') {
                         env.DEPLOY_ENV = 'production'
                         env.DEPLOY_SERVER_USER_HOST = 'root@${DOMAIN}'
+                        env.ACTUAL_SSH_CREDENTIAL_ID = SSH_CREDENTIAL_ID
+                        env.ACTUAL_DEPLOY_SERVER_PORT = DEPLOY_SERVER_PORT
+                        env.ACTUAL_DOMAIN = DOMAIN
                     } else if (env.BRANCH_NAME == 'dev') {
                         env.DEPLOY_ENV = 'development'
                         env.DEPLOY_SERVER_USER_HOST = 'root@${DEV_DOMAIN}'
+                        env.ACTUAL_SSH_CREDENTIAL_ID = SSH_CREDENTIAL_ID_DEV
+                        env.ACTUAL_DEPLOY_SERVER_PORT = DEV_DEPLOY_SERVER_PORT
+                        env.ACTUAL_DOMAIN = DEV_DOMAIN
                     } else if (env.BRANCH_NAME.contains('docker')) {
                         env.DEPLOY_ENV = 'development'
                         env.DEPLOY_SERVER_USER_HOST = 'root@${DEV_DOMAIN}'
+                        env.ACTUAL_SSH_CREDENTIAL_ID = SSH_CREDENTIAL_ID_DEV
+                        env.ACTUAL_DEPLOY_SERVER_PORT = DEV_DEPLOY_SERVER_PORT
+                        env.ACTUAL_DOMAIN = DEV_DOMAIN
                         echo "🐳 Docker 브랜치 감지: ${env.BRANCH_NAME}"
                         DOCKER_SAFE_BRANCH_NAME = 'docker'
                     } else {
@@ -242,9 +253,10 @@ pipeline {
                 }
             }
             steps {
-                echo "배포 서버(${DEPLOY_SERVER_USER_HOST})에 ${env.DEPLOY_ENV} 환경으로 배포를 시작합니다..."
+                echo "배포 서버 ${ACTUAL_DOMAIN}에 (${DEPLOY_SERVER_USER_HOST})User의 ${DEPLOY_ENV} 환경으로 배포를 시작합니다..."
+                echo "SSH CREDENTIAL ID: ${ACTUAL_SSH_CREDENTIAL_ID}"
                 
-                sshagent(credentials: [SSH_CREDENTIAL_ID]) {
+                sshagent(credentials: [ACTUAL_SSH_CREDENTIAL_ID]) {
                     script {
                         // 브랜치별 환경 파일 선택
                         def envFileCredentialId = LOGIN_ENV_FILE
@@ -284,7 +296,7 @@ pipeline {
                             ).trim()
                             
                             sh """
-                                ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
+                                ssh -p ${ACTUAL_DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
                                 set -e
                                 
                                 echo ">> 배포 디렉토리로 이동"
@@ -384,8 +396,8 @@ EOF
                 // E2E 테스트, API 헬스체크 등
                 script {
                     def deployUrl = env.BRANCH_NAME == 'main' ? 
-                        "https://${SUBDOMAIN}.${DOMAIN}" : 
-                        "https://${SUBDOMAIN}.${DOMAIN}"
+                        "https://${SUBDOMAIN}.${ACTUAL_DOMAIN}" : 
+                        "https://${SUBDOMAIN}.${ACTUAL_DOMAIN}"
                     
                     // sh "curl -f ${deployUrl}/health || exit 1"
                 }
