@@ -30,6 +30,7 @@ pipeline {
         LOGIN_ENV_FILE_DEV = 'login-env-file-dev' // .env
         DOCKER_COMPOSE_FILE_ID = 'login-docker-compose-file' // docker-compose.yml
         DOCKER_COMPOSE_ENV_FILE_ID = 'login-docker-compose-env-file' // .env.docker
+        DOCKER_COMPOSE_ENV_FILE_ID_DEV = 'login-docker-compose-env-file-dev' // .env.docker
         
         // 배포 서버 설정 (브랜치별로 동적 설정)
         DEPLOY_SERVER_PORT = '5022'
@@ -169,11 +170,13 @@ pipeline {
                         
                         // 브랜치별 환경 파일 선택
                         def envFileCredentialId = LOGIN_ENV_FILE
-                        if (env.BRANCH_NAME == 'dev') {
-                            envFileCredentialId = LOGIN_ENV_FILE_DEV  // 개발용 환경 파일
+                        def dockerComposeEnvFileId = DOCKER_COMPOSE_ENV_FILE_ID
+                        if (env.BRANCH_NAME == 'dev' || env.BRANCH_NAME.contains('docker')) {
+                            envFileCredentialId = LOGIN_ENV_FILE_DEV
+                            dockerComposeEnvFileId = DOCKER_COMPOSE_ENV_FILE_ID_DEV  // 개발용 환경 파일
                         }
                         
-                        withCredentials([file(credentialsId: envFileCredentialId, variable: 'ENV_FILE')]) {
+                        withCredentials([file(credentialsId: dockerComposeEnvFileId, variable: 'ENV_FILE')]) {
                             sh "cp ${ENV_FILE} .env"
                         }
                         
@@ -260,19 +263,21 @@ pipeline {
                     script {
                         // 브랜치별 환경 파일 선택
                         def envFileCredentialId = LOGIN_ENV_FILE
-                        if (env.BRANCH_NAME == 'dev') {
-                            envFileCredentialId = LOGIN_ENV_FILE_DEV  // 개발용 환경 파일
+                        def dockerComposeEnvFileId = DOCKER_COMPOSE_ENV_FILE_ID
+                        if (env.BRANCH_NAME == 'dev' || env.BRANCH_NAME.contains('docker')) {
+                            envFileCredentialId = LOGIN_ENV_FILE_DEV
+                            dockerComposeEnvFileId = DOCKER_COMPOSE_ENV_FILE_ID_DEV  // 개발용 환경 파일
                         }
                         
- withCredentials([
-                            file(credentialsId: envFileCredentialId, variable: 'ENV_FILE'),
-                            file(credentialsId: DOCKER_COMPOSE_FILE_ID, variable: 'DOCKER_COMPOSE_FILE'),
-                            file(credentialsId: DOCKER_COMPOSE_ENV_FILE_ID, variable: 'DOCKER_COMPOSE_ENV_FILE'),
-                            usernamePassword(
-                                credentialsId: REGISTRY_CREDENTIAL_ID,
-                                usernameVariable: 'REGISTRY_USER',
-                                passwordVariable: 'REGISTRY_PASS'
-                            )
+                            withCredentials([
+                                file(credentialsId: envFileCredentialId, variable: 'ENV_FILE'),
+                                file(credentialsId: DOCKER_COMPOSE_FILE_ID, variable: 'DOCKER_COMPOSE_FILE'),
+                                file(credentialsId: dockerComposeEnvFileId, variable: 'DOCKER_COMPOSE_ENV_FILE'),
+                                usernamePassword(
+                                    credentialsId: REGISTRY_CREDENTIAL_ID,
+                                    usernameVariable: 'REGISTRY_USER',
+                                    passwordVariable: 'REGISTRY_PASS'
+                                )
                         ]) {
                             // 환경 파일 내용을 변수에 저장
                             def envFileContent = sh(
