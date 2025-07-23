@@ -288,6 +288,13 @@ export interface DownFormBulkCreateResponse {
   };
 }
 
+export interface ExcelRunMacroRequest {
+  template_code: string;
+  created_by: string;
+  filters: { date_from: string; date_to: string; };
+  source_table: string;
+}
+
 export interface ValidationResult {
   isValid: boolean;
   errors: Array<{

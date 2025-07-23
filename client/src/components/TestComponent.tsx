@@ -1,7 +1,9 @@
-import { useFieldArray, useForm } from "react-hook-form";
+import { useState } from "react";
 import { Button } from "./ui/Button";
-import { FormField } from "./ui/FormField";
 import { Input } from "./ui/input";
+import { useFieldArray, useForm } from "react-hook-form";
+import { BulkUploadModal } from "./ui/Modal/BulkUploadModal";
+import { FormField } from "./ui/FormField";
 
 interface AuthTableRow {
   id: number;
@@ -15,6 +17,8 @@ interface FormData {
 }
 
 export const TestComponent = () => { 
+  const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
+
   const { control, handleSubmit } = useForm<FormData>({
     defaultValues: {
       authTable: [
@@ -46,7 +50,17 @@ export const TestComponent = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-h4 mb-4">인증기준 예외 관리 테이블</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-h4">인증기준 예외 관리 테이블</h2>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => setShowBulkUploadModal(true)}
+          className="px-4 py-2 bg-purple-100 text-purple-700 hover:bg-purple-200"
+        >
+          📁 대량파일 업로드
+        </Button>
+      </div>
       
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="border border-stroke-base-100 rounded-lg overflow-hidden">
@@ -138,6 +152,12 @@ export const TestComponent = () => {
           </Button>
         </div>
       </form>
+
+      {/* Bulk Upload Modal */}
+      <BulkUploadModal
+        isOpen={showBulkUploadModal}
+        onClose={() => setShowBulkUploadModal(false)}
+      />
     </div>
   );
 };
