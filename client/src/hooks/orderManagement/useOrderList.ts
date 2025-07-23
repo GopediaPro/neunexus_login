@@ -1,12 +1,18 @@
 import { getDownFormOrders } from "@/api/order/getDownFormOrders";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-export const useOrderList = ({ page = 1 }: { page?: number }) => {
-  return useQuery({
-    queryKey: ['downFormOrders', page],
-    queryFn: () => getDownFormOrders({ skip: (page - 1) * 200, limit: 200 }),
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+export const useOrderList = () => {
+  return useInfiniteQuery({
+    queryKey: ['downFormOrders'],
+    queryFn: ({ pageParam = 0 }) => 
+      getDownFormOrders({ skip: pageParam, limit: 2000 }),
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage?.items || lastPage.items.length < 2000) {
+        return undefined;
+      }
+      return allPages.length * 2000;
+    },
+    initialPageParam: 0,
     refetchOnWindowFocus: false,
   });
 }; 

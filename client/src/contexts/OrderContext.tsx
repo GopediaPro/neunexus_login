@@ -7,45 +7,80 @@ const OrderContext = createContext<OrderContextValue | undefined>(undefined);
 
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [activeOrderTab, setActiveOrderTabState] = useState<OrderTab>("registration");
-  const [page, setPageState] = useState(1);
   const [currentTemplate, setCurrentTemplateState] = useState("");
   const [gridApi, setGridApiState] = useState<GridApi | null>(null);
   const [selectedRows, setSelectedRowsState] = useState<any[]>([]);
   const [changedRows, setChangedRowsState] = useState<any[]>([]);
+  const { 
+    orderData, 
+    isLoading, 
+    error, 
+    loadMoreOrders, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useOrderData();
 
   const setActiveOrderTab = useCallback((tab: OrderTab) => {
     setActiveOrderTabState(tab);
-    setPageState(1);
-  }, []);
-
-  const setPage = useCallback((newPage: number) => {
-    setPageState(newPage);
+    setSelectedRowsState([]);
+    setChangedRowsState([]);
   }, []);
 
   const setCurrentTemplate = useCallback((template: string) => {
     setCurrentTemplateState(template);
-    setPageState(1);
+    setSelectedRowsState([]);
+    setChangedRowsState([]);
   }, []);
 
-  const { orderData, isLoading, error, refreshOrders } = useOrderData({ page });
+  const setGridApi = useCallback((api: GridApi | null) => {
+    setGridApiState(api);
+    if (api) {
+      setSelectedRowsState([]);
+      setChangedRowsState([]);
+    }
+  }, []);
+
+  const setSelectedRows = useCallback((rows: any[]) => {
+    setSelectedRowsState(rows);
+  }, []);
+
+  const setChangedRows = useCallback((rows: any[]) => {
+    setChangedRowsState(rows);
+  }, []);
+
+  const clearSelections = useCallback(() => {
+    setSelectedRowsState([]);
+    setChangedRowsState([]);
+    if (gridApi) {
+      gridApi.deselectAll();
+    }
+  }, [gridApi]);
 
   const value: OrderContextValue = {
+    // 탭 관리
     activeOrderTab,
     setActiveOrderTab,
-    page,
-    setPage,
+    
+    // 템플릿 관리
     currentTemplate,
     setCurrentTemplate,
-    orderData,
-    isLoading,
-    error,
-    refreshOrders,
+    
+    // 주문 데이터 (무한스크롤)
+    orderData, 
+    isLoading, 
+    error, 
+    loadMoreOrders, 
+    hasNextPage, 
+    isFetchingNextPage,
+    
+    // 그리드 관리
     gridApi,
-    setGridApi: setGridApiState,
+    setGridApi,
     selectedRows,
-    setSelectedRows: setSelectedRowsState,
+    setSelectedRows,
     changedRows,
-    setChangedRows: setChangedRowsState,
+    setChangedRows,
+    clearSelections,
   };
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;

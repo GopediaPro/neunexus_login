@@ -211,20 +211,21 @@ export type OrderTab = "registration" | "bulk-registration";
 export interface OrderContextValue {
   activeOrderTab: OrderTab;
   setActiveOrderTab: (tab: OrderTab) => void;
-  page: number;
-  setPage: (page: number) => void;
   currentTemplate: string;
   setCurrentTemplate: (template: string) => void;
   orderData: any[];
   isLoading: boolean;
   error: unknown;
-  refreshOrders: () => void;
+  loadMoreOrders: () => void;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
   gridApi: GridApi | null;
   setGridApi: (api: GridApi | null) => void;
   selectedRows: any[];
   setSelectedRows: (rows: any[]) => void;
   changedRows: any[];
   setChangedRows: (rows: any[]) => void;
+  clearSelections: () => void;
 };
 
 export interface UseOrderGridParams {
