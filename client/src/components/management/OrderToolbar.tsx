@@ -17,6 +17,7 @@ import { deleteAll, deleteDuplicate, getDownFormOrdersPagination } from "@/api/o
 import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
 import { useOrderCreate, useOrderUpdate, useOrderDelete, handleOrderCreate, handleOrderUpdate } from '@/hooks/orderManagement';
 import { toast } from "sonner";
+import { useAuthContext } from "@/contexts";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
@@ -25,12 +26,14 @@ export const OrderToolbar = () => {
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [isExcelToDbModalOpen, setIsExcelToDbModalOpen] = useState(false);
+  const [isExcelToMinioModalOpen, setIsExcelToMinioModalOpen] = useState(false);
   const [batchInfoAllData, setBatchInfoAllData] = useState<BatchInfoResponse | null>(null);
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
   const [isBatchInfoAllLoading, setIsBatchInfoAllLoading] = useState(false);
   const [isSelectedBatchLoading, setIsSelectedBatchLoading] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [deleteAction, setDeleteAction] = useState<'bulk' | 'duplicate' | 'selected' | null>(null);
+  const { user } = useAuthContext();
 
   const {
     setActiveOrderTab,
@@ -252,7 +255,11 @@ export const OrderToolbar = () => {
 
   const handleDataItems = [
     {
-      label: '주문파일 업로드',
+      label: '매크로 실행',
+      onClick: () => setIsExcelUploadModalOpen(true),
+    },
+    {
+      label: 'minio에 업로드',
       onClick: () => setIsExcelUploadModalOpen(true),
     },
     {
@@ -402,6 +409,14 @@ export const OrderToolbar = () => {
       <ExcelUploadModal
         isOpen={isExcelUploadModalOpen}
         onClose={() => setIsExcelUploadModalOpen(false)}
+        onSuccess={handleExcelUploadSuccess}
+        createdBy={user?.preferred_username || 'testuser'}
+        mode="macro"
+      />
+
+      <ExcelUploadModal
+        isOpen={isExcelToMinioModalOpen}
+        onClose={() => setIsExcelToMinioModalOpen(false)}
         onSuccess={handleExcelUploadSuccess}
         mode="minio"
       />

@@ -1,7 +1,5 @@
 export const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 
-
-
 export const API_END_POINT = {
   PRODUCTS: '/api/v1/products',
   // 다운폼 주문 기본 엔드포인트
@@ -24,4 +22,6 @@ export const API_END_POINT = {
   // 필터 기반 대량 생성
   DOWN_FORM_ORDERS_BULK_FILTER: '/api/v1/down-form-orders/bulk/filter',
   DOWN_FORM_ORDERS_BULK_WITHOUT_FILTER: '/api/v1/down-form-orders/bulk/without-filter',
+
+  MACRO_EXCEL_RUN_MACRO: '/api/v1/macro/excel-run-macro',
 } as const;

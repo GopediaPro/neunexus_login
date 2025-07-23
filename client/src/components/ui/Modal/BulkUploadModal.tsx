@@ -138,14 +138,6 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
     }
   };
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedFiles(files.map(file => file.id));
-    } else {
-      setSelectedFiles([]);
-    }
-  };
-
   const simulateUpload = (fileId: string, file: FileItem) => {
     return new Promise<void>((resolve) => {
       const fileSizeMB = file.size / (1024 * 1024);

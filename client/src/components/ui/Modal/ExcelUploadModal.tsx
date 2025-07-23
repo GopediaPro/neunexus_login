@@ -11,15 +11,17 @@ import { Input } from "../input";
 import { postExcelToDb, postExcelToMinio } from "@/api/order";
 import { modalConfig } from "@/constant/order"
 import type { ExcelUploadFormData } from "@/shared/types";
+import { postExcelRunMacro } from "@/api/order/postExcelRunMacro";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  mode?: 'minio' | 'database';
+  mode?: 'minio' | 'database' | 'macro';
+  createdBy?: string;
 }
 
-export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'minio' }: ExcelUploadModalProps) => {
+export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', createdBy }: ExcelUploadModalProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
@@ -48,7 +50,12 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'minio' }:
   });
 
   const watchedValues = watch();
-  const config = modalConfig[mode];
+  const config = modalConfig[mode as keyof typeof modalConfig] || {
+    submitText: mode === 'macro' ? '매크로 실행' : '업로드',
+    loadingText: mode === 'macro' ? '매크로 실행 중...' : '업로드 중...',
+    successTitle: mode === 'macro' ? '매크로 실행 완료' : '업로드 완료',
+    requiresDates: mode === 'minio' || mode === 'database'
+  }
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -113,16 +120,62 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'minio' }:
           message: `엑셀 파일이 성공적으로 DB에 저장되었습니다.\n\n파일명: ${selectedFile.name}\n저장 시간: ${new Date().toLocaleString('ko-KR')}`,
           url: response.file_url || response.file_url
         }); 
+      } else if (mode === 'macro') {
+        if (!data.template_code || !data.file || !data.order_date_from || !data.order_date_to) return;
+        
+        const requestData = {
+          template_code: data.template_code,
+          file: selectedFile,
+          created_by: createdBy,
+          filters: {
+            order_date_from: data.order_date_from,
+            order_date_to: data.order_date_to
+          },
+          source_table: data.source_table
+        };
+
+        const response = await postExcelRunMacro({
+          request: JSON.stringify(requestData),
+          file: data.file
+        });
+
+        setUploadResult({
+          type: 'success',
+          title: '매크로 실행 완료',
+          message: `엑셀 매크로가 성공적으로 실행되었습니다.\n\n파일명: ${selectedFile.name}\n실행 시간: ${new Date().toLocaleString('ko-KR')}`,
+          url: response.file_url
+        });
       }
       setShowResultModal(true);
       onSuccess?.();
     } catch (error: any) {
       console.error(error);
 
+      let errorTitle = '';
+      let errorMessage = '';
+
+      switch (mode) {
+        case 'minio':
+          errorTitle = '업로드 실패';
+          errorMessage = '파일 업로드에 실패했습니다.';
+          break;
+        case 'database':
+          errorTitle = 'DB 저장 실패';
+          errorMessage = 'DB 저장에 실패했습니다.';
+          break;
+        case 'macro':
+          errorTitle = '매크로 실행 실패';
+          errorMessage = '엑셀 매크로 실행에 실패했습니다.';
+          break;
+        default:
+          errorTitle = '처리 실패';
+          errorMessage = '요청 처리에 실패했습니다.';
+      }
+
       setUploadResult({
         type: 'error',
-        title: mode === 'minio' ? '업로드 실패' : 'DB 저장 실패',
-        message: `${mode === 'minio' ? '파일 업로드' : 'DB 저장'}에 실패했습니다.\n\n오류 내용: ${error.message || '알 수 없는 오류가 발생했습니다.'}\n\n다시 시도해주세요.`
+        title: errorTitle,
+        message: `${errorMessage}\n\n오류 내용: ${error.message || '알 수 없는 오류가 발생했습니다.'}\n\n다시 시도해주세요.`
       });
       setShowResultModal(true);
     } finally {
@@ -145,18 +198,52 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'minio' }:
     setUploadResult(null);
   }
 
-  const isFormValid = mode === 'minio' 
-    ? watchedValues.template_code && 
-      watchedValues.order_date_from && 
-      watchedValues.order_date_to && 
-      selectedFile
-    : watchedValues.template_code && selectedFile;
+  const isFormValid = () => {
+    switch (mode) {
+      case 'minio':
+      case 'macro':
+        return watchedValues.template_code && 
+               watchedValues.order_date_from && 
+               watchedValues.order_date_to && 
+               selectedFile;
+      case 'database':
+        return watchedValues.template_code && selectedFile;
+      default:
+        return false;
+    }
+  };
+
+  const getModalTitle = () => {
+    switch (mode) {
+      case 'minio':
+        return '엑셀 업로드';
+      case 'database':
+        return 'DB 저장';
+      case 'macro':
+        return '엑셀 매크로 실행';
+      default:
+        return '엑셀 처리';
+    }
+  };
+
+  const getFileDescription = () => {
+    switch (mode) {
+      case 'minio':
+        return '파일을 Minio 스토리지에 업로드합니다.';
+      case 'database':
+        return '엑셀 데이터를 직접 데이터베이스에 저장합니다.';
+      case 'macro':
+        return '엑셀 파일에 매크로를 실행하여 처리합니다.';
+      default:
+        return '파일을 처리합니다.';
+    }
+  };
 
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalHeader>
-          <ModalTitle>엑셀 업로드</ModalTitle>
+          <ModalTitle>{getModalTitle()}</ModalTitle>
         </ModalHeader>
 
         <ModalBody className="h-[500px]">
@@ -177,7 +264,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'minio' }:
                 error={errors.template_code?.message}
               />
             </div>
-            {mode === 'minio' && (
+            {mode === 'macro' && (
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -253,10 +340,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'minio' }:
                     />
                     {selectedFile && (
                       <p className="text-body-s text-gray-600">
-                        {mode === 'minio' 
-                          ? '파일을 Minio 스토리지에 업로드합니다.'
-                          : '엑셀 데이터를 직접 데이터베이스에 저장합니다.'
-                        }
+                        {getFileDescription()}
                       </p>
                     )}
                   </div>
