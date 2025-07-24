@@ -20,7 +20,12 @@ export const OrderGrid = () => {
   useEffect(() => {
     if (gridRef.current?.api && createInfiniteDataSource) {
       const dataSource = createInfiniteDataSource();
+      
       gridRef.current.api.setGridOption('datasource', dataSource);
+    
+      if (totalLoadedItems > 0) {
+        gridRef.current.api.refreshInfiniteCache();
+      }
     }
   }, [createInfiniteDataSource, totalLoadedItems]);
 
@@ -230,13 +235,20 @@ export const OrderGrid = () => {
   const gridOptions = useMemo(() => ({
     theme: "legacy" as const,
 
+    // 무한 스크롤 모델 설정
     rowModelType: 'infinite' as const,
-    infiniteInitialRowCount: 100,
-    maxBlocksInCache: 10,
-    maxConcurrentDatasourceRequests: 2,
-    cacheBlockSize: 100,
-    cacheOverflowSize: 2,
-    purgeClosedRowNodes: false,
+    
+    // 무한 스크롤 관련 설정 최적화
+    infiniteInitialRowCount: 100, // 초기 표시할 행 수 (실제 데이터 로드 전)
+    maxBlocksInCache: 10, // 캐시할 최대 블록 수
+    maxConcurrentDatasourceRequests: 2, // 동시 요청 수 제한
+    cacheBlockSize: 200, // 블록당 200개 행 (limit와 일치)
+    cacheOverflowSize: 2, // 오버플로우 크기
+    purgeClosedRowNodes: false, // 닫힌 노드 제거 비활성화 (스크롤 성능 향상)
+    
+    // 스크롤 및 로딩 최적화
+    rowBuffer: 10, // 뷰포트 외부에 렌더링할 행 수
+    viewportRowModelType: 'normal', // 뷰포트 모델 타입
 
     pagination: false,
     paginationPageSize: 20,
@@ -260,7 +272,13 @@ export const OrderGrid = () => {
       <div style="padding: 10px; text-align: center; color: #666;">
         로딩 중... ${isFetchingNextPage ? '(추가 데이터 로드 중)' : ''}
       </div>
-    `
+    `,
+
+    scrollbarWidth: 16,
+    suppressScrollOnNewData: false,
+    suppressRowVirtualisation: false,
+
+    getRowId: (params: any) => params.data.id?.toString(),
   }), [isFetchingNextPage]);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
