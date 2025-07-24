@@ -20,7 +20,8 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     hasNextPage, 
     fetchNextPage,
     refreshOrders,
-    isFetchingNextPage 
+    isFetchingNextPage,
+    totalLoadedItems,
   } = useOrderData();
 
   const setActiveOrderTab = useCallback((tab: OrderTab) => {
@@ -78,6 +79,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     fetchNextPage,
     isFetchingNextPage,
     refreshOrders,
+    totalLoadedItems,
     // 그리드 관리
     gridApi,
     setGridApi,
