@@ -1,6 +1,7 @@
 import { Modal } from '../Modal';
 import { Button } from '../Button';
 import type { BatchInfoData, BatchInfoResponse } from '@/shared/types';
+import { convertToHttps } from '@/utils/convertToHttps';
 
 interface BatchInfoModalProps {
   isOpen: boolean;
@@ -27,14 +28,9 @@ export const BatchInfoModal = ({
     return new Date(dateString).toLocaleString('ko-KR');
   };
 
-  const handleDownload = (fileUrl: string, fileName: string) => {
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = fileName;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = (fileUrl: string) => {
+    const httpsUrl = convertToHttps(fileUrl);
+    window.open(httpsUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -106,7 +102,7 @@ export const BatchInfoModal = ({
                     <div className="mt-3 flex gap-2">
                       <Button
                         size="compact"
-                        onClick={() => handleDownload(batch.file_url, batch.original_filename)}
+                        onClick={() => handleDownload(batch.file_url)}
                       >
                         파일 다운로드
                       </Button>

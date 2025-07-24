@@ -1,19 +1,28 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ColDef, GridApi, GridReadyEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useOrderContext } from "@/contexts/OrderContext";
 
 export const OrderGrid = () => {
   const {
-    orderData,
+    createInfiniteDataSource,
     setGridApi,
     setSelectedRows,
     setChangedRows,
+    totalLoadedItems,
+    isFetchingNextPage,
   } = useOrderContext();
 
   const gridRef = useRef<AgGridReact>(null);
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
   const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
+  
+  useEffect(() => {
+    if (gridRef.current?.api && createInfiniteDataSource) {
+      const dataSource = createInfiniteDataSource();
+      gridRef.current.api.setGridOption('datasource', dataSource);
+    }
+  }, [createInfiniteDataSource, totalLoadedItems]);
 
   const createPriceColumn = (field: string, headerName: string, width: number) => ({
     field,
@@ -220,6 +229,15 @@ export const OrderGrid = () => {
 
   const gridOptions = useMemo(() => ({
     theme: "legacy" as const,
+
+    rowModelType: 'infinite' as const,
+    infiniteInitialRowCount: 100,
+    maxBlocksInCache: 10,
+    maxConcurrentDatasourceRequests: 2,
+    cacheBlockSize: 100,
+    cacheOverflowSize: 2,
+    purgeClosedRowNodes: false,
+
     pagination: false,
     paginationPageSize: 20,
     animateRows: true,
@@ -236,8 +254,14 @@ export const OrderGrid = () => {
     enterNavigatesVertically: true,
     enterNavigatesVerticallyAfterEdit: true,
     singleClickEdit: true,
-    stopEditingWhenCellsLoseFocus: true
-  }), []);
+    stopEditingWhenCellsLoseFocus: true,
+
+    loadingCellRenderer: () => `
+      <div style="padding: 10px; text-align: center; color: #666;">
+        로딩 중... ${isFetchingNextPage ? '(추가 데이터 로드 중)' : ''}
+      </div>
+    `
+  }), [isFetchingNextPage]);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
     if (setGridApi) {
@@ -245,7 +269,12 @@ export const OrderGrid = () => {
     } else {
       setInternalGridApi(params.api);
     }
-  }, [setGridApi]);
+
+    if (createInfiniteDataSource) {
+      const dataSource = createInfiniteDataSource();
+      params.api.setGridOption('datasource', dataSource);
+    }
+  }, [setGridApi, createInfiniteDataSource]);
 
   const onSelectionChangedCallback = useCallback((event: any) => {
     const selectedRows = event.api.getSelectedRows();
@@ -282,7 +311,7 @@ export const OrderGrid = () => {
     }
   }, [setChangedRows]);
 
-  if (!orderData) {
+  if (!createInfiniteDataSource) {
     return (
       <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100 flex items-center justify-center">
         <div className="text-center">
@@ -303,7 +332,6 @@ export const OrderGrid = () => {
     <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100">
       <AgGridReact
         ref={gridRef}
-        rowData={orderData}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         onGridReady={onGridReady}
