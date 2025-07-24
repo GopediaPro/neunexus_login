@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef } from "react";
 import { useOrderList } from "./useOrderList";
+import type { OrderItem } from "@/shared/types";
 
 export const useOrderData = () => {
   const { 
@@ -19,9 +20,34 @@ export const useOrderData = () => {
     if (!data?.pages) return [];
     
     return data.pages.flatMap(page => 
-      page?.items?.map((item: { content: any; }) => item.content).filter(Boolean) || []
+      page?.items?.map((item: { content: OrderItem }) => item.content).filter(Boolean) || []
     );
   }, [data]);
+
+  const createInfiniteDataSource = useCallback(() => {
+    return {
+      rowCount: undefined,
+      getRows: (params: any) => {
+        const startRow = params.startRow;
+        const endRow = params.endRow;
+        const currentData = orderData;
+        
+        if (startRow < currentData.length) {
+          const rowsThisPage = currentData.slice(startRow, Math.min(endRow, currentData.length));
+          
+          if (endRow > currentData.length && hasNextPage && !isFetchingNextPage) {
+            loadMoreOrders();
+          }
+          
+          const lastRow = hasNextPage ? -1 : currentData.length;
+          
+          params.successCallback(rowsThisPage, lastRow);
+        } else {
+          params.successCallback([], hasNextPage ? -1 : currentData.length);
+        }
+      }
+    };
+  }, [orderData, hasNextPage, isFetchingNextPage]);
 
   const currentPageCount = useMemo(() => {
     return data?.pages?.length || 0;
@@ -49,11 +75,13 @@ export const useOrderData = () => {
 
   return {
     orderData,
+    createInfiniteDataSource,
     isLoading,
     error,
     loadMoreOrders,
     hasNextPage,
     isFetchingNextPage,
+    fetchNextPage,
     refreshOrders,
     currentPageCount,
     totalLoadedItems,

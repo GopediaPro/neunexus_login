@@ -13,10 +13,13 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [changedRows, setChangedRowsState] = useState<any[]>([]);
   const { 
     orderData, 
+    createInfiniteDataSource,
     isLoading, 
     error, 
     loadMoreOrders, 
     hasNextPage, 
+    fetchNextPage,
+    refreshOrders,
     isFetchingNextPage 
   } = useOrderData();
 
@@ -67,12 +70,14 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     
     // 주문 데이터 (무한스크롤)
     orderData, 
+    createInfiniteDataSource,
     isLoading, 
     error, 
     loadMoreOrders, 
     hasNextPage, 
+    fetchNextPage,
     isFetchingNextPage,
-    
+    refreshOrders,
     // 그리드 관리
     gridApi,
     setGridApi,

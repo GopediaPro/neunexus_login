@@ -214,11 +214,15 @@ export interface OrderContextValue {
   currentTemplate: string;
   setCurrentTemplate: (template: string) => void;
   orderData: any[];
+  createInfiniteDataSource: () => any;
   isLoading: boolean;
   error: unknown;
   loadMoreOrders: () => void;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  fetchNextPage: () => void;
+  refreshOrders: () => void;
+  totalLoadedItems: number;
   gridApi: GridApi | null;
   setGridApi: (api: GridApi | null) => void;
   selectedRows: any[];

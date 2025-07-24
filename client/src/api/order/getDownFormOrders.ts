@@ -3,7 +3,7 @@ import { httpClient } from "@/shared/axios";
 
 export const getDownFormOrders = async ({
   skip = 0,
-  limit = 2000,
+  limit = 200,
 }: {
   skip?: number;
   limit?: number;
