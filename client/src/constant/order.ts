@@ -7,7 +7,7 @@ export const templateOptions: SelectOption[] = [
   { value: 'gmarket_bundle', label: 'G마켓 Bundle' },
   { value: 'basic_erp', label: 'Basic ERP' },
   { value: 'basic_bundle', label: 'Basic Bundle' },
-  { value: 'brand_erp', label: 'Brand ERP' },
+  { value: 'brandi_erp', label: 'Brandi ERP' },
   { value: 'star_gmarket_erp', label: 'Star G마켓 ERP' },
   { value: 'star_gmarket_bundle', label: 'Star G마켓 Bundle' },
   { value: 'star_basic_erp', label: 'Star Basic ERP' },
