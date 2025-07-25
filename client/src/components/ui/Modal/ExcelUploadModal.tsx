@@ -7,7 +7,7 @@ import { Modal } from ".";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
 import { ResultModal } from "./ResultModal";
 import { FormField } from "../FormField";
-import { Input } from "../input";
+// import { Input } from "../input";
 import { postExcelToDb, postExcelToMinio } from "@/api/order";
 import { modalConfig } from "@/constant/order"
 import type { ExcelUploadFormData } from "@/shared/types";
@@ -121,17 +121,18 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
           url: response.file_url || response.file_url
         }); 
       } else if (mode === 'macro') {
-        if (!data.template_code || !data.file || !data.order_date_from || !data.order_date_to) return;
+        if (!data.template_code || !data.file) return;
+        const todayString = new Date().toISOString().split('T')[0];
         
         const requestData = {
           template_code: data.template_code,
           file: selectedFile,
           created_by: createdBy,
           filters: {
-            order_date_from: data.order_date_from,
-            order_date_to: data.order_date_to
+            order_date_from: todayString,
+            order_date_to: todayString
           },
-          source_table: data.source_table
+          source_table: "receive_orders"
         };
 
         const response = await postExcelRunMacro({
@@ -264,7 +265,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
                 error={errors.template_code?.message}
               />
             </div>
-            {mode === 'macro' && (
+            {/* {mode === 'macro' && (
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -323,7 +324,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
                   />
                 </div>
               </>
-            )}
+            )} */}
 
             <div className="space-y-2">
               <FormField
@@ -332,14 +333,45 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
                 label="Excel 파일"
                 render={() => (
                   <div className="space-y-2">
-                    <input
-                      type="file"
-                      accept=".xlsx,.xls"
-                      onChange={handleFileChange}
-                      className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept=".xlsx,.xls"
+                        onChange={handleFileChange}
+                        className="sr-only"
+                        id="file-upload"
+                      />
+                      <label
+                        htmlFor="file-upload"
+                        className="
+                          w-full
+                          flex items-center justify-between
+                          p-3
+                          border border-stroke-base-100
+                          rounded-md
+                          bg-fill-base-100 hover:bg-fill-base-200
+                          cursor-pointer
+                          transition-colors duration-200
+                          focus-within:ring-2 focus-within:ring-stroke-base-100 focus-within:border-stroke-base-100
+                        "
+                      >
+                        <span className="text-text-base-400">
+                          {selectedFile ? selectedFile.name : '파일을 선택하세요'}
+                        </span>
+                        <span className="
+                          px-3 py-1
+                          bg-fill-base-100 hover:bg-fill-base-200
+                          border border-stroke-base-100
+                          rounded
+                          text-body-l text-text-base-500
+                          transition-colors duration-200
+                        ">
+                          파일 선택
+                        </span>
+                      </label>
+                    </div>
                     {selectedFile && (
-                      <p className="text-body-s text-gray-600">
+                      <p className="text-body-s text-text-base-500">
                         {getFileDescription()}
                       </p>
                     )}
