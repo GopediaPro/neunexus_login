@@ -15,6 +15,8 @@ export const useOrderData = () => {
 
   const scrollPositionRef = useRef<number>(0);
   const isLoadingMoreRef = useRef<boolean>(false);
+  const pendingRequestsRef = useRef<Set<string>>(new Set());
+
 
   const orderData = useMemo(() => {
     if (!data?.pages) return [];
@@ -27,27 +29,73 @@ export const useOrderData = () => {
   const createInfiniteDataSource = useCallback(() => {
     return {
       rowCount: undefined,
-      getRows: (params: any) => {
-        const startRow = params.startRow;
-        const endRow = params.endRow;
-        const currentData = orderData;
+      
+      getRows: async (params: any) => {
+        const { startRow, endRow, successCallback, failCallback } = params;
+        const requestId = `${startRow}-${endRow}`;
         
-        if (startRow < currentData.length) {
-          const rowsThisPage = currentData.slice(startRow, Math.min(endRow, currentData.length));
+        try {
+          if (pendingRequestsRef.current.has(requestId)) {
+            return;
+          }
+          pendingRequestsRef.current.add(requestId);
+
+          const currentData = orderData;
           
-          if (endRow > currentData.length && hasNextPage && !isFetchingNextPage) {
-            loadMoreOrders();
+          if (startRow < currentData.length) {
+            const availableData = currentData.slice(startRow, Math.min(endRow, currentData.length));
+            
+            if (endRow > currentData.length && hasNextPage && !isFetchingNextPage && !isLoadingMoreRef.current) {
+              isLoadingMoreRef.current = true;
+              
+              try {
+                await fetchNextPage();
+              } catch (error) {
+                failCallback();
+              } finally {
+                isLoadingMoreRef.current = false;
+              }
+              
+              const updatedData = orderData;
+              const finalData = updatedData.slice(startRow, Math.min(endRow, updatedData.length));
+              
+              const lastRow = hasNextPage ? -1 : updatedData.length;
+              
+              successCallback(finalData, lastRow);
+            } else {
+              const lastRow = hasNextPage ? -1 : currentData.length;
+              successCallback(availableData, lastRow);
+            }
+          } else {
+            if (hasNextPage && !isFetchingNextPage && !isLoadingMoreRef.current) {
+              isLoadingMoreRef.current = true;
+              
+              try {
+                await fetchNextPage();
+                
+                const updatedData = orderData;
+                const requestedData = updatedData.slice(startRow, Math.min(endRow, updatedData.length));
+                const lastRow = hasNextPage ? -1 : updatedData.length;
+                
+                successCallback(requestedData, lastRow);
+              } catch (error) {
+                failCallback();
+              } finally {
+                isLoadingMoreRef.current = false;
+              }
+            } else {
+              successCallback([], currentData.length);
+            }
           }
           
-          const lastRow = hasNextPage ? -1 : currentData.length;
-          
-          params.successCallback(rowsThisPage, lastRow);
-        } else {
-          params.successCallback([], hasNextPage ? -1 : currentData.length);
+        } catch (error) {
+          failCallback();
+        } finally {
+          pendingRequestsRef.current.delete(requestId);
         }
       }
     };
-  }, [orderData, hasNextPage, isFetchingNextPage]);
+  }, [orderData, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const currentPageCount = useMemo(() => {
     return data?.pages?.length || 0;
@@ -70,6 +118,8 @@ export const useOrderData = () => {
 
   const refreshOrders = useCallback(() => {
     scrollPositionRef.current = 0;
+    isLoadingMoreRef.current = false;
+    pendingRequestsRef.current.clear();
     refetch();
   }, [refetch]);
 
