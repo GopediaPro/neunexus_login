@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import type { GridApi } from "ag-grid-community";
-import type { OrderData } from "@/shared/types";
+import type { OrderItem } from "@/shared/types";
 
 export const useOrderGridActions = (gridApi: GridApi | null) => {
 
@@ -11,23 +11,19 @@ export const useOrderGridActions = (gridApi: GridApi | null) => {
     today.setHours(0, 0, 0, 0);
     
     try {
-      const newRow: OrderData = {
-        id: `temp_${Date.now()}`,
+      const newRow: OrderItem = {
+        id: Date.now(),
+        process_dt: today.toISOString().replace('Z', ''),
+        form_name: 'gmarket_erp',
+        idx: `ORDER_${Date.now()}`,
         order_id: '',
-        mall_order_id: '',
+        product_id: '',
         product_name: '',
-        receive_name: '',
-        receive_cel: '',
         sale_cnt: 1,
         pay_cost: 0,
+        delv_cost: 0,
         expected_payout: 0,
         service_fee: 0,
-        delv_cost: 0,
-        fld_dsp: '',
-        receive_addr: '',
-        delv_msg: '',
-        sku_value: '',
-        process_dt: today.toISOString().replace('Z', ''),
         created_at: new Date().toISOString().replace('Z', '')
       };
       
@@ -38,7 +34,7 @@ export const useOrderGridActions = (gridApi: GridApi | null) => {
 
       if (result && result.add && result.add.length > 0) {
         setTimeout(() => {
-          const rowNode = gridApi.getRowNode(newRow.id.toString());
+          const rowNode = gridApi.getRowNode(newRow.id?.toString() || '');
           if (rowNode) {
             gridApi.ensureIndexVisible(rowNode.rowIndex!, 'top');
             gridApi.startEditingCell({
@@ -89,7 +85,7 @@ export const useOrderGridActions = (gridApi: GridApi | null) => {
     }
   }, [gridApi]);
 
-  const getSelectedRows = useCallback((): OrderData[] => {
+  const getSelectedRows = useCallback((): OrderItem[] => {
     if (!gridApi) return [];
     return gridApi.getSelectedRows();
   }, [gridApi]);

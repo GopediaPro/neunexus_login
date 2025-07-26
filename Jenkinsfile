@@ -12,6 +12,9 @@ pipeline {
         // Docker Registry 설정
         DOCKER_REGISTRY = 'registry.lyckabc.xyz'
         IMAGE_NAME = 'neunexus_login'
+        DOMAIN = 'alohastudio.co.kr'
+        DEV_DOMAIN = 'lyckabc.xyz'
+        SUBDOMAIN = 'portal'
         
         // Git 설정
         GIT_REPO_URL = 'https://github.com/GopediaPro/neunexus_login.git'
@@ -19,13 +22,19 @@ pipeline {
         
         // 인증 정보
         REGISTRY_CREDENTIAL_ID = 'docker-registry-credentials'
-        SSH_CREDENTIAL_ID = 'lyckabc-ssh-key-id'
+        SSH_CREDENTIAL_ID = 'alohastudio-ssh-key-id'
+        SSH_CREDENTIAL_ID_DEV = 'lyckabc-ssh-key-id'
         DOCKER_REGISTRY_ID = 'docker-registry-id'
         DOCKER_REGISTRY_PW = 'docker-registry-pw'
-        LOGIN_ENV_FILE = 'login-env-file'
+        LOGIN_ENV_FILE = 'login-env-file' // .env
+        LOGIN_ENV_FILE_DEV = 'login-env-file-dev' // .env
+        DOCKER_COMPOSE_FILE_ID = 'login-docker-compose-file' // docker-compose.yml
+        DOCKER_COMPOSE_ENV_FILE_ID = 'login-docker-compose-env-file' // .env.docker
+        DOCKER_COMPOSE_ENV_FILE_ID_DEV = 'login-docker-compose-env-file-dev' // .env.docker
         
         // 배포 서버 설정 (브랜치별로 동적 설정)
-        DEPLOY_SERVER_PORT = '50022'
+        DEPLOY_SERVER_PORT = '5022'
+        DEV_DEPLOY_SERVER_PORT = '50022'
         
         // 브랜치별 설정을 위한 변수
         IS_DEPLOYABLE = "${env.BRANCH_NAME in ['main', 'dev'] || env.BRANCH_NAME.contains('docker') ? 'true' : 'false'}"
@@ -42,20 +51,24 @@ pipeline {
                     // 브랜치별 환경 설정
                     if (env.BRANCH_NAME == 'main') {
                         env.DEPLOY_ENV = 'production'
-                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
-                        env.LOGIN_SUBDOMAIN = 'portal'
-                        env.DOCKER_COMPOSE_FILE = 'docker-compose.prod.yml'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@${DOMAIN}'
+                        env.ACTUAL_SSH_CREDENTIAL_ID = SSH_CREDENTIAL_ID
+                        env.ACTUAL_DEPLOY_SERVER_PORT = DEPLOY_SERVER_PORT
+                        env.ACTUAL_DOMAIN = DOMAIN
                     } else if (env.BRANCH_NAME == 'dev') {
                         env.DEPLOY_ENV = 'development'
-                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
-                        env.LOGIN_SUBDOMAIN = 'portal'
-                        env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@${DEV_DOMAIN}'
+                        env.ACTUAL_SSH_CREDENTIAL_ID = SSH_CREDENTIAL_ID_DEV
+                        env.ACTUAL_DEPLOY_SERVER_PORT = DEV_DEPLOY_SERVER_PORT
+                        env.ACTUAL_DOMAIN = DEV_DOMAIN
                     } else if (env.BRANCH_NAME.contains('docker')) {
                         env.DEPLOY_ENV = 'development'
-                        env.DEPLOY_SERVER_USER_HOST = 'root@lyckabc.xyz'
-                        env.LOGIN_SUBDOMAIN = 'portal'
-                        env.DOCKER_COMPOSE_FILE = 'docker-compose.dev.yml'
+                        env.DEPLOY_SERVER_USER_HOST = 'root@${DEV_DOMAIN}'
+                        env.ACTUAL_SSH_CREDENTIAL_ID = SSH_CREDENTIAL_ID_DEV
+                        env.ACTUAL_DEPLOY_SERVER_PORT = DEV_DEPLOY_SERVER_PORT
+                        env.ACTUAL_DOMAIN = DEV_DOMAIN
                         echo "🐳 Docker 브랜치 감지: ${env.BRANCH_NAME}"
+                        DOCKER_SAFE_BRANCH_NAME = 'docker'
                     } else {
                         env.DEPLOY_ENV = 'none'
                         echo "⚠️ 브랜치 '${env.BRANCH_NAME}'는 자동 배포 대상이 아닙니다."
@@ -153,14 +166,17 @@ pipeline {
                 dir('client') {
                     script {
                         echo "Docker 이미지를 빌드합니다: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${env.IMAGE_TAG}"
+                        echo "Docker 이미지를 빌드합니다: ${DOCKER_REGISTRY}/${IMAGE_NAME}:${DOCKER_SAFE_BRANCH_NAME}-latest"
                         
                         // 브랜치별 환경 파일 선택
                         def envFileCredentialId = LOGIN_ENV_FILE
-                        if (env.BRANCH_NAME == 'dev') {
-                            envFileCredentialId = 'login-env-file-dev'  // 개발용 환경 파일
+                        def dockerComposeEnvFileId = DOCKER_COMPOSE_ENV_FILE_ID
+                        if (env.BRANCH_NAME == 'dev' || env.BRANCH_NAME.contains('docker')) {
+                            envFileCredentialId = LOGIN_ENV_FILE_DEV
+                            dockerComposeEnvFileId = DOCKER_COMPOSE_ENV_FILE_ID_DEV  // 개발용 환경 파일
                         }
                         
-                        withCredentials([file(credentialsId: envFileCredentialId, variable: 'ENV_FILE')]) {
+                        withCredentials([file(credentialsId: dockerComposeEnvFileId, variable: 'ENV_FILE')]) {
                             sh "cp ${ENV_FILE} .env"
                         }
                         
@@ -240,90 +256,132 @@ pipeline {
                 }
             }
             steps {
-                echo "배포 서버(${DEPLOY_SERVER_USER_HOST})에 ${env.DEPLOY_ENV} 환경으로 배포를 시작합니다..."
+                echo "배포 서버 ${ACTUAL_DOMAIN}에 (${DEPLOY_SERVER_USER_HOST})User의 ${DEPLOY_ENV} 환경으로 배포를 시작합니다..."
+                echo "SSH CREDENTIAL ID: ${ACTUAL_SSH_CREDENTIAL_ID}"
                 
-                sshagent(credentials: [SSH_CREDENTIAL_ID]) {
+                sshagent(credentials: [ACTUAL_SSH_CREDENTIAL_ID]) {
                     script {
                         // 브랜치별 환경 파일 선택
                         def envFileCredentialId = LOGIN_ENV_FILE
-                        if (env.BRANCH_NAME == 'dev') {
-                            envFileCredentialId = 'login-env-file-dev'  // 개발용 환경 파일
+                        def dockerComposeEnvFileId = DOCKER_COMPOSE_ENV_FILE_ID
+                        if (env.BRANCH_NAME == 'dev' || env.BRANCH_NAME.contains('docker')) {
+                            envFileCredentialId = LOGIN_ENV_FILE_DEV
+                            dockerComposeEnvFileId = DOCKER_COMPOSE_ENV_FILE_ID_DEV  // 개발용 환경 파일
                         }
                         
-                        withCredentials([file(credentialsId: envFileCredentialId, variable: 'ENV_FILE')]) {
+                            withCredentials([
+                                file(credentialsId: envFileCredentialId, variable: 'ENV_FILE'),
+                                file(credentialsId: DOCKER_COMPOSE_FILE_ID, variable: 'DOCKER_COMPOSE_FILE'),
+                                file(credentialsId: dockerComposeEnvFileId, variable: 'DOCKER_COMPOSE_ENV_FILE'),
+                                usernamePassword(
+                                    credentialsId: REGISTRY_CREDENTIAL_ID,
+                                    usernameVariable: 'REGISTRY_USER',
+                                    passwordVariable: 'REGISTRY_PASS'
+                                )
+                        ]) {
                             // 환경 파일 내용을 변수에 저장
                             def envFileContent = sh(
                                 script: "cat ${ENV_FILE}",
                                 returnStdout: true
                             ).trim()
                             
-                            // Docker Registry 인증 정보도 함께 전달
-                            withCredentials([usernamePassword(
-                                credentialsId: REGISTRY_CREDENTIAL_ID,
-                                usernameVariable: 'REGISTRY_USER',
-                                passwordVariable: 'REGISTRY_PASS'
-                            )]) {
-                                sh """
-                                    ssh -p ${DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} "REGISTRY_PASS='${REGISTRY_PASS}'" "REGISTRY_USER='${REGISTRY_USER}'"<< 'EOF'
-                                    set -e
-                                    
-                                    echo ">> 배포 디렉토리로 이동"
-                                    cd /morphogen/neunexus/login
-                                    
-                                    echo ">> 이전 버전 백업"
-                                    if [ -f .env.docker ]; then
-                                        cp .env.docker .env.docker.backup.\$(date +%Y%m%d%H%M%S)
-                                    fi
-                                    
-                                    echo ">> 배포용 환경변수 파일(.env.docker) 생성"
-                                    cat > .env.docker << 'ENV_EOF'
+                            def dockerComposeFileContent = sh(
+                                script: "cat ${DOCKER_COMPOSE_FILE}",
+                                returnStdout: true
+                            ).trim()
+                            
+                            def dockerComposeEnvFileContent = sh(
+                                script: "cat ${DOCKER_COMPOSE_ENV_FILE}",
+                                returnStdout: true
+                            ).trim()
+
+                            def randomChar = sh(
+                                script: "cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 1 | head -n 1",
+                                returnStdout: true
+                            ).trim()
+                            
+                            sh """
+                                ssh -p ${ACTUAL_DEPLOY_SERVER_PORT} -o StrictHostKeyChecking=no ${DEPLOY_SERVER_USER_HOST} << 'EOF'
+                                set -e
+                                
+                                echo ">> 배포 디렉토리로 이동"
+                                cd /morphogen/neunexus/login
+                                
+                                echo ">> 백업 디렉토리 생성"
+                                mkdir -p ./backup
+                                
+                                echo ">> 이전 버전 백업"
+                                BACKUP_TIMESTAMP=\$(date +%Y%m%d%H%M%S)
+                                if [ -f .env ]; then
+                                    cp .env ./backup/.env.backup.\${BACKUP_TIMESTAMP}${randomChar}
+                                fi
+                                if [ -f .env.docker ]; then
+                                    cp .env.docker ./backup/.env.docker.backup.\${BACKUP_TIMESTAMP}${randomChar}
+                                fi
+                                if [ -f docker-compose.yml ]; then
+                                    cp docker-compose.yml ./backup/docker-compose.yml.backup.\${BACKUP_TIMESTAMP}${randomChar}
+                                fi
+                                
+                                echo ">> 배포용 환경변수 파일(.env) 생성"
+                                cat > .env << 'ENV_EOF'
 ${envFileContent}
-DOCKER_REGISTRY=${DOCKER_REGISTRY}
-IMAGE_NAME=${IMAGE_NAME}
-TAG=${env.IMAGE_TAG}
-LOGIN_SUBDOMAIN=${LOGIN_SUBDOMAIN}
-DEPLOY_ENV=${env.DEPLOY_ENV}
 ENV_EOF
+                                
+                                echo ">> Docker Compose 환경변수 파일(.env.docker) 생성"
+                                cat > .env.docker << 'DOCKER_ENV_EOF'
+${dockerComposeEnvFileContent}
+IMAGE_TAG=${env.IMAGE_TAG}
+DEPLOY_ENV=${env.DEPLOY_ENV}
+DOCKER_ENV_EOF
+                                
+                                echo ">> Docker Compose 파일(docker-compose.yml) 생성"
+                                cat > docker-compose.yml << 'COMPOSE_EOF'
+${dockerComposeFileContent}
+COMPOSE_EOF
+                                
+                                echo ">> Docker Registry 로그인 (비대화형)"
+                                echo '${REGISTRY_PASS}' | docker login ${DOCKER_REGISTRY} -u '${REGISTRY_USER}' --password-stdin
+                                
+                                echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
+                                docker compose --env-file .env.docker pull
+                                
+                                echo ">> 헬스체크를 위한 이전 컨테이너 정보 저장"
+                                OLD_CONTAINER_ID=\$(docker compose --env-file .env.docker ps -q ${IMAGE_NAME} 2>/dev/null || true)
+                                
+                                echo ">> docker-compose를 사용하여 서비스 업데이트"
+                                docker compose --env-file .env.docker up -d --force-recreate --no-build   
+                                
+                                echo ">> 헬스체크 수행 (30초 대기)"
+                                sleep 30
+                                
+                                # 간단한 헬스체크 (실제 환경에 맞게 수정 필요)
+                                if docker compose --env-file .env.docker ps | grep -q "Up"; then
+                                    echo "✅ 배포 성공: ${env.IMAGE_TAG}"
                                     
-                                    echo ">> Docker Registry 로그인 (비대화형)"
-                                    echo \${REGISTRY_PASS} | docker login ${DOCKER_REGISTRY} -u \${REGISTRY_USER} --password-stdin
-                                    
-                                    echo ">> 최신 버전의 Docker 이미지를 다운로드합니다: ${env.IMAGE_TAG}"
-                                    docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker pull
-                                    
-                                    echo ">> 헬스체크를 위한 이전 컨테이너 정보 저장"
-                                    OLD_CONTAINER_ID=\$(docker compose -f ${DOCKER_COMPOSE_FILE} ps -q ${IMAGE_NAME} 2>/dev/null || true)
-                                    
-                                    echo ">> docker-compose를 사용하여 서비스 업데이트"
-                                    docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker up -d --force-recreate --no-build
-                                    
-                                    echo ">> 헬스체크 수행 (30초 대기)"
-                                    sleep 30
-                                    
-                                    # 간단한 헬스체크 (실제 환경에 맞게 수정 필요)
-                                    if docker compose -f ${DOCKER_COMPOSE_FILE} ps | grep -q "Up"; then
-                                        echo "✅ 배포 성공: ${env.IMAGE_TAG}"
-                                        
-                                        # 이전 이미지 정리 (최근 3개 버전만 유지)
-                                        echo ">> 오래된 Docker 이미지 정리"
-                                        docker images ${DOCKER_REGISTRY}/${IMAGE_NAME} --format "{{.Tag}} {{.ID}}" | \
-                                            grep -E "^(dev|prod|docker)-[0-9]{8}" | \
-                                            sort -r | \
-                                            tail -n +4 | \
-                                            awk '{print \$2}' | \
-                                            xargs -r docker rmi || true
-                                    else
-                                        echo "❌ 헬스체크 실패, 롤백을 시도합니다..."
-                                        if [ ! -z "\$OLD_CONTAINER_ID" ]; then
-                                            docker compose -f ${DOCKER_COMPOSE_FILE} --env-file .env.docker.backup.* up -d --force-recreate --no-build
+                                    # 이전 이미지 정리 (최근 3개 버전만 유지)
+                                    echo ">> 오래된 Docker 이미지 정리"
+                                    docker images ${DOCKER_REGISTRY}/${IMAGE_NAME} --format "{{.Tag}} {{.ID}}" | \\
+                                        grep -E "^(dev|prod|docker)-[0-9]{8}" | \\
+                                        sort -r | \\
+                                        tail -n +4 | \\
+                                        awk '{print \$2}' | \\
+                                        xargs -r docker rmi || true
+                                else
+                                    echo "❌ 헬스체크 실패, 롤백을 시도합니다..."
+                                    if [ ! -z "\$OLD_CONTAINER_ID" ]; then
+                                        # 최신 백업 파일로 롤백
+                                        LATEST_BACKUP=\$(ls -t ./backup/.env.docker.backup.* 2>/dev/null | head -1)
+                                        if [ ! -z "\$LATEST_BACKUP" ]; then
+                                            cp "\$LATEST_BACKUP" .env.docker
+                                            docker compose --env-file .env.docker up -d --force-recreate --no-build
                                         fi
-                                        exit 1
                                     fi
-                                    
-                                    docker logout ${DOCKER_REGISTRY}
+                                    exit 1
+                                fi
+                                
+                                docker logout ${DOCKER_REGISTRY}
 EOF
-                                """
-                            }
+                            """
                         }
                     }
                 }
@@ -343,8 +401,8 @@ EOF
                 // E2E 테스트, API 헬스체크 등
                 script {
                     def deployUrl = env.BRANCH_NAME == 'main' ? 
-                        "https://${LOGIN_SUBDOMAIN}.lyckabc.xyz" : 
-                        "https://${LOGIN_SUBDOMAIN}.lyckabc.xyz"
+                        "https://${SUBDOMAIN}.${ACTUAL_DOMAIN}" : 
+                        "https://${SUBDOMAIN}.${ACTUAL_DOMAIN}"
                     
                     // sh "curl -f ${deployUrl}/health || exit 1"
                 }

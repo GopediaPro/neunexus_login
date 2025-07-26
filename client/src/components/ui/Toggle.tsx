@@ -46,15 +46,21 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
   };
 
   const thumbSizeClasses = {
-      sm: 'h-4 w-4',
-      md: 'h-5 w-5',
-      lg: 'h-6 w-6',
+    sm: 'h-4 w-4',
+    md: 'h-5 w-5',
+    lg: 'h-6 w-6',
     };
 
   const translateClasses = {
-    sm: isChecked ? 'translate-x-4' : 'translate-x-0.5',
-    md: isChecked ? 'translate-x-5' : 'translate-x-0.5',
-    lg: isChecked ? 'translate-x-7' : 'translate-x-0.5',
+    sm: isChecked 
+      ? (disabled ? 'translate-x-4' : 'translate-x-4') 
+      : (disabled ? 'translate-x-0.5' : 'translate-x-0.5'),
+    md: isChecked 
+      ? (disabled ? 'translate-x-5' : 'translate-x-5') 
+      : (disabled ? 'translate-x-0.5' : 'translate-x-0.5'),
+    lg: isChecked 
+      ? (disabled ? 'translate-x-7' : 'translate-x-7') 
+      : (disabled ? 'translate-x-0.5' : 'translate-x-0.5'),
   };
 
   return (
@@ -70,10 +76,10 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
         sizeClasses[size],
         isChecked
           ? 'bg-primary-500 hover:bg-primary-600'
-          : 'bg-fill-alt-100 hover:bg-fill-alt-200',
+          : 'bg-text-base-200 hover:bg-text-base-300',
         disabled && [
-          'cursor-not-allowed opacity-50',
-          isChecked ? 'bg-fill-alt-100' : 'bg-fill-alt-100',
+          'cursor-not-allowed opacity-50 hover:scale-100',
+          isChecked ? 'bg-text-base-200' : 'bg-text-base-200',
         ],
         className
       )}
@@ -84,6 +90,7 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(({
           'pointer-events-none inline-block transform rounded-full bg-fill-base-100 shadow-lg ring-0 transition duration-200 ease-in-out',
           translateClasses[size],
           thumbSizeClasses[size],
+          isChecked && 'shadow-lg',
           disabled && 'bg-fill-alt-100'
         )}
       />

@@ -188,19 +188,10 @@ export const useProductGrid = () => {
     suppressRowClickSelection: true
   }), []);
 
-  const onGridReady = useCallback((params: any) => {
-    setTimeout(() => {
-      if (params.api) {
-        params.api.sizeColumnsToFit();
-      }
-    }, 100);
-  }, []);
-
   return {
     gridRef,
     columnDefs,
     defaultColDef,
     gridOptions,
-    onGridReady
   };
 }

@@ -41,7 +41,7 @@ export const StatsDashboard = () => {
 
   return (
     <div className="bg-primary-500 rounded-md p-2 px-16 py-3">
-      <div className="flex justify-between 2xl:justify-center 2xl:gap-20 cursor-pointer">
+      <div className="flex justify-center gap-16 cursor-pointer">
         {statsItems.map((item, index) => (
           <StatsItem
             key={item.label}

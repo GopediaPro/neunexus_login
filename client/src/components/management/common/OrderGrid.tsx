@@ -1,21 +1,35 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ColDef, GridApi, GridReadyEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useOrderContext } from "@/contexts/OrderContext";
 
 export const OrderGrid = () => {
   const {
-    orderData,
+    createInfiniteDataSource,
     setGridApi,
     setSelectedRows,
     setChangedRows,
+    totalLoadedItems,
+    isFetchingNextPage,
   } = useOrderContext();
 
   const gridRef = useRef<AgGridReact>(null);
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
   const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
+  
+  useEffect(() => {
+    if (gridRef.current?.api && createInfiniteDataSource) {
+      const dataSource = createInfiniteDataSource();
+      
+      gridRef.current.api.setGridOption('datasource', dataSource);
+    
+      if (totalLoadedItems > 0) {
+        gridRef.current.api.refreshInfiniteCache();
+      }
+    }
+  }, [createInfiniteDataSource, totalLoadedItems]);
 
-  const createPriceColumn = (field: string, headerName: string, width: number = 150) => ({
+  const createPriceColumn = (field: string, headerName: string, width: number) => ({
     field,
     headerName,
     width,
@@ -60,27 +74,9 @@ export const OrderGrid = () => {
 
   const columnDefs: ColDef[] = useMemo(() => [
     {
-      field: 'checkbox',
-      headerName: '',
-      checkboxSelection: true,
-      headerCheckboxSelection: true,
-      headerCheckboxSelectionFilteredOnly: true,
-      width: 50,
-      maxWidth: 50,
-      pinned: 'left',
-      lockPosition: 'left',
-      cellClass: 'ag-cell-centered',
-      suppressMovable: true,
-      filter: false,
-      sortable: false,
-      resizable: false,
-      editable: false
-    },
-    {
       field: 'order_id',
       headerName: '주문ID',
-      width: 120,
-      pinned: 'left',
+      width: 160,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -91,7 +87,7 @@ export const OrderGrid = () => {
     {
       field: 'mall_order_id',
       headerName: '몰주문ID',
-      width: 150,
+      width: 160,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -102,7 +98,7 @@ export const OrderGrid = () => {
     {
       field: 'product_name',
       headerName: '상품명',
-      width: 250,
+      width: 240,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -125,7 +121,7 @@ export const OrderGrid = () => {
     {
       field: 'receive_cel',
       headerName: '연락처',
-      width: 150,
+      width: 160,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -136,7 +132,7 @@ export const OrderGrid = () => {
     {
       field: 'sale_cnt',
       headerName: '수량',
-      width: 100,
+      width: 160,
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
@@ -149,9 +145,9 @@ export const OrderGrid = () => {
         max: 9999
       }
     },
-    createPriceColumn('pay_cost', '결제금액'),
-    createPriceColumn('expected_payout', '예상정산금'),
-    createPriceColumn('service_fee', '서비스수수료'),
+    createPriceColumn('pay_cost', '결제금액', 120),
+    createPriceColumn('expected_payout', '예상정산금', 120),
+    createPriceColumn('service_fee', '서비스수수료', 120),
     createPriceColumn('delv_cost', '배송비', 120),
     {
       field: 'fld_dsp',
@@ -222,7 +218,9 @@ export const OrderGrid = () => {
       filter: 'agDateColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      headerClass: 'border-r-0'
+      
     }
   ], []);
 
@@ -231,24 +229,57 @@ export const OrderGrid = () => {
     sortable: true,
     filter: true,
     floatingFilter: true,
-    minWidth: 100,
+    minWidth: 120
   }), []);
 
   const gridOptions = useMemo(() => ({
     theme: "legacy" as const,
+
+    // 무한 스크롤 모델 설정
+    rowModelType: 'infinite' as const,
+    
+    // 무한 스크롤 관련 설정 최적화
+    infiniteInitialRowCount: 100, // 초기 표시할 행 수 (실제 데이터 로드 전)
+    maxBlocksInCache: 10, // 캐시할 최대 블록 수
+    maxConcurrentDatasourceRequests: 2, // 동시 요청 수 제한
+    cacheBlockSize: 200, // 블록당 200개 행 (limit와 일치)
+    cacheOverflowSize: 2, // 오버플로우 크기
+    purgeClosedRowNodes: false, // 닫힌 노드 제거 비활성화 (스크롤 성능 향상)
+    
+    // 스크롤 및 로딩 최적화
+    rowBuffer: 10, // 뷰포트 외부에 렌더링할 행 수
+    viewportRowModelType: 'normal', // 뷰포트 모델 타입
+
     pagination: false,
     paginationPageSize: 20,
     animateRows: true,
     headerHeight: 45,
     rowHeight: 40,
-    rowSelection: "multiple" as const,
+    rowSelection: {
+      mode: "multiRow" as const,
+      checkboxes: true,
+      headerCheckbox: true,
+      enableClickSelection: true,
+      selectAll: "filtered" as const
+    },
     domLayout: "normal" as const,
-    suppressRowClickSelection: true,
-    enterMovesDown: true,
-    enterMovesDownAfterEdit: true,
+    enterNavigatesVertically: true,
+    enterNavigatesVerticallyAfterEdit: true,
     singleClickEdit: true,
-    stopEditingWhenCellsLoseFocus: true
-  }), []);
+    stopEditingWhenCellsLoseFocus: true,
+
+    loadingCellRenderer: () => `
+      <div style="padding: 10px; text-align: center; color: #666;">
+        로딩 중... ${isFetchingNextPage ? '(추가 데이터 로드 중)' : ''}
+      </div>
+    `,
+
+    scrollbarWidth: 16,
+    suppressScrollOnNewData: false,
+    suppressRowVirtualisation: false,
+
+    getRowId: (params: any) => params.data.id?.toString(),
+  }), [isFetchingNextPage]);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
     if (setGridApi) {
@@ -256,13 +287,12 @@ export const OrderGrid = () => {
     } else {
       setInternalGridApi(params.api);
     }
-    
-    setTimeout(() => {
-      if (params.api) {
-        params.api.sizeColumnsToFit();
-      }
-    }, 100);
-  }, [setGridApi]);
+
+    if (createInfiniteDataSource) {
+      const dataSource = createInfiniteDataSource();
+      params.api.setGridOption('datasource', dataSource);
+    }
+  }, [setGridApi, createInfiniteDataSource]);
 
   const onSelectionChangedCallback = useCallback((event: any) => {
     const selectedRows = event.api.getSelectedRows();
@@ -299,7 +329,7 @@ export const OrderGrid = () => {
     }
   }, [setChangedRows]);
 
-  if (!orderData) {
+  if (!createInfiniteDataSource) {
     return (
       <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100 flex items-center justify-center">
         <div className="text-center">
@@ -320,7 +350,6 @@ export const OrderGrid = () => {
     <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100">
       <AgGridReact
         ref={gridRef}
-        rowData={orderData}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         onGridReady={onGridReady}

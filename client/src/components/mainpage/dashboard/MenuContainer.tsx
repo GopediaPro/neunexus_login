@@ -31,7 +31,7 @@ export const MenuContainer = () => {
         {selectMenuItems.map((item) => (
           <MenuBox
             key={item.id}
-            icon={<Icon name={item.icon} style="w-7 h-7 text-text-base-300" />}
+            icon={<Icon name={item.icon} style="w-7 h-7" />}
             label={item.label}
             className="flex-shrink-0 2xl:mb-4"
           />
@@ -39,7 +39,7 @@ export const MenuContainer = () => {
         
         {availableMenuItems.length > 0 && (
           <MenuBox
-            icon={<Icon name="plus" style="w-8 h-8 text-text-base-300" />}
+            icon={<Icon name="plus" style="w-8 h-8" />}
             className="opacity-50 hover:opacity-100 flex-shrink-0"
             onClick={handleAddClick}
           />

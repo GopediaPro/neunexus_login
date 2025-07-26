@@ -18,7 +18,7 @@ export const MenuBox = ({
 
   return (
     <>
-      <div className={`flex flex-col items-center ${className}`}>
+      <div className={`flex flex-col items-center group ${className}`}>
         <button
           onClick={onClick}
           className={`
@@ -26,7 +26,7 @@ export const MenuBox = ({
             border border-stroke-base-100 rounded-xl bg-fill-base-100
           `}
         >
-          <div className="w-9 h-9 flex items-center justify-center mb-1 text-text-base-400">
+          <div className="w-9 h-9 flex items-center justify-center mb-1 text-text-base-300 group-hover:text-text-base-500">
             {icon}
           </div>
         </button>

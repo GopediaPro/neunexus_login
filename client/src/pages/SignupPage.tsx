@@ -80,7 +80,7 @@ export const SignupPage = () => {
               variant="default"
               size="auth"
               loading={isSubmitting}
-              className="!mt-[40px]"
+              className="!mt-[40px] !text-text-contrast-500"
             >
               회원가입
             </Button>
@@ -92,7 +92,7 @@ export const SignupPage = () => {
             </span>
             <button
               type="button"
-              className="px-2.5 py-3 text-primary-500 text-body-s underline hover:text-primary-600 transition-colors"
+              className="px-2.5 py-3 text-primary-500 text-body-s underline hover:text-primary-700 transition-colors"
               onClick={handleLoginClick}
             >
               로그인

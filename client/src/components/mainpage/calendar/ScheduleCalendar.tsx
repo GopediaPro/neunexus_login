@@ -36,7 +36,7 @@ const CustomEvent = ({ event }: { event: CalendarEvent }) => {
           </div>
         </div>
       </div>
-      <div className="text-xs text-text-base-400 whitespace-nowrap flex-shrink-0">
+      <div className="text-xs text-text-contrast-500 whitespace-nowrap flex-shrink-0">
         {startTime}
       </div>
     </div>

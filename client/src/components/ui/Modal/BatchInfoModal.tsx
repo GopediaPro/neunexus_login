@@ -1,6 +1,7 @@
 import { Modal } from '../Modal';
 import { Button } from '../Button';
 import type { BatchInfoData, BatchInfoResponse } from '@/shared/types';
+import { convertToHttps } from '@/utils/convertToHttps';
 
 interface BatchInfoModalProps {
   isOpen: boolean;
@@ -11,7 +12,7 @@ interface BatchInfoModalProps {
 export const BatchInfoModal = ({
   isOpen,
   onClose,
-  batchInfo
+  batchInfo,
 }: BatchInfoModalProps) => {
   if (!batchInfo) return null;
 
@@ -27,14 +28,9 @@ export const BatchInfoModal = ({
     return new Date(dateString).toLocaleString('ko-KR');
   };
 
-  const handleDownload = (fileUrl: string, fileName: string) => {
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = fileName;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = (fileUrl: string) => {
+    const httpsUrl = convertToHttps(fileUrl);
+    window.open(httpsUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -46,7 +42,7 @@ export const BatchInfoModal = ({
       
       <Modal.Body>
         <div className="space-y-4">
-          <div className="text-sm text-text-base-400">
+          <div className="text-body-s text-text-base-400">
             총 {batchInfo.total}개의 배치 정보 (페이지 {batchInfo.page}/{Math.ceil(batchInfo.total / batchInfo.page_size)})
           </div>
           
@@ -60,20 +56,20 @@ export const BatchInfoModal = ({
                   >
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="font-semibold text-text-base-500">
+                        <h3 className="text-body-s text-text-base-500">
                           배치 ID: {batch.batch_id}
                         </h3>
-                        <p className="text-sm text-text-base-400">
+                        <p className="text-body-s text-text-base-400">
                           생성자: {batch.created_by}
                         </p>
                       </div>
-                      <div className="text-right text-sm text-text-base-300">
+                      <div className="text-right text-body-s text-text-base-300">
                         <div>생성: {formatDate(batch.created_at)}</div>
                         <div>수정: {formatDate(batch.updated_at)}</div>
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-2 gap-4 text-body-s">
                       <div>
                         <span className="font-medium">원본 파일명:</span>
                         <p className="text-text-base-400">{batch.original_filename}</p>
@@ -98,21 +94,19 @@ export const BatchInfoModal = ({
                     
                     {batch.error_message && (
                       <div className="mt-3 p-2 bg-fill-error-100 border border-stroke-error-100 rounded">
-                        <span className="text-sm font-medium text-text-error-500">오류 메시지:</span>
-                        <p className="text-sm text-text-error-500">{batch.error_message}</p>
+                        <span className="text-body-s  text-error-500">오류 메시지:</span>
+                        <p className="text-body-s text-error-500">{batch.error_message}</p>
                       </div>
                     )}
                     
                     <div className="mt-3 flex gap-2">
                       <Button
-                        variant="light"
                         size="compact"
-                        onClick={() => handleDownload(batch.file_url, batch.original_filename)}
+                        onClick={() => handleDownload(batch.file_url)}
                       >
                         파일 다운로드
                       </Button>
                       <Button
-                        variant="light"
                         size="compact"
                         onClick={() => window.open(batch.file_url, '_blank')}
                       >
