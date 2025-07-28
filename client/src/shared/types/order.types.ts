@@ -258,8 +258,8 @@ export interface BatchInfoData {
   file_name: string;
   file_url: string;
   file_size: number;
-  order_date_from: string; 
-  order_date_to: string;   
+  date_from: string; 
+  date_to: string;   
   order_status: string | null;
   error_message: string | null;
   created_by: string;

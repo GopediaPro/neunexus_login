@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, type DragEvent, type ChangeEvent } from "react";
 import { Modal } from ".";
 import { Button } from "../Button";
 import { Icon } from "../Icon";
@@ -73,13 +73,13 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
     }
   };
 
-  const handleDragEnter = (e: React.DragEvent) => {
+  const handleDragEnter = (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -92,12 +92,12 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -114,7 +114,7 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
     }
   };
 
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (selectedFiles && selectedFiles.length > 0) {
       addFiles(selectedFiles);
@@ -176,6 +176,17 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
         resolve();
       }, uploadTimeMs);
     });
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allFileIds = files.map(file => file.id);
+      setSelectedFiles(allFileIds);
+      toast.info(`전체 ${files.length}개 파일이 선택되었습니다.`);
+    } else {
+      setSelectedFiles([]);
+      toast.info('전체 선택이 해제되었습니다.');
+    }
   };
 
   const handleStartUpload = async () => {
@@ -246,9 +257,11 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
 
   const waitingFiles = files.filter(f => f.status === 'waiting');
   const selectedWaitingFiles = files.filter(f => selectedFiles.includes(f.id) && f.status === 'waiting');
+  const isAllSelected = files.length > 0 && selectedFiles.length === files.length;
+  const isPartiallySelected = selectedFiles.length > 0 && selectedFiles.length < files.length;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="3xl">
       <Modal.Header>
         <Modal.Title>대량파일 업로드</Modal.Title>
         <Modal.CloseButton />
@@ -300,6 +313,24 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-h3 text-text-base-700">파일 목록</h2>
+            {files.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
+                    ref={(input) => {
+                      if (input) {
+                        input.indeterminate = isPartiallySelected;
+                      }
+                    }}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                    className="w-4 h-4 rounded border-stroke-base-300 cursor-pointer"
+                  />
+                  <span className="text-body-s text-text-base-500">
+                    전체 선택 ({selectedFiles.length}/{files.length})
+                  </span>
+                </div>
+              )}
           </div>
           <div className="flex gap-2">
             <Button
@@ -310,7 +341,7 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
                   : 'bg-fill-alt-200 text-text-base-500 hover:bg-fill-alt-300'
               }`}
             >
-              일괄파일처리 ({waitingFiles.length}개)
+              일괄파일처리
             </Button>
             <Button
               onClick={() => setActiveTab('individual')}
@@ -320,7 +351,7 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
                   : 'bg-fill-alt-200 text-text-base-500 hover:bg-fill-alt-300'
               }`}
             >
-              선택파일 처리 ({selectedWaitingFiles.length}개)
+              선택파일 처리
             </Button>
           </div>
         </div>
@@ -411,7 +442,7 @@ export const BulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose:
               disabled={isUploading || (activeTab === 'bulk' ? waitingFiles.length === 0 : selectedWaitingFiles.length === 0)}
               className="bg-primary-500 text-white"
             >
-              {isUploading ? '업로드 중...' : `업로드 시작 (${activeTab === 'bulk' ? waitingFiles.length : selectedWaitingFiles.length}개)`}
+              {isUploading ? '업로드 중...' : `업로드 시작`}
             </Button>
           </div>
         </div>
