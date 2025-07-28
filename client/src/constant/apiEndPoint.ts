@@ -24,6 +24,6 @@ export const API_END_POINT = {
   DOWN_FORM_ORDERS_BULK_WITHOUT_FILTER: '/api/v1/down-form-orders/bulk/without-filter',
 
   MACRO_EXCEL_RUN_MACRO: '/api/v1/macro/excel-run-macro',
-  MACRO_BATCH_INFO_ALL: '/api/v1/macro/get-batch-info-all',
-  MACRO_BATCH_INFO_LATEST: '/api/v1/macro/get-batch-info-latest',
+  MACRO_BATCH_INFO_ALL: '/api/v1/macro/batch-info/all',
+  MACRO_BATCH_INFO_LATEST: '/api/v1/macro/batch-info/latest',
 } as const;
