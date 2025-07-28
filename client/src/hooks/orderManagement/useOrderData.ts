@@ -13,10 +13,11 @@ export const useOrderData = () => {
     refetch 
   } = useOrderList();
 
-  const scrollPositionRef = useRef<number>(0);
-  const isLoadingMoreRef = useRef<boolean>(false);
-  const pendingRequestsRef = useRef<Set<string>>(new Set());
-
+  const requestManagerRef = useRef({
+    pendingRequests: new Set<string>(),
+    isLoadingMore: false,
+    scrollPosition: 0
+  });
 
   const orderData = useMemo(() => {
     if (!data?.pages) return [];
@@ -26,6 +27,73 @@ export const useOrderData = () => {
     );
   }, [data]);
 
+  const dataInfo = useMemo(() => ({
+    currentPageCount: data?.pages?.length || 0,
+    totalLoadedItems: orderData.length,
+    hasMore: hasNextPage,
+    isLoading: isLoading || isFetchingNextPage
+  }), [data?.pages, orderData.length, hasNextPage, isLoading, isFetchingNextPage]);
+
+  const handleDataRequest = useCallback(async (
+    startRow: number, 
+    endRow: number,
+    successCallback: (data: OrderItem[], lastRow: number) => void,
+    failCallback: () => void
+  ) => {
+    const currentData = [...orderData];
+    
+    try {
+      if (startRow < currentData.length) {
+        const availableData = currentData.slice(startRow, Math.min(endRow, currentData.length));
+        
+        if (endRow > currentData.length && hasNextPage && !requestManagerRef.current.isLoadingMore) {
+          requestManagerRef.current.isLoadingMore = true;
+          
+          try {
+            await fetchNextPage();
+            
+            const newData = [...orderData];
+            const finalData = newData.slice(startRow, Math.min(endRow, newData.length));
+            const lastRow = hasNextPage ? -1 : newData.length;
+            
+            successCallback(finalData, lastRow);
+          } catch (error) {
+            const lastRow = hasNextPage ? -1 : currentData.length;
+            successCallback(availableData, lastRow);
+          } finally {
+            requestManagerRef.current.isLoadingMore = false;
+          }
+        } else {
+          const lastRow = hasNextPage ? -1 : currentData.length;
+          successCallback(availableData, lastRow);
+        }
+      } 
+      else {
+        if (hasNextPage && !requestManagerRef.current.isLoadingMore) {
+          requestManagerRef.current.isLoadingMore = true;
+          
+          try {
+            await fetchNextPage();
+            
+            const newData = [...orderData];
+            const requestedData = newData.slice(startRow, Math.min(endRow, newData.length));
+            const lastRow = hasNextPage ? -1 : newData.length;
+
+            successCallback(requestedData, lastRow);
+          } catch (error) {
+            failCallback();
+          } finally {
+            requestManagerRef.current.isLoadingMore = false;
+          }
+        } else {
+          successCallback([], currentData.length);
+        }
+      }
+    } catch (error) {
+      failCallback();
+    }
+  }, [orderData, hasNextPage, fetchNextPage]);
+
   const createInfiniteDataSource = useCallback(() => {
     return {
       rowCount: undefined,
@@ -34,107 +102,57 @@ export const useOrderData = () => {
         const { startRow, endRow, successCallback, failCallback } = params;
         const requestId = `${startRow}-${endRow}`;
         
+        if (requestManagerRef.current.pendingRequests.has(requestId)) {
+          return;
+        }
+        
+        requestManagerRef.current.pendingRequests.add(requestId);
+        
         try {
-          if (pendingRequestsRef.current.has(requestId)) {
-            return;
-          }
-          pendingRequestsRef.current.add(requestId);
-
-          const currentData = orderData;
-          
-          if (startRow < currentData.length) {
-            const availableData = currentData.slice(startRow, Math.min(endRow, currentData.length));
-            
-            if (endRow > currentData.length && hasNextPage && !isFetchingNextPage && !isLoadingMoreRef.current) {
-              isLoadingMoreRef.current = true;
-              
-              try {
-                await fetchNextPage();
-              } catch (error) {
-                failCallback();
-              } finally {
-                isLoadingMoreRef.current = false;
-              }
-              
-              const updatedData = orderData;
-              const finalData = updatedData.slice(startRow, Math.min(endRow, updatedData.length));
-              
-              const lastRow = hasNextPage ? -1 : updatedData.length;
-              
-              successCallback(finalData, lastRow);
-            } else {
-              const lastRow = hasNextPage ? -1 : currentData.length;
-              successCallback(availableData, lastRow);
-            }
-          } else {
-            if (hasNextPage && !isFetchingNextPage && !isLoadingMoreRef.current) {
-              isLoadingMoreRef.current = true;
-              
-              try {
-                await fetchNextPage();
-                
-                const updatedData = orderData;
-                const requestedData = updatedData.slice(startRow, Math.min(endRow, updatedData.length));
-                const lastRow = hasNextPage ? -1 : updatedData.length;
-                
-                successCallback(requestedData, lastRow);
-              } catch (error) {
-                failCallback();
-              } finally {
-                isLoadingMoreRef.current = false;
-              }
-            } else {
-              successCallback([], currentData.length);
-            }
-          }
-          
-        } catch (error) {
-          failCallback();
+          await handleDataRequest(startRow, endRow, successCallback, failCallback);
         } finally {
-          pendingRequestsRef.current.delete(requestId);
+          requestManagerRef.current.pendingRequests.delete(requestId);
         }
       }
     };
-  }, [orderData, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  const currentPageCount = useMemo(() => {
-    return data?.pages?.length || 0;
-  }, [data?.pages]);
-
-  const totalLoadedItems = useMemo(() => {
-    return orderData.length;
-  }, [orderData.length]);
+  }, [handleDataRequest]);
 
   const loadMoreOrders = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage && !isLoadingMoreRef.current) {
-      isLoadingMoreRef.current = true;
-      scrollPositionRef.current = window.scrollY;
+    if (hasNextPage && !requestManagerRef.current.isLoadingMore) {
+      requestManagerRef.current.isLoadingMore = true;
+      requestManagerRef.current.scrollPosition = window.scrollY;
       
       fetchNextPage().finally(() => {
-        isLoadingMoreRef.current = false;
+        requestManagerRef.current.isLoadingMore = false;
       });
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const refreshOrders = useCallback(() => {
-    scrollPositionRef.current = 0;
-    isLoadingMoreRef.current = false;
-    pendingRequestsRef.current.clear();
+    requestManagerRef.current.scrollPosition = 0;
+    requestManagerRef.current.isLoadingMore = false;
+    requestManagerRef.current.pendingRequests.clear();
     refetch();
   }, [refetch]);
 
   return {
+    // 데이터
     orderData,
+    ...dataInfo,
+    
+    // 무한 스크롤
     createInfiniteDataSource,
+    
+    // 상태
     isLoading,
     error,
+    
+    // 액션
     loadMoreOrders,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
     refreshOrders,
-    currentPageCount,
-    totalLoadedItems,
-    scrollPosition: scrollPositionRef.current,
+    fetchNextPage,
+    
+    // 메타 정보
+    scrollPosition: requestManagerRef.current.scrollPosition,
   };
 };

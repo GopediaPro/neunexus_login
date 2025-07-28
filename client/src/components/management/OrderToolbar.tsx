@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../ui/Button";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
-import type { BatchInfoResponse } from "@/shared/types";
+import type { BatchInfoResponse, FormTemplate } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
@@ -83,7 +83,7 @@ export const OrderToolbar = () => {
         return;
       }
 
-      setCurrentTemplate(selectedTemplate);
+      setCurrentTemplate(selectedTemplate as FormTemplate);
       toast.dismiss();
       toast.success(`${orderData.length}개의 주문을 불러왔습니다.`);
     } catch (error) {

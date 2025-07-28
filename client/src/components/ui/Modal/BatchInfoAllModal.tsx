@@ -34,7 +34,7 @@ export const BatchInfoAllModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <Modal.Header>
         <Modal.Title>배치 정보 조회</Modal.Title>
         <Modal.CloseButton />
