@@ -1,7 +1,15 @@
 import { API_END_POINT } from "@/constant";
 import { httpClient } from "@/shared/axios";
 
-export const getDownFormOrders = async () => {
-  const response = await httpClient.get(API_END_POINT.DOWN_FORM_ORDERS);
+export const getDownFormOrders = async ({
+  limit = 300000,
+}: {
+  limit?: number;
+}) => {
+  const params: Record<string, any> = {
+    limit
+  };
+
+  const response = await httpClient.get(API_END_POINT.DOWN_FORM_ORDERS, { params });
   return response.data;
 };
