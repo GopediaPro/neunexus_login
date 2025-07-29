@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/Button";
 import { Input } from "./ui/input";
 import { useFieldArray, useForm } from "react-hook-form";
-import { BulkUploadModal } from "./ui/Modal/BulkUploadModal";
+import { ExcelBulkUploadModal } from "./ui/Modal/ExcelBulkUploadModal";
 import { FormField } from "./ui/FormField";
 
 interface AuthTableRow {
@@ -153,8 +153,7 @@ export const TestComponent = () => {
         </div>
       </form>
 
-      {/* Bulk Upload Modal */}
-      <BulkUploadModal
+      <ExcelBulkUploadModal
         isOpen={showBulkUploadModal}
         onClose={() => setShowBulkUploadModal(false)}
       />

@@ -5,9 +5,8 @@ import { Button } from "../Button";
 import { useForm } from "react-hook-form";
 import { Modal } from ".";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
-import { ResultModal } from "./ResultModal";
+import { ResultModal } from "./BulkResultModal";
 import { FormField } from "../FormField";
-// import { Input } from "../input";
 import { postExcelToDb, postExcelToMinio } from "@/api/order";
 import { modalConfig } from "@/constant/order"
 import type { ExcelUploadFormData } from "@/shared/types";
@@ -265,66 +264,6 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
                 error={errors.template_code?.message}
               />
             </div>
-            {/* {mode === 'macro' && (
-              <>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                  <FormField
-                    name="order_date_from"
-                    label="시작 날짜"
-                    control={control}
-                    render={(field) => (
-                      <Input
-                        id="시작 날짜"
-                        type="date"
-                        className="bg-fill-base-100"
-                        {...field}
-                        value={field.value as string}
-                      />
-                    )}
-                    error={errors.order_date_from?.message}
-                  />
-                  </div>
-
-                  <div className="space-y-2">
-                    <FormField
-                      name="order_date_to"
-                      label="종료 날짜"
-                      control={control}
-                      render={(field) => (
-                        <Input
-                          id="종료 날짜"
-                          type="date"
-                          className="bg-fill-base-100"
-                          {...field}
-                          value={field.value as string}
-                        />
-                      )}
-                      error={errors.order_date_to?.message}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <FormField
-                    name="source_table"
-                    label="소스 테이블"
-                    control={control}
-                    render={(field) => (
-                      <Input
-                        id="소스 테이블"
-                        type="text"
-                        placeholder="receive_orders"
-                        className="bg-fill-base-100"
-                        {...field}
-                        value={field.value as string}
-                      />
-                    )}
-                    error={errors.source_table?.message}
-                  />
-                </div>
-              </>
-            )} */}
 
             <div className="space-y-2">
               <FormField
