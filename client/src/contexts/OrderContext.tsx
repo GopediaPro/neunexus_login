@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { useOrderData } from "@/hooks/orderManagement/useOrderData";
-import type { OrderContextValue, OrderTab } from "@/shared/types";
+import type { FormTemplate, OrderContextValue, OrderTab } from "@/shared/types";
 import type { GridApi } from "ag-grid-community";
 const OrderContext = createContext<OrderContextValue | undefined>(undefined);
 
@@ -12,17 +12,24 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [selectedRows, setSelectedRowsState] = useState<any[]>([]);
   const [changedRows, setChangedRowsState] = useState<any[]>([]);
   const { 
-    orderData, 
-    createInfiniteDataSource,
-    isLoading, 
-    error, 
-    loadMoreOrders, 
-    hasNextPage, 
-    fetchNextPage,
-    refreshOrders,
-    isFetchingNextPage,
+    orderData,
+    currentPageCount,
     totalLoadedItems,
+    hasMore: hasNextPage,
+    isLoading: dataIsLoading,
+    
+    createInfiniteDataSource,
+    
+    isLoading,
+    error,
+    
+    loadMoreOrders,
+    refreshOrders,
+    fetchNextPage,
+    
+    scrollPosition
   } = useOrderData();
+  const isFetchingNextPage = dataIsLoading && totalLoadedItems > 0;
 
   const setActiveOrderTab = useCallback((tab: OrderTab) => {
     setActiveOrderTabState(tab);
@@ -30,7 +37,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setChangedRowsState([]);
   }, []);
 
-  const setCurrentTemplate = useCallback((template: string) => {
+  const setCurrentTemplate = useCallback((template: FormTemplate) => {
     setCurrentTemplateState(template);
     setSelectedRowsState([]);
     setChangedRowsState([]);
@@ -64,22 +71,26 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     // 탭 관리
     activeOrderTab,
     setActiveOrderTab,
-    
     // 템플릿 관리
-    currentTemplate,
+    currentTemplate: currentTemplate as FormTemplate,
     setCurrentTemplate,
     
     // 주문 데이터 (무한스크롤)
-    orderData, 
+    orderData,
     createInfiniteDataSource,
     isLoading, 
     error, 
     loadMoreOrders, 
-    hasNextPage, 
+    hasMore: hasNextPage, 
     fetchNextPage,
     isFetchingNextPage,
     refreshOrders,
     totalLoadedItems,
+    
+    // 추가 메타 정보
+    currentPageCount,
+    scrollPosition,
+    
     // 그리드 관리
     gridApi,
     setGridApi,

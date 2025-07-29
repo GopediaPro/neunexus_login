@@ -209,20 +209,31 @@ export interface UseOrderDataParams {
 export type OrderTab = "registration" | "bulk-registration";
 
 export interface OrderContextValue {
+  // 탭 관리
   activeOrderTab: OrderTab;
   setActiveOrderTab: (tab: OrderTab) => void;
-  currentTemplate: string;
-  setCurrentTemplate: (template: string) => void;
-  orderData: any[];
+  
+  // 템플릿 관리
+  currentTemplate: FormTemplate;
+  setCurrentTemplate: (template: FormTemplate) => void;
+  
+  // 주문 데이터 (무한스크롤)
+  orderData: OrderItem[];
   createInfiniteDataSource: () => any;
   isLoading: boolean;
   error: unknown;
   loadMoreOrders: () => void;
-  hasNextPage: boolean;
-  isFetchingNextPage: boolean;
+  hasMore: boolean;
   fetchNextPage: () => void;
+  isFetchingNextPage: boolean;
   refreshOrders: () => void;
   totalLoadedItems: number;
+  
+  // 추가 메타 정보
+  currentPageCount: number;
+  scrollPosition: number;
+  
+  // 그리드 관리
   gridApi: GridApi | null;
   setGridApi: (api: GridApi | null) => void;
   selectedRows: any[];
@@ -247,8 +258,8 @@ export interface BatchInfoData {
   file_name: string;
   file_url: string;
   file_size: number;
-  order_date_from: string; 
-  order_date_to: string;   
+  date_from: string; 
+  date_to: string;   
   order_status: string | null;
   error_message: string | null;
   created_by: string;

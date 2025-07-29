@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "../ui/Button";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
-import type { BatchInfoResponse } from "@/shared/types";
+import type { BatchInfoResponse, FormTemplate } from "@/shared/types";
 import { useOrderGridActions } from "@/utils/useOrderGridActions";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
@@ -18,6 +18,7 @@ import { ConfirmDeleteModal } from "../ui/Modal/ConfirmDeleteModal";
 import { useOrderCreate, useOrderUpdate, useOrderDelete, handleOrderCreate, handleOrderUpdate } from '@/hooks/orderManagement';
 import { toast } from "sonner";
 import { useAuthContext } from "@/contexts";
+import { ExcelBulkUploadModal } from "../ui/Modal/ExcelBulkUploadModal";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
@@ -27,6 +28,7 @@ export const OrderToolbar = () => {
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [isExcelToDbModalOpen, setIsExcelToDbModalOpen] = useState(false);
   const [isExcelToMinioModalOpen, setIsExcelToMinioModalOpen] = useState(false);
+  const [isExcelRunMacroBulkModalOpen, setIsExcelRunMacroBulkModalOpen] = useState(false);
   const [batchInfoAllData, setBatchInfoAllData] = useState<BatchInfoResponse | null>(null);
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
   const [isBatchInfoAllLoading, setIsBatchInfoAllLoading] = useState(false);
@@ -83,7 +85,7 @@ export const OrderToolbar = () => {
         return;
       }
 
-      setCurrentTemplate(selectedTemplate);
+      setCurrentTemplate(selectedTemplate as FormTemplate);
       toast.dismiss();
       toast.success(`${orderData.length}개의 주문을 불러왔습니다.`);
     } catch (error) {
@@ -259,6 +261,10 @@ export const OrderToolbar = () => {
       onClick: () => setIsExcelUploadModalOpen(true),
     },
     {
+      label: '대량 매크로 실행',
+      onClick: () => setIsExcelRunMacroBulkModalOpen(true),
+    },
+    {
       label: 'minio에 업로드',
       onClick: () => setIsExcelUploadModalOpen(true),
     },
@@ -426,6 +432,11 @@ export const OrderToolbar = () => {
         onClose={() => setIsExcelToDbModalOpen(false)}
         onSuccess={handleSaveToDb}
         mode="database"
+      />
+
+      <ExcelBulkUploadModal
+        isOpen={isExcelRunMacroBulkModalOpen}
+        onClose={() => setIsExcelRunMacroBulkModalOpen(false)}
       />
 
       <BatchInfoAllModal

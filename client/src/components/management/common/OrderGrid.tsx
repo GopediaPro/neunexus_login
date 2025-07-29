@@ -29,6 +29,7 @@ export const OrderGrid = () => {
     }
   }, [createInfiniteDataSource, totalLoadedItems]);
 
+
   const createPriceColumn = (field: string, headerName: string, width: number) => ({
     field,
     headerName,
@@ -72,155 +73,139 @@ export const OrderGrid = () => {
     }
   });
 
-  const columnDefs: ColDef[] = useMemo(() => [
-    {
-      field: 'order_id',
-      headerName: '주문ID',
-      width: 160,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agTextCellEditor'
+  const createDateColumn = (field: string, headerName: string, width: number = 150) => ({
+    field,
+    headerName,
+    width,
+    valueFormatter: (params: any) =>
+      params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
+    filter: 'agDateColumnFilter',
+    floatingFilterComponentParams: {
+      suppressFilterButton: true
     },
-    {
-      field: 'mall_order_id',
-      headerName: '몰주문ID',
-      width: 160,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agTextCellEditor'
+    editable: true,
+    cellEditor: 'agDateCellEditor'
+  });
+
+  const createTextColumn = (field: string, headerName: string, width: number, options: {
+    tooltip?: boolean;
+    maxLength?: number;
+  } = {}) => ({
+    field,
+    headerName,
+    width,
+    filter: 'agTextColumnFilter',
+    floatingFilterComponentParams: {
+      suppressFilterButton: true
     },
-    {
-      field: 'product_name',
-      headerName: '상품명',
-      width: 240,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      tooltipField: 'product_name',
-      editable: true,
-      cellEditor: 'agTextCellEditor'
-    },
-    {
-      field: 'receive_name',
-      headerName: '받는분',
-      width: 120,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agTextCellEditor'
-    },
-    {
-      field: 'receive_cel',
-      headerName: '연락처',
-      width: 160,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agTextCellEditor'
-    },
-    {
-      field: 'sale_cnt',
-      headerName: '수량',
-      width: 160,
-      filter: 'agNumberColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      cellClass: 'ag-cell-centered',
-      editable: true,
-      cellEditor: 'agNumberCellEditor',
+    ...(options.tooltip && { tooltipField: field }),
+    editable: true,
+    cellEditor: 'agTextCellEditor',
+    ...(options.maxLength && {
       cellEditorParams: {
-        min: 0,
-        max: 9999
+        maxLength: options.maxLength
       }
+    })
+  });
+
+  const createNumberColumn = (field: string, headerName: string, width: number, options: {
+    min?: number;
+    max?: number;
+    centered?: boolean;
+  } = {}) => ({
+    field,
+    headerName,
+    width,
+    filter: 'agNumberColumnFilter',
+    floatingFilterComponentParams: {
+      suppressFilterButton: true
     },
+    ...(options.centered && { cellClass: 'ag-cell-centered' }),
+    editable: true,
+    cellEditor: 'agNumberCellEditor',
+    cellEditorParams: {
+      ...(options.min !== undefined && { min: options.min }),
+      ...(options.max !== undefined && { max: options.max })
+    }
+  });
+
+  const columnDefs: ColDef[] = useMemo(() => [
+    // 기본 정보
+    createNumberColumn('id', 'ID', 80, { min: 0 }),
+    createTextColumn('order_id', '주문ID', 160),
+    createTextColumn('mall_order_id', '몰주문ID', 160),
+    
+    // 상품 정보
+    createTextColumn('product_id', '상품ID', 120),
+    createTextColumn('product_name', '상품명', 240, { tooltip: true }),
+    createTextColumn('mall_product_id', '몰상품ID', 140),
+    createTextColumn('item_name', '아이템명', 200, { tooltip: true }),
+    createTextColumn('sku_value', 'SKU정보', 200, { tooltip: true }),
+    createTextColumn('sku_alias', 'SKU별칭', 120),
+    createTextColumn('sku_no', 'SKU번호', 120),
+    createTextColumn('barcode', '바코드', 140),
+    createTextColumn('model_name', '모델명', 150),
+    createTextColumn('erp_model_name', 'ERP모델명', 150),
+    createTextColumn('location_nm', '위치명', 120),
+    
+    // 수량 및 금액
+    createNumberColumn('sale_cnt', '수량', 100, { min: 0, max: 9999, centered: true }),
     createPriceColumn('pay_cost', '결제금액', 120),
-    createPriceColumn('expected_payout', '예상정산금', 120),
-    createPriceColumn('service_fee', '서비스수수료', 120),
     createPriceColumn('delv_cost', '배송비', 120),
+    createPriceColumn('total_cost', '총금액', 120),
+    createPriceColumn('total_delv_cost', '총배송비', 120),
+    createPriceColumn('expected_payout', '예상정산금', 120),
+    createPriceColumn('etc_cost', '기타비용', 120),
+    createPriceColumn('service_fee', '서비스수수료', 120),
+    
+    // 합계 필드들
+    createTextColumn('sum_p_ea', '합계수량', 100),
+    createPriceColumn('sum_expected_payout', '합계예상정산금', 140),
+    createPriceColumn('sum_pay_cost', '합계결제금액', 130),
+    createPriceColumn('sum_delv_cost', '합계배송비', 120),
+    createPriceColumn('sum_total_cost', '합계총금액', 120),
+    
+    // 배송 정보
+    createTextColumn('receive_name', '받는분', 120),
+    createTextColumn('receive_cel', '연락처', 160),
+    createTextColumn('receive_tel', '전화번호', 160),
+    createTextColumn('receive_addr', '배송주소', 300, { tooltip: true }),
+    createTextColumn('receive_zipcode', '우편번호', 100),
+    createTextColumn('delivery_payment_type', '배송결제유형', 140),
+    createTextColumn('delv_msg', '배송메모', 200, { tooltip: true }),
+    createTextColumn('delivery_id', '배송업체ID', 120),
+    createTextColumn('delivery_class', '배송등급', 120),
+    createTextColumn('invoice_no', '송장번호', 150),
+    
+    // 판매처 및 기타 정보
+    createTextColumn('fld_dsp', '판매처', 180),
+    createTextColumn('order_etc_6', '주문기타6', 120),
+    createTextColumn('order_etc_7', '주문기타7', 120),
+    createTextColumn('etc_msg', '기타메시지', 200, { tooltip: true }),
+    createTextColumn('free_gift', '사은품', 120),
+    createTextColumn('price_formula', '가격공식', 150),
+    
+    // 상태 및 처리 정보
+    createTextColumn('form_name', '폼명', 120),
+    createNumberColumn('seq', '순번', 80, { min: 0 }),
+    createTextColumn('idx', '인덱스', 100),
+    createTextColumn('work_status', '작업상태', 120),
+    
+    // 날짜 정보
+    createDateColumn('process_dt', '처리일시'),
+    createDateColumn('order_date', '주문일자'),
+    createTextColumn('reg_date', '등록일', 120),
+    createTextColumn('ord_confirm_date', '주문확인일', 130),
+    createTextColumn('rtn_dt', '반품일', 120),
+    createTextColumn('chng_dt', '변경일', 120),
+    createTextColumn('delivery_confirm_date', '배송확인일', 130),
+    createTextColumn('cancel_dt', '취소일', 120),
+    createTextColumn('hope_delv_date', '희망배송일', 130),
+    createTextColumn('inv_send_dm', '송장발송일', 130),
+    createDateColumn('created_at', '생성일시'),
     {
-      field: 'fld_dsp',
-      headerName: '판매처',
-      width: 180,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agTextCellEditor'
-    },
-    {
-      field: 'receive_addr',
-      headerName: '배송주소',
-      width: 250,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      tooltipField: 'receive_addr',
-      editable: true,
-      cellEditor: 'agTextCellEditor'
-    },
-    {
-      field: 'delv_msg',
-      headerName: '배송메모',
-      width: 200,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      tooltipField: 'delv_msg',
-      editable: true,
-      cellEditor: 'agTextCellEditor'
-    },
-    {
-      field: 'sku_value',
-      headerName: 'SKU정보',
-      width: 250,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      tooltipField: 'sku_value',
-      editable: true,
-      cellEditor: 'agTextCellEditor'
-    },
-    {
-      field: 'process_dt',
-      headerName: '처리일시',
-      width: 150,
-      valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
-      filter: 'agDateColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agDateCellEditor'
-    },
-    {
-      field: 'created_at',
-      headerName: '생성일시',
-      width: 150,
-      valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
-      filter: 'agDateColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
+      ...createDateColumn('updated_at', '수정일시'),
       headerClass: 'border-r-0'
-      
     }
   ], []);
 
