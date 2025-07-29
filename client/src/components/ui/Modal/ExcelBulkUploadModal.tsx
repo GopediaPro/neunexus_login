@@ -5,6 +5,7 @@ import { Icon } from "../Icon";
 import { toast } from "sonner";
 import { useAuthContext } from "@/contexts";
 import { postExcelRunMacroBulk } from "@/api/order/postExcelRunMacroBulk";
+import { BulkResultModal } from "./ResultBulkModal";
 
 interface FileItem {
   id: string;
@@ -16,12 +17,25 @@ interface FileItem {
   file?: File;
 }
 
+interface FileResult {
+  name: string;
+  url?: string;
+  status: 'success' | 'error';
+}
+
 export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [activeTab, setActiveTab] = useState<'bulk' | 'individual'>('bulk');
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [bulkResult, setBulkResult] = useState<{
+    type: 'success' | 'error' | 'info' | 'warning';
+    title: string;
+    message: string;
+    fileResults: FileResult[];
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { user } = useAuthContext();
@@ -211,9 +225,15 @@ export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onC
     const progressInterval = simulateProgressUpdate(fileIds);
 
     try {
-      await uploadFiles(filesToUpload);
+      const response = await uploadFiles(filesToUpload);
 
       clearInterval(progressInterval);
+
+      const fileResults: FileResult[] = filesToUpload.map((file, index) => ({
+        name: file.name,
+        url: response?.file_urls?.[index] || response?.file_url,
+        status: 'success' as const
+      }));
 
       setFiles(prev => prev.map(file => 
         filesToUpload.some(f => f.id === file.id)
@@ -226,9 +246,26 @@ export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onC
           : file
       ));
 
-      toast.success(`${filesToUpload.length}개 파일 업로드가 완료되었습니다.`);
+      const successCount = fileResults.filter(f => f.status === 'success').length;
+      const errorCount = fileResults.filter(f => f.status === 'error').length;
+
+      setBulkResult({
+        type: errorCount > 0 ? 'warning' : 'success',
+        title: '대량 파일 처리 완료',
+        message: `총 ${filesToUpload.length}개 파일 처리가 완료되었습니다.\n처리 시간: ${new Date().toLocaleString('ko-KR')}`,
+        fileResults
+      });
+
+      setShowResultModal(true);
+      toast.success(`${successCount}개 파일 업로드가 완료되었습니다.`);
     } catch (error) {
       clearInterval(progressInterval);
+
+      const fileResults: FileResult[] = filesToUpload.map(file => ({
+        name: file.name,
+        status: 'error' as const
+      }));
+
 
       setFiles(prev => prev.map(file => 
         filesToUpload.some(f => f.id === file.id)
@@ -236,6 +273,14 @@ export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onC
           : file
       ));
 
+      setBulkResult({
+        type: 'error',
+        title: '대량 파일 처리 실패',
+        message: `파일 처리 중 오류가 발생했습니다.\n오류 시간: ${new Date().toLocaleString('ko-KR')}\n\n다시 시도해주세요.`,
+        fileResults
+      });
+
+      setShowResultModal(true);
       toast.error('업로드 중 오류가 발생했습니다.');
     } finally {
       setIsUploading(false);
@@ -276,14 +321,29 @@ export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onC
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  const handleClose = () => {
+    setFiles([]);
+    setSelectedFiles([]);
+    setBulkResult(null);
+    onClose();
+  };
+
+  const handleResultModalClose = () => {
+    setShowResultModal(false);
+    if (bulkResult?.type === 'success' || bulkResult?.type === 'warning') {
+      handleClose();
+    }
+    setBulkResult(null);
+  };
+
   const waitingFiles = files.filter(f => f.status === 'waiting');
   const selectedWaitingFiles = files.filter(f => selectedFiles.includes(f.id) && f.status === 'waiting');
   const isAllSelected = files.length > 0 && selectedFiles.length === files.length;
   const isPartiallySelected = selectedFiles.length > 0 && selectedFiles.length < files.length;
-
+  
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+      <Modal isOpen={isOpen} onClose={handleClose} size="3xl">
         <Modal.Header>
           <Modal.Title>대량파일 업로드</Modal.Title>
           <Modal.CloseButton />
@@ -471,6 +531,18 @@ export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onC
         </Modal.Footer>
       </Modal>
 
+      {bulkResult && (
+        <BulkResultModal
+          isOpen={showResultModal}
+          onClose={handleResultModalClose}
+          type={bulkResult.type}
+          title={bulkResult.title}
+          message={bulkResult.message}
+          fileResults={bulkResult.fileResults}
+          urlLabel="다운로드 링크"
+          showCopyButton={true}
+        />
+      )}
     </>
   );
 };

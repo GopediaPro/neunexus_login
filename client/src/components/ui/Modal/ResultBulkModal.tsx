@@ -109,7 +109,7 @@ export const BulkResultModal = ({
               <div className="w-full space-y-4">
                 <div className="text-left">
                   <label className={`block text-body-l ${colors.accent} mb-3 flex items-center gap-2`}>
-                    <Icon name="document" ariaLabel="document" style="w-5 h-5" />
+                    <Icon name="document" ariaLabel="document" style="w-5 h-5 text-primary-500" />
                     처리 결과 ({fileResults.length}개 파일)
                   </label>
                 </div>
