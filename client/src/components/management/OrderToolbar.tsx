@@ -261,7 +261,7 @@ export const OrderToolbar = () => {
       onClick: () => setIsExcelUploadModalOpen(true),
     },
     {
-      label: '대량파일 매크로 실행',
+      label: '대량 매크로 실행',
       onClick: () => setIsExcelRunMacroBulkModalOpen(true),
     },
     {

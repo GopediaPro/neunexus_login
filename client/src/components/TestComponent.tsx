@@ -44,8 +44,8 @@ export const TestComponent = () => {
     });
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form Data:", data);
+  const onSubmit = () => {
+    
   };
 
   return (

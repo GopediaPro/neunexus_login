@@ -11,6 +11,7 @@ import { postExcelToDb, postExcelToMinio } from "@/api/order";
 import { modalConfig } from "@/constant/order"
 import type { ExcelUploadFormData } from "@/shared/types";
 import { postExcelRunMacro } from "@/api/order/postExcelRunMacro";
+import { toast } from "sonner";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;
@@ -107,7 +108,8 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
           url: response.file_url || response.file_url
         });
       } else if (mode === 'database') {
-        if (!data.template_code || !data.file) return;
+        if (!data.template_code || !data.file) 
+          return toast.error('템플릿 코드와 파일을 선택해주세요.');
         const response = await postExcelToDb({
           template_code: data.template_code,
           file: data.file

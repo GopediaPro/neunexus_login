@@ -226,14 +226,28 @@ export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onC
 
     try {
       const response = await uploadFiles(filesToUpload);
-
+      
       clearInterval(progressInterval);
+      const fileResults: FileResult[] = [];
 
-      const fileResults: FileResult[] = filesToUpload.map((file, index) => ({
-        name: file.name,
-        url: response?.file_urls?.[index] || response?.file_url,
-        status: 'success' as const
-      }));
+      if (response?.successful_results && Array.isArray(response.successful_results)) {
+        response.successful_results.forEach((successResult: any) => {
+          fileResults.push({
+            name: successResult.filename,
+            url: successResult.file_url,
+            status: 'success'
+          });
+        });
+      };
+
+      if (response?.failed_results && Array.isArray(response.failed_results)) {
+        response.failed_results.forEach((failResult: any) => {
+          fileResults.push({
+            name: failResult.filename,
+            status: 'error'
+          });
+        });
+      };
 
       setFiles(prev => prev.map(file => 
         filesToUpload.some(f => f.id === file.id)
@@ -263,7 +277,7 @@ export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onC
 
       const fileResults: FileResult[] = filesToUpload.map(file => ({
         name: file.name,
-        status: 'error' as const
+        status: 'error' as const,
       }));
 
 
@@ -340,7 +354,7 @@ export const ExcelBulkUploadModal = ({ isOpen, onClose }: { isOpen: boolean, onC
   const selectedWaitingFiles = files.filter(f => selectedFiles.includes(f.id) && f.status === 'waiting');
   const isAllSelected = files.length > 0 && selectedFiles.length === files.length;
   const isPartiallySelected = selectedFiles.length > 0 && selectedFiles.length < files.length;
-  
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={handleClose} size="3xl">

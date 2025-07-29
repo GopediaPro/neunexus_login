@@ -63,8 +63,7 @@ const CompleteFormExample = () => {
     }
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log('Form Data:', data);
+  const onSubmit = () => {
     alert('폼이 제출되었습니다! (콘솔 확인)');
   };
 

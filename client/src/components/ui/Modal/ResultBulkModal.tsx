@@ -27,7 +27,6 @@ export const BulkResultModal = ({
   title,
   message,
   fileResults = [],
-  urlLabel = "다운로드 링크",
   showCopyButton = true
 }: BulkResultModalProps) => {
   const messages = message.split('\n');
@@ -170,7 +169,7 @@ export const BulkResultModal = ({
                   <span className="text-primary-600">
                     성공: {fileResults.filter(f => f.status === 'success').length}개
                   </span>
-                  <span className="text-rose-600">
+                  <span className="text-error-500">
                     실패: {fileResults.filter(f => f.status === 'error').length}개
                   </span>
                 </div>
