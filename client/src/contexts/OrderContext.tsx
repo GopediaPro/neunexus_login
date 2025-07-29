@@ -13,23 +13,9 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [changedRows, setChangedRowsState] = useState<any[]>([]);
   const { 
     orderData,
-    currentPageCount,
-    totalLoadedItems,
-    hasMore: hasNextPage,
     isLoading: dataIsLoading,
-    
-    createInfiniteDataSource,
-    
-    isLoading,
     error,
-    
-    loadMoreOrders,
-    refreshOrders,
-    fetchNextPage,
-    
-    scrollPosition
   } = useOrderData();
-  const isFetchingNextPage = dataIsLoading && totalLoadedItems > 0;
 
   const setActiveOrderTab = useCallback((tab: OrderTab) => {
     setActiveOrderTabState(tab);
@@ -68,30 +54,13 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   }, [gridApi]);
 
   const value: OrderContextValue = {
-    // 탭 관리
     activeOrderTab,
     setActiveOrderTab,
-    // 템플릿 관리
     currentTemplate: currentTemplate as FormTemplate,
     setCurrentTemplate,
-    
-    // 주문 데이터 (무한스크롤)
     orderData,
-    createInfiniteDataSource,
-    isLoading, 
+    isLoading: dataIsLoading, 
     error, 
-    loadMoreOrders, 
-    hasMore: hasNextPage, 
-    fetchNextPage,
-    isFetchingNextPage,
-    refreshOrders,
-    totalLoadedItems,
-    
-    // 추가 메타 정보
-    currentPageCount,
-    scrollPosition,
-    
-    // 그리드 관리
     gridApi,
     setGridApi,
     selectedRows,
