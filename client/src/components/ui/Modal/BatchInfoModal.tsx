@@ -246,7 +246,7 @@ export const BatchInfoModal = ({
                           batch.error_message ? 'bg-red-100' : 'bg-blue-100'
                         }`}>
                           <Icon 
-                            name={batch.error_message ? "alert-triangle" : "document"} 
+                            name={batch.error_message ? "alert" : "document"} 
                             style={`w-8 h-8 ${batch.error_message ? 'text-red-600' : 'text-blue-600'}`} 
                           />
                         </div>
