@@ -251,36 +251,17 @@ export const OrderGrid = () => {
   }), []);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
-  if (setGridApi) {
-    setGridApi(params.api);
-  } else {
-    setInternalGridApi(params.api);
-  }
-
-  setTimeout(() => {
-    if (params.api) {
-      params.api.sizeColumnsToFit();
+    if (setGridApi) {
+      setGridApi(params.api);
+    } else {
+      setInternalGridApi(params.api);
     }
-  }, 100);
-
-
-const allColumns = (params as any).columnApi.getAllColumns();
-
-console.log("🟦 전체 컬럼:");
-allColumns.forEach((col: any) => {
-  console.log("컬럼 ID:", col.getColId(), "| 보임 여부:", col.isVisible());
-});
-
-const visibleColumns = allColumns.filter((col: any) => col.isVisible());
-console.log("🟩 선택된(보이는) 컬럼:");
-visibleColumns.forEach((col: any) => {
-  console.log("선택된 컬럼 ID:", col.getColId());
-});
-
-
-
-
-}, [setGridApi]);
+    setTimeout(() => {
+      if (params.api) {
+        params.api.sizeColumnsToFit();
+      }
+    }, 100);
+  }, [setGridApi]);
 
 
   const onSelectionChangedCallback = useCallback((event: any) => {
