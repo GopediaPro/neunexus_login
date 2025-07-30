@@ -1,7 +1,9 @@
 import { SidebarMenuButton, SubMenuItem } from "@/components/mainpage/sidebar/SidebarMenuButton";
 import { Icon } from "@/components/ui/Icon";
 import { Logo } from "@/components/ui/Logo";
+import { Toggle } from "@/components/ui/Toggle";
 import { useMenuSideabar } from "@/hooks";
+import { useState } from "react";
 
 export const MenuSidebarLayout = () => {
   const {
@@ -13,6 +15,13 @@ export const MenuSidebarLayout = () => {
     handleLogout,
     handleLogoClick,
   } = useMenuSideabar();
+
+  const [darkMode, setDarkMode] = useState(false);
+
+  const handleToggleDarkMode = (checked: boolean) => {
+    setDarkMode(checked);
+    document.documentElement.classList.toggle("dark", checked);
+  };
 
   return (
     <div className="flex flex-col w-sidebar-left 2xl:w-sidebar-left-2xl bg-fill-base-100 h-full border-r border-stroke-base-100">
@@ -91,6 +100,18 @@ export const MenuSidebarLayout = () => {
         </nav>
       </div>
 
+      {/* ✅ 다크모드 토글 추가 */}
+      <div className="px-4 pb-2">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-text-secondary">Darkmode</span>
+          <Toggle
+            checked={darkMode}
+            onCheckedChange={handleToggleDarkMode}
+            size="md"
+          />
+        </div>
+      </div>
+
       <div className="p-4">
         <button
           onClick={handleLogout}
@@ -102,4 +123,4 @@ export const MenuSidebarLayout = () => {
       </div>
     </div>
   );
-}
+};
