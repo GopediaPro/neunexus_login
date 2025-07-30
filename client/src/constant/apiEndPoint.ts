@@ -29,4 +29,6 @@ export const API_END_POINT = {
   MACRO_EXCEL_RUN_MACRO_BULK: `${API_VERSION}/macro/excel-run-macro-bulk`,
   MACRO_BATCH_INFO_ALL: `${API_VERSION}/macro/batch-info/all`,
   MACRO_BATCH_INFO_LATEST: `${API_VERSION}/macro/batch-info/latest`,
+
+  PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/excel/import`,
 } as const;
