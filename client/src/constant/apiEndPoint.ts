@@ -2,7 +2,7 @@ export const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_VERSION = '/api/v1';
 
 export const API_END_POINT = {
-  PRODUCTS: `${API_VERSION}/products`,
+  PRODUCTS: `${API_VERSION}/product`,
   // 다운폼 주문 기본 엔드포인트
   DOWN_FORM_ORDERS: `${API_VERSION}/down-form-orders`,
   DOWN_FORM_ORDERS_PAGINATION: `${API_VERSION}/down-form-orders/pagination`,
@@ -29,4 +29,6 @@ export const API_END_POINT = {
   MACRO_EXCEL_RUN_MACRO_BULK: `${API_VERSION}/macro/excel-run-macro-bulk`,
   MACRO_BATCH_INFO_ALL: `${API_VERSION}/macro/batch-info/all`,
   MACRO_BATCH_INFO_LATEST: `${API_VERSION}/macro/batch-info/latest`,
+
+  PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/excel/import`,
 } as const;

@@ -1,14 +1,18 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { Input } from "../ui/input";
 import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { useProductContext } from "@/contexts/ProductContext";
+import { toast } from "sonner";
+import { useProductImport } from "@/hooks/productManagement/useProductImport";
 
 export const ProductToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const [isImporting, setIsImporting] = useState(false);
+
   const {
     search,
     setSearch,
@@ -16,8 +20,31 @@ export const ProductToolbar = () => {
     setActiveProductTab,
   } = useProductContext();
 
+  const { handleFileImport, triggerFileUpload, isUploading } = useProductImport();
+
   const handleIconClick = () => {
     inputRef.current?.focus();
+  };
+
+  const handleExcelImport = () => {
+    triggerFileUpload(async (file: File) => {
+      setIsImporting(true);
+      
+      try {
+        const result = await handleFileImport(file, '상품등록');
+        
+        if (result.success) {
+          toast.success(result.message);
+        } else {
+          toast.error(result.message);
+        }
+      } catch (error) {
+        alert('업로드 중 예상치 못한 오류가 발생했습니다.');
+        console.error('Upload error:', error);
+      } finally {
+        setIsImporting(false);
+      }
+    });
   };
 
   return (
@@ -72,7 +99,24 @@ export const ProductToolbar = () => {
 
         <div className="flex items-center gap-2">
           <Button variant="light" className="py-5">상품 등록</Button>
-          <Button variant="light" className="py-5">판매가 수정</Button>
+          <Button 
+            variant="light" 
+            className="py-5 flex items-center gap-2" 
+            onClick={handleExcelImport}
+            disabled={isUploading || isImporting}
+          >
+            {(isUploading || isImporting) ? (
+              <>
+                <Icon name="loader" style="w-4 h-4 animate-spin" />
+                업로드 중...
+              </>
+            ) : (
+              <>
+                <Icon name="upload" style="w-4 h-4" />
+                엑셀 업로드
+              </>
+            )}
+          </Button>
           <Button variant="light" className="py-5">카테고리 수정</Button>
           <Button variant="light" className="py-5">옵션별칭 수정</Button>
         </div>

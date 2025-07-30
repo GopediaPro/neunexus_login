@@ -9,6 +9,7 @@ export interface OrderItem {
   order_date?: string;
   reg_date?: string;
   ord_confirm_date?: string;
+  work_status: string;
   rtn_dt?: string;
   chng_dt?: string;
   delivery_confirm_date?: string;
@@ -209,38 +210,20 @@ export interface UseOrderDataParams {
 export type OrderTab = "registration" | "bulk-registration";
 
 export interface OrderContextValue {
-  // 탭 관리
-  activeOrderTab: OrderTab;
-  setActiveOrderTab: (tab: OrderTab) => void;
-  
-  // 템플릿 관리
-  currentTemplate: FormTemplate;
-  setCurrentTemplate: (template: FormTemplate) => void;
-  
-  // 주문 데이터 (무한스크롤)
-  orderData: OrderItem[];
-  createInfiniteDataSource: () => any;
-  isLoading: boolean;
-  error: unknown;
-  loadMoreOrders: () => void;
-  hasMore: boolean;
-  fetchNextPage: () => void;
-  isFetchingNextPage: boolean;
-  refreshOrders: () => void;
-  totalLoadedItems: number;
-  
-  // 추가 메타 정보
-  currentPageCount: number;
-  scrollPosition: number;
-  
-  // 그리드 관리
-  gridApi: GridApi | null;
-  setGridApi: (api: GridApi | null) => void;
-  selectedRows: any[];
-  setSelectedRows: (rows: any[]) => void;
-  changedRows: any[];
-  setChangedRows: (rows: any[]) => void;
-  clearSelections: () => void;
+    activeOrderTab: OrderTab;
+    setActiveOrderTab: (tab: OrderTab) => void;
+    currentTemplate: FormTemplate;
+    setCurrentTemplate: (template: FormTemplate) => void;
+    orderData: OrderItem[];
+    isLoading: boolean;
+    error: Error | null;
+    gridApi: GridApi | null;
+    setGridApi: (api: GridApi | null) => void;
+    selectedRows: any[];
+    setSelectedRows: (rows: any[]) => void;
+    changedRows: any[];
+    setChangedRows: (rows: any[]) => void;
+    clearSelections: () => void;
 };
 
 export interface UseOrderGridParams {

@@ -25,6 +25,21 @@ export const REQUIRED_FIELDS_BY_TEMPLATE: Record<FormTemplate, (keyof OrderItem)
   tmon_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
 };
 
+export const FORM_TYPE_OPTIONS = [
+  { value: 'all', label: '전체' },
+  { value: 'basic_erp', label: 'Basic ERP' },
+  { value: 'gmarket_erp', label: 'G마켓 ERP' },
+  { value: 'brandi_erp', label: 'Brandi ERP' },
+  { value: 'basic_bundle', label: 'Basic Bundle' },
+  { value: 'gmarket_bundle', label: 'G마켓 Bundle' }
+];
+
+export const STATUS_OPTIONS = [
+  { value: 'all', label: '전체' },
+  { value: 'success', label: '성공' },
+  { value: 'error', label: '실패' }
+];
+
 export const modalConfig = {
   minio: {
     title: '엑셀 업로드',

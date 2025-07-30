@@ -3,7 +3,7 @@ import { Button } from "../ui/Button";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "../ui/Modal/OrderRegisterModal";
 import type { BatchInfoResponse, FormTemplate } from "@/shared/types";
-import { useOrderGridActions } from "@/utils/useOrderGridActions";
+import { useOrderGridActions } from "@/hooks/orderManagement/useOrderGridActions";
 import { ExcelUploadModal } from "../ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/contexts/OrderContext";
 import { BatchInfoAllModal } from "../ui/Modal/BatchInfoAllModal";
@@ -47,10 +47,21 @@ export const OrderToolbar = () => {
     currentTemplate,
   } = useOrderContext();
 
+  const {
+    addNewRow,
+    addMultipleRows,
+    deleteSelectedRows,
+    selectAllRows,
+    deselectAllRows,
+    clearFilters,
+    hasSelectedRows,
+    duplicateSelectedRows,
+    selectedRowCount,
+  } = useOrderGridActions(gridApi);
+
   const bulkCreateMutation = useOrderCreate();
   const bulkUpdateMutation = useOrderUpdate();
   const bulkDeleteMutation = useOrderDelete();
-  const { addNewRow } = useOrderGridActions(gridApi);
 
   const refreshGrid = () => {
     if (!gridApi) return;
@@ -103,6 +114,40 @@ export const OrderToolbar = () => {
   const handleOrderUpdateClick = async () => {
     if (!gridApi) return;
     handleOrderUpdate(changedRows, bulkUpdateMutation, currentTemplate, gridApi);
+  };
+
+  const handleAddSingleRow = async () => {
+    try {
+      await addNewRow();
+      toast.success('새 행이 추가되었습니다.');
+    } catch (error) {
+      console.error('행 추가 실패:', error);
+      toast.error('행 추가에 실패했습니다.');
+    }
+  };
+
+  const handleAddMultipleRows = async () => {
+    try {
+      await addMultipleRows(5);
+      toast.success('5개 행이 추가되었습니다.');
+    } catch (error) {
+      console.error('여러 행 추가 실패:', error);
+      toast.error('행 추가에 실패했습니다.');
+    }
+  };
+
+  const handleDuplicateRows = async () => {
+    try {
+      if (!hasSelectedRows) {
+        toast.error('복사할 행을 선택해주세요.');
+        return;
+      }
+      await duplicateSelectedRows();
+      toast.success(`${selectedRowCount}개 행이 복사되었습니다.`);
+    } catch (error) {
+      console.error('행 복사 실패:', error);
+      toast.error('행 복사에 실패했습니다.');
+    }
   };
 
   const handleOrderDelete = () => {
@@ -180,6 +225,18 @@ export const OrderToolbar = () => {
       setIsBulkDeleting(false);
       setIsConfirmDeleteModalOpen(false);
       setDeleteAction(null);
+    }
+  };
+
+  const handleRowDelete = async () => {
+    try {
+      if (!hasSelectedRows) {
+        toast.error('삭제할 행을 선택해주세요.');
+        return;
+      }
+      await deleteSelectedRows();
+    } catch (error) {
+      console.error('행 삭제 실패:', error);
     }
   };
 
@@ -295,6 +352,42 @@ export const OrderToolbar = () => {
     }
   ];
 
+  const handleRowItems = [
+    {
+      label: '1개 행 추가',
+      onClick: handleAddSingleRow,
+    },
+    {
+      label: '5개 행 추가',
+      onClick: handleAddMultipleRows,
+    },
+    {
+      label: '선택 행 복사',
+      onClick: handleDuplicateRows,
+      disabled: !hasSelectedRows,
+    },
+    {
+      label: '선택 행 삭제',
+      onClick: handleRowDelete,
+      disabled: !hasSelectedRows,
+    },
+    {
+      label: '전체 선택',
+      onClick: selectAllRows,
+      disabled: !gridApi,
+    },
+    {
+      label: '선택 해제',
+      onClick: deselectAllRows,
+      disabled: !hasSelectedRows,
+    },
+    {
+      label: '필터 초기화',
+      onClick: clearFilters,
+      disabled: !gridApi,
+    }
+  ];
+
   const isCreateDisabled = bulkCreateMutation.isPending;
   const isUpdateDisabled = changedRows.length === 0 || bulkUpdateMutation.isPending;
   const isDeleteDisabled = selectedRows.length === 0 || bulkDeleteMutation.isPending;
@@ -372,7 +465,20 @@ export const OrderToolbar = () => {
             </Button>
           </div>
           <div className="flex gap-2">
-            <Button variant="light" size="sidebar" className="py-5" onClick={addNewRow}>행 추가</Button>
+            <Dropdown
+              trigger={
+                <Button 
+                  variant="light" 
+                  size="sidebar"
+                  className="py-5 flex items-center gap-1"
+                >
+                  행 관리
+                  <ChevronDown size={24} className="text-text-base-400" />
+                </Button>
+              }
+              items={handleRowItems}
+              align="right"
+            />
             <Dropdown
               trigger={
                 <Button 

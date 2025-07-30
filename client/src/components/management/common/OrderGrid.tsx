@@ -1,34 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import type { ColDef, GridApi, GridReadyEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useOrderContext } from "@/contexts/OrderContext";
 
 export const OrderGrid = () => {
   const {
-    createInfiniteDataSource,
+    orderData,
+    isLoading,
     setGridApi,
     setSelectedRows,
     setChangedRows,
-    totalLoadedItems,
-    isFetchingNextPage,
   } = useOrderContext();
 
   const gridRef = useRef<AgGridReact>(null);
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
   const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
-  
-  useEffect(() => {
-    if (gridRef.current?.api && createInfiniteDataSource) {
-      const dataSource = createInfiniteDataSource();
-      
-      gridRef.current.api.setGridOption('datasource', dataSource);
-    
-      if (totalLoadedItems > 0) {
-        gridRef.current.api.refreshInfiniteCache();
-      }
-    }
-  }, [createInfiniteDataSource, totalLoadedItems]);
-
 
   const createPriceColumn = (field: string, headerName: string, width: number) => ({
     field,
@@ -219,22 +205,6 @@ export const OrderGrid = () => {
 
   const gridOptions = useMemo(() => ({
     theme: "legacy" as const,
-
-    // 무한 스크롤 모델 설정
-    rowModelType: 'infinite' as const,
-    
-    // 무한 스크롤 관련 설정 최적화
-    infiniteInitialRowCount: 100, // 초기 표시할 행 수 (실제 데이터 로드 전)
-    maxBlocksInCache: 10, // 캐시할 최대 블록 수
-    maxConcurrentDatasourceRequests: 2, // 동시 요청 수 제한
-    cacheBlockSize: 200, // 블록당 200개 행 (limit와 일치)
-    cacheOverflowSize: 2, // 오버플로우 크기
-    purgeClosedRowNodes: false, // 닫힌 노드 제거 비활성화 (스크롤 성능 향상)
-    
-    // 스크롤 및 로딩 최적화
-    rowBuffer: 10, // 뷰포트 외부에 렌더링할 행 수
-    viewportRowModelType: 'normal', // 뷰포트 모델 타입
-
     pagination: false,
     paginationPageSize: 20,
     animateRows: true,
@@ -253,18 +223,12 @@ export const OrderGrid = () => {
     singleClickEdit: true,
     stopEditingWhenCellsLoseFocus: true,
 
-    loadingCellRenderer: () => `
-      <div style="padding: 10px; text-align: center; color: #666;">
-        로딩 중... ${isFetchingNextPage ? '(추가 데이터 로드 중)' : ''}
-      </div>
-    `,
-
     scrollbarWidth: 16,
     suppressScrollOnNewData: false,
     suppressRowVirtualisation: false,
 
     getRowId: (params: any) => params.data.id?.toString(),
-  }), [isFetchingNextPage]);
+  }), []);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
     if (setGridApi) {
@@ -272,12 +236,7 @@ export const OrderGrid = () => {
     } else {
       setInternalGridApi(params.api);
     }
-
-    if (createInfiniteDataSource) {
-      const dataSource = createInfiniteDataSource();
-      params.api.setGridOption('datasource', dataSource);
-    }
-  }, [setGridApi, createInfiniteDataSource]);
+  }, [setGridApi]);
 
   const onSelectionChangedCallback = useCallback((event: any) => {
     const selectedRows = event.api.getSelectedRows();
@@ -314,27 +273,12 @@ export const OrderGrid = () => {
     }
   }, [setChangedRows]);
 
-  if (!createInfiniteDataSource) {
-    return (
-      <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4">
-            <svg className="w-16 h-16 mx-auto text-text-base-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <h3 className="text-lg font-medium text-text-base-500 mb-2">주문 관리 시스템</h3>
-          <p className="text-text-base-400 mb-1">템플릿을 선택하여 주문 데이터를 조회하세요</p>
-          <p className="text-sm text-text-base-300">'주문 등록' 버튼을 클릭하여 시작하세요</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100">
       <AgGridReact
         ref={gridRef}
+        rowData={orderData}
+        loading={isLoading}
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
         onGridReady={onGridReady}
