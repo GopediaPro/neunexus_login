@@ -58,12 +58,12 @@ export const handleOrderCreate = async (
       items: selectedRows.map((row, index) => {
         const content: any = {
           id: 0,
-          process_dt: row.process_dt?.trim() ? row.process_dt.replace('Z', '') : new Date().toISOString().slice(0, -1),
+          process_dt: row.process_dt?.trim() ? row.process_dt : new Date().toISOString(),
           form_name: row.form_name || currentTemplate,
           seq: row.seq ? Number(row.seq) : 1,
           idx: row.idx || `ORDER_${Date.now()}_${index}_${Math.random().toString(36).substr(2, 6)}`,
           work_status: row.work_status || "pending",
-          order_date: row.order_date ? new Date(row.order_date).toISOString().slice(0, -1) : new Date().toISOString().slice(0, -1),
+          order_date: row.order_date ? new Date(row.order_date).toISOString() : new Date().toISOString(),
           reg_date: row.reg_date || new Date().toISOString().split('T')[0],
           ord_confirm_date: row.ord_confirm_date || new Date().toISOString().split('T')[0],
           rtn_dt: row.rtn_dt || "",
