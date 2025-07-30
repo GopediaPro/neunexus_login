@@ -38,9 +38,6 @@ export const AddSchedule = ({ isOpen, onClose, event, onSave, onDelete }: AddSch
     }
   });
 
-  const [startDate, setStartDate] = useState<Date | undefined | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-
   const selectedCategory = watch('category');
   const isEditMode = event && event.id;
 
