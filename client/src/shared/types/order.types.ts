@@ -9,6 +9,7 @@ export interface OrderItem {
   order_date?: string;
   reg_date?: string;
   ord_confirm_date?: string;
+  work_status: string;
   rtn_dt?: string;
   chng_dt?: string;
   delivery_confirm_date?: string;
