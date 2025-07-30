@@ -5,6 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 export const useOrderList = () => {
   return useQuery({
     queryKey: ['downFormOrders'],
-    queryFn: () => getDownFormOrders({ limit: 300000 }),
+    queryFn: () => getDownFormOrders({ limit: 50000 }),
   });
 }; 

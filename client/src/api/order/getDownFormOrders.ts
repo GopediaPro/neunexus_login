@@ -2,7 +2,7 @@ import { API_END_POINT } from "@/constant";
 import { httpClient } from "@/shared/axios";
 
 export const getDownFormOrders = async ({
-  limit = 300000,
+  limit = 50000,
 }: {
   limit?: number;
 }) => {
@@ -10,6 +10,6 @@ export const getDownFormOrders = async ({
     limit
   };
 
-  const response = await httpClient.get(API_END_POINT.DOWN_FORM_ORDERS, { params });
+  const response = await httpClient.get(API_END_POINT.DOWN_FORM_ORDERS, { params, timeout: 100000 });
   return response.data;
 };
