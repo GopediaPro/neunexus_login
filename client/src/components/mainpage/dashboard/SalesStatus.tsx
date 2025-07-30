@@ -1,19 +1,32 @@
-import { StatusCard } from "@/components/mainpage/common/StatusCard";
-import { salesData } from "@/mocks/dummy/status";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ScrollTable } from "../common/ScrollTable";
+import { StatusCard } from '@/components/mainpage/common/StatusCard';
+import { salesData } from '@/mocks/dummy/status';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { StatusTable } from '../common/StatusTable';
 
 export const SalesStatus = () => {
-  const [activeTab, setActiveTab] = useState("금일");  
-  const tabs = ["금일", "월별", "전일자"];
+  const [activeTab, setActiveTab] = useState('금일');
+  const tabs = ['금일', '월별', '전일자'];
   const navigate = useNavigate();
 
+  const columns = [
+    { key: 'productCode', label: '품목코드', align: 'left' as const },
+    {
+      key: 'quantity',
+      label: '재고수량',
+      align: 'center' as const,
+      render: (value: number) => value.toLocaleString()
+    },
+    {
+      key: 'amount',
+      label: '재고금액',
+      align: 'right' as const,
+      render: (value: number) => value.toLocaleString()
+    }
+  ];
+
   return (
-    <StatusCard
-      title="판매현황"
-      onViewAll={() => navigate('/')}
-    >
+    <StatusCard title="판매현황" onViewAll={() => navigate('/')}>
       <div className="flex space-x-2 py-4">
         {tabs.map((tab) => (
           <button
@@ -21,31 +34,17 @@ export const SalesStatus = () => {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-0.5 text-body-s border border-stroke-base-100 rounded ${
               activeTab === tab
-                ? "bg-fill-alt-200 text-primary-500"
-                : "bg-fill-base-100 text-text-base-400 hover:bg-fill-alt-200"
+                ? 'bg-fill-alt-200 text-primary-500'
+                : 'bg-fill-base-100 text-text-base-400 hover:bg-fill-alt-200'
             }`}
           >
             {tab}
           </button>
         ))}
       </div>
-  
-      <div className="space-y-2">
-        <div className="grid grid-cols-3 gap-4 text-h6 text-text-base-500 pb-2">
-          <span>품목코드</span>
-          <span className="text-right">재고수량</span>
-          <span className="text-right">재고금액</span>
-        </div>
 
-        <ScrollTable height="h-36">
-          {salesData.map((item) => (
-            <div key={item.id} className="grid grid-cols-3 gap-4 text-body-s py-2">
-              <span className="text-text-base-500">{item.productCode}</span>
-              <span className="text-right text-text-base-500">{item.quantity.toLocaleString()}</span>
-              <span className="text-right text-text-base-500">{item.amount.toLocaleString()}...</span>
-            </div>
-          ))}
-        </ScrollTable>
+      <div className="py-2">
+        <StatusTable columns={columns} data={salesData} />
       </div>
     </StatusCard>
   );

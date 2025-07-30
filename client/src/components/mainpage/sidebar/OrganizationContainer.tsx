@@ -28,7 +28,7 @@ export const OrganizationContainer = () => {
             placeholder="검색"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 text-sm bg-fill-alt-100 border border-stroke-base-100 rounded-3xl text-text-base-400 placeholder-text-base-300 focus:outline-none"
+            className="w-full pl-10 pr-3 py-2 text-sm bg-fill-alt-100 rounded-3xl text-text-base-400 placeholder-text-base-300 focus:outline-none"
           />
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
             <Icon name="search" style="w-4 h-4 text-text-base-400" />
@@ -39,7 +39,7 @@ export const OrganizationContainer = () => {
       <div className="space-y-3 py-4">
         <ScrollTable height="h-40">
           {filteredMembers.map((member) => (
-            <div key={member.id} className="flex items-center gap-2 mb-2.5">
+            <div key={member.id} className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 bg-fill-alt-100 rounded-full flex items-center justify-center">
                 <div className="w-6 h-6 text-text-base-400" />
               </div>

@@ -2,22 +2,35 @@ import { SelectSearchInput } from "@/components/management/common/SelectSearchIn
 import { templateOptions } from "@/constant";
 import { useState, type ChangeEvent } from "react";
 import { Button } from "../Button";
-import { postExcelUpload } from "@/api/order/postExcelUpload";
-import { Controller, useForm } from "react-hook-form";
-import type { ExcelUploadFormData } from "@/shared/types";
+import { useForm } from "react-hook-form";
 import { Modal } from ".";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
+import { ResultModal } from "./BulkResultModal";
+import { FormField } from "../FormField";
+import { postExcelToDb, postExcelToMinio } from "@/api/order";
+import { modalConfig } from "@/constant/order"
+import type { ExcelUploadFormData } from "@/shared/types";
+import { postExcelRunMacro } from "@/api/order/postExcelRunMacro";
+import { toast } from "sonner";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
-  createdBy: string;
+  mode?: 'minio' | 'database' | 'macro';
+  createdBy?: string;
 }
 
-export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: ExcelUploadModalProps) => {
+export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', createdBy }: ExcelUploadModalProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [uploadResult, setUploadResult] = useState<{
+    type: 'success' | 'error';
+    title: string;
+    message: string;
+    url?: string;
+  } | null>(null);
 
   const {
     control,
@@ -37,6 +50,12 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
   });
 
   const watchedValues = watch();
+  const config = modalConfig[mode as keyof typeof modalConfig] || {
+    submitText: mode === 'macro' ? '매크로 실행' : '업로드',
+    loadingText: mode === 'macro' ? '매크로 실행 중...' : '업로드 중...',
+    successTitle: mode === 'macro' ? '매크로 실행 완료' : '업로드 완료',
+    requiresDates: mode === 'minio' || mode === 'database'
+  }
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -46,45 +65,121 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
     
     if (!allowedExtensions.includes(fileExtension)) {
+      setUploadResult({
+        type: 'error',
+        title: '파일 형식 오류',
+        message: '지원되지 않는 파일 형식입니다.\n.xlsx 또는 .xls 파일만 업로드 가능합니다.'
+      });
+      setShowResultModal(true);
       return;
     }
 
     const maxSize = 10 * 1024 * 1024;
     if (file.size > maxSize) {
+      setUploadResult({
+        type: 'error',
+        title: '파일 크기 초과',
+        message: '파일 크기가 10MB를 초과합니다.\n더 작은 파일을 선택해주세요.'
+      });
+      setShowResultModal(true);
       return;
     }
-
 
     setSelectedFile(file);
     setValue('file', file);
   }
 
   const handleFormSubmit = async (data: ExcelUploadFormData) => {
-    if (!data.template_code || !data.file || !data.order_date_from || !data.order_date_to) return;
     if (!selectedFile) return;
-
     setIsUploading(true);
 
     try {
-      const requestData = {
-        template_code: data.template_code,
-        created_by: createdBy,
-        filters: {
-          order_date_from: data.order_date_from,
-          order_date_to: data.order_date_to
-        },
-        source_table: data.source_table
-      };
-      
-      await postExcelUpload({
-        request: JSON.stringify(requestData),
-        file: data.file
-      });
+      if (mode === 'minio') {
+        if (!data.template_code || !data.file || !data.order_date_from || !data.order_date_to) return;
+        const response = await postExcelToMinio({
+          template_code: data.template_code,
+          file: data.file
+        });
 
+        setUploadResult({
+          type: 'success',
+          title: '업로드 완료',
+          message: `엑셀 파일이 성공적으로 업로드되었습니다.\n\n파일명: ${selectedFile.name}\n업로드 시간: ${new Date().toLocaleString('ko-KR')}`,
+          url: response.file_url || response.file_url
+        });
+      } else if (mode === 'database') {
+        if (!data.template_code || !data.file) 
+          return toast.error('템플릿 코드와 파일을 선택해주세요.');
+        const response = await postExcelToDb({
+          template_code: data.template_code,
+          file: data.file
+        });
+
+        setUploadResult({
+          type: 'success',
+          title: 'DB 저장 완료',
+          message: `엑셀 파일이 성공적으로 DB에 저장되었습니다.\n\n파일명: ${selectedFile.name}\n저장 시간: ${new Date().toLocaleString('ko-KR')}`,
+          url: response.file_url || response.file_url
+        }); 
+      } else if (mode === 'macro') {
+        if (!data.template_code || !data.file) return;
+        const todayString = new Date().toISOString().split('T')[0];
+        
+        const requestData = {
+          template_code: data.template_code,
+          file: selectedFile,
+          created_by: createdBy,
+          filters: {
+            order_date_from: todayString,
+            order_date_to: todayString
+          },
+          source_table: "receive_orders"
+        };
+
+        const response = await postExcelRunMacro({
+          request: JSON.stringify(requestData),
+          file: data.file
+        });
+
+        setUploadResult({
+          type: 'success',
+          title: '매크로 실행 완료',
+          message: `엑셀 매크로가 성공적으로 실행되었습니다.\n\n파일명: ${selectedFile.name}\n실행 시간: ${new Date().toLocaleString('ko-KR')}`,
+          url: response.file_url
+        });
+      }
+      setShowResultModal(true);
       onSuccess?.();
-      handleClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+
+      let errorTitle = '';
+      let errorMessage = '';
+
+      switch (mode) {
+        case 'minio':
+          errorTitle = '업로드 실패';
+          errorMessage = '파일 업로드에 실패했습니다.';
+          break;
+        case 'database':
+          errorTitle = 'DB 저장 실패';
+          errorMessage = 'DB 저장에 실패했습니다.';
+          break;
+        case 'macro':
+          errorTitle = '매크로 실행 실패';
+          errorMessage = '엑셀 매크로 실행에 실패했습니다.';
+          break;
+        default:
+          errorTitle = '처리 실패';
+          errorMessage = '요청 처리에 실패했습니다.';
+      }
+
+      setUploadResult({
+        type: 'error',
+        title: errorTitle,
+        message: `${errorMessage}\n\n오류 내용: ${error.message || '알 수 없는 오류가 발생했습니다.'}\n\n다시 시도해주세요.`
+      });
+      setShowResultModal(true);
     } finally {
       setIsUploading(false);
     }
@@ -93,161 +188,173 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, createdBy }: Exce
   const handleClose = () => {
     reset();
     setSelectedFile(null);
+    setUploadResult(null);
     onClose();
+  };
+
+  const handleResultModalClose = () => {
+    setShowResultModal(false);
+    if (uploadResult?.type === 'success') {
+      handleClose();
+    }
+    setUploadResult(null);
   }
 
-  const isFormValid = 
-    watchedValues.template_code && 
-    watchedValues.order_date_from && 
-    watchedValues.order_date_to && 
-    selectedFile;
+  const isFormValid = () => {
+    switch (mode) {
+      case 'minio':
+      case 'macro':
+        return watchedValues.template_code && 
+               watchedValues.order_date_from && 
+               watchedValues.order_date_to && 
+               selectedFile;
+      case 'database':
+        return watchedValues.template_code && selectedFile;
+      default:
+        return false;
+    }
+  };
 
+  const getModalTitle = () => {
+    switch (mode) {
+      case 'minio':
+        return '엑셀 업로드';
+      case 'database':
+        return 'DB 저장';
+      case 'macro':
+        return '엑셀 매크로 실행';
+      default:
+        return '엑셀 처리';
+    }
+  };
+
+  const getFileDescription = () => {
+    switch (mode) {
+      case 'minio':
+        return '파일을 Minio 스토리지에 업로드합니다.';
+      case 'database':
+        return '엑셀 데이터를 직접 데이터베이스에 저장합니다.';
+      case 'macro':
+        return '엑셀 파일에 매크로를 실행하여 처리합니다.';
+      default:
+        return '파일을 처리합니다.';
+    }
+  };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
-      <ModalHeader>
-        <ModalTitle>엑셀 업로드</ModalTitle>
-      </ModalHeader>
+    <>
+      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+        <ModalHeader>
+          <ModalTitle>{getModalTitle()}</ModalTitle>
+        </ModalHeader>
 
-      <ModalBody className="h-[500px]">
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-          <div className="space-y-2">
-            <label className="block text-caption text-text-base-500">
-              템플릿 선택 <span className="text-error-base-500">*</span>
-            </label>
-            <Controller
-              name="template_code"
-              control={control}
-              rules={{ required: '템플릿을 선택해주세요' }}
-              render={({ field }) => (
-                <SelectSearchInput
-                  options={templateOptions}
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="템플릿을 선택하세요"
-                />
-              )}
-            />
-            {errors.template_code && (
-              <p className="text-sm text-error-500">{errors.template_code.message}</p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <ModalBody className="h-[500px]">
+          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
             <div className="space-y-2">
-              <label className="block text-caption text-text-base-500">
-                시작 날짜 <span className="text-error-base-500">*</span>
-              </label>
-              <Controller
-                name="order_date_from"
+              <FormField
+                name="template_code"
+                label="템플릿 선택"
                 control={control}
-                rules={{ required: '시작 날짜를 선택해주세요' }}
-                render={({ field }) => (
-                  <input
-                    type="date"
-                    {...field}
-                    className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                render={(field) => (
+                    <SelectSearchInput
+                      options={templateOptions}
+                      value={field.value as string}
+                      onChange={field.onChange}
+                      placeholder="템플릿을 선택하세요"
+                    />
                 )}
+                error={errors.template_code?.message}
               />
-              {errors.order_date_from && (
-                <p className="text-sm text-error-500">{errors.order_date_from.message}</p>
-              )}
             </div>
 
             <div className="space-y-2">
-              <label className="block text-caption text-text-base-500">
-                종료 날짜 <span className="text-error-base-500">*</span>
-              </label>
-              <Controller
-                name="order_date_to"
+              <FormField
+                name="file"
                 control={control}
-                rules={{ required: '종료 날짜를 선택해주세요' }}
-                render={({ field }) => (
-                  <input
-                    type="date"
-                    {...field}
-                    className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                label="Excel 파일"
+                render={() => (
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept=".xlsx,.xls"
+                        onChange={handleFileChange}
+                        className="sr-only"
+                        id="file-upload"
+                      />
+                      <label
+                        htmlFor="file-upload"
+                        className="
+                          w-full
+                          flex items-center justify-between
+                          p-3
+                          border border-stroke-base-100
+                          rounded-md
+                          bg-fill-base-100 hover:bg-fill-base-200
+                          cursor-pointer
+                          transition-colors duration-200
+                          focus-within:ring-2 focus-within:ring-stroke-base-100 focus-within:border-stroke-base-100
+                        "
+                      >
+                        <span className="text-text-base-400">
+                          {selectedFile ? selectedFile.name : '파일을 선택하세요'}
+                        </span>
+                        <span className="
+                          px-3 py-1
+                          bg-fill-base-100 hover:bg-fill-base-200
+                          border border-stroke-base-100
+                          rounded
+                          text-body-l text-text-base-500
+                          transition-colors duration-200
+                        ">
+                          파일 선택
+                        </span>
+                      </label>
+                    </div>
+                    {selectedFile && (
+                      <p className="text-body-s text-text-base-500">
+                        {getFileDescription()}
+                      </p>
+                    )}
+                  </div>
                 )}
+                error={errors.file?.message}
               />
-              {errors.order_date_to && (
-                <p className="text-sm text-error-500">{errors.order_date_to.message}</p>
-              )}
             </div>
-          </div>
+          </form>
+        </ModalBody>
 
-          <div className="space-y-2">
-            <label className="block text-caption text-text-base-500">
-              소스 테이블 <span className="text-error-base-500">*</span>
-            </label>
-            <Controller
-              name="source_table"
-              control={control}
-              rules={{ required: '소스 테이블을 입력해주세요' }}
-              render={({ field }) => (
-                <input
-                  type="text"
-                  {...field}
-                  className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="receive_orders"
-                />
-              )}
-            />
-            {errors.source_table && (
-              <p className="text-sm text-error-500">{errors.source_table.message}</p>
-            )}
-          </div>
+        <ModalFooter>
+          <Button
+            type="button"
+            variant="light"
+            onClick={handleClose}
+            disabled={isUploading}
+          >
+            취소
+          </Button>
+          <Button
+            type="button"
+            variant="default"
+            onClick={handleSubmit(handleFormSubmit)}
+            disabled={!isFormValid || isUploading}
+          >
+            {isUploading ? config.loadingText : config.submitText}
+          </Button>
+        </ModalFooter>
+      </Modal>
 
-          <div className="space-y-2">
-            <label className="block text-caption text-text-base-500">
-              Excel 파일 <span className="text-error-500">*</span>
-            </label>
-            <Controller
-              name="file"
-              control={control}
-              rules={{ required: '파일을 선택해주세요' }}
-              render={() => (
-                <div className="space-y-2">
-                  <input
-                    type="file"
-                    accept=".xlsx,.xls"
-                    onChange={handleFileChange}
-                    className="w-full p-3 border border-stroke-base-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  {selectedFile && (
-                    <p className="text-sm text-gray-600">
-                      선택된 파일: {selectedFile.name}
-                    </p>
-                  )}
-                </div>
-              )}
-            />
-            {errors.file && (
-              <p className="text-sm text-error-500">{errors.file.message}</p>
-            )}
-          </div>
-        </form>
-      </ModalBody>
-
-      <ModalFooter>
-        <Button
-          type="button"
-          variant="light"
-          onClick={handleClose}
-          disabled={isUploading}
-        >
-          취소
-        </Button>
-        <Button
-          type="button"
-          variant="default"
-          onClick={handleSubmit(handleFormSubmit)}
-          disabled={!isFormValid || isUploading}
-        >
-          {isUploading ? '업로드 중...' : '업로드'}
-        </Button>
-      </ModalFooter>
-    </Modal>
+      {uploadResult && (
+        <ResultModal
+          isOpen={showResultModal}
+          onClose={handleResultModalClose}
+          type={uploadResult.type}
+          title={uploadResult.title}
+          message={uploadResult.message}
+          url={uploadResult.url}
+          urlLabel="다운로드 링크"
+        />
+      )}
+    </>
   )
 }

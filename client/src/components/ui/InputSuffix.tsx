@@ -23,7 +23,7 @@ export const InputSuffix = ({
           onClick={onTogglePassword}
           className="text-text-base-500 hover:text-text-base-500 focus:outline-none transition-colors"
         >
-          {showPassword ? (
+          {!showPassword ? (
             <Icon name="eye-off" ariaLabel="감은눈" style="w-5 h-5" />
           ) : (
             <Icon name="eye" ariaLabel="눈" style="w-5 h-5" />

@@ -5,8 +5,8 @@ import { AutomationContainer } from '../dashboard/AutomationContainer';
 
 export const DashboardLayout = () => {
   return (
-    <main className="flex-1 p-5 min-w-[800px]">
-      <div className="flex flex-col gap-8">
+    <main className="flex-1 p-5 min-w-[786px]">
+      <div className="flex flex-col gap-[1.25rem]">
         <div className="flex gap-5">
           <MenuContainer />
           <AutomationContainer />

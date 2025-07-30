@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import ReactQueryProvider from '@/provider/queryProvider'
@@ -6,6 +5,8 @@ import { ThemeProvider } from 'next-themes'
 import { AuthProvider } from '@/contexts/auth'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import App from '@/App'
+import { Toaster } from 'sonner'
+
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -19,9 +20,18 @@ const renderApp = () => {
           enableSystem={true}
           disableTransitionOnChange={false}
         >
-          <StrictMode>
-            <App />
-          </StrictMode>
+          <App />
+          <Toaster 
+            richColors
+            position='top-right'
+            duration={2000}
+            closeButton={true}
+            toastOptions={{
+              style: {
+                zIndex: 9999,
+              },
+            }}
+          />
         </ThemeProvider>
       </ReactQueryProvider>
     </AuthProvider>,

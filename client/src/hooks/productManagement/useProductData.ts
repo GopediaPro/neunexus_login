@@ -1,11 +1,7 @@
 import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/api/product/getProducts";
-
-interface UseProductDataParams {
-  search: string;
-  page: number;
-}
+import type { UseProductDataParams } from "@/shared/types";
 
 export const useProductData = ({ search, page }: UseProductDataParams) => {
   const { data, isLoading, error, refetch } = useQuery({

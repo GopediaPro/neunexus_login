@@ -1,59 +1,73 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { useOrderData } from "@/hooks/orderManagement/useOrderData";
-import type { OrderContextValue, OrderTab } from "@/shared/types";
+import type { FormTemplate, OrderContextValue, OrderTab } from "@/shared/types";
 import type { GridApi } from "ag-grid-community";
 const OrderContext = createContext<OrderContextValue | undefined>(undefined);
 
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
-  const [search, setSearchState] = useState("");
   const [activeOrderTab, setActiveOrderTabState] = useState<OrderTab>("registration");
-  const [page, setPageState] = useState(1);
   const [currentTemplate, setCurrentTemplateState] = useState("");
   const [gridApi, setGridApiState] = useState<GridApi | null>(null);
   const [selectedRows, setSelectedRowsState] = useState<any[]>([]);
   const [changedRows, setChangedRowsState] = useState<any[]>([]);
-
-  const setSearch = useCallback((value: string) => {
-    setSearchState(value);
-    setPageState(1);
-  }, []);
+  const { 
+    orderData,
+    isLoading: dataIsLoading,
+    error,
+  } = useOrderData();
 
   const setActiveOrderTab = useCallback((tab: OrderTab) => {
     setActiveOrderTabState(tab);
-    setPageState(1);
+    setSelectedRowsState([]);
+    setChangedRowsState([]);
   }, []);
 
-  const setPage = useCallback((newPage: number) => {
-    setPageState(newPage);
-  }, []);
-
-  const setCurrentTemplate = useCallback((template: string) => {
+  const setCurrentTemplate = useCallback((template: FormTemplate) => {
     setCurrentTemplateState(template);
-    setPageState(1);
+    setSelectedRowsState([]);
+    setChangedRowsState([]);
   }, []);
 
-  const { orderData, isLoading, error, refreshOrders } = useOrderData({ search, page, currentTemplate });
+  const setGridApi = useCallback((api: GridApi | null) => {
+    setGridApiState(api);
+    if (api) {
+      setSelectedRowsState([]);
+      setChangedRowsState([]);
+    }
+  }, []);
+
+  const setSelectedRows = useCallback((rows: any[]) => {
+    setSelectedRowsState(rows);
+  }, []);
+
+  const setChangedRows = useCallback((rows: any[]) => {
+    setChangedRowsState(rows);
+  }, []);
+
+  const clearSelections = useCallback(() => {
+    setSelectedRowsState([]);
+    setChangedRowsState([]);
+    if (gridApi) {
+      gridApi.deselectAll();
+    }
+  }, [gridApi]);
 
   const value: OrderContextValue = {
-    search,
-    setSearch,
     activeOrderTab,
     setActiveOrderTab,
-    page,
-    setPage,
-    currentTemplate,
+    currentTemplate: currentTemplate as FormTemplate,
     setCurrentTemplate,
     orderData,
-    isLoading,
-    error,
-    refreshOrders,
+    isLoading: dataIsLoading, 
+    error, 
     gridApi,
-    setGridApi: setGridApiState,
+    setGridApi,
     selectedRows,
-    setSelectedRows: setSelectedRowsState,
+    setSelectedRows,
     changedRows,
-    setChangedRows: setChangedRowsState,
+    setChangedRows,
+    clearSelections,
   };
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;
