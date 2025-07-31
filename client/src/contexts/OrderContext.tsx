@@ -38,11 +38,35 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const setSelectedRows = useCallback((rows: any[]) => {
-    setSelectedRowsState(rows);
+    const filteredRows = rows.filter(row => {
+      if (row.id && String(row.id).startsWith('temp_')) {
+        return false;
+      }
+      
+      if (!row.order_id || row.status === 'pending' || row.isTemp) {
+        return false;
+      }
+      
+      return true;
+    });
+    
+    setSelectedRowsState(filteredRows);
   }, []);
 
   const setChangedRows = useCallback((rows: any[]) => {
-    setChangedRowsState(rows);
+    const filteredRows = rows.filter(row => {
+      if (row.id && String(row.id).startsWith('temp_')) {
+        return false;
+      }
+      
+      if (!row.order_id || row.status === 'pending' || row.isTemp) {
+        return false;
+      }
+      
+      return true;
+    });
+    
+    setChangedRowsState(filteredRows);
   }, []);
 
   const clearSelections = useCallback(() => {

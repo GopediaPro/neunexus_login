@@ -46,6 +46,7 @@ export const handleOrderCreate = async (
   );
 
   const invalidRows = selectedRows.filter(row => !row.order_id);
+  
 
   if (invalidRows.length > 0) {
     toast.error('주문 ID가 없는 행이 있습니다. 주문 ID를 확인해주세요.');
