@@ -45,6 +45,13 @@ export const handleOrderCreate = async (
     row.id && String(row.id).startsWith('temp_')
   );
 
+  const invalidRows = selectedRows.filter(row => !row.order_id);
+
+  if (invalidRows.length > 0) {
+    toast.error('주문 ID가 없는 행이 있습니다. 주문 ID를 확인해주세요.');
+    return;
+  }
+
   const confirmMessage = selectedRows.length === 1 
     ? `주문 "${selectedRows[0].order_id}"을 생성하시겠습니까?`
     : `새로운 ${selectedRows.length}개 주문을 생성하시겠습니까?`;
@@ -152,11 +159,11 @@ export const handleOrderCreate = async (
   } catch (error: any) {
     console.error('주문 생성 실패:', error);
     
-    if (error.response?.status === 422) {
-      const errorMessage = error.response?.data?.message || '입력 데이터가 올바르지 않습니다.';
-      toast.error(`검증 실패: ${errorMessage}`);
-    } else {
-      toast.error('주문 생성에 실패했습니다.');
-    }
+    // if (error.response?.status === 422) {
+    //   const errorMessage = error.response?.data?.message || '입력 데이터가 올바르지 않습니다.';
+    //   toast.error(`검증 실패: ${errorMessage}`);
+    // } else {
+    //   toast.error('주문 생성에 실패했습니다.');
+    // }
   }
 };
