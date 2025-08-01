@@ -6,6 +6,7 @@ export const API_END_POINT = {
   // 다운폼 주문 기본 엔드포인트
   DOWN_FORM_ORDERS: `${API_VERSION}/down-form-orders`,
   DOWN_FORM_ORDERS_PAGINATION: `${API_VERSION}/down-form-orders/pagination`,
+  DOWN_FORM_ODDERS_PAGINATION_DATE_RANGE: `${API_VERSION}/down-form-orders/pagination/date-range`,
   
   // 다운폼 주문 대량 작업
   DOWN_FORM_ORDERS_BULK_CREATE: `${API_VERSION}/down-form-orders/bulk`,

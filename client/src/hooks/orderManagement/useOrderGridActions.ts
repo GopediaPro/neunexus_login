@@ -19,7 +19,7 @@ export const useOrderGridActions = (gridApi: GridApi | null) => {
     today.setHours(0, 0, 0, 0);
     
     return {
-      id: Date.now(), // 임시 ID
+      id: 0,
       process_dt: today.toISOString(),
       form_name: currentTemplate || 'gmarket_erp',
       seq: 0,
@@ -217,7 +217,7 @@ export const useOrderGridActions = (gridApi: GridApi | null) => {
     try {
       const duplicatedRows = selectedRowsData.map(row => ({
         ...row,
-        id: Date.now() + Math.random(),
+        id: 0,
         order_id: '',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
