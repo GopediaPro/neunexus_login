@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { useOrderData } from "@/hooks/orderManagement/useOrderData";
-import type { OrderContextValue, OrderTab } from "@/shared/types";
+import type { FormTemplate, OrderContextValue, OrderTab } from "@/shared/types";
 import type { GridApi } from "ag-grid-community";
 const OrderContext = createContext<OrderContextValue | undefined>(undefined);
 
@@ -12,16 +12,9 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [selectedRows, setSelectedRowsState] = useState<any[]>([]);
   const [changedRows, setChangedRowsState] = useState<any[]>([]);
   const { 
-    orderData, 
-    createInfiniteDataSource,
-    isLoading, 
-    error, 
-    loadMoreOrders, 
-    hasNextPage, 
-    fetchNextPage,
-    refreshOrders,
-    isFetchingNextPage,
-    totalLoadedItems,
+    orderData,
+    isLoading: dataIsLoading,
+    error,
   } = useOrderData();
 
   const setActiveOrderTab = useCallback((tab: OrderTab) => {
@@ -30,7 +23,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setChangedRowsState([]);
   }, []);
 
-  const setCurrentTemplate = useCallback((template: string) => {
+  const setCurrentTemplate = useCallback((template: FormTemplate) => {
     setCurrentTemplateState(template);
     setSelectedRowsState([]);
     setChangedRowsState([]);
@@ -45,11 +38,35 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const setSelectedRows = useCallback((rows: any[]) => {
-    setSelectedRowsState(rows);
+    const filteredRows = rows.filter(row => {
+      if (row.id && String(row.id).startsWith('temp_')) {
+        return false;
+      }
+      
+      if (!row.order_id || row.status === 'pending' || row.isTemp) {
+        return false;
+      }
+      
+      return true;
+    });
+    
+    setSelectedRowsState(filteredRows);
   }, []);
 
   const setChangedRows = useCallback((rows: any[]) => {
-    setChangedRowsState(rows);
+    const filteredRows = rows.filter(row => {
+      if (row.id && String(row.id).startsWith('temp_')) {
+        return false;
+      }
+      
+      if (!row.order_id || row.status === 'pending' || row.isTemp) {
+        return false;
+      }
+      
+      return true;
+    });
+    
+    setChangedRowsState(filteredRows);
   }, []);
 
   const clearSelections = useCallback(() => {
@@ -61,26 +78,13 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   }, [gridApi]);
 
   const value: OrderContextValue = {
-    // 탭 관리
     activeOrderTab,
     setActiveOrderTab,
-    
-    // 템플릿 관리
-    currentTemplate,
+    currentTemplate: currentTemplate as FormTemplate,
     setCurrentTemplate,
-    
-    // 주문 데이터 (무한스크롤)
-    orderData, 
-    createInfiniteDataSource,
-    isLoading, 
+    orderData,
+    isLoading: dataIsLoading, 
     error, 
-    loadMoreOrders, 
-    hasNextPage, 
-    fetchNextPage,
-    isFetchingNextPage,
-    refreshOrders,
-    totalLoadedItems,
-    // 그리드 관리
     gridApi,
     setGridApi,
     selectedRows,

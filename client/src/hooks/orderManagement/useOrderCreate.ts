@@ -1,6 +1,6 @@
 import { postBulkDownFormOrders } from "@/api/order/postBulkDownFormOrders";
 import { useMutation, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
-import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse, OrderItem } from "@/shared/types";
+import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse } from "@/shared/types";
 import type { GridApi } from "ag-grid-community";
 import { toast } from "sonner";
 
@@ -34,23 +34,27 @@ export const handleOrderCreate = async (
 ) => {  
   if (!gridApi) return;
 
-  let allRows: any[] = [];
-  gridApi.forEachNode((node: any) => {
-    allRows = [...allRows, node.data];
-  });
-
-  const newRows = allRows.filter(row => 
-    row.id && String(row.id).startsWith('temp_')
-  );
-
-  if (newRows.length === 0) {
+  const selectedRows = gridApi.getSelectedRows();
+  
+  if (selectedRows.length === 0) {
     toast.error('생성할 새로운 주문이 없습니다.');
     return;
   }
 
-  const confirmMessage = newRows.length === 1 
-    ? `주문 "${newRows[0].order_id}"을 생성하시겠습니까?`
-    : `새로운 ${newRows.length}개 주문을 생성하시겠습니까?`;
+  const newRows = selectedRows.filter(row => 
+    row.id && row.id !== 0
+  );
+
+  const invalidRows = selectedRows.filter(row => !row.order_id);
+  
+  if (invalidRows.length > 0) {
+    toast.error('주문 ID가 없는 행이 있습니다. 주문 ID를 확인해주세요.');
+    return;
+  }
+
+  const confirmMessage = selectedRows.length === 1 
+    ? `주문 "${selectedRows[0].order_id}"을 생성하시겠습니까?`
+    : `새로운 ${selectedRows.length}개 주문을 생성하시겠습니까?`;
   
   if (!confirm(confirmMessage)) {
     return;
@@ -58,45 +62,27 @@ export const handleOrderCreate = async (
 
   try {
     const requestData = {
-      items: newRows.map((row, index) => {
-        const item: OrderItem = {
+      items: selectedRows.map((row, index) => {
+        const content: any = {
+          id: 0,
           process_dt: row.process_dt?.trim() ? row.process_dt : new Date().toISOString(),
           form_name: row.form_name || currentTemplate,
+          seq: row.seq ? Number(row.seq) : 1,
           idx: row.idx || `ORDER_${Date.now()}_${index}_${Math.random().toString(36).substr(2, 6)}`,
-          order_id: row.order_id || "",
-          product_id: row.product_id?.trim() || `PROD_${row.order_id || Date.now()}`,
-          product_name: row.product_name || "",
-          
-          sale_cnt: Number(row.sale_cnt || 1),
-          pay_cost: Number(row.pay_cost || 0),
-          delv_cost: Number(row.delv_cost || 0),
-          expected_payout: Number(row.expected_payout || 0),
-          service_fee: Number(row.service_fee || 0),
-          
-          id: row.id && !String(row.id).startsWith('temp_') ? Number(row.id) : 0,
-          seq: row.seq ? Number(row.seq) : 0,
-          total_cost: row.total_cost ? Number(row.total_cost) : 0,
-          total_delv_cost: row.total_delv_cost ? Number(row.total_delv_cost) : 0,
-          sum_p_ea: row.sum_p_ea ? Number(row.sum_p_ea) : 0,
-          sum_expected_payout: row.sum_expected_payout ? Number(row.sum_expected_payout) : 0,
-          sum_pay_cost: row.sum_pay_cost ? Number(row.sum_pay_cost) : 0,
-          sum_delv_cost: row.sum_delv_cost ? Number(row.sum_delv_cost) : 0,
-          sum_total_cost: row.sum_total_cost ? Number(row.sum_total_cost) : 0,
-          
+          work_status: row.work_status || "pending",
           order_date: row.order_date ? new Date(row.order_date).toISOString() : new Date().toISOString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          
-          reg_date: row.reg_date || "",
-          ord_confirm_date: row.ord_confirm_date || "",
+          reg_date: row.reg_date || new Date().toISOString().split('T')[0],
+          ord_confirm_date: row.ord_confirm_date || new Date().toISOString().split('T')[0],
           rtn_dt: row.rtn_dt || "",
           chng_dt: row.chng_dt || "",
           delivery_confirm_date: row.delivery_confirm_date || "",
           cancel_dt: row.cancel_dt || "",
           hope_delv_date: row.hope_delv_date || "",
           inv_send_dm: row.inv_send_dm || "",
-          
+          order_id: row.order_id || "",
           mall_order_id: row.mall_order_id || "",
+          product_id: row.product_id?.trim() || `PROD_${row.order_id || Date.now()}`,
+          product_name: row.product_name || "",
           mall_product_id: row.mall_product_id || "",
           item_name: row.item_name || "",
           sku_value: row.sku_value || "",
@@ -106,8 +92,20 @@ export const handleOrderCreate = async (
           model_name: row.model_name || "",
           erp_model_name: row.erp_model_name || "",
           location_nm: row.location_nm || "",
-          etc_cost: row.etc_cost || "",
-          price_formula: row.price_formula || "",
+          sale_cnt: row.sale_cnt ? Number(row.sale_cnt) : 2,
+          pay_cost: row.pay_cost ? Number(row.pay_cost) : 25000,
+          delv_cost: row.delv_cost ? Number(row.delv_cost) : 3000,
+          total_cost: row.total_cost ? Number(row.total_cost) : 28000,
+          total_delv_cost: row.total_delv_cost ? Number(row.total_delv_cost) : 3000,
+          expected_payout: row.expected_payout ? Number(row.expected_payout) : 22000,
+          etc_cost: row.etc_cost || "500",
+          price_formula: row.price_formula || "기본가격 + 배송비",
+          service_fee: row.service_fee ? Number(row.service_fee) : 1000,
+          sum_p_ea: row.sum_p_ea ? Number(row.sum_p_ea) : 2,
+          sum_expected_payout: row.sum_expected_payout ? Number(row.sum_expected_payout) : 22000,
+          sum_pay_cost: row.sum_pay_cost ? Number(row.sum_pay_cost) : 25000,
+          sum_delv_cost: row.sum_delv_cost ? Number(row.sum_delv_cost) : 3000,
+          sum_total_cost: row.sum_total_cost ? Number(row.sum_total_cost) : 28000,
           receive_name: row.receive_name || "",
           receive_cel: row.receive_cel || "",
           receive_tel: row.receive_tel || "",
@@ -122,30 +120,12 @@ export const handleOrderCreate = async (
           order_etc_6: row.order_etc_6 || "",
           order_etc_7: row.order_etc_7 || "",
           etc_msg: row.etc_msg || "",
-          free_gift: row.free_gift || ""
+          free_gift: row.free_gift || "",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         };
 
-        const cleanedItem = Object.fromEntries(
-          Object.entries(item).filter(([key, value]) => {
-            const requiredFields = [
-              'process_dt', 'form_name', 'idx', 'order_id', 'product_id', 'product_name',
-              'sale_cnt', 'pay_cost', 'delv_cost', 'expected_payout', 'service_fee',
-              'id', 'seq', 'order_date', 'created_at', 'updated_at'
-            ];
-            
-            if (requiredFields.includes(key)) {
-              return true;
-            }
-            
-            if (typeof value === 'string' && value === '') {
-              return false;
-            }
-            
-            return true;
-          })
-        );
-        
-        return cleanedItem as BulkCreateOrderItem;
+        return content as BulkCreateOrderItem;
       })
     };
 
@@ -179,11 +159,11 @@ export const handleOrderCreate = async (
   } catch (error: any) {
     console.error('주문 생성 실패:', error);
     
-    if (error.response?.status === 422) {
-      const errorMessage = error.response?.data?.message || '입력 데이터가 올바르지 않습니다.';
-      toast.error(`검증 실패: ${errorMessage}`);
-    } else {
-      toast.error('주문 생성에 실패했습니다.');
-    }
+    // if (error.response?.status === 422) {
+    //   const errorMessage = error.response?.data?.message || '입력 데이터가 올바르지 않습니다.';
+    //   toast.error(`검증 실패: ${errorMessage}`);
+    // } else {
+    //   toast.error('주문 생성에 실패했습니다.');
+    // }
   }
 };

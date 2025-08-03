@@ -9,6 +9,7 @@ export interface OrderItem {
   order_date?: string;
   reg_date?: string;
   ord_confirm_date?: string;
+  work_status: string;
   rtn_dt?: string;
   chng_dt?: string;
   delivery_confirm_date?: string;
@@ -209,27 +210,20 @@ export interface UseOrderDataParams {
 export type OrderTab = "registration" | "bulk-registration";
 
 export interface OrderContextValue {
-  activeOrderTab: OrderTab;
-  setActiveOrderTab: (tab: OrderTab) => void;
-  currentTemplate: string;
-  setCurrentTemplate: (template: string) => void;
-  orderData: any[];
-  createInfiniteDataSource: () => any;
-  isLoading: boolean;
-  error: unknown;
-  loadMoreOrders: () => void;
-  hasNextPage: boolean;
-  isFetchingNextPage: boolean;
-  fetchNextPage: () => void;
-  refreshOrders: () => void;
-  totalLoadedItems: number;
-  gridApi: GridApi | null;
-  setGridApi: (api: GridApi | null) => void;
-  selectedRows: any[];
-  setSelectedRows: (rows: any[]) => void;
-  changedRows: any[];
-  setChangedRows: (rows: any[]) => void;
-  clearSelections: () => void;
+    activeOrderTab: OrderTab;
+    setActiveOrderTab: (tab: OrderTab) => void;
+    currentTemplate: FormTemplate;
+    setCurrentTemplate: (template: FormTemplate) => void;
+    orderData: OrderItem[];
+    isLoading: boolean;
+    error: Error | null;
+    gridApi: GridApi | null;
+    setGridApi: (api: GridApi | null) => void;
+    selectedRows: any[];
+    setSelectedRows: (rows: any[]) => void;
+    changedRows: any[];
+    setChangedRows: (rows: any[]) => void;
+    clearSelections: () => void;
 };
 
 export interface UseOrderGridParams {
@@ -247,8 +241,8 @@ export interface BatchInfoData {
   file_name: string;
   file_url: string;
   file_size: number;
-  order_date_from: string; 
-  order_date_to: string;   
+  date_from: string; 
+  date_to: string;   
   order_status: string | null;
   error_message: string | null;
   created_by: string;
