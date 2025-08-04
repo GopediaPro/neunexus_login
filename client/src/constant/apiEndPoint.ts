@@ -31,5 +31,5 @@ export const API_END_POINT = {
   MACRO_BATCH_INFO_ALL: `${API_VERSION}/macro/batch-info/all`,
   MACRO_BATCH_INFO_LATEST: `${API_VERSION}/macro/batch-info/latest`,
 
-  PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/excel/import`,
+  PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/complete-workflow`,
 } as const;
