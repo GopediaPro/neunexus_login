@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios';
-import { tokenManager } from '@/contexts/auth/tokenManager';
-import { authApi } from '@/contexts/auth/authApi';
+import { tokenManager } from '@/components/auth/context/tokenManager';
+import { authApi } from '@/components/auth/context/authApi';
 
 const createClient = (config?: AxiosRequestConfig) => {
   const axiosInstance = axios.create({

@@ -1,4 +1,4 @@
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/components/mainpage/context/SidebarContext";
 import { Icon } from "../ui/Icon";
 
 export const HeaderManagement = ({ title }: { title: string }) => {

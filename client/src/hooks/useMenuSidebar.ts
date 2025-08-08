@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthContext } from "@/contexts";
+import { useAuthContext } from "@/components/auth/context";
 import { ROUTERS } from "@/constant/route";
 import { sidebarMenu } from "@/constant/sidebar";
 import type { IMenuItemType } from "@/shared/types/sidebar.types";

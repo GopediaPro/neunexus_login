@@ -1,4 +1,4 @@
-import { useAuthContext } from "@/contexts";
+import { useAuthContext } from "@/components/auth/context";
 import { loginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

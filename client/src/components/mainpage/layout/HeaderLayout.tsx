@@ -1,7 +1,7 @@
-import { useAuthContext } from "@/contexts";
+import { useAuthContext } from "@/components/auth/context";
 import { Icon } from "@/components/ui/Icon";
 import { useNavigate } from "react-router-dom";
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/components/mainpage/context/SidebarContext";
 
 export const HeaderLayout = () => {
   const navigate = useNavigate();

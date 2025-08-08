@@ -1,5 +1,5 @@
 import { ProductLayout } from "@/components/management/layout/ProductLayout";
-import { SidebarProvider } from "@/contexts/SidebarContext";
+import { SidebarProvider } from "@/components/mainpage/context/SidebarContext";
 
 export const ProductManagementPage = () => {
 

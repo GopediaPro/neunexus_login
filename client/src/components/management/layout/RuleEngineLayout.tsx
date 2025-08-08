@@ -1,5 +1,5 @@
 import { MenuSidebarLayout } from "@/components/mainpage/layout/MenuSidebarLayout";
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/components/mainpage/context/SidebarContext";
 import { useEffect, useRef } from "react";
 import { HeaderManagement } from "../HeaderManagement";
 import { RuleEngineToolbar } from "../RuleEngineToolbar";

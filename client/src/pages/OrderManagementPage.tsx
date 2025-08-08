@@ -1,6 +1,6 @@
 import { OrderLayout } from "@/components/management/layout/OrderLayout";
-import { OrderProvider } from "@/contexts/OrderContext";
-import { SidebarProvider } from "@/contexts/SidebarContext";
+import { OrderProvider } from "@/components/management/context/OrderContext";
+import { SidebarProvider } from "@/components/mainpage/context/SidebarContext";
 
 export const OrderManagementPage = () => {
   return (

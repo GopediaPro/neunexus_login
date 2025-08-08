@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { HeaderManagement } from './HeaderManagement';
-import { useSidebar } from '@/contexts/SidebarContext';
+import { useSidebar } from '@/components/mainpage/context/SidebarContext';
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
 import { ProductToolbar } from './ProductToolbar';
 import { MenuSidebarLayout } from '../mainpage/layout/MenuSidebarLayout';

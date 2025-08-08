@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from "react";
 import { Portal } from "./Portal";
-import { ModalProvider } from "@/contexts";
+import { ModalProvider } from "@/components/ModalContext";
 
 interface ModalProps {
   children: ReactNode;

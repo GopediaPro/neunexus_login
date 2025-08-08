@@ -1,4 +1,4 @@
-import type { ProductTab } from "@/contexts/ProductContext";
+import type { ProductTab } from "@/components/management/context/ProductContext";
 import type { ColDef } from "ag-grid-community";
 
 export interface ProductData {

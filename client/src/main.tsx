@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import ReactQueryProvider from '@/provider/queryProvider'
 import { ThemeProvider } from 'next-themes'
-import { AuthProvider } from '@/contexts/auth'
+import { AuthProvider } from '@/components/auth/context'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import App from '@/App'
 import { Toaster } from 'sonner'

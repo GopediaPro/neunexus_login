@@ -4,7 +4,7 @@ import { Icon } from "../ui/Icon";
 import { Input } from "../ui/input";
 import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
-import { useProductContext } from "@/contexts/ProductContext";
+import { useProductContext } from "@/components/management/context/ProductContext";
 import { toast } from "sonner";
 import { useProductImport } from "@/hooks/productManagement/useProductImport";
 

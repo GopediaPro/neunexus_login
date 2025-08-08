@@ -1,7 +1,7 @@
-import { authApi } from "@/contexts/auth/authApi";
-import { authActions, authReducer, initialState } from "@/contexts/auth/authState";
-import { tokenManager } from "@/contexts/auth/tokenManager";
-import { userApi } from "@/contexts/auth/userApi";
+import { authApi } from "@/components/auth/context/authApi";
+import { authActions, authReducer, initialState } from "@/components/auth/context/authState";
+import { tokenManager } from "@/components/auth/context/tokenManager";
+import { userApi } from "@/components/auth/context/userApi";
 import type { IAuthResponse, IKeycloakUser, ILoginRequest, ISignupRequest } from "@/shared/types";
 import { getKeycloakUrls, keycloakConfig } from "@/utils/keycloakConfig";
 import { createContext, useContext, useEffect, useReducer, type ReactNode } from "react";

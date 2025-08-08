@@ -1,5 +1,5 @@
 import { HeaderLayout } from "./HeaderLayout";
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/components/mainpage/context/SidebarContext";
 import { MenuSidebarLayout } from "./MenuSidebarLayout";
 import { DashboardLayout } from "./DashboardLayout";
 import { InfoSidebarLayout } from "./InfoSidebarLayout";

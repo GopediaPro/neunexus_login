@@ -1,11 +1,11 @@
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/components/mainpage/context/SidebarContext";
 import { useEffect, useRef } from "react";
 import { MenuSidebarLayout } from '@/components/mainpage/layout/MenuSidebarLayout';
 import { HeaderManagement } from '../HeaderManagement';
 import { ProductToolbar } from '../ProductToolbar';
 import { ProductGrid } from '../common/ProductGrid';
-import { ProductProvider } from '@/contexts/ProductContext';
+import { ProductProvider } from '@/components/management/context/ProductContext';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

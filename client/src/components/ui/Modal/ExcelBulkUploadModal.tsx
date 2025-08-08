@@ -3,7 +3,7 @@ import { Modal } from ".";
 import { Button } from "../Button";
 import { Icon } from "../Icon";
 import { toast } from "sonner";
-import { useAuthContext } from "@/contexts";
+import { useAuthContext } from "@/components/auth/context";
 import { postExcelRunMacroBulk } from "@/api/order/postExcelRunMacroBulk";
 import { BulkResultModal } from "./ResultBulkModal";
 

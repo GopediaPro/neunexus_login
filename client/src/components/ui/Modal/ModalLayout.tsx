@@ -1,6 +1,6 @@
-import { useModalContext } from "@/contexts";
 import type { ModalBodyProps, ModalCloseButtonProps, ModalFooterProps, ModalHeaderProps, ModalTitleProps } from "@/shared/types";
 import { Icon } from "../Icon";
+import { useModalContext } from "@/components/ModalContext";
 
 export const ModalHeader = ({ children, className }: ModalHeaderProps) => {
   return (

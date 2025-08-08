@@ -1,5 +1,5 @@
 import { RuleEngineLayout } from "@/components/management/layout/RuleEngineLayout";
-import { SidebarProvider } from "@/contexts/SidebarContext";
+import { SidebarProvider } from "@/components/mainpage/context/SidebarContext";
 
 export const RuleEngineManagementPage = () => {
   return (
