@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useOrderList } from "./useOrderList";
+import { useOrderList } from "@/api/order/getDownFormOrders";
 import type { OrderItem } from "@/api/types";
 
 export const useOrderData = () => {

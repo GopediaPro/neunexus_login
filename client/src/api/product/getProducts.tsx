@@ -1,5 +1,5 @@
 import { httpClient } from '@/api/axios';
-import { API_END_POINT } from '@/constant/apiEndPoint';
+import { API_END_POINT } from '@/api/apiEndPoint';
 import type { ProductListResponse, GetProductsParams } from '@/api/types';
 
 export const getProducts = async (

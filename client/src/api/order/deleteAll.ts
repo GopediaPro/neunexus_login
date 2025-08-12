@@ -1,4 +1,4 @@
-import { API_END_POINT } from "@/constant/apiEndPoint";
+import { API_END_POINT } from "@/api/apiEndPoint";
 import { httpClient } from "@/api/axios";
 
 export const deleteAll = async () => {

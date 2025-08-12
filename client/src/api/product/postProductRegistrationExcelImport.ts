@@ -1,5 +1,6 @@
-import { API_END_POINT } from "@/constant/apiEndPoint";
+import { API_END_POINT } from "@/api/apiEndPoint";
 import { httpClient } from "@/api/axios";
+import { useMutation } from "@tanstack/react-query";
 
 export const postProductRegistrationExcelImport = async (file: File, sheetName: string) => {
   const formData = new FormData();
@@ -18,4 +19,12 @@ export const postProductRegistrationExcelImport = async (file: File, sheetName: 
     }
   );
   return response.data;
+};
+
+  export const useProductImport = () => {
+    return useMutation({
+  mutationFn: async ({ file, sheetName }: { file: File; sheetName: string }) => {
+    return await postProductRegistrationExcelImport(file, sheetName);
+  }
+});
 };
