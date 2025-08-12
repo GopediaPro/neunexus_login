@@ -1,5 +1,5 @@
 import { API_END_POINT } from "@/constant";
-import { httpClient } from "@/shared/axios";
+import { httpClient } from "@/api/axios";
 
 export const getDownFormOrders = async ({
   limit = 2000,

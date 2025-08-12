@@ -1,6 +1,6 @@
 import { API_END_POINT } from "@/constant";
-import { httpClient } from "@/shared/axios";
-import type { GetDownFormOrdersPaginationParams, PaginationResponse } from "@/shared/types";
+import { httpClient } from "@/api/axios";
+import type { GetDownFormOrdersPaginationParams, PaginationResponse } from "@/api/types";
 
 export const getDownFormOrdersPagination = async ({ 
   page = 1, 

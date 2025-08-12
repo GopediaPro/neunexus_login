@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui/Icon";
-import type { ILeftMenuButtonProps, ISubMenuItemProps } from "@/shared/types/sidebar.types";
+import type { ILeftMenuButtonProps, ISubMenuItemProps } from "@/api/types/sidebar.types";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 

@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { useProductData } from "@/hooks/productManagement/useProductData";
 import { useProductGrid } from "@/hooks/productManagement/useProductGrid";
-import type { ProductContextValue } from "@/shared/types";
+import type { ProductContextValue } from "@/api/types";
 
 export type ProductTab = "registration" | "bulk-registration";
 

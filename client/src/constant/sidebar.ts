@@ -1,4 +1,4 @@
-import type { IMenuItemType } from "@/shared/types/sidebar.types";
+import type { IMenuItemType } from "@/api/types/sidebar.types";
 
 export const sidebarMenu: IMenuItemType[] = [
   {

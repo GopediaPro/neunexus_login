@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useOrderList } from "./useOrderList";
-import type { OrderItem } from "@/shared/types";
+import type { OrderItem } from "@/api/types";
 
 export const useOrderData = () => {
   const { 

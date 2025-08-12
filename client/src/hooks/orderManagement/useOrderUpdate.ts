@@ -1,6 +1,6 @@
 import { putBlukDownFormOrders } from "@/api/order/putBlukDownFormOrders";
 import { useMutation, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
-import type { BulkUpdateOrderItem, BulkUpdateRequest } from "@/shared/types";
+import type { BulkUpdateOrderItem, BulkUpdateRequest } from "@/api/types";
 import { toast } from "sonner";
 import type { GridApi } from "ag-grid-community";
 

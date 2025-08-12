@@ -1,6 +1,6 @@
 import { postBulkDownFormOrders } from "@/api/order/postBulkDownFormOrders";
 import { useMutation, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
-import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse } from "@/shared/types";
+import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse } from "@/api/types";
 import type { GridApi } from "ag-grid-community";
 import { toast } from "sonner";
 

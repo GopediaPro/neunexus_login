@@ -1,6 +1,6 @@
 import { API_END_POINT } from "@/constant";
-import { httpClient } from "@/shared/axios";
-import type { BatchInfoParams, BatchInfoResponse } from "@/shared/types"
+import { httpClient } from "@/api/axios";
+import type { BatchInfoParams, BatchInfoResponse } from "@/api/types/order.types"
 
 export const getBatchInfoAll = async (params?: BatchInfoParams): Promise<BatchInfoResponse> => {
   const searchParams = new URLSearchParams();

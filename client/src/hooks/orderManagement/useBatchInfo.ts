@@ -1,7 +1,7 @@
 import { getBatchInfoAll } from "@/api/order/getBatchInfoAll";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoLatest";
 import { useQuery } from "@tanstack/react-query";
-import type { BatchInfoParams, BatchInfoResponse } from "@/shared/types";
+import type { BatchInfoParams, BatchInfoResponse } from "@/api/types";
 import type { UseQueryOptions } from "@tanstack/react-query";
 
 export const useBatchInfoAll = (

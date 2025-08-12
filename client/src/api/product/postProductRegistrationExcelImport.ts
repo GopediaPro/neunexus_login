@@ -1,5 +1,5 @@
 import { API_END_POINT } from "@/constant/apiEndPoint";
-import { httpClient } from "@/shared/axios";
+import { httpClient } from "@/api/axios";
 
 export const postProductRegistrationExcelImport = async (file: File, sheetName: string) => {
   const formData = new FormData();

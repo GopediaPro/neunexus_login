@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import type { GridApi } from "ag-grid-community";
-import type { OrderItem } from "@/shared/types";
-import { useOrderContext } from "@/contexts/OrderContext";
+import type { OrderItem } from "@/api/types";
+import { useOrderContext } from "@/api/context/OrderContext";
 import { postBulkDownFormOrders } from "@/api/order/postBulkDownFormOrders";
 
 export const useOrderGridActions = (gridApi: GridApi | null) => {

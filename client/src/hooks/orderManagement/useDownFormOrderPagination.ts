@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getDownFormOrdersPagination } from "@/api/order/getDownFormOrdersPagination";
-import type { UseDownFormOrderPaginationParams } from "@/shared/types";
+import type { UseDownFormOrderPaginationParams } from "@/api/types";
 
 export const useDownFormOrderPagination = ({
   page,

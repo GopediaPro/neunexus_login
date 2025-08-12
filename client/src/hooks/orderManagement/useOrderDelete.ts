@@ -1,6 +1,6 @@
 import { deleteBulkDownFormOrders } from "@/api/order/deleteBulkDownFormOrders";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { BulkDeleteRequest } from "@/shared/types";
+import type { BulkDeleteRequest } from "@/api/types";
 
 export const useOrderDelete = () => {
   const queryClient = useQueryClient();

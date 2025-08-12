@@ -1,6 +1,6 @@
-import { httpClient } from '@/shared/axios';
+import { httpClient } from '@/api/axios';
 import { API_END_POINT } from '@/constant/apiEndPoint';
-import type { ProductListResponse, GetProductsParams } from '@/shared/types';
+import type { ProductListResponse, GetProductsParams } from '@/api/types';
 
 export const getProducts = async (
   params: GetProductsParams

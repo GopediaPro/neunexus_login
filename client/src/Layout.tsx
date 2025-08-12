@@ -1,14 +1,16 @@
 import type { ReactNode } from "react";
-
+import { SidebarProvider } from "@/contexts/SidebarContext";
 interface LayoutProps {
   children: ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div>
-      {children}
-    </div>
+    <SidebarProvider>
+      <div>
+        {children}
+      </div>
+    </SidebarProvider>
   )
 };
 

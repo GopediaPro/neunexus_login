@@ -1,6 +1,6 @@
 import { API_END_POINT } from "@/constant";
-import { httpClient } from "@/shared/axios";
-import type { SimpleExcelUploadRequest, ExcelUploadResponse } from "@/shared/types";
+import { httpClient } from "@/api/axios";
+import type { SimpleExcelUploadRequest, ExcelUploadResponse } from "@/api/types";
 
 export const postExcelToMinio =  async (data: SimpleExcelUploadRequest) => {
   const formData = new FormData();
