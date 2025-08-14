@@ -1,5 +1,5 @@
 import { StatusCard } from "@/components/mainpage/common/StatusCard";
-import { Modal } from "@/components/ui/Modal";
+import { Modal } from "@/components/ui/ModalComponent";
 import { useState } from "react";
 import moment from "moment";
 import { Button } from "@/components/ui/Button";

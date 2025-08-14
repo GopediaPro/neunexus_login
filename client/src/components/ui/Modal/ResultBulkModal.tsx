@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { Modal } from ".";
+import { Modal } from "../ModalComponent";
 import { Button } from "../Button";
 import { Icon } from "../Icon";
 

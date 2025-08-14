@@ -4,13 +4,13 @@ import Layout from './Layout';
 import { TestComponent } from './components/TestComponent';
 import { PrivateRoute } from '@/components/layout/PrivateRoute';
 import { PublicRoute } from '@/components/layout/PublicRoute';
-import { LoginPage } from './pages/LoginPage';
-import { SignupPage } from './pages/SignupPage';
-import { MainPage } from './pages/MainPage';
-import { ProductManagementPage } from './pages/ProductManagementPage';
+import { LoginPage } from './pages/Auth/LoginPage';
+import { SignupPage } from './pages/Auth/SignupPage';
+import { MainPage } from './pages/Main/MainPage';
+import { ProductManagementPage } from './pages/Product/ProductManagementPage';
 import { OrderManagementPage } from './pages/OrderManagementPage';
 import { RuleEngineManagementPage } from './pages/RuleEngineManagementPage';
-import { Error } from './components/ui/Error';
+import { Error } from './components/ui/NotFound';
 
 const publicRouteList = [
   {

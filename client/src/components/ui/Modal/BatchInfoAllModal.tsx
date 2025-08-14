@@ -1,7 +1,7 @@
 import { convertToHttps } from '@/utils/convertToHttps';
-import { Modal } from '.';
+import { Modal } from '../ModalComponent';
 import { Button } from '../Button';
-import type { BatchInfoData, BatchInfoResponse } from '@/shared/types';
+import type { BatchInfoData, BatchInfoResponse } from '@/api/types';
 import { formatDate } from '@/utils/formatDate';
 import { Icon } from '../Icon';
 import { useMemo, useState } from 'react';

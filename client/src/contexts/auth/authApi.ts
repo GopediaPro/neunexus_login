@@ -1,6 +1,6 @@
 import { getKeycloakUrls, keycloakConfig } from '@/utils/keycloakConfig';
 import { tokenManager } from './tokenManager';
-import type { IKeycloakTokenResponse, IKeycloakUser } from '@/shared/types';
+import type { IKeycloakTokenResponse, IKeycloakUser } from '@/api/types';
 
 export const authApi = {
   getAdminToken: async (): Promise<string> => {

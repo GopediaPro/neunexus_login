@@ -1,5 +1,5 @@
 import { useModalContext } from "@/contexts";
-import type { ModalBodyProps, ModalCloseButtonProps, ModalFooterProps, ModalHeaderProps, ModalTitleProps } from "@/shared/types";
+import type { ModalBodyProps, ModalCloseButtonProps, ModalFooterProps, ModalHeaderProps, ModalTitleProps } from "@/api/types";
 import { Icon } from "../Icon";
 
 export const ModalHeader = ({ children, className }: ModalHeaderProps) => {

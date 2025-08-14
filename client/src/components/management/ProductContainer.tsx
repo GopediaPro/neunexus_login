@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import { HeaderManagement } from './HeaderManagement';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { ModuleRegistry, ClientSideRowModelModule } from 'ag-grid-community';
-import { ProductToolbar } from './ProductToolbar';
+import { ProductToolbar } from '@/pages/Product/ProductToolbar';
 import { MenuSidebarLayout } from '../mainpage/layout/MenuSidebarLayout';
-import { ProductGrid } from './common/ProductGrid';
+import { ProductGrid } from '../../pages/Product/ProductGrid';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

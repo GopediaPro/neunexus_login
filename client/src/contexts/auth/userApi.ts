@@ -1,4 +1,4 @@
-import type { ICreateUserRequest } from "@/shared/types";
+import type { ICreateUserRequest } from "@/api/types";
 import { keycloakConfig } from '@/utils/keycloakConfig';
 
 export const userApi = {

@@ -1,6 +1,7 @@
 import { API_END_POINT } from "@/constant";
-import { httpClient } from "@/shared/axios";
-import type { GetDownFormOrdersPaginationParams, PaginationResponse } from "@/shared/types";
+import { httpClient } from "@/api/axios";
+import type { GetDownFormOrdersPaginationParams, PaginationResponse, UseDownFormOrderPaginationParams } from "@/api/types";
+import { useQuery } from "@tanstack/react-query";
 
 export const getDownFormOrdersPagination = async ({ 
   page = 1, 
@@ -18,4 +19,18 @@ export const getDownFormOrdersPagination = async ({
   
   const response = await httpClient.get(API_END_POINT.DOWN_FORM_ORDERS_PAGINATION, { params });
   return response.data;
+};
+
+export const useDownFormOrderPagination = ({
+  page,
+  page_size,
+  template_code,
+  enabled = true,
+}: UseDownFormOrderPaginationParams = {}) => {
+  return useQuery({
+    queryKey: ['downFormOrdersPagination', page, page_size, template_code],
+    queryFn: () => getDownFormOrdersPagination({ page, page_size, template_code }),
+    enabled,
+    refetchOnWindowFocus: false,
+  });
 };

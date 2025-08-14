@@ -1,4 +1,4 @@
-import { Modal } from '../Modal';
+import { Modal } from '../ModalComponent';
 import { Button } from '../Button';
 import { Icon } from '../Icon';
 
@@ -37,7 +37,7 @@ export const ConfirmDeleteModal = ({
       <Modal.Footer>
         <div className="flex gap-2 justify-end">
           <Button 
-            variant="outline"
+            variant="light"
             onClick={onClose}
             disabled={isLoading}
             className="border-2 border-stroke-base-200 text-text-base-500"

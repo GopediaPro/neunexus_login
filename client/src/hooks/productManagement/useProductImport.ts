@@ -1,6 +1,6 @@
-import { postProductRegistrationExcelImport } from "@/api/product/postProductRegistrationExcelImport";
-import { useMutation } from "@tanstack/react-query";
+
 import { useState } from "react";
+import { useProductImport as useProductImportApi } from "@/api/product/postProductRegistrationExcelImport";
 
 interface ImportResult {
   success: boolean;
@@ -10,12 +10,8 @@ interface ImportResult {
 
 export const useProductImport = () => {
   const [isUploading, setIsUploading] = useState(false);
+  const importMutation = useProductImportApi();
 
-  const importMutation = useMutation({
-    mutationFn: async ({ file, sheetName }: { file: File; sheetName: string }) => {
-      return await postProductRegistrationExcelImport(file, sheetName);
-    }
-  });
 
   const handleFileImport = async (file: File, sheetName: string = '상품등록'): Promise<ImportResult> => {
     try {

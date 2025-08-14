@@ -2,8 +2,8 @@ import { useForm, Controller } from "react-hook-form";
 import { SelectSearchInput } from "@/components/management/common/SelectSearchInput";
 import { templateOptions } from "@/constant";
 import { Button } from "@/components/ui/Button";
-import { Modal } from ".";
-import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
+import { Modal } from "../ModalComponent";
+import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "../ModalComponent/ModalLayout";
 import { toast } from "sonner";
 
 interface OrderFormData {

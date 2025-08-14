@@ -1,5 +1,5 @@
-import { API_END_POINT } from "@/constant/apiEndPoint";
-import { httpClient } from "@/shared/axios";
+import { API_END_POINT } from "@/api/apiEndPoint";
+import { httpClient } from "@/api/axios";
 
 interface ExcelUploadRequest {
   request: string;

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef } from "react";
 import { type ColDef } from 'ag-grid-community';
 import { AgGridReact } from "ag-grid-react";
-import type { ProductData } from "@/shared/types/product.types";
+import type { ProductData } from "@/api/types/product.types";
 
 export const useProductGrid = () => {
   const gridRef = useRef<AgGridReact<ProductData>>(null);

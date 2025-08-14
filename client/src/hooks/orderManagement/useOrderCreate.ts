@@ -1,31 +1,9 @@
 import { postBulkDownFormOrders } from "@/api/order/postBulkDownFormOrders";
 import { useMutation, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
-import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse } from "@/shared/types";
+import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse } from "@/api/types";
 import type { GridApi } from "ag-grid-community";
 import { toast } from "sonner";
 
-interface UseOrderCreateOptions {
-  onSuccess?: (data: DownFormBulkCreateResponse) => void;
-  onError?: (error: any) => void;
-}
-
-export const useOrderCreate = (options?: UseOrderCreateOptions) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (req: BulkCreateRequest) => postBulkDownFormOrders(req),
-    onSuccess: (data: DownFormBulkCreateResponse) => {
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-      
-      options?.onSuccess?.(data);
-    },
-    onError: (error) => {
-      options?.onError?.(error);
-
-      console.error("대량 생성 실패:", error);
-    },
-  });
-}; 
 
 export const handleOrderCreate = async (
   gridApi: GridApi, 
