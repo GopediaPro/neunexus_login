@@ -164,21 +164,11 @@ export const OrderToolbar = () => {
   };
 
   const handleBulkDeleteConfirm = () => {
-    if (selectedRows.length === 0) {
-      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
-      return;
-    }
-
     setDeleteAction('bulk');
     setIsConfirmDeleteModalOpen(true);
   };
 
   const handleDuplicateDeleteConfirm = () => {
-    if (selectedRows.length === 0) {
-      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
-      return;
-    }
-
     setDeleteAction('duplicate');
     setIsConfirmDeleteModalOpen(true);
   };
@@ -318,24 +308,7 @@ export const OrderToolbar = () => {
   const handleDataItems = [
     {
       label: '매크로 실행',
-      onClick: () => setIsExcelUploadModalOpen(true),
-    },
-    {
-      label: '대량 매크로 실행',
       onClick: () => setIsExcelRunMacroBulkModalOpen(true),
-    },
-    {
-      label: 'minio에 업로드',
-      onClick: () => setIsExcelUploadModalOpen(true),
-    },
-    {
-      label: 'db에 저장',
-      onClick: () => setIsExcelToDbModalOpen(true),
-    },
-    {
-      label: '전체 업로드 결과',
-      onClick: handleBatchInfoAll,
-      disabled: isBatchInfoAllLoading,
     },
     {
       label: '최근 업로드 결과',
@@ -361,15 +334,6 @@ export const OrderToolbar = () => {
       onClick: handleAddSingleRow,
     },
     {
-      label: '5개 행 추가',
-      onClick: handleAddMultipleRows,
-    },
-    {
-      label: '선택 행 복사',
-      onClick: handleDuplicateRows,
-      disabled: !hasSelectedRows,
-    },
-    {
       label: '선택 행 삭제',
       onClick: handleRowDelete,
       disabled: !hasSelectedRows,
@@ -383,11 +347,6 @@ export const OrderToolbar = () => {
       label: '선택 해제',
       onClick: deselectAllRows,
       disabled: !hasSelectedRows,
-    },
-    {
-      label: '필터 초기화',
-      onClick: clearFilters,
-      disabled: !gridApi,
     }
   ];
 
