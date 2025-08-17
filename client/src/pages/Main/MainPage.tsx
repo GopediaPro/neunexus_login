@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/mainpage/layout/MainLayout";
+import { MainLayout } from "@/pages/Main/MainLayout";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 
 export const MainPage = () => {

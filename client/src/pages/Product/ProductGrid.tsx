@@ -1,5 +1,5 @@
 import { AgGridReact } from "ag-grid-react";
-import { useProductContext } from "@/contexts/ProductContext";
+import { useProductContext } from "@/api/context/ProductContext";
 
 export const ProductGrid = () => {
   const {

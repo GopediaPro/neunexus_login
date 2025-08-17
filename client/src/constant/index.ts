@@ -1,4 +1,4 @@
-export { API_END_POINT } from "./apiEndPoint";
+export { API_END_POINT } from "../api/apiEndPoint";
 export { CALENDAR_CONFIG, COLOR_OPTIONS, CALENDAR_MESSAGES } from "./calendar";
 export { statsItems } from "./dashboard";
 export { menuItems } from "./menu";

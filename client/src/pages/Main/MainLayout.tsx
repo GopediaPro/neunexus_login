@@ -1,8 +1,8 @@
-import { HeaderLayout } from "./HeaderLayout";
+import { HeaderLayout } from "../../components/mainpage/layout/HeaderLayout";
 import { useSidebar } from "@/contexts/SidebarContext";
-import { MenuSidebarLayout } from "./MenuSidebarLayout";
-import { DashboardLayout } from "./DashboardLayout";
-import { InfoSidebarLayout } from "./InfoSidebarLayout";
+import { MenuSidebarLayout } from "../../components/mainpage/layout/MenuSidebarLayout";
+import { DashboardLayout } from "../../components/mainpage/layout/DashboardLayout";
+import { InfoSidebarLayout } from "../../components/mainpage/layout/InfoSidebarLayout";
 
 export const MainLayout = () => {
   const { isOpen } = useSidebar();

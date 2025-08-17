@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/contexts";
 import { ROUTERS } from "@/constant/route";
 import { sidebarMenu } from "@/constant/sidebar";
-import type { IMenuItemType } from "@/shared/types/sidebar.types";
+import type { IMenuItemType } from "@/api/types/sidebar.types";
 
 const withHoverState = (items: IMenuItemType[]): IMenuItemType[] =>
   items.map(item => ({ ...item, isHovered: false }));

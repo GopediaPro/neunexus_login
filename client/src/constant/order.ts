@@ -1,5 +1,5 @@
 import type { SelectOption } from "@/components/management/common/SelectSearchInput";
-import type { FormTemplate, OrderItem } from "@/shared/types";
+import type { FormTemplate, OrderItem } from "@/api/types";
 
 export const templateOptions: SelectOption[] = [
   { value: 'all', label: '전체' },

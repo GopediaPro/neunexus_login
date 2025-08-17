@@ -1,6 +1,6 @@
-import { Modal } from '../Modal';
+import { Modal } from '../ModalComponent';
 import { Button } from '../Button';
-import type { BatchInfoData, BatchInfoResponse } from '@/shared/types';
+import type { BatchInfoData, BatchInfoResponse } from '@/api/types';
 import { convertToHttps } from '@/utils/convertToHttps';
 import { Icon } from '../Icon';
 import { formatDate } from '@/utils/formatDate';

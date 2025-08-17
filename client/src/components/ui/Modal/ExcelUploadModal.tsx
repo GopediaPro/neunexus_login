@@ -3,13 +3,13 @@ import { templateOptions } from "@/constant";
 import { useState, type ChangeEvent } from "react";
 import { Button } from "../Button";
 import { useForm } from "react-hook-form";
-import { Modal } from ".";
-import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
+import { Modal } from "../ModalComponent";
+import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "../ModalComponent/ModalLayout";
 import { ResultModal } from "./BulkResultModal";
 import { FormField } from "../FormField";
 import { postExcelToDb, postExcelToMinio } from "@/api/order";
 import { modalConfig } from "@/constant/order"
-import type { ExcelUploadFormData } from "@/shared/types";
+import type { ExcelUploadFormData } from "@/api/types";
 import { postExcelRunMacro } from "@/api/order/postExcelRunMacro";
 import { toast } from "sonner";
 

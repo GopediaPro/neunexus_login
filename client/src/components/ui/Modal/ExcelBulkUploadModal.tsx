@@ -1,5 +1,5 @@
 import { useState, useRef, type DragEvent, type ChangeEvent } from "react";
-import { Modal } from ".";
+import { Modal } from "../ModalComponent";
 import { Button } from "../Button";
 import { Icon } from "../Icon";
 import { toast } from "sonner";
