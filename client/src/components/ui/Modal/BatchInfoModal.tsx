@@ -5,9 +5,11 @@ import { convertToHttps } from '@/utils/convertToHttps';
 import { Icon } from '../Icon';
 import { formatDate } from '@/utils/formatDate';
 import { Checkbox } from '../Checkbox';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FORM_TYPE_OPTIONS, STATUS_OPTIONS } from '@/constant/order';
 import { Dropdown } from '../Dropdown';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 interface BatchInfoModalProps {
   isOpen: boolean;
@@ -26,6 +28,18 @@ export const BatchInfoModal = ({
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [filterFormType, setFilterFormType] = useState<FilterFormType>('all');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('success');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedItems(new Set());
+      setFilterFormType('all');
+      setFilterStatus('success');
+      setStartDate(null);
+      setEndDate(null);
+    }
+  }, [isOpen]);
 
   const allBatches = useMemo(() => {
     if (!batchInfo) return [];
@@ -48,9 +62,15 @@ export const BatchInfoModal = ({
       if (filterStatus === 'success' && batch.error_message) return false;
       if (filterStatus === 'error' && !batch.error_message) return false;
       
+      // 날짜 필터링
+      if (startDate || endDate) {
+        const batchDate = new Date(batch.created_at);
+        if (startDate && batchDate < startDate) return false;
+        if (endDate && batchDate > endDate) return false;
+      }
       return true;
     });
-  }, [allBatches, filterFormType, filterStatus]);
+  }, [allBatches, filterFormType, filterStatus, startDate, endDate]);
 
   const groupedBatches = useMemo(() => {
     const groups: { [key: string]: BatchInfoData[] } = {};
@@ -117,6 +137,8 @@ export const BatchInfoModal = ({
   const resetFilters = () => {
     setFilterFormType('all');
     setFilterStatus('all');
+    setStartDate(null);
+    setEndDate(null);
     setSelectedItems(new Set());
   };
 
@@ -177,7 +199,46 @@ export const BatchInfoModal = ({
                 />
               </div>
 
-              <Button variant="light" onClick={resetFilters}>
+              <div className="flex gap-2 items-center flex-shrink-0">
+                <span className="text-sm text-gray-600 whitespace-nowrap">생성일:</span>
+                <div className="flex gap-1 items-center">
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    selectsStart
+                    startDate={startDate}
+                    endDate={endDate}
+                    placeholderText="0000-00-00"
+                    dateFormat="yyyy-MM-dd"
+                    formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 1)}
+                    showYearDropdown
+                    dateFormatCalendar="MMMM"
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100}
+                    todayButton="Today"
+                    className="px-3 py-2 w-32 sm:w-28 lg:w-32 h-10 text-sm bg-white rounded-md border border-gray-300 hover:bg-gray-50"
+                  />
+                  <span className="text-gray-400">~</span>
+                  <DatePicker
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
+                    selectsEnd
+                    startDate={startDate}
+                    endDate={endDate}
+                    placeholderText="0000-00-00"
+                    dateFormat="yyyy-MM-dd"
+                    formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 1)}
+                    showYearDropdown
+                    dateFormatCalendar="MMMM"
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100}
+                    todayButton="Today"
+                    className="px-3 py-2 w-32 h-10 text-sm bg-white rounded-md border border-gray-300 hover:bg-gray-50"
+                  />
+                </div>
+              </div>
+
+              <Button variant="light" onClick={resetFilters} className="h-10 whitespace-nowrap">
                 필터 초기화
               </Button>
             </div>
