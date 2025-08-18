@@ -6,8 +6,6 @@ import type { BatchInfoResponse, FormTemplate } from "@/api/types";
 import { useOrderGridActions } from "@/hooks/orderManagement/useOrderGridActions";
 import { ExcelUploadModal } from "@/components/ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/api/context/OrderContext";
-import { BatchInfoAllModal } from "@/components/ui/Modal/BatchInfoAllModal";
-import { getBatchInfoAll } from "@/api/order/getBatchInfoAll";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { ChevronDown } from "lucide-react";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoAll";
@@ -26,15 +24,10 @@ import { useOrderUpdate } from "@/api/order/putBlukDownFormOrders";
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
   const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
-  const [isBatchInfoAllModalOpen, setIsBatchInfoAllModalOpen] = useState(false);
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-  const [isExcelToDbModalOpen, setIsExcelToDbModalOpen] = useState(false);
-  const [isExcelToMinioModalOpen, setIsExcelToMinioModalOpen] = useState(false);
   const [isExcelRunMacroBulkModalOpen, setIsExcelRunMacroBulkModalOpen] = useState(false);
-  const [batchInfoAllData, setBatchInfoAllData] = useState<BatchInfoResponse | null>(null);
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
-  const [isBatchInfoAllLoading, setIsBatchInfoAllLoading] = useState(false);
   const [isSelectedBatchLoading, setIsSelectedBatchLoading] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const [deleteAction, setDeleteAction] = useState<'bulk' | 'duplicate' | 'selected' | null>(null);
@@ -52,14 +45,10 @@ export const OrderToolbar = () => {
 
   const {
     addNewRow,
-    addMultipleRows,
     deleteSelectedRows,
     selectAllRows,
     deselectAllRows,
-    clearFilters,
     hasSelectedRows,
-    duplicateSelectedRows,
-    selectedRowCount,
   } = useOrderGridActions(gridApi);
 
   const bulkCreateMutation = useOrderCreate();
@@ -129,30 +118,6 @@ export const OrderToolbar = () => {
     }
   };
 
-  const handleAddMultipleRows = async () => {
-    try {
-      await addMultipleRows(5);
-      toast.success('5개 행이 추가되었습니다.');
-    } catch (error) {
-      console.error('여러 행 추가 실패:', error);
-      toast.error('행 추가에 실패했습니다.');
-    }
-  };
-
-  const handleDuplicateRows = async () => {
-    try {
-      if (!hasSelectedRows) {
-        toast.error('복사할 행을 선택해주세요.');
-        return;
-      }
-      await duplicateSelectedRows();
-      toast.success(`${selectedRowCount}개 행이 복사되었습니다.`);
-    } catch (error) {
-      console.error('행 복사 실패:', error);
-      toast.error('행 복사에 실패했습니다.');
-    }
-  };
-
   const handleOrderDelete = () => {
     if (selectedRows.length === 0) {
       toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
@@ -164,21 +129,11 @@ export const OrderToolbar = () => {
   };
 
   const handleBulkDeleteConfirm = () => {
-    if (selectedRows.length === 0) {
-      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
-      return;
-    }
-
     setDeleteAction('bulk');
     setIsConfirmDeleteModalOpen(true);
   };
 
   const handleDuplicateDeleteConfirm = () => {
-    if (selectedRows.length === 0) {
-      toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
-      return;
-    }
-
     setDeleteAction('duplicate');
     setIsConfirmDeleteModalOpen(true);
   };
@@ -248,31 +203,6 @@ export const OrderToolbar = () => {
     refreshGrid();
   };
 
-  const handleSaveToDb = () => {
-    toast.success('db에 저장이 완료되었습니다.');
-    refreshGrid();
-  };
-
-  const handleBatchInfoAll = async () => {
-    try {
-      setIsBatchInfoAllLoading(true);
-      
-      const batchInfo = await getBatchInfoAll({
-        page: 1,
-        page_size: 100
-      });
-
-      setBatchInfoAllData(batchInfo);
-      setIsBatchInfoAllModalOpen(true);
-
-    } catch (error) {
-      console.error('배치 정보 조회 실패:', error);
-      toast.error('배치 정보를 불러오는데 실패했습니다.');
-    } finally {
-      setIsBatchInfoAllLoading(false);
-    }
-  };
-
   const handleSelectedBatchInfo = async () => {
     try {
       setIsSelectedBatchLoading(true);
@@ -318,24 +248,7 @@ export const OrderToolbar = () => {
   const handleDataItems = [
     {
       label: '매크로 실행',
-      onClick: () => setIsExcelUploadModalOpen(true),
-    },
-    {
-      label: '대량 매크로 실행',
       onClick: () => setIsExcelRunMacroBulkModalOpen(true),
-    },
-    {
-      label: 'minio에 업로드',
-      onClick: () => setIsExcelUploadModalOpen(true),
-    },
-    {
-      label: 'db에 저장',
-      onClick: () => setIsExcelToDbModalOpen(true),
-    },
-    {
-      label: '전체 업로드 결과',
-      onClick: handleBatchInfoAll,
-      disabled: isBatchInfoAllLoading,
     },
     {
       label: '최근 업로드 결과',
@@ -361,15 +274,6 @@ export const OrderToolbar = () => {
       onClick: handleAddSingleRow,
     },
     {
-      label: '5개 행 추가',
-      onClick: handleAddMultipleRows,
-    },
-    {
-      label: '선택 행 복사',
-      onClick: handleDuplicateRows,
-      disabled: !hasSelectedRows,
-    },
-    {
       label: '선택 행 삭제',
       onClick: handleRowDelete,
       disabled: !hasSelectedRows,
@@ -383,11 +287,6 @@ export const OrderToolbar = () => {
       label: '선택 해제',
       onClick: deselectAllRows,
       disabled: !hasSelectedRows,
-    },
-    {
-      label: '필터 초기화',
-      onClick: clearFilters,
-      disabled: !gridApi,
     }
   ];
 
@@ -502,9 +401,8 @@ export const OrderToolbar = () => {
                   variant="light" 
                   size="sidebar"
                   className="py-5 flex items-center gap-1"
-                  disabled={isBatchInfoAllLoading}
                 >
-                  {isBatchInfoAllLoading ? '로딩 중...' : '데이터 관리'}
+                  데이터 관리
                   <ChevronDown size={24} className="text-text-base-400" />
                 </Button>
               }
@@ -529,29 +427,9 @@ export const OrderToolbar = () => {
         mode="macro"
       />
 
-      <ExcelUploadModal
-        isOpen={isExcelToMinioModalOpen}
-        onClose={() => setIsExcelToMinioModalOpen(false)}
-        onSuccess={handleExcelUploadSuccess}
-        mode="minio"
-      />
-
-      <ExcelUploadModal
-        isOpen={isExcelToDbModalOpen}
-        onClose={() => setIsExcelToDbModalOpen(false)}
-        onSuccess={handleSaveToDb}
-        mode="database"
-      />
-
       <ExcelBulkUploadModal
         isOpen={isExcelRunMacroBulkModalOpen}
         onClose={() => setIsExcelRunMacroBulkModalOpen(false)}
-      />
-
-      <BatchInfoAllModal
-        isOpen={isBatchInfoAllModalOpen}
-        onClose={() => setIsBatchInfoAllModalOpen(false)}
-        batchInfo={batchInfoAllData}
       />
 
       <BatchInfoModal
