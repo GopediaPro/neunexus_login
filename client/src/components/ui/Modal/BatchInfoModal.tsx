@@ -166,7 +166,7 @@ export const BatchInfoModal = ({
       <Modal.Body>
         <div className="space-y-4 w-full">
           <div className="p-4 bg-gray-50 rounded-lg space-y-4 border border-gray-200">
-            <div className="flex items-center gap-4 flex-nowrap">
+            <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600 whitespace-nowrap">폼 타입:</span>
                 <Dropdown
@@ -199,7 +199,7 @@ export const BatchInfoModal = ({
                 />
               </div>
 
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center flex-shrink-0">
                 <span className="text-sm text-gray-600 whitespace-nowrap">생성일:</span>
                 <div className="flex gap-1 items-center">
                   <DatePicker
@@ -216,8 +216,7 @@ export const BatchInfoModal = ({
                     scrollableYearDropdown
                     yearDropdownItemNumber={100}
                     todayButton="Today"
-
-                    className="px-3 py-2 w-32 h-10 text-sm bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="px-3 py-2 w-32 sm:w-28 lg:w-32 h-10 text-sm bg-white rounded-md border border-gray-300 hover:bg-gray-50"
                   />
                   <span className="text-gray-400">~</span>
                   <DatePicker
@@ -226,7 +225,6 @@ export const BatchInfoModal = ({
                     selectsEnd
                     startDate={startDate}
                     endDate={endDate}
-                    // minDate={startDate}
                     placeholderText="0000-00-00"
                     dateFormat="yyyy-MM-dd"
                     formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 1)}
@@ -235,13 +233,12 @@ export const BatchInfoModal = ({
                     scrollableYearDropdown
                     yearDropdownItemNumber={100}
                     todayButton="Today"
-
-                    className="px-3 py-2 w-32 h-10 text-sm bg-white rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="px-3 py-2 w-32 h-10 text-sm bg-white rounded-md border border-gray-300 hover:bg-gray-50"
                   />
                 </div>
               </div>
 
-              <Button variant="light" onClick={resetFilters}>
+              <Button variant="light" onClick={resetFilters} className="h-10 whitespace-nowrap">
                 필터 초기화
               </Button>
             </div>
