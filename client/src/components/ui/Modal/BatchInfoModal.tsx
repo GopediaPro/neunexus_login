@@ -10,11 +10,20 @@ import { FORM_TYPE_OPTIONS, STATUS_OPTIONS } from '@/constant/order';
 import { Dropdown } from '../Dropdown';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import JSZip from 'jszip';
+import { toast } from 'sonner';
 
 interface BatchInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
   batchInfo: BatchInfoResponse | null;
+}
+
+interface DownloadProgress {
+  current: number;
+  total: number;
+  currentFileName: string;
+  isCompleted: boolean;
 }
 
 type FilterFormType = string;
@@ -31,6 +40,14 @@ export const BatchInfoModal = ({
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState<DownloadProgress>({
+    current: 0,
+    total: 0,
+    currentFileName: '',
+    isCompleted: false
+  });
+
   useEffect(() => {
     if (isOpen) {
       setSelectedItems(new Set());
@@ -38,6 +55,13 @@ export const BatchInfoModal = ({
       setFilterStatus('success');
       setStartDate(null);
       setEndDate(null);
+      setIsDownloading(false);
+      setDownloadProgress({
+        current: 0,
+        total: 0,
+        currentFileName: '',
+        isCompleted: false
+      });
     }
   }, [isOpen]);
 
@@ -105,6 +129,132 @@ export const BatchInfoModal = ({
     window.open(httpsUrl, '_blank', 'noopener,noreferrer');
   };
 
+  const handleBatchDownload = async () => {
+    const selectedBatches = filteredBatches.filter(batch => 
+      selectedItems.has(batch.batch_id) && batch.file_url
+    );
+    
+    if (selectedBatches.length === 0) {
+      toast.error('다운로드할 파일을 선택해주세요.');
+      return;
+    }
+    
+    setIsDownloading(true);
+    setDownloadProgress({
+      current: 0,
+      total: selectedBatches.length,
+      currentFileName: '',
+      isCompleted: false
+    });
+    
+    try {
+      const zip = new JSZip();
+      const failedFiles: string[] = [];
+      
+      const fileNameCounts = new Map<string, number>();
+      
+      for (let i = 0; i < selectedBatches.length; i++) {
+        const batch = selectedBatches[i];
+        
+        setDownloadProgress(prev => ({
+          ...prev,
+          current: i + 1,
+          currentFileName: batch.original_filename
+        }));
+        
+        try {
+          const httpsUrl = convertToHttps(batch.file_url);
+          
+          const response = await fetch(httpsUrl, {
+            method: 'GET',
+            headers: {
+              'Accept': '*/*',
+            },
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          
+          const blob = await response.blob();
+          
+          let filename = batch.original_filename;
+          const count = fileNameCounts.get(filename) || 0;
+          if (count > 0) {
+            const ext = filename.split('.').pop();
+            const name = filename.replace(`.${ext}`, '');
+            filename = `${name}_${count + 1}.${ext}`;
+          }
+          fileNameCounts.set(batch.original_filename, count + 1);
+          
+          zip.file(filename, blob);
+          
+        } catch (error) {
+          failedFiles.push(batch.original_filename);
+        }
+      }
+      
+      if (failedFiles.length > 0) {
+        const message = `다음 파일들은 다운로드에 실패했습니다:\n${failedFiles.join('\n')}\n\n다운로드 가능한 파일들로만 ZIP을 생성합니다.`;
+        if (!confirm(message)) {
+          setIsDownloading(false);
+          return;
+        }
+      }
+      
+      if (Object.keys(zip.files).length === 0) {
+        toast.error('다운로드 가능한 파일이 없습니다.');
+        setIsDownloading(false);
+        return;
+      }
+      
+      setDownloadProgress(prev => ({
+        ...prev,
+        currentFileName: 'ZIP 파일 생성 중...'
+      }));
+      
+      const content = await zip.generateAsync({ 
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: {
+          level: 6
+        }
+      });
+      
+      const url = URL.createObjectURL(content);
+      const fileName = `batch_files_${new Date().toISOString().split('T')[0]}.zip`;
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      URL.revokeObjectURL(url);
+      
+      setDownloadProgress(prev => ({
+        ...prev,
+        isCompleted: true,
+        currentFileName: '다운로드 완료!'
+      }));
+      
+      setTimeout(() => {
+        setDownloadProgress({
+          current: 0,
+          total: 0,
+          currentFileName: '',
+          isCompleted: false
+        });
+      }, 3000);
+      
+    } catch (error) {
+      toast.error('파일 다운로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const toggleSelectItem = (batchId: number) => {
     const newSelectedItems = new Set(selectedItems);
     if (selectedItems.has(batchId)) {
@@ -122,17 +272,6 @@ export const BatchInfoModal = ({
       setSelectedItems(new Set(filteredBatches.map(batch => batch.batch_id)));
     }
   };
-
-  const handleBatchDownload = () => {
-    const selectedBatches = filteredBatches.filter(batch => 
-      selectedItems.has(batch.batch_id) && batch.file_url
-    );
-    
-    selectedBatches.forEach(batch => {
-      handleDownload(batch.file_url);
-    });
-  };
-
 
   const resetFilters = () => {
     setFilterFormType('all');
@@ -255,13 +394,40 @@ export const BatchInfoModal = ({
               
               <div className="flex items-center gap-4">
                 {selectedItems.size > 0 && (
-                  <Button 
-                    variant="light" 
-                    onClick={handleBatchDownload}
-                    className="flex items-center gap-2"
-                  >
-                    선택한 파일 다운로드 ({selectedItems.size}개)
-                  </Button>
+                  <div className="flex items-center gap-3">
+                    <Button 
+                      variant="light" 
+                      onClick={handleBatchDownload}
+                      disabled={isDownloading}
+                      className="flex items-center gap-2"
+                    >
+                      {isDownloading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
+                          ZIP 생성 중...
+                        </>
+                      ) : (
+                        <>
+                          <Icon name="download" style="w-4 h-4" />
+                          선택한 파일 ZIP 다운로드 ({selectedItems.size}개)
+                        </>
+                      )}
+                    </Button>
+                    
+                    {isDownloading && (
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${(downloadProgress.current / downloadProgress.total) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-xs whitespace-nowrap">
+                          {downloadProgress.current}/{downloadProgress.total}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 )}
                 
                 <div className="flex items-center gap-2">
