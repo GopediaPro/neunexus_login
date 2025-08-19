@@ -1,25 +1,36 @@
-## 💡 작업 내용
+# -n 은 가장 최근 commit 개수 (push한 commit 개수) 
+git diff $(git rev-list --reverse main..HEAD | tail -n 14 | head -n 1)^..HEAD > changes.diff
+git log main..HEAD -n 14 --pretty=format:"%h %s" --name-status > commit_summary.txt
+git diff --stat $(git rev-list --reverse main..HEAD | tail -n 14 | head -n 1)^..HEAD > changes_stat.txt
 
-- [x] 작업 내용
+# PR prompt 입니다.
+## 작성된 PR 자료를 Markdown 툴(obsidian,...)에 복사 붙여넣기 한 다음 다시 복사 github PR에 붙여넣기 해야함.
 
-## 💡 자세한 설명
+You are an expert software developer and technical writer. Your task is to refine a Pull Request (PR) template and then draft a PR description using that refined template, referencing provided file changes.
 
-(가능한 한 자세히 작성해 주시면 도움이 됩니다.)
+Here's the current PR template content:
+"""
+## 📋 프로세스 시각화
+## 🎯 개요
+## 🔄 변경 사항 (<details> <summary><strong>🔸 Repository 계층 개선</strong></summary></details> 활용)
+## 🆕 주요 신규 * 변경 기능
+## 🏗️ 아키텍처 개선사항
+## 🔄 처리 플로우
+## 🎯 관련 이슈
+## 🔍 데이터 스키마 변경
+## 🏆 기대 효과
+## 📂 주요 변경 파일
+"""
 
-## 📗 참고 자료 (선택)
+First, **review and improve the provided PR template** by:
+1. Ensuring all necessary sections are present for a comprehensive PR.
+2. Clarifying any ambiguous sections.
+3. Suggesting additional explanations or guidance within the template for each section if needed, particularly for the "<details>" tag usage.
+4. Identifying and removing any unnecessary or redundant explanations.
 
-## 📢 리뷰 요구 사항 (선택)
+Second, **using the refined PR template, draft a PR description** based on the information that would typically be found in the following attached files (assume these files contain relevant content for a PR):
+- `changes_stat.txt` (summary of file changes, lines added/deleted)
+- `changes.diff` (detailed code differences)
+- `commit_summary.txt` (commit messages and summaries)
 
-## 🚩 후속 작업 (선택)
-
-## ✅ 셀프 체크리스트
-
-- [ ] PR 제목을 형식에 맞게 작성했나요?
-- [ ] 브랜치 전략에 맞는 브랜치에 PR을 올리고 있나요? (master/main이 아닙니다.)
-- [ ] 이슈는 close 했나요?
-- [ ] Reviewers, Labels, Projects를 등록했나요?
-- [ ] 작업 도중 문서 수정이 필요한 경우 잘 수정했나요?
-- [ ] 테스트는 잘 통과했나요?
-- [ ] 불필요한 코드는 제거했나요?
-
-closes #이슈번호
+The goal is to create a clear, concise, and highly effective PR template and then demonstrate its use by generating a comprehensive PR description that summarizes the changes from the provided files.
