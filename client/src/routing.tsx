@@ -8,7 +8,7 @@ import { LoginPage } from './pages/Auth/LoginPage';
 import { SignupPage } from './pages/Auth/SignupPage';
 import { MainPage } from './pages/Main/MainPage';
 import { ProductManagementPage } from './pages/Product/ProductManagementPage';
-import { OrderManagementPage } from './pages/OrderManagementPage';
+import { OrderManagementPage } from './pages/Order/OrderManagementPage';
 import { RuleEngineManagementPage } from './pages/RuleEngineManagementPage';
 import { Error } from './components/ui/NotFound';
 
