@@ -365,6 +365,33 @@ export const OrderToolbar = () => {
               <Icon name="trash" ariaLabel="trash" style="w-5 h-5" />
               {bulkDeleteMutation.isPending ? '삭제 중...' : `개별 주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
             </Button>
+            <Button 
+              variant="light" 
+              size="sidebar"
+              className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
+              onClick={() => {}}
+            >
+              <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+              전체 Macro
+            </Button>
+            <Button 
+              variant="light" 
+              size="sidebar"
+              className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
+              onClick={() => {}}
+            >
+              <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+              ERP Macro
+            </Button>
+            <Button 
+              variant="light" 
+              size="sidebar"
+              className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
+              onClick={() => {}}
+            >
+              <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+              합포장 Macro
+            </Button>
           </div>
           <div className="flex gap-2">
             <Dropdown
