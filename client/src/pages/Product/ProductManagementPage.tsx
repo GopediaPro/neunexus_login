@@ -6,9 +6,9 @@ export const ProductManagementPage = () => {
 
   return (
     <ProductProvider>
-    <SidebarProvider>
-      <ProductLayout />
-    </SidebarProvider>
+      <SidebarProvider>
+        <ProductLayout />
+      </SidebarProvider>
     </ProductProvider>
   );
 };
