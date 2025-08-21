@@ -20,6 +20,7 @@ import { useAuthContext } from "@/contexts";
 import { ExcelBulkUploadModal } from "@/components/ui/Modal/ExcelBulkUploadModal";
 import { useOrderCreate } from "@/api/order/postBulkDownFormOrders";
 import { useOrderUpdate } from "@/api/order/putBlukDownFormOrders";
+import { OrderMenue } from "./OrderMenue";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
@@ -325,73 +326,96 @@ export const OrderToolbar = () => {
             합포장
           </Button>
         </div>
+        <OrderMenue />
         <div className="mt-6 px-6">
           <span className="text-h2">주문목록</span>
         </div>
       </div>
       <div className="flex items-center gap-4 px-6 pt-5 bg-fill-base-100">
-        <div className="w-full flex justify-between items-center gap-2">
-          <div className="flex gap-2">
-            <Button 
-              variant="light" 
-              size="sidebar"
-              className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-              onClick={handleOrderCreateClick}
-              disabled={isCreateDisabled}
-            >
-              <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
-              {bulkCreateMutation.isPending ? '등록 중...' : '주문 등록'}
-            </Button>
-            <Button variant="light" size="sidebar" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>
-              <Icon name="folder" ariaLabel="folder" style="w-6 h-6 ml-[-2px]" />
-              주문 불러오기
-            </Button>
-            <Button 
-              variant="light" 
-              size="sidebar"
-              className={`py-5 ${isUpdateDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
-              onClick={handleOrderUpdateClick}
-              disabled={isUpdateDisabled}
-            >
-              <Icon name="edit" ariaLabel="edit" style="w-4 h-4" />
-              {bulkUpdateMutation.isPending ? '수정 중...' : `선택주문 수정${changedRows.length > 0 ? ` (${changedRows.length})` : ''}`}
-            </Button>
-            <Button variant="light" 
-              size="sidebar"
-              className={`py-5 ${isDeleteDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
-              onClick={handleOrderDelete}
-              disabled={isDeleteDisabled}
-            >
-              <Icon name="trash" ariaLabel="trash" style="w-5 h-5" />
-              {bulkDeleteMutation.isPending ? '삭제 중...' : `개별 주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
-            </Button>
-            <Button 
-              variant="light" 
-              size="sidebar"
-              className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
-              onClick={() => {}}
-            >
-              <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
-              전체 Macro
-            </Button>
-            <Button 
-              variant="light" 
-              size="sidebar"
-              className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
-              onClick={() => {}}
-            >
-              <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
-              ERP Macro
-            </Button>
-            <Button 
-              variant="light" 
-              size="sidebar"
-              className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
-              onClick={() => {}}
-            >
-              <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
-              합포장 Macro
-            </Button>
+        <div className="w-full flex justify-between items-start gap-2">
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-2">
+              <Button 
+                variant="light" 
+                size="sidebar"
+                className={`py-5 ${isCreateDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={handleOrderCreateClick}
+                disabled={isCreateDisabled}
+              >
+                <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
+                {bulkCreateMutation.isPending ? '등록 중...' : '주문 등록'}
+              </Button>
+              <Button variant="light" size="sidebar" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>
+                <Icon name="folder" ariaLabel="folder" style="w-6 h-6 ml-[-2px]" />
+                주문 불러오기
+              </Button>
+              <Button 
+                variant="light" 
+                size="sidebar"
+                className={`py-5 ${isUpdateDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
+                onClick={handleOrderUpdateClick}
+                disabled={isUpdateDisabled}
+              >
+                <Icon name="edit" ariaLabel="edit" style="w-4 h-4" />
+                {bulkUpdateMutation.isPending ? '수정 중...' : `선택주문 수정${changedRows.length > 0 ? ` (${changedRows.length})` : ''}`}
+              </Button>
+              <Button variant="light" 
+                size="sidebar"
+                className={`py-5 ${isDeleteDisabled ? 'opacity-40 cursor-not-allowed' : ''} border-stroke-base-200`}
+                onClick={handleOrderDelete}
+                disabled={isDeleteDisabled}
+              >
+                <Icon name="trash" ariaLabel="trash" style="w-5 h-5" />
+                {bulkDeleteMutation.isPending ? '삭제 중...' : `개별 주문 삭제${selectedRows.length > 0 ? ` (${selectedRows.length})` : ''}`}
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="light" 
+                size="sidebar"
+                className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
+                onClick={() => {}}
+              >
+                <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+                전체 Macro
+              </Button>
+              <Button 
+                variant="light" 
+                size="sidebar"
+                className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
+                onClick={() => {}}
+              >
+                <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+                ERP Macro
+              </Button>
+              <Button 
+                variant="light" 
+                size="sidebar"
+                className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
+                onClick={() => {}}
+              >
+                <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+                합포장 Macro
+              </Button>
+              <Button 
+                variant="light" 
+                size="sidebar"
+                className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
+                onClick={() => {}}
+              >
+                <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+                스마일배송 업로드
+              </Button>
+              <Button 
+                variant="light" 
+                size="sidebar"
+                className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
+                onClick={() => {}}
+              >
+                <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+                ERP 업로드
+              </Button>
+            </div>
           </div>
           <div className="flex gap-2">
             <Dropdown
