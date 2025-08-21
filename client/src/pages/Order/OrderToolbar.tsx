@@ -28,10 +28,14 @@ export const OrderToolbar = () => {
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [isExcelRunMacroBulkModalOpen, setIsExcelRunMacroBulkModalOpen] = useState(false);
+
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
+
   const [isSelectedBatchLoading, setIsSelectedBatchLoading] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
   const [deleteAction, setDeleteAction] = useState<'bulk' | 'duplicate' | 'selected' | null>(null);
+
   const { user } = useAuthContext();
 
   const {
@@ -246,6 +250,12 @@ export const OrderToolbar = () => {
     return { title: '', message: '' };
   };
 
+  const dataFilterTabs = [
+    { id: "all" as const, label: "전체" },
+    { id: "style" as const, label: "스타일" },
+    { id: "collection" as const, label: "모든수집정보" }
+  ];
+
   const handleDataItems = [
     {
       label: '매크로 실행',
@@ -304,29 +314,26 @@ export const OrderToolbar = () => {
             <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h2 border-b-2 border-primary-500">주문관리</button>
           </div>
         </div>
+        
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
-          <Button
-            onClick={() => setActiveOrderTab("registration")}
-            variant="light"
-            className={`border border-stroke-base-100 transition-colors ${
-              activeOrderTab === "registration"
-                ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
-                : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
-            }`}>
-            ERP
-          </Button>
-          <Button
-            onClick={() => setActiveOrderTab("bulk-registration")}
-            variant="light"
-            className={`border border-stroke-base-100 transition-colors ${
-              activeOrderTab === "bulk-registration"
-                ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
-                : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
-            }`}>
-            합포장
-          </Button>
+          {dataFilterTabs.map((tab) => (
+            <Button
+              key={tab.id}
+              onClick={() => setActiveOrderTab(tab.id)}
+              variant="light"
+              className={`border border-stroke-base-100 transition-colors ${
+                activeOrderTab === tab.id
+                  ? "bg-primary-400 text-text-contrast-500 hover:bg-primary-500"
+                  : "text-text-base-300 hover:text-text-base-400 bg-stroke-base-100 hover:bg-stroke-base-200"
+              }`}
+            >
+              {tab.label}
+            </Button>
+          ))}
         </div>
+
         <OrderMenue />
+
         <div className="mt-6 px-6">
           <span className="text-h2">주문목록</span>
         </div>
