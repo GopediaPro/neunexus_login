@@ -1,6 +1,42 @@
 import { OpthionBar } from '@/components/ui/OpthionBar'
+import { useState } from 'react';
 
 export const OrderMenue = () => {
+  const [selectedFormats, setSelectedFormats] = useState<string[]>(['양식별']);
+  const [selectedFilter, setSelectedFilter] = useState<string>('전체내역');
+
+  const formatOptions = [
+    { id: 'form-type', label: '양식별' },
+    { id: 'erp', label: 'ERP' },
+    { id: 'bulk', label: '합포장' },
+    { id: 'smile', label: '스마일' },
+    { id: 'style', label: '스타일' },
+    { id: 'collection', label: '수집정보' }
+  ];
+
+  const filterOptions = [
+    { id: 'all', label: '전체내역' },
+    { id: 'success', label: '성공내역' },
+    { id: 'error', label: '에러내역' }
+  ];
+
+  const handleFormatToggle = (formatId: string) => {
+    setSelectedFormats(prev => {
+      if (prev.includes(formatId)) {
+        return prev.filter(id => id !== formatId);
+      } else {
+        return [...prev, formatId];
+      }
+    });
+  };
+
+  const handleFilterSelect = (filterId: string) => {
+    const selectedOption = filterOptions.find(option => option.id === filterId);
+    if (selectedOption) {
+      setSelectedFilter(selectedOption.label);
+    }
+  };
+
   return (
     <div className="px-6 py-4 bg-fill-base-100">
       <OpthionBar>
@@ -216,7 +252,60 @@ export const OrderMenue = () => {
             </OpthionBar.Column>
           </OpthionBar.Section>
         </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          {/* 양식별 필터 (다중 선택) */}
+          <OpthionBar.Section title="양식별" titleColWidth={60}>
+            <OpthionBar.Column gap={2}>
+              <OpthionBar.Row columns={1} gap={2}>
+                <OpthionBar.Field label="" labelWidth={0}>
+                  <div className="flex flex-wrap gap-1">
+                    {formatOptions.map((option) => (
+                      <button
+                        key={option.id}
+                        onClick={() => handleFormatToggle(option.label)}
+                        className={`px-2 py-1 text-[10px] rounded-sm border transition-colors ${
+                          selectedFormats.includes(option.label)
+                            ? 'bg-primary-500 text-white border-primary-500'
+                            : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-base-300'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </OpthionBar.Field>
+              </OpthionBar.Row>
+            </OpthionBar.Column>
+          </OpthionBar.Section>
+
+          {/* 내역 필터 (단일 선택) */}
+          <OpthionBar.Section title="내역필터" titleColWidth={60}>
+            <OpthionBar.Column gap={2}>
+              <OpthionBar.Row columns={1} gap={2}>
+                <OpthionBar.Field label="" labelWidth={0}>
+                  <div className="flex gap-1">
+                    {filterOptions.map((option) => (
+                      <button
+                        key={option.id}
+                        onClick={() => handleFilterSelect(option.id)}
+                        className={`px-2 py-1 text-[10px] rounded-sm border transition-colors ${
+                          selectedFilter === option.label
+                            ? 'bg-primary-500 text-white border-primary-500'
+                            : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-base-300'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </OpthionBar.Field>
+              </OpthionBar.Row>
+            </OpthionBar.Column>
+          </OpthionBar.Section>
+        </div>
       </OpthionBar>
+
     </div>
   )
 }
