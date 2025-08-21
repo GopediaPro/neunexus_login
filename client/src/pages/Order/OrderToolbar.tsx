@@ -20,7 +20,7 @@ import { useAuthContext } from "@/contexts";
 import { ExcelBulkUploadModal } from "@/components/ui/Modal/ExcelBulkUploadModal";
 import { useOrderCreate } from "@/api/order/postBulkDownFormOrders";
 import { useOrderUpdate } from "@/api/order/putBlukDownFormOrders";
-import { OrderMenue } from "./OrderMenue";
+import { OrderSabangNetMenu } from "./OrderSabangNetMenu";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
@@ -332,7 +332,7 @@ export const OrderToolbar = () => {
           ))}
         </div>
 
-        <OrderMenue />
+        <OrderSabangNetMenu />
 
         <div className="mt-6 px-6">
           <span className="text-h2">주문목록</span>

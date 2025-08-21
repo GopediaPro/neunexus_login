@@ -1,23 +1,21 @@
 import { OpthionBar } from '@/components/ui/OpthionBar'
 import { useState } from 'react';
 
-export const OrderMenue = () => {
+export const OrderSabangNetMenu = () => {
   const [selectedFormats, setSelectedFormats] = useState<string[]>(['양식별']);
-  const [selectedFilter, setSelectedFilter] = useState<string>('전체내역');
+  const [selectedCompany, setSelectedCompany] = useState<string>('회사별');
 
   const formatOptions = [
-    { id: 'form-type', label: '양식별' },
     { id: 'erp', label: 'ERP' },
     { id: 'bulk', label: '합포장' },
-    { id: 'smile', label: '스마일' },
-    { id: 'style', label: '스타일' },
-    { id: 'collection', label: '수집정보' }
+    { id: 'normal', label: '일반' },
+    { id: 'star', label: '스타' },
+    { id: 'smile', label: '스마일' }
   ];
 
-  const filterOptions = [
-    { id: 'all', label: '전체내역' },
-    { id: 'success', label: '성공내역' },
-    { id: 'error', label: '에러내역' }
+  const companyOptions = [
+    { id: 'okay', label: '오케이' },
+    { id: 'i-yes', label: '아이예스' }
   ];
 
   const handleFormatToggle = (formatId: string) => {
@@ -30,10 +28,10 @@ export const OrderMenue = () => {
     });
   };
 
-  const handleFilterSelect = (filterId: string) => {
-    const selectedOption = filterOptions.find(option => option.id === filterId);
+  const handleCompanySelect = (companyId: string) => {
+    const selectedOption = companyOptions.find(option => option.id === companyId);
     if (selectedOption) {
-      setSelectedFilter(selectedOption.label);
+      setSelectedCompany(selectedOption.label);
     }
   };
 
@@ -278,19 +276,17 @@ export const OrderMenue = () => {
               </OpthionBar.Row>
             </OpthionBar.Column>
           </OpthionBar.Section>
-
-          {/* 내역 필터 (단일 선택) */}
-          <OpthionBar.Section title="내역필터" titleColWidth={60}>
+          <OpthionBar.Section title="회사별" titleColWidth={60}>
             <OpthionBar.Column gap={2}>
               <OpthionBar.Row columns={1} gap={2}>
                 <OpthionBar.Field label="" labelWidth={0}>
                   <div className="flex gap-1">
-                    {filterOptions.map((option) => (
+                    {companyOptions.map((option) => (
                       <button
                         key={option.id}
-                        onClick={() => handleFilterSelect(option.id)}
+                        onClick={() => handleCompanySelect(option.id)}
                         className={`px-2 py-1 text-[10px] rounded-sm border transition-colors ${
-                          selectedFilter === option.label
+                          selectedCompany === option.label
                             ? 'bg-primary-500 text-white border-primary-500'
                             : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-base-300'
                         }`}
