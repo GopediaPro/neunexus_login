@@ -1,12 +1,12 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { useOrderData } from "@/hooks/orderManagement/useOrderData";
-import type { FormTemplate, OrderContextValue, OrderTab } from "@/api/types";
+import type { DataFilterTab, FormTemplate, OrderContextValue } from "@/api/types";
 import type { GridApi } from "ag-grid-community";
 const OrderContext = createContext<OrderContextValue | undefined>(undefined);
 
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
-  const [activeOrderTab, setActiveOrderTabState] = useState<OrderTab>("registration");
+  const [activeOrderTab, setActiveOrderTabState] = useState<DataFilterTab>("all");
   const [currentTemplate, setCurrentTemplateState] = useState("");
   const [gridApi, setGridApiState] = useState<GridApi | null>(null);
   const [selectedRows, setSelectedRowsState] = useState<any[]>([]);
@@ -17,7 +17,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     error,
   } = useOrderData();
 
-  const setActiveOrderTab = useCallback((tab: OrderTab) => {
+  const setActiveOrderTab = useCallback((tab: DataFilterTab) => {
     setActiveOrderTabState(tab);
     setSelectedRowsState([]);
     setChangedRowsState([]);

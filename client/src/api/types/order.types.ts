@@ -207,11 +207,11 @@ export interface UseOrderDataParams {
   page: number;
 }
 
-export type OrderTab = "registration" | "bulk-registration";
+export type DataFilterTab = "all" | "style" | "collection";
 
 export interface OrderContextValue {
-    activeOrderTab: OrderTab;
-    setActiveOrderTab: (tab: OrderTab) => void;
+    activeOrderTab: DataFilterTab;
+    setActiveOrderTab: (tab: DataFilterTab) => void;
     currentTemplate: FormTemplate;
     setCurrentTemplate: (template: FormTemplate) => void;
     orderData: OrderItem[];

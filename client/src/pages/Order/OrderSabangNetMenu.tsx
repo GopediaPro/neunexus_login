@@ -1,6 +1,40 @@
 import { OpthionBar } from '@/components/ui/OpthionBar'
+import { useState } from 'react';
 
-export const OrderMenue = () => {
+export const OrderSabangNetMenu = () => {
+  const [selectedFormats, setSelectedFormats] = useState<string[]>(['양식별']);
+  const [selectedCompany, setSelectedCompany] = useState<string>('회사별');
+
+  const formatOptions = [
+    { id: 'erp', label: 'ERP' },
+    { id: 'bulk', label: '합포장' },
+    { id: 'normal', label: '일반' },
+    { id: 'star', label: '스타' },
+    { id: 'smile', label: '스마일' }
+  ];
+
+  const companyOptions = [
+    { id: 'okay', label: '오케이' },
+    { id: 'i-yes', label: '아이예스' }
+  ];
+
+  const handleFormatToggle = (formatId: string) => {
+    setSelectedFormats(prev => {
+      if (prev.includes(formatId)) {
+        return prev.filter(id => id !== formatId);
+      } else {
+        return [...prev, formatId];
+      }
+    });
+  };
+
+  const handleCompanySelect = (companyId: string) => {
+    const selectedOption = companyOptions.find(option => option.id === companyId);
+    if (selectedOption) {
+      setSelectedCompany(selectedOption.label);
+    }
+  };
+
   return (
     <div className="px-6 py-4 bg-fill-base-100">
       <OpthionBar>
@@ -216,7 +250,58 @@ export const OrderMenue = () => {
             </OpthionBar.Column>
           </OpthionBar.Section>
         </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          {/* 양식별 필터 (다중 선택) */}
+          <OpthionBar.Section title="양식별" titleColWidth={60}>
+            <OpthionBar.Column gap={2}>
+              <OpthionBar.Row columns={1} gap={2}>
+                <OpthionBar.Field label="" labelWidth={0}>
+                  <div className="flex flex-wrap gap-1">
+                    {formatOptions.map((option) => (
+                      <button
+                        key={option.id}
+                        onClick={() => handleFormatToggle(option.label)}
+                        className={`px-2 py-1 text-[10px] rounded-sm border transition-colors ${
+                          selectedFormats.includes(option.label)
+                            ? 'bg-primary-500 text-white border-primary-500'
+                            : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-base-300'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </OpthionBar.Field>
+              </OpthionBar.Row>
+            </OpthionBar.Column>
+          </OpthionBar.Section>
+          <OpthionBar.Section title="회사별" titleColWidth={60}>
+            <OpthionBar.Column gap={2}>
+              <OpthionBar.Row columns={1} gap={2}>
+                <OpthionBar.Field label="" labelWidth={0}>
+                  <div className="flex gap-1">
+                    {companyOptions.map((option) => (
+                      <button
+                        key={option.id}
+                        onClick={() => handleCompanySelect(option.id)}
+                        className={`px-2 py-1 text-[10px] rounded-sm border transition-colors ${
+                          selectedCompany === option.label
+                            ? 'bg-primary-500 text-white border-primary-500'
+                            : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-base-300'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </OpthionBar.Field>
+              </OpthionBar.Row>
+            </OpthionBar.Column>
+          </OpthionBar.Section>
+        </div>
       </OpthionBar>
+
     </div>
   )
 }
