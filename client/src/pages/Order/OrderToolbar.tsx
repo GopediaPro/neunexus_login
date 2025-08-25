@@ -4,7 +4,7 @@ import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "@/components/ui/Modal/OrderRegisterModal";
 import type { BatchInfoResponse, FormTemplate } from "@/api/types";
 import { useOrderGridActions } from "@/hooks/orderManagement/useOrderGridActions";
-import { ExcelUploadModal } from "@/components/ui/Modal/ExcelUploadModal";
+// import { ExcelUploadModal } from "@/components/ui/Modal/ExcelUploadModal";
 import { useOrderContext } from "@/api/context/OrderContext";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { ChevronDown } from "lucide-react";
@@ -16,18 +16,18 @@ import { useOrderDelete } from "@/api/order/deleteBulkDownFormOrders";
 import { ConfirmDeleteModal } from "@/components/ui/Modal/ConfirmDeleteModal";
 import { handleOrderCreate, handleOrderUpdate } from '@/hooks/orderManagement';
 import { toast } from "sonner";
-import { useAuthContext } from "@/contexts";
 import { ExcelBulkUploadModal } from "@/components/ui/Modal/ExcelBulkUploadModal";
 import { useOrderCreate } from "@/api/order/postBulkDownFormOrders";
 import { useOrderUpdate } from "@/api/order/putBlukDownFormOrders";
 import { OrderSabangNetMenu } from "./OrderSabangNetMenu";
+import { SmileMacroBulkUploadModal } from "@/components/ui/Modal/SmileMacroBulkUploadModal";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
-  const [isExcelUploadModalOpen, setIsExcelUploadModalOpen] = useState(false);
   const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const [isExcelRunMacroBulkModalOpen, setIsExcelRunMacroBulkModalOpen] = useState(false);
+  const [isSmileMacroModalOpen, setIsSmileMacroModalOpen] = useState(false);
 
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
 
@@ -35,8 +35,6 @@ export const OrderToolbar = () => {
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
 
   const [deleteAction, setDeleteAction] = useState<'bulk' | 'duplicate' | 'selected' | null>(null);
-
-  const { user } = useAuthContext();
 
   const {
     setActiveOrderTab,
@@ -201,11 +199,6 @@ export const OrderToolbar = () => {
     } catch (error) {
       console.error('행 삭제 실패:', error);
     }
-  };
-
-  const handleExcelUploadSuccess = () => {
-    toast.success('업로드가 완료되었습니다.');
-    refreshGrid();
   };
 
   const handleSelectedBatchInfo = async () => {
@@ -408,7 +401,7 @@ export const OrderToolbar = () => {
                 variant="light" 
                 size="sidebar"
                 className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
-                onClick={() => {}}
+                onClick={() => setIsSmileMacroModalOpen(true)}
               >
                 <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
                 스마일배송 업로드
@@ -477,17 +470,14 @@ export const OrderToolbar = () => {
         onSubmit={handleOrderRegisterSubmit}
       />
 
-      <ExcelUploadModal
-        isOpen={isExcelUploadModalOpen}
-        onClose={() => setIsExcelUploadModalOpen(false)}
-        onSuccess={handleExcelUploadSuccess}
-        createdBy={user?.preferred_username || 'testuser'}
-        mode="macro"
-      />
-
       <ExcelBulkUploadModal
         isOpen={isExcelRunMacroBulkModalOpen}
         onClose={() => setIsExcelRunMacroBulkModalOpen(false)}
+      />
+
+      <SmileMacroBulkUploadModal 
+        isOpen={isSmileMacroModalOpen}
+        onClose={() => setIsSmileMacroModalOpen(false)}
       />
 
       <BatchInfoModal
