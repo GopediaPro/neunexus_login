@@ -65,11 +65,11 @@ export const OrderSabangNetMenu = () => {
                   />
                 </OpthionBar.Field>
                 <OpthionBar.Field label="배송지" labelWidth={40}>
-                  <select className="w-full text-[10px] h-5 bg-black text-white border-none appearance-none px-1 focus:outline-none">
-                    <option value="all" className="bg-black text-white">전체</option>
-                    <option value="seoul" className="bg-black text-white">서울</option>
-                    <option value="gyeonggi" className="bg-black text-white">경기</option>
-                    <option value="incheon" className="bg-black text-white">인천</option>
+                  <select className="w-full text-[10px] h-5 bg-transparent text-text-contrast-500 border-none appearance-none px-1 focus:outline-none">
+                    <option value="all" className="bg-text-base-500 text-text-contrast-500">전체</option>
+                    <option value="seoul" className="bg-text-base-500 text-text-contrast-500">서울</option>
+                    <option value="gyeonggi" className="bg-text-base-500 text-text-contrast-500">경기</option>
+                    <option value="incheon" className="bg-text-base-500 text-text-contrast-500">인천</option>
                   </select>
                 </OpthionBar.Field>
               </OpthionBar.Row>
@@ -103,12 +103,12 @@ export const OrderSabangNetMenu = () => {
             <OpthionBar.Column gap={2}>
               <OpthionBar.Row columns={1} gap={2}>
                 <OpthionBar.Field label="상태" labelWidth={30}>
-                  <select className="w-full text-[10px] h-5 bg-black text-white border-none appearance-none px-1 focus:outline-none">
-                    <option value="all" className="bg-black text-white">전체</option>
-                    <option value="confirmed" className="bg-black text-white">주문확인</option>
-                    <option value="preparing" className="bg-black text-white">배송준비</option>
-                    <option value="shipping" className="bg-black text-white">배송중</option>
-                    <option value="delivered" className="bg-black text-white">배송완료</option>
+                  <select className="w-full text-[10px] h-5 bg-transparent text-text-contrast-500 border-none appearance-none px-1 focus:outline-none">
+                    <option value="all" className="bg-text-base-500 text-text-contrast-500">전체</option>
+                    <option value="confirmed" className="bg-text-base-500 text-text-contrast-500">주문확인</option>
+                    <option value="preparing" className="bg-text-base-500 text-text-contrast-500">배송준비</option>
+                    <option value="shipping" className="bg-text-base-500 text-text-contrast-500">배송중</option>
+                    <option value="delivered" className="bg-text-base-500 text-text-contrast-500">배송완료</option>
                   </select>
                 </OpthionBar.Field>
               </OpthionBar.Row>
@@ -121,7 +121,7 @@ export const OrderSabangNetMenu = () => {
                     />
                     <OpthionBar.Button 
                       size="tabSm" 
-                      className="text-[10px] h-5 px-2 bg-primary-400 text-white hover:bg-primary-500 flex-shrink-0"
+                      className="text-[10px] h-5 px-2 bg-primary-400 text-text-contrast-500 hover:bg-primary-500 flex-shrink-0"
                       style={{ borderRadius: '0' }}
                     >
                       검색
@@ -157,20 +157,20 @@ export const OrderSabangNetMenu = () => {
               </OpthionBar.Row>
               <OpthionBar.Row columns={2} gap={2}>
                 <OpthionBar.Field label="카테고리" labelWidth={50}>
-                  <select className="w-full text-[10px] h-5 bg-black text-white border-none appearance-none px-1 focus:outline-none">
-                    <option value="all" className="bg-black text-white">전체</option>
-                    <option value="electronics" className="bg-black text-white">전자제품</option>
-                    <option value="clothing" className="bg-black text-white">의류</option>
-                    <option value="books" className="bg-black text-white">도서</option>
-                    <option value="lifestyle" className="bg-black text-white">생활용품</option>
+                  <select className="w-full text-[10px] h-5 bg-transparent text-text-contrast-500 border-none appearance-none px-1 focus:outline-none">
+                    <option value="all" className="bg-text-base-500 text-text-contrast-500">전체</option>
+                    <option value="electronics" className="bg-text-base-500 text-text-contrast-500">전자제품</option>
+                    <option value="clothing" className="bg-text-base-500 text-text-contrast-500">의류</option>
+                    <option value="books" className="bg-text-base-500 text-text-contrast-500">도서</option>
+                    <option value="lifestyle" className="bg-text-base-500 text-text-contrast-500">생활용품</option>
                   </select>
                 </OpthionBar.Field>
                 <OpthionBar.Field label="브랜드" labelWidth={40}>
-                  <select className="w-full text-[10px] h-5 bg-black text-white border-none appearance-none px-1 focus:outline-none">
-                    <option value="all" className="bg-black text-white">전체</option>
-                    <option value="samsung" className="bg-black text-white">삼성</option>
-                    <option value="lg" className="bg-black text-white">LG</option>
-                    <option value="apple" className="bg-black text-white">애플</option>
+                  <select className="w-full text-[10px] h-5 bg-transparent text-text-contrast-500 border-none appearance-none px-1 focus:outline-none">
+                    <option value="all" className="bg-text-base-500 text-text-contrast-500">전체</option>
+                    <option value="samsung" className="bg-text-base-500 text-text-contrast-500">삼성</option>
+                    <option value="lg" className="bg-text-base-500 text-text-contrast-500">LG</option>
+                    <option value="apple" className="bg-text-base-500 text-text-contrast-500">애플</option>
                   </select>
                 </OpthionBar.Field>
               </OpthionBar.Row>
@@ -190,7 +190,7 @@ export const OrderSabangNetMenu = () => {
                 </OpthionBar.Field>
                 <OpthionBar.Field label="초기화" labelWidth={40}>
                   <OpthionBar.Button 
-                    size="tabSm" 
+                    size="view" 
                     variant="outline" 
                     className="text-[10px] h-5 px-2 border-stroke-base-200 hover:bg-fill-alt-100"
                   >
@@ -206,11 +206,11 @@ export const OrderSabangNetMenu = () => {
             <OpthionBar.Column gap={2}>
               <OpthionBar.Row columns={2} gap={2}>
                 <OpthionBar.Field label="배송업체" labelWidth={50}>
-                  <select className="w-full text-[10px] h-5 bg-black text-white border-none appearance-none px-1 focus:outline-none">
-                    <option value="all" className="bg-black text-white">전체</option>
-                    <option value="cj" className="bg-black text-white">CJ대한통운</option>
-                    <option value="hanjin" className="bg-black text-white">한진택배</option>
-                    <option value="lotte" className="bg-black text-white">로젠택배</option>
+                  <select className="w-full text-[10px] h-5 bg-transparent text-text-contrast-500 border-none appearance-none px-1 focus:outline-none">
+                    <option value="all" className="bg-text-base-500 text-text-contrast-500">전체</option>
+                    <option value="cj" className="bg-text-base-500 text-text-contrast-500">CJ대한통운</option>
+                    <option value="hanjin" className="bg-text-base-500 text-text-contrast-500">한진택배</option>
+                    <option value="lotte" className="bg-text-base-500 text-text-contrast-500">로젠택배</option>
                   </select>
                 </OpthionBar.Field>
                 <OpthionBar.Field label="송장번호" labelWidth={50}>
@@ -240,8 +240,8 @@ export const OrderSabangNetMenu = () => {
                 </OpthionBar.Field>
                 <OpthionBar.Field label="적용" labelWidth={30}>
                   <OpthionBar.Button 
-                    size="tabSm" 
-                    className="text-[10px] h-5 px-2 bg-success-400 text-white hover:bg-success-500"
+                    size="view" 
+                    className="text-[10px] h-4 px-2 text-text-contrast-500 hover:bg-primary-500"
                   >
                     적용
                   </OpthionBar.Button>
@@ -264,8 +264,8 @@ export const OrderSabangNetMenu = () => {
                         onClick={() => handleFormatToggle(option.label)}
                         className={`px-2 py-1 text-[10px] rounded-sm border transition-colors ${
                           selectedFormats.includes(option.label)
-                            ? 'bg-primary-500 text-white border-primary-500'
-                            : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-base-300'
+                            ? 'bg-primary-500 text-text-contrast-500 border-primary-500'
+                            : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-alt-100'
                         }`}
                       >
                         {option.label}
@@ -287,8 +287,8 @@ export const OrderSabangNetMenu = () => {
                         onClick={() => handleCompanySelect(option.id)}
                         className={`px-2 py-1 text-[10px] rounded-sm border transition-colors ${
                           selectedCompany === option.label
-                            ? 'bg-primary-500 text-white border-primary-500'
-                            : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-base-300'
+                            ? 'bg-primary-500 text-text-contrast-500 border-primary-500'
+                            : 'bg-fill-base-200 text-text-base-400 border-stroke-base-200 hover:bg-fill-alt-100'
                         }`}
                       >
                         {option.label}
