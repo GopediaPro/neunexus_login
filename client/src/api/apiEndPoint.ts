@@ -1,5 +1,6 @@
 export const API_BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_VERSION = '/api/v1';
+const API_VERSION_2 = '/api/v2';
 
 export const API_END_POINT = {
   PRODUCTS: `${API_VERSION}/product`,
@@ -32,4 +33,6 @@ export const API_END_POINT = {
   MACRO_BATCH_INFO_LATEST: `${API_VERSION}/macro/batch-info/latest`,
 
   PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/complete-workflow`,
+
+  SMILE_MACRO_MULTIPLE_V2: `${API_VERSION_2}/smile-macro/smile-excel-macro-multiple-v2`
 } as const;
