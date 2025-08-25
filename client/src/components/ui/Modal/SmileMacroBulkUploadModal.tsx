@@ -5,6 +5,7 @@ import { Icon } from "../Icon";
 import { toast } from "sonner";
 import { BulkResultModal } from "./ResultBulkModal";
 import { postSmileMacroMultiple } from "@/api/order/postSmileMacro";
+import { useAuthContext } from "@/contexts";
 
 interface FileItem {
   id: string;
@@ -33,7 +34,7 @@ const createSmileMacroRequest = (
       order_date_to: orderDateTo
     },
     metadata: {
-      request_id: requestId || `smile_macro_${Date.now()}`
+      request_id: requestId 
     }
   };
 };
@@ -45,6 +46,7 @@ export const SmileMacroBulkUploadModal = ({
   isOpen: boolean; 
   onClose: () => void; 
 }) => {
+  const { user } = useAuthContext();
   const [files, setFiles] = useState<FileItem[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
@@ -231,7 +233,7 @@ export const SmileMacroBulkUploadModal = ({
 
     try {
       const fileObjects = filesToUpload.map(fileItem => fileItem.file).filter((file): file is File => file !== undefined);
-      const requestId = `smile_macro_${Date.now()}`;
+      const requestId = user?.preferred_username || 'unknown';
 
       const requestData = createSmileMacroRequest(orderDateFrom, orderDateTo, requestId);
       const response = await postSmileMacroMultiple({
