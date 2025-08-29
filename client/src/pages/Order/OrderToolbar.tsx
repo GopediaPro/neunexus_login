@@ -22,13 +22,10 @@ import { useOrderUpdate } from "@/api/order/putBlukDownFormOrders";
 import { OrderSabangNetMenu } from "./OrderSabangNetMenu";
 import { SmileMacroBulkUploadModal } from "@/components/ui/Modal/SmileMacroBulkUploadModal";
 import { DATA_FILTER_TABS } from "@/constant/order";
+import { useModals } from "@/hooks/useModals";
 
 export const OrderToolbar = () => {
-  const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
-  const [isBatchInfoModalOpen, setIsBatchInfoModalOpen] = useState(false);
-  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-  const [isExcelRunMacroBulkModalOpen, setIsExcelRunMacroBulkModalOpen] = useState(false);
-  const [isSmileMacroModalOpen, setIsSmileMacroModalOpen] = useState(false);
+  const { modals, openModal, closeModal } = useModals();
 
   const [selectedBatchInfoData, setSelectedBatchInfoData] = useState<BatchInfoResponse | null>(null);
 
@@ -99,7 +96,7 @@ export const OrderToolbar = () => {
       console.error('주문 등록 실패:', error);
       toast.error('주문 등록에 실패했습니다.');
     }
-    setIsOrderRegisterModalOpen(false);
+    closeModal('orderRegister');
   };
 
   const handleOrderCreateClick = () => {
@@ -129,17 +126,17 @@ export const OrderToolbar = () => {
     }
     
     setDeleteAction('selected');
-    setIsConfirmDeleteModalOpen(true);
+    openModal('confirmDelete');
   };
 
   const handleBulkDeleteConfirm = () => {
     setDeleteAction('bulk');
-    setIsConfirmDeleteModalOpen(true);
+    openModal('confirmDelete');
   };
 
   const handleDuplicateDeleteConfirm = () => {
     setDeleteAction('duplicate');
-    setIsConfirmDeleteModalOpen(true);
+    openModal('confirmDelete');
   };
 
   const handleConfirmDelete = async () => {
@@ -185,7 +182,7 @@ export const OrderToolbar = () => {
       console.error('삭제 실패:', error);
     } finally {
       setIsBulkDeleting(false);
-      setIsConfirmDeleteModalOpen(false);
+      openModal('confirmDelete');
       setDeleteAction(null);
     }
   };
@@ -212,7 +209,7 @@ export const OrderToolbar = () => {
       });
 
       setSelectedBatchInfoData(batchInfo);
-      setIsBatchInfoModalOpen(true);
+      openModal('batchInfo');
 
     } catch (error) {
       console.error('선택 주문 배치 정보 조회 실패:', error);
@@ -247,7 +244,7 @@ export const OrderToolbar = () => {
   const handleDataItems = [
     {
       label: '매크로 실행',
-      onClick: () => setIsExcelRunMacroBulkModalOpen(true),
+      onClick: () => openModal('excelBulk'),
     },
     {
       label: '최근 업로드 결과',
@@ -340,7 +337,7 @@ export const OrderToolbar = () => {
                 <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
                 {bulkCreateMutation.isPending ? '등록 중...' : '주문 등록'}
               </Button>
-              <Button variant="light" size="sidebar" className="py-5" onClick={() => setIsOrderRegisterModalOpen(true)}>
+              <Button variant="light" size="sidebar" className="py-5" onClick={() => closeModal('orderRegister')}>
                 <Icon name="folder" ariaLabel="folder" style="w-6 h-6 ml-[-2px]" />
                 주문 불러오기
               </Button>
@@ -396,7 +393,7 @@ export const OrderToolbar = () => {
                 variant="light" 
                 size="sidebar"
                 className={`py-5 cursor-pointer border border-stroke-base-100 transition-colors`}
-                onClick={() => setIsSmileMacroModalOpen(true)}
+                onClick={() => openModal('smileMacro')}
               >
                 <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
                 스마일배송 업로드
@@ -460,31 +457,31 @@ export const OrderToolbar = () => {
       </div>
 
       <OrderRegisterModal
-        isOpen={isOrderRegisterModalOpen}
-        onClose={() => setIsOrderRegisterModalOpen(false)}
+        isOpen={modals.orderRegister}
+        onClose={() => closeModal('orderRegister')}
         onSubmit={handleOrderRegisterSubmit}
       />
 
       <ExcelBulkUploadModal
-        isOpen={isExcelRunMacroBulkModalOpen}
-        onClose={() => setIsExcelRunMacroBulkModalOpen(false)}
+        isOpen={modals.excelBulk}
+        onClose={() => closeModal('excelBulk')}
       />
 
       <SmileMacroBulkUploadModal 
-        isOpen={isSmileMacroModalOpen}
-        onClose={() => setIsSmileMacroModalOpen(false)}
+        isOpen={modals.smileMacro}
+        onClose={() => closeModal('smileMacro')}
       />
 
       <BatchInfoModal
-        isOpen={isBatchInfoModalOpen}
-        onClose={() => setIsBatchInfoModalOpen(false)}
+        isOpen={modals.batchInfo}
+        onClose={() => closeModal('batchInfo')}
         batchInfo={selectedBatchInfoData}
       />
 
       <ConfirmDeleteModal
-        isOpen={isConfirmDeleteModalOpen}
+        isOpen={modals.confirmDelete}
         onClose={() => {
-          setIsConfirmDeleteModalOpen(false);
+          closeModal('confirmDelete');
           setDeleteAction(null);
         }}
         onConfirm={handleConfirmDelete}
