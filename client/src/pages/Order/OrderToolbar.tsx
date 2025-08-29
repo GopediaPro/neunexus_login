@@ -21,6 +21,7 @@ import { useOrderCreate } from "@/api/order/postBulkDownFormOrders";
 import { useOrderUpdate } from "@/api/order/putBlukDownFormOrders";
 import { OrderSabangNetMenu } from "./OrderSabangNetMenu";
 import { SmileMacroBulkUploadModal } from "@/components/ui/Modal/SmileMacroBulkUploadModal";
+import { DATA_FILTER_TABS } from "@/constant/order";
 
 export const OrderToolbar = () => {
   const [isOrderRegisterModalOpen, setIsOrderRegisterModalOpen] = useState(false);
@@ -243,12 +244,6 @@ export const OrderToolbar = () => {
     return { title: '', message: '' };
   };
 
-  const dataFilterTabs = [
-    { id: "all" as const, label: "전체" },
-    { id: "style" as const, label: "스타일" },
-    { id: "collection" as const, label: "모든수집정보" }
-  ];
-
   const handleDataItems = [
     {
       label: '매크로 실행',
@@ -309,7 +304,7 @@ export const OrderToolbar = () => {
         </div>
         
         <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
-          {dataFilterTabs.map((tab) => (
+          {DATA_FILTER_TABS.map((tab) => (
             <Button
               key={tab.id}
               onClick={() => setActiveOrderTab(tab.id)}
