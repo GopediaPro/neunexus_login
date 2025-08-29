@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import type { ColDef, GridApi, GridReadyEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useOrderContext } from "@/api/context/OrderContext";
+import { createDateColumn, createNumberColumn, createPriceColumn, createTextColumn } from "@/utils/columnHelpers";
 
 export const OrderGrid = () => {
   const {
@@ -16,112 +17,13 @@ export const OrderGrid = () => {
   const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
   const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
 
-  const createPriceColumn = (field: string, headerName: string, width: number) => ({
-    field,
-    headerName,
-    width,
-    valueFormatter: (params: any) => {
-      const value = params.value;
-      if (value === null || value === undefined || value === '') return '';
-      const numValue = typeof value === 'string' ? parseFloat(value) : Number(value);
-      return isNaN(numValue) ? '' : `${numValue.toLocaleString()}원`;
-    },
-    valueParser: (params: any) => {
-      const value = params.newValue;
-      if (value === null || value === undefined || value === '') return null;
-      
-      const cleanValue = String(value).replace(/[원,]/g, '').trim();
-      const numValue = parseFloat(cleanValue);
-      
-      return isNaN(numValue) ? null : numValue;
-    },
-    valueSetter: (params: any) => {
-      const value = params.newValue;
-      let parsedValue = null;
-      
-      if (value !== null && value !== undefined && value !== '') {
-        const cleanValue = String(value).replace(/[원,]/g, '').trim();
-        const numValue = parseFloat(cleanValue);
-        parsedValue = isNaN(numValue) ? null : numValue;
-      }
-      
-      params.data[field] = parsedValue;
-      return true;
-    },
-    filter: 'agNumberColumnFilter',
-    floatingFilterComponentParams: {
-      suppressFilterButton: true
-    },
-    editable: true,
-    cellEditor: 'agTextCellEditor',
-    cellEditorParams: {
-      maxLength: 20
-    }
-  });
-
-  const createDateColumn = (field: string, headerName: string, width: number = 150) => ({
-    field,
-    headerName,
-    width,
-    valueFormatter: (params: any) =>
-      params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
-    filter: 'agDateColumnFilter',
-    floatingFilterComponentParams: {
-      suppressFilterButton: true
-    },
-    editable: true,
-    cellEditor: 'agDateCellEditor'
-  });
-
-  const createTextColumn = (field: string, headerName: string, width: number, options: {
-    tooltip?: boolean;
-    maxLength?: number;
-  } = {}) => ({
-    field,
-    headerName,
-    width,
-    filter: 'agTextColumnFilter',
-    floatingFilterComponentParams: {
-      suppressFilterButton: true
-    },
-    ...(options.tooltip && { tooltipField: field }),
-    editable: true,
-    cellEditor: 'agTextCellEditor',
-    ...(options.maxLength && {
-      cellEditorParams: {
-        maxLength: options.maxLength
-      }
-    })
-  });
-
-  const createNumberColumn = (field: string, headerName: string, width: number, options: {
-    min?: number;
-    max?: number;
-    centered?: boolean;
-  } = {}) => ({
-    field,
-    headerName,
-    width,
-    filter: 'agNumberColumnFilter',
-    floatingFilterComponentParams: {
-      suppressFilterButton: true
-    },
-    ...(options.centered && { cellClass: 'ag-cell-centered' }),
-    editable: true,
-    cellEditor: 'agNumberCellEditor',
-    cellEditorParams: {
-      ...(options.min !== undefined && { min: options.min }),
-      ...(options.max !== undefined && { max: options.max })
-    }
-  });
-
   const columnDefs: ColDef[] = useMemo(() => [
     // 기본 정보
     createNumberColumn('id', 'ID', 80, { min: 0 }),
     createTextColumn('order_id', '주문ID', 160),
     createTextColumn('mall_order_id', '몰주문ID', 160),
     
-    // 상품 정보
+    // 상품 정보  
     createTextColumn('product_id', '상품ID', 120),
     createTextColumn('product_name', '상품명', 240, { tooltip: true }),
     createTextColumn('mall_product_id', '몰상품ID', 140),
