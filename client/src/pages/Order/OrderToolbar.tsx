@@ -23,6 +23,7 @@ import { DATA_FILTER_TABS } from "@/constant/order";
 import { useModals } from "@/hooks/useModals";
 import { handleBulkDeleteAll, handleBulkDeleteDuplicate, handleSelectedRowsDelete, refreshGridData } from "@/utils/deleteHelpers";
 import { fetchOrdersByTemplate, showOrderLoadSuccess, validateOrderData } from "@/utils/orderRefgisterHelpers";
+import { handleError } from "@/utils/errorHandler";
 
 export const OrderToolbar = () => {
   const { modals, openModal, closeModal } = useModals();
@@ -61,7 +62,6 @@ export const OrderToolbar = () => {
       const result = await fetchOrdersByTemplate(selectedTemplate);
 
       if (!result.success) {
-        toast.error('주문 등록에 실패했습니다.');
         return;
       }
 
@@ -72,8 +72,7 @@ export const OrderToolbar = () => {
       setCurrentTemplate(selectedTemplate as FormTemplate);
       showOrderLoadSuccess(result.count);
     } catch (error) {
-      console.error('주문 등록 실패:', error);
-      toast.error('주문 등록에 실패했습니다.');
+      handleError(error, '주문 등록');
     }
     closeModal('orderRegister');
   };
@@ -93,8 +92,7 @@ export const OrderToolbar = () => {
       await addNewRow();
       toast.success('새 행이 추가되었습니다.');
     } catch (error) {
-      console.error('행 추가 실패:', error);
-      toast.error('행 추가에 실패했습니다.');
+      handleError(error, '행 추가');
     }
   };
 
@@ -153,7 +151,7 @@ export const OrderToolbar = () => {
       }
       await deleteSelectedRows();
     } catch (error) {
-      console.error('행 삭제 실패:', error);
+      handleError(error, '행 삭제');
     }
   };
 
@@ -170,7 +168,7 @@ export const OrderToolbar = () => {
       openModal('batchInfo');
 
     } catch (error) {
-      console.error('선택 주문 배치 정보 조회 실패:', error);
+      handleError(error, '배치 정보 조회');
     } finally {
       setIsSelectedBatchLoading(false);
     }

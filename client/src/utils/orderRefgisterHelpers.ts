@@ -1,5 +1,6 @@
 import { getDownFormOrdersPagination } from "@/api/order";
 import { toast } from "sonner";
+import { handleError, handleSuccess } from "./errorHandler";
 
 export const fetchOrdersByTemplate = async (templateCode: string) => {
   try {
@@ -17,7 +18,7 @@ export const fetchOrdersByTemplate = async (templateCode: string) => {
       count: orderData.length
     };
   } catch (error) {
-    console.error('주문 데이터 조회 실패:', error);
+    handleError(error, '주문 데이터 조회');
     return {
       success: false,
       data: [],
@@ -37,6 +38,5 @@ export const validateOrderData = (orderData: any[]) => {
 };
 
 export const showOrderLoadSuccess = (count: number) => {
-  toast.dismiss();
-  toast.success(`${count}개의 주문을 불러왔습니다.`);
+  handleSuccess(`${count}개의 주문을 불러왔습니다.`);
 };

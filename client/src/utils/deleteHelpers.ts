@@ -1,5 +1,6 @@
 import { deleteAll, deleteDuplicate } from "@/api/order";
 import { toast } from "sonner";
+import { handleDeleteError } from "./errorHandler";
 
 
 export const handleBulkDeleteAll = async () => {
@@ -8,8 +9,7 @@ export const handleBulkDeleteAll = async () => {
     toast.success('일괄 삭제가 완료되었습니다.');
     return { success: true };
   } catch (error) {
-    console.error('일괄 삭제 실패:', error);
-    toast.error('일괄 삭제에 실패했습니다.');
+    handleDeleteError(error, '일괄');
     return { success: false };
   }
 };
@@ -20,8 +20,7 @@ export const handleBulkDeleteDuplicate = async () => {
     toast.success(response.message);
     return { success: true };
   } catch (error) {
-    console.error('중복 삭제 실패:', error);
-    toast.error('중복 삭제에 실패했습니다.');
+    handleDeleteError(error, '중복');
     return { success: false };
   }
 };
@@ -51,8 +50,7 @@ export const handleSelectedRowsDelete = async (
     toast.success('선택된 주문이 삭제되었습니다.');
     return { success: true };
   } catch (error) {
-    console.error('선택 삭제 실패:', error);
-    toast.error('선택된 주문 삭제에 실패했습니다.');
+    handleDeleteError(error, '선택');
     return { success: false };
   }
 };

@@ -3,6 +3,7 @@ import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse
 import type { GridApi } from "ag-grid-community";
 import { toast } from "sonner";
 import { ORDER_DEFAULTS } from "@/constant/order";
+import { handleOrderError, handleSuccess } from "@/utils/errorHandler";
 
 
 export const handleOrderCreate = async (
@@ -118,7 +119,7 @@ export const handleOrderCreate = async (
     }
 
     if (successItems.length > 0) {
-      toast.success(`${successItems.length}개 주문이 성공적으로 생성되었습니다.`);
+      handleSuccess(`${successItems.length}개 주문이 성공적으로 생성되었습니다.`);
 
       if (gridApi) {
         const successOrderIds = successItems.map(item => item.item.order_id);
@@ -135,13 +136,6 @@ export const handleOrderCreate = async (
     }
     
   } catch (error: any) {
-    console.error('주문 생성 실패:', error);
-    
-    // if (error.response?.status === 422) {
-    //   const errorMessage = error.response?.data?.message || '입력 데이터가 올바르지 않습니다.';
-    //   toast.error(`검증 실패: ${errorMessage}`);
-    // } else {
-    //   toast.error('주문 생성에 실패했습니다.');
-    // }
+    handleOrderError(error, '생성');
   }
 };
