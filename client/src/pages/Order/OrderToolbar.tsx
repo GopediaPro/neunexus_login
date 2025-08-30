@@ -10,7 +10,6 @@ import { ChevronDown } from "lucide-react";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoAll";
 import { BatchInfoModal } from "@/components/ui/Modal/BatchInfoModal";
 import { Icon } from "@/components/ui/Icon";
-import { getDownFormOrdersPagination } from "@/api/order";
 import { useOrderDelete } from "@/api/order/deleteBulkDownFormOrders";
 import { ConfirmDeleteModal } from "@/components/ui/Modal/ConfirmDeleteModal";
 import { handleOrderCreate, handleOrderUpdate } from '@/hooks/orderManagement';
@@ -23,6 +22,7 @@ import { SmileMacroBulkUploadModal } from "@/components/ui/Modal/SmileMacroBulkU
 import { DATA_FILTER_TABS } from "@/constant/order";
 import { useModals } from "@/hooks/useModals";
 import { handleBulkDeleteAll, handleBulkDeleteDuplicate, handleSelectedRowsDelete, refreshGridData } from "@/utils/deleteHelpers";
+import { fetchOrdersByTemplate, showOrderLoadSuccess, validateOrderData } from "@/utils/orderRefgisterHelpers";
 
 export const OrderToolbar = () => {
   const { modals, openModal, closeModal } = useModals();
@@ -58,22 +58,19 @@ export const OrderToolbar = () => {
 
   const handleOrderRegisterSubmit = async (selectedTemplate: string) => {
     try {
-      const response = await getDownFormOrdersPagination({
-        page: 1,
-        page_size: 200,
-        template_code: selectedTemplate,
-      });
+      const result = await fetchOrdersByTemplate(selectedTemplate);
 
-      const orderData = response.items?.map((item: any) => item.content) || [];
+      if (!result.success) {
+        toast.error('주문 등록에 실패했습니다.');
+        return;
+      }
 
-      if (orderData.length === 0) {
-        toast.error('템플릿에 해당하는 주문 데이터가 없습니다.');
+      if (!validateOrderData(result.data)) {
         return;
       }
 
       setCurrentTemplate(selectedTemplate as FormTemplate);
-      toast.dismiss();
-      toast.success(`${orderData.length}개의 주문을 불러왔습니다.`);
+      showOrderLoadSuccess(result.count);
     } catch (error) {
       console.error('주문 등록 실패:', error);
       toast.error('주문 등록에 실패했습니다.');
