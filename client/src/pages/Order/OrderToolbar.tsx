@@ -10,7 +10,7 @@ import { ChevronDown } from "lucide-react";
 import { getBatchInfoLatest } from "@/api/order/getBatchInfoAll";
 import { BatchInfoModal } from "@/components/ui/Modal/BatchInfoModal";
 import { Icon } from "@/components/ui/Icon";
-import { deleteAll, deleteDuplicate, getDownFormOrdersPagination } from "@/api/order";
+import { getDownFormOrdersPagination } from "@/api/order";
 import { useOrderDelete } from "@/api/order/deleteBulkDownFormOrders";
 import { ConfirmDeleteModal } from "@/components/ui/Modal/ConfirmDeleteModal";
 import { handleOrderCreate, handleOrderUpdate } from '@/hooks/orderManagement';
@@ -22,6 +22,7 @@ import { OrderSabangNetMenu } from "./OrderSabangNetMenu";
 import { SmileMacroBulkUploadModal } from "@/components/ui/Modal/SmileMacroBulkUploadModal";
 import { DATA_FILTER_TABS } from "@/constant/order";
 import { useModals } from "@/hooks/useModals";
+import { handleBulkDeleteAll, handleBulkDeleteDuplicate, handleSelectedRowsDelete, refreshGridData } from "@/utils/deleteHelpers";
 
 export const OrderToolbar = () => {
   const { modals, openModal, closeModal } = useModals();
@@ -54,24 +55,6 @@ export const OrderToolbar = () => {
   const bulkCreateMutation = useOrderCreate();
   const bulkUpdateMutation = useOrderUpdate();
   const bulkDeleteMutation = useOrderDelete();
-
-  const refreshGrid = () => {
-    if (!gridApi) return;
-    
-    const rowModelType = gridApi.getGridOption('rowModelType');
-    
-    if (rowModelType === 'infinite') {
-      gridApi.refreshInfiniteCache();
-      gridApi.purgeInfiniteCache();
-    } else if (rowModelType === 'clientSide') {
-      gridApi.refreshCells();
-      gridApi.redrawRows();
-    } else if (rowModelType === 'serverSide') {
-      gridApi.refreshServerSide();
-    } else {
-      gridApi.refreshCells();
-    }
-  };
 
   const handleOrderRegisterSubmit = async (selectedTemplate: string) => {
     try {
@@ -143,40 +126,19 @@ export const OrderToolbar = () => {
 
     try {
       setIsBulkDeleting(true);
+      let result = { success: false }
       
       if (deleteAction === 'bulk') {
-        await deleteAll();
-        toast.success('일괄 삭제가 완료되었습니다.');
+        result = await handleBulkDeleteAll();
       } else if (deleteAction === 'duplicate') {
-        const response = await deleteDuplicate();
-        toast.success(response.message);
+        result = await handleBulkDeleteDuplicate();
       } else if (deleteAction === 'selected') {
-        const idsToDelete = selectedRows
-          .map(row => row.id)
-          .filter(id => id != null);
-
-        if (idsToDelete.length === 0) {
-          toast.error('삭제할 수 있는 유효한 주문이 없습니다.');
-          return;
-        }
-
-        await bulkDeleteMutation.mutateAsync({
-          ids: idsToDelete
-        });
-
-        if (gridApi) {
-          gridApi.applyTransaction({
-            remove: selectedRows
-          });
-          gridApi.deselectAll();
-        }
-        toast.success('선택된 주문이 삭제되었습니다.');
+        result = await handleSelectedRowsDelete(selectedRows, bulkDeleteMutation, gridApi);
       }
 
-      if (deleteAction === 'bulk' || deleteAction === 'duplicate') {
-        refreshGrid();
+      if (result.success && (deleteAction === 'bulk' || deleteAction === 'duplicate')) {
+        refreshGridData(gridApi);
       }
-
     } catch (error) {
       console.error('삭제 실패:', error);
     } finally {
