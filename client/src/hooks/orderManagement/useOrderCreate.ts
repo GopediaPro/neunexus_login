@@ -1,9 +1,9 @@
 import { type UseMutationResult } from "@tanstack/react-query";
 import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse } from "@/api/types";
 import type { GridApi } from "ag-grid-community";
-import { toast } from "sonner";
 import { ORDER_DEFAULTS } from "@/constant/order";
-import { handleOrderError, handleSuccess } from "@/utils/errorHandler";
+import { handleOrderError } from "@/utils/errorHandler";
+import { confirmOrderCreation, processCreateResult, validateOrderCreation, validateOrderIds } from "@/utils/orderValidation";
 
 
 export const handleOrderCreate = async (
@@ -11,33 +11,15 @@ export const handleOrderCreate = async (
   bulkCreateMutation: UseMutationResult<DownFormBulkCreateResponse, Error, BulkCreateRequest>,
   currentTemplate: string = "gmarket_erp"
 ) => {  
-  if (!gridApi) return;
+  const validation = validateOrderCreation(gridApi);
+  if(!validation.isValid) return;
 
-  const selectedRows = gridApi.getSelectedRows();
+  const { selectedRows } = validation;
   
-  if (selectedRows.length === 0) {
-    toast.error('생성할 새로운 주문이 없습니다.');
-    return;
-  }
+  const idValidation = validateOrderIds(selectedRows);
+  if (!idValidation.isValid) return;
 
-  const newRows = selectedRows.filter(row => 
-    row.id && row.id !== 0
-  );
-
-  const invalidRows = selectedRows.filter(row => !row.order_id);
-  
-  if (invalidRows.length > 0) {
-    toast.error('주문 ID가 없는 행이 있습니다. 주문 ID를 확인해주세요.');
-    return;
-  }
-
-  const confirmMessage = selectedRows.length === 1 
-    ? `주문 "${selectedRows[0].order_id}"을 생성하시겠습니까?`
-    : `새로운 ${selectedRows.length}개 주문을 생성하시겠습니까?`;
-  
-  if (!confirm(confirmMessage)) {
-    return;
-  }
+  if (!confirmOrderCreation(selectedRows)) return;
 
   try {
     const requestData = {
@@ -110,31 +92,7 @@ export const handleOrderCreate = async (
 
     const response = await bulkCreateMutation.mutateAsync(requestData);
 
-    const successItems = response.items.filter(item => item.status === 'success');
-    const failedItems = response.items.filter(item => item.status !== 'success');
-
-    if (failedItems.length > 0) {
-      console.error('일부 주문 생성 실패:', failedItems);
-      toast.error(`${failedItems.length}개 주문 생성 실패. 상세 내용을 확인해주세요.`);
-    }
-
-    if (successItems.length > 0) {
-      handleSuccess(`${successItems.length}개 주문이 성공적으로 생성되었습니다.`);
-
-      if (gridApi) {
-        const successOrderIds = successItems.map(item => item.item.order_id);
-        const rowsToRemove = newRows.filter(row => 
-          successOrderIds.includes(row.order_id)
-        );
-        
-        if (rowsToRemove.length > 0) {
-          gridApi.applyTransaction({
-            remove: rowsToRemove
-          });
-        }
-      }
-    }
-    
+    processCreateResult(response, selectedRows, gridApi);
   } catch (error: any) {
     handleOrderError(error, '생성');
   }
