@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ROUTERS } from "@/constant/route";
 import { OrderRegisterModal } from "@/components/ui/Modal/OrderRegisterModal";
-import type { BatchInfoResponse, FormTemplate } from "@/api/types";
+import type { BatchInfoResponse, BulkUpdateOrderItem, FormTemplate } from "@/api/types";
 import { useOrderGridActions } from "@/hooks/orderManagement/useOrderGridActions";
 import { useOrderContext } from "@/api/context/OrderContext";
 import { Dropdown } from "@/components/ui/Dropdown";
@@ -84,7 +84,20 @@ export const OrderToolbar = () => {
 
   const handleOrderUpdateClick = async () => {
     if (!gridApi) return;
-    handleOrderUpdate(changedRows, bulkUpdateMutation, currentTemplate, gridApi);
+    
+    const validChangedRows: BulkUpdateOrderItem[] = changedRows
+      .filter(row => row.id !== undefined && row.id !== null)
+      .map(row => ({
+        ...row,
+        id: row.id!
+      }));
+  
+    if (validChangedRows.length === 0) {
+      toast.error('수정할 유효한 주문이 없습니다.');
+      return;
+    }
+  
+    handleOrderUpdate(validChangedRows, bulkUpdateMutation, currentTemplate, gridApi);
   };
 
   const handleAddSingleRow = async () => {
@@ -117,11 +130,11 @@ export const OrderToolbar = () => {
   };
 
   const handleConfirmDelete = async () => {
-    if (!deleteAction) return;
-
+    if (!deleteAction || !gridApi) return;
+  
     try {
       setIsBulkDeleting(true);
-      let result = { success: false }
+      let result = { success: false };
       
       if (deleteAction === 'bulk') {
         result = await handleBulkDeleteAll();
@@ -130,7 +143,7 @@ export const OrderToolbar = () => {
       } else if (deleteAction === 'selected') {
         result = await handleSelectedRowsDelete(selectedRows, bulkDeleteMutation, gridApi);
       }
-
+  
       if (result.success && (deleteAction === 'bulk' || deleteAction === 'duplicate')) {
         refreshGridData(gridApi);
       }
@@ -138,7 +151,7 @@ export const OrderToolbar = () => {
       console.error('삭제 실패:', error);
     } finally {
       setIsBulkDeleting(false);
-      openModal('confirmDelete');
+      closeModal('confirmDelete');
       setDeleteAction(null);
     }
   };
@@ -293,7 +306,7 @@ export const OrderToolbar = () => {
                 <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
                 {bulkCreateMutation.isPending ? '등록 중...' : '주문 등록'}
               </Button>
-              <Button variant="light" size="sidebar" className="py-5" onClick={() => closeModal('orderRegister')}>
+              <Button variant="light" size="sidebar" className="py-5" onClick={() => openModal('orderRegister')}>
                 <Icon name="folder" ariaLabel="folder" style="w-6 h-6 ml-[-2px]" />
                 주문 불러오기
               </Button>

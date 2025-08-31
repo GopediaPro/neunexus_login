@@ -1,8 +1,6 @@
 export * from './deleteAll';
 export * from './deleteDuplicate';
 export * from './getDownFormOrdersPagination';
-export * from './postExcelToMinio';
-export * from './postExcelToDb';
 export * from './postBulkFilter';
 export * from './postBulkWithoutFilter';
 export * from './getBatchInfoAll';
@@ -13,5 +11,3 @@ export * from './deleteBulkDownFormOrders';
 export * from './deleteAll';
 export * from './deleteDuplicate';
 export * from './getDownFormOrdersPagination';
-export * from './postExcelToMinio';
-export * from './postExcelToDb';

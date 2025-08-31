@@ -1,16 +1,17 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useMemo } from "react";
 import type { ReactNode } from "react";
 import { useOrderData } from "@/hooks/orderManagement/useOrderData";
-import type { DataFilterTab, FormTemplate, OrderContextValue } from "@/api/types";
+import type { DataFilterTab, FormTemplate, OrderContextValue, OrderItem } from "@/api/types";
 import type { GridApi } from "ag-grid-community";
+
 const OrderContext = createContext<OrderContextValue | undefined>(undefined);
 
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [activeOrderTab, setActiveOrderTabState] = useState<DataFilterTab>("all");
-  const [currentTemplate, setCurrentTemplateState] = useState("");
+  const [currentTemplate, setCurrentTemplateState] = useState<FormTemplate>("gmarket_erp");
   const [gridApi, setGridApiState] = useState<GridApi | null>(null);
-  const [selectedRows, setSelectedRowsState] = useState<any[]>([]);
-  const [changedRows, setChangedRowsState] = useState<any[]>([]);
+  const [selectedRows, setSelectedRowsState] = useState<OrderItem[]>([]);
+  const [changedRows, setChangedRowsState] = useState<OrderItem[]>([]);
   const { 
     orderData,
     isLoading: dataIsLoading,
@@ -37,13 +38,14 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const setSelectedRows = useCallback((rows: any[]) => {
+  const setSelectedRows = useCallback((rows: OrderItem[]) => {
     const filteredRows = rows.filter(row => {
       if (row.id && String(row.id).startsWith('temp_')) {
         return false;
       }
       
-      if (!row.order_id || row.status === 'pending' || row.isTemp) {
+      const rowWithStatus = row as OrderItem & { status?: string; isTemp?: boolean };
+      if (!row.order_id || rowWithStatus.status === 'pending' || rowWithStatus.isTemp) {
         return false;
       }
       
@@ -53,13 +55,14 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     setSelectedRowsState(filteredRows);
   }, []);
 
-  const setChangedRows = useCallback((rows: any[]) => {
+  const setChangedRows = useCallback((rows: OrderItem[]) => {
     const filteredRows = rows.filter(row => {
       if (row.id && String(row.id).startsWith('temp_')) {
         return false;
       }
       
-      if (!row.order_id || row.status === 'pending' || row.isTemp) {
+      const rowWithStatus = row as OrderItem & { status?: string; isTemp?: boolean };
+      if (!row.order_id || rowWithStatus.status === 'pending' || rowWithStatus.isTemp) {
         return false;
       }
       
@@ -77,10 +80,19 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [gridApi]);
 
+  const computedValues = useMemo(() => ({
+    hasSelectedRows: selectedRows.length > 0,
+    hasChangedRows: changedRows.length > 0,
+    selectedRowCount: selectedRows.length,
+    changedRowCount: changedRows.length,
+    isGridReady: !!gridApi,
+    hasData: orderData.length > 0,
+  }), [selectedRows.length, changedRows.length, gridApi, orderData.length]);
+
   const value: OrderContextValue = {
     activeOrderTab,
     setActiveOrderTab,
-    currentTemplate: currentTemplate as FormTemplate,
+    currentTemplate,
     setCurrentTemplate,
     orderData,
     isLoading: dataIsLoading, 
@@ -92,6 +104,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     changedRows,
     setChangedRows,
     clearSelections,
+    ...computedValues,
   };
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;
