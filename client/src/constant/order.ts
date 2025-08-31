@@ -73,3 +73,19 @@ export const DATA_FILTER_TABS = [
   { id: "style" as const, label: "스타일" }, 
   { id: "collection" as const, label: "모든수집정보" }
 ];
+
+export const OPTIMIZED_GRID_OPTIONS = {
+  suppressRowVirtualisation: false,
+  rowBuffer: 10,
+  suppressColumnVirtualisation: false,
+  
+  suppressAnimationFrame: false,
+  suppressParentsInRowNodes: true,
+  suppressRowHoverHighlight: true,
+  
+  immutableData: true,
+  getRowId: (params: any) => params.data.id?.toString(),
+  
+  asyncTransactionWaitMillis: 50,
+  suppressChangeDetection: false,
+};

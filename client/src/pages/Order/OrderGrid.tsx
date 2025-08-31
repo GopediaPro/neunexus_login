@@ -1,147 +1,67 @@
-import { useCallback, useMemo, useRef, useState } from "react";
-import type { ColDef, GridApi, GridReadyEvent } from "ag-grid-community";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import type { CellValueChangedEvent, GridReadyEvent, SelectionChangedEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
-import { useOrderContext } from "@/api/context/OrderContext";
-import { createDateColumn, createNumberColumn, createPriceColumn, createTextColumn } from "@/utils/columnHelpers";
+import { useOptimizedOrderData, useOrderActions, useRenderTracker } from "@/api/context/OrderContext";
+import { OPTIMIZED_GRID_OPTIONS } from "@/constant/order";
+import { createDefaultColDef, createGridOptions, createOrderColumns } from "@/utils/columnHelpers";
+
+const CellRenderer = React.memo(({ value }: { value: any }) => (
+  <span>{value}</span>
+));
+CellRenderer.displayName = 'CellRenderer';
+
+const PriceCellRenderer = React.memo(({ value }: { value: number | null }) => {
+  const formattedValue = useMemo(() => {
+    if (value === null || value === undefined) return '';
+    const numValue = Number(value);
+    return isNaN(numValue) ? '' : `${numValue.toLocaleString()}원`;
+  }, [value]);
+
+  return <span>{formattedValue}</span>;
+});
+PriceCellRenderer.displayName = 'PriceCellRenderer';
 
 export const OrderGrid = () => {
-  const {
-    orderData,
-    isLoading,
-    setGridApi,
-    setSelectedRows,
-    setChangedRows,
-  } = useOrderContext();
-
   const gridRef = useRef<AgGridReact>(null);
-  const [_internalGridApi, setInternalGridApi] = useState<GridApi | null>(null);
-  const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
+  const changedRowsRef = useRef<Set<string>>(new Set());
 
-  const columnDefs: ColDef[] = useMemo(() => [
-    // 기본 정보
-    createNumberColumn('id', 'ID', 80, { min: 0 }),
-    createTextColumn('order_id', '주문ID', 160),
-    createTextColumn('mall_order_id', '몰주문ID', 160),
-    
-    // 상품 정보  
-    createTextColumn('product_id', '상품ID', 120),
-    createTextColumn('product_name', '상품명', 240, { tooltip: true }),
-    createTextColumn('mall_product_id', '몰상품ID', 140),
-    createTextColumn('item_name', '아이템명', 200, { tooltip: true }),
-    createTextColumn('sku_value', 'SKU정보', 200, { tooltip: true }),
-    createTextColumn('sku_alias', 'SKU별칭', 120),
-    createTextColumn('sku_no', 'SKU번호', 120),
-    createTextColumn('barcode', '바코드', 140),
-    createTextColumn('model_name', '모델명', 150),
-    createTextColumn('erp_model_name', 'ERP모델명', 150),
-    createTextColumn('location_nm', '위치명', 120),
-    
-    // 수량 및 금액
-    createNumberColumn('sale_cnt', '수량', 100, { min: 0, max: 9999, centered: true }),
-    createPriceColumn('pay_cost', '결제금액', 120),
-    createPriceColumn('delv_cost', '배송비', 120),
-    createPriceColumn('total_cost', '총금액', 120),
-    createPriceColumn('total_delv_cost', '총배송비', 120),
-    createPriceColumn('expected_payout', '예상정산금', 120),
-    createPriceColumn('etc_cost', '기타비용', 120),
-    createPriceColumn('service_fee', '서비스수수료', 120),
-    
-    // 합계 필드들
-    createTextColumn('sum_p_ea', '합계수량', 100),
-    createPriceColumn('sum_expected_payout', '합계예상정산금', 140),
-    createPriceColumn('sum_pay_cost', '합계결제금액', 130),
-    createPriceColumn('sum_delv_cost', '합계배송비', 120),
-    createPriceColumn('sum_total_cost', '합계총금액', 120),
-    
-    // 배송 정보
-    createTextColumn('receive_name', '받는분', 120),
-    createTextColumn('receive_cel', '연락처', 160),
-    createTextColumn('receive_tel', '전화번호', 160),
-    createTextColumn('receive_addr', '배송주소', 300, { tooltip: true }),
-    createTextColumn('receive_zipcode', '우편번호', 100),
-    createTextColumn('delivery_payment_type', '배송결제유형', 140),
-    createTextColumn('delv_msg', '배송메모', 200, { tooltip: true }),
-    createTextColumn('delivery_id', '배송업체ID', 120),
-    createTextColumn('delivery_class', '배송등급', 120),
-    createTextColumn('invoice_no', '송장번호', 150),
-    
-    // 판매처 및 기타 정보
-    createTextColumn('fld_dsp', '판매처', 180),
-    createTextColumn('order_etc_6', '주문기타6', 120),
-    createTextColumn('order_etc_7', '주문기타7', 120),
-    createTextColumn('etc_msg', '기타메시지', 200, { tooltip: true }),
-    createTextColumn('free_gift', '사은품', 120),
-    createTextColumn('price_formula', '가격공식', 150),
-    
-    // 상태 및 처리 정보
-    createTextColumn('form_name', '폼명', 120),
-    createNumberColumn('seq', '순번', 80, { min: 0 }),
-    createTextColumn('idx', '인덱스', 100),
-    createTextColumn('work_status', '작업상태', 120),
-    
-    // 날짜 정보
-    createDateColumn('process_dt', '처리일시'),
-    createDateColumn('order_date', '주문일자'),
-    createTextColumn('reg_date', '등록일', 120),
-    createTextColumn('ord_confirm_date', '주문확인일', 130),
-    createTextColumn('rtn_dt', '반품일', 120),
-    createTextColumn('chng_dt', '변경일', 120),
-    createTextColumn('delivery_confirm_date', '배송확인일', 130),
-    createTextColumn('cancel_dt', '취소일', 120),
-    createTextColumn('hope_delv_date', '희망배송일', 130),
-    createTextColumn('inv_send_dm', '송장발송일', 130),
-    createDateColumn('created_at', '생성일시'),
-    {
-      ...createDateColumn('updated_at', '수정일시'),
-      headerClass: 'border-r-0'
-    }
-  ], []);
+  const orderData = useOptimizedOrderData();
+  const { setGridApi, setSelectedRows, setChangedRows } = useOrderActions();
+  
+  useRenderTracker();
 
-  const defaultColDef = useMemo(() => ({
-    resizable: true,
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-    minWidth: 120
-  }), []);
+  const columnDefs = useMemo(() => {
+    const baseColumns = createOrderColumns();
+    
+    return baseColumns.map((col: any) => {
+      if (col.field?.includes('cost') || col.field?.includes('fee') || col.field?.includes('payout')) {
+        return {
+          ...col,
+          cellRenderer: PriceCellRenderer,
+        };
+      }
+      return col;
+    });
+  }, []);
 
+  const defaultColDef = useMemo(() => createDefaultColDef(), []);
   const gridOptions = useMemo(() => ({
-    theme: "legacy" as const,
-    pagination: false,
-    paginationPageSize: 20,
-    animateRows: true,
-    headerHeight: 45,
-    rowHeight: 40,
-    rowSelection: {
-      mode: "multiRow" as const,
-      checkboxes: true,
-      headerCheckbox: true,
-      enableClickSelection: true,
-      selectAll: "filtered" as const
-    },
-    domLayout: "normal" as const,
-    enterNavigatesVertically: true,
-    enterNavigatesVerticallyAfterEdit: true,
-    singleClickEdit: true,
-    stopEditingWhenCellsLoseFocus: true,
-
-    scrollbarWidth: 16,
-    suppressScrollOnNewData: false,
-    suppressRowVirtualisation: false,
-
-    getRowId: (params: any) => params.data.id?.toString(),
+    ...createGridOptions(),
+    ...OPTIMIZED_GRID_OPTIONS,
   }), []);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
+    const { api } = params;
+    
     if (setGridApi) {
-      setGridApi(params.api);
-    } else {
-      setInternalGridApi(params.api);
+      setGridApi(api);
     }
+
+    api.sizeColumnsToFit();
+    
   }, [setGridApi]);
 
-
-  const onSelectionChangedCallback = useCallback((event: any) => {
+  const onSelectionChanged = useCallback((event: SelectionChangedEvent) => {
     const selectedRows = event.api.getSelectedRows();
     
     if (setSelectedRows) {
@@ -149,47 +69,84 @@ export const OrderGrid = () => {
     }
   }, [setSelectedRows]);
 
-  const onCellValueChanged = useCallback((event: any) => {
-    const rowId = event.data.id?.toString();
-    if (rowId) {
-      setChangedRowsState(prev => new Set(prev).add(rowId));
+  const debouncedCellValueChanged = useMemo(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    return (event: CellValueChangedEvent) => {
+      const { data, api } = event;
+      const rowId = data.id?.toString();
       
-      if (setChangedRows) {
-        let allChangedRowsData = Array.from(changedRowsState).map(id => {
-          const rowNode = event.api.getRowNode(id);
-          return rowNode?.data;
-        }).filter(Boolean);
-
-        if (!allChangedRowsData.find(row => row.id?.toString() === rowId)) {
-          allChangedRowsData = [...allChangedRowsData, event.data];
-        }
+      if (rowId) {
+        changedRowsRef.current.add(rowId);
         
-        setChangedRows(allChangedRowsData);
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          if (setChangedRows) {
+            const allChangedRowsData = Array.from(changedRowsRef.current)
+              .map(id => {
+                const rowNode = api.getRowNode(id);
+                return rowNode?.data;
+              })
+              .filter(Boolean);
+            
+            setChangedRows(allChangedRowsData);
+          }
+        }, 500);
       }
-    }
-  }, [setChangedRows, changedRowsState]);
+    };
+  }, [setChangedRows]);
 
-  const clearChangedRows = useCallback(() => {
-    setChangedRowsState(new Set());
+  const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
+    debouncedCellValueChanged(event);
+  }, [debouncedCellValueChanged]);
+
+  const onRowDataUpdated = useCallback(() => {
+    changedRowsRef.current.clear();
     if (setChangedRows) {
       setChangedRows([]);
     }
   }, [setChangedRows]);
 
+  useEffect(() => {
+    return () => {
+      changedRowsRef.current.clear();
+    };
+  }, []);
+
+  const gridContainerStyle = useMemo(() => ({
+    width: '100%',
+    height: 'calc(100vh - 60px)',
+    transform: 'translateZ(0)',
+    willChange: 'auto',
+  }), []);
+
   return (
-    <div className="ag-theme-alpine w-full h-[calc(100vh-60px)] bg-fill-base-100">
+    <div className="ag-theme-alpine bg-fill-base-100" style={gridContainerStyle}>
       <AgGridReact
         ref={gridRef}
+        // 데이터 props
         rowData={orderData}
-        loading={isLoading}
+        
+        // 컬럼 설정
         columnDefs={columnDefs}
         defaultColDef={defaultColDef}
+        
+        // 이벤트 핸들러
         onGridReady={onGridReady}
-        onSelectionChanged={onSelectionChangedCallback}
+        onSelectionChanged={onSelectionChanged}
         onCellValueChanged={onCellValueChanged}
-        onRowDataUpdated={clearChangedRows}
+        onRowDataUpdated={onRowDataUpdated}
+        
+        // 최적화된 그리드 옵션
         {...gridOptions}
-        getRowId={(params) => params.data.id.toString()}
+        
+        // 성능 최적화 props
+        enableCellTextSelection={false} // 텍스트 선택 비활성화로 성능 향상
+        suppressMovableColumns={true} // 컬럼 이동 비활성화로 성능 향상
+        
+        // 로딩 상태 최적화
+        overlayLoadingTemplate='<div class="ag-overlay-loading-center"><div class="ag-loading-spinner"></div><span>주문 데이터 로딩 중...</span></div>'
+        overlayNoRowsTemplate='<div class="ag-overlay-no-rows-center">주문 데이터가 없습니다.</div>'
       />
     </div>
   );
