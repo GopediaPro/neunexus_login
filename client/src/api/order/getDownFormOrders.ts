@@ -3,7 +3,7 @@ import { API_END_POINT } from "../apiEndPoint";
 import { httpClient } from "../axios";
 
 export const getDownFormOrders = async ({
-  limit = 2000,
+  limit = 30,
 }: {
   limit?: number;
 }) => {
@@ -34,7 +34,7 @@ export const getDownFormOrders = async ({
 export const useOrderList = () => {
   return useQuery({
     queryKey: ['downFormOrders'],
-    queryFn: () => getDownFormOrders({ limit: 2000 }),
+    queryFn: () => getDownFormOrders({ limit: 30 }),
     retry: (failureCount, error: any) => {
       if (error?.response?.data?.error?.includes('finite_number')) {
         return false;
