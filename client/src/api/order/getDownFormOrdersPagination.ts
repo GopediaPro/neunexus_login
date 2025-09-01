@@ -1,7 +1,12 @@
 import { API_END_POINT } from "@/constant";
 import { httpClient } from "@/api/axios";
-import type { GetDownFormOrdersPaginationParams, PaginationResponse, UseDownFormOrderPaginationParams } from "@/api/types";
+import type { GetDownFormOrdersPaginationParams, PaginationResponse } from "@/api/types";
 import { useQuery } from "@tanstack/react-query";
+
+export interface UseDownFormOrderPaginationParams extends GetDownFormOrdersPaginationParams {
+  enabled?: boolean;
+}
+
 
 export const getDownFormOrdersPagination = async ({ 
   page = 1, 

@@ -3,8 +3,8 @@ import { useSidebar } from "@/contexts/SidebarContext";
 import { useEffect, useRef } from "react";
 import { MenuSidebarLayout } from '@/components/mainpage/layout/MenuSidebarLayout';
 import { HeaderManagement } from '@/components/management/HeaderManagement';
-import { OrderGrid } from '@/pages/Order/OrderGrid';
 import { OrderToolbar } from './OrderToolbar';
+import { OrderGrid } from './OrderGrid';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
