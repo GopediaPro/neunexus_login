@@ -56,3 +56,36 @@ export const modalConfig = {
     requiresDates: false
   }
 };
+
+export const ORDER_DEFAULTS = {
+  SALE_COUNT: 2,
+  PAY_COST: 25000,
+  DELIVERY_COST: 3000,
+  TOTAL_COST: 28000,
+  EXPECTED_PAYOUT: 22000,
+  ETC_COST: "500",
+  SERVICE_FEE: 1000,
+  PRICE_FORMULA: "기본가격 + 배송비"
+};
+
+export const DATA_FILTER_TABS = [
+  { id: "all" as const, label: "전체" },
+  { id: "style" as const, label: "스타일" }, 
+  { id: "collection" as const, label: "모든수집정보" }
+];
+
+export const OPTIMIZED_GRID_OPTIONS = {
+  suppressRowVirtualisation: false,
+  rowBuffer: 10,
+  suppressColumnVirtualisation: false,
+  
+  suppressAnimationFrame: false,
+  suppressParentsInRowNodes: true,
+  suppressRowHoverHighlight: true,
+  
+  immutableData: true,
+  getRowId: (params: any) => params.data.id?.toString(),
+  
+  asyncTransactionWaitMillis: 50,
+  suppressChangeDetection: false,
+};

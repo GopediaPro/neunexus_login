@@ -1,7 +1,9 @@
 import { type UseMutationResult } from "@tanstack/react-query";
 import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse } from "@/api/types";
 import type { GridApi } from "ag-grid-community";
-import { toast } from "sonner";
+import { ORDER_DEFAULTS } from "@/constant/order";
+import { handleOrderError } from "@/utils/errorHandler";
+import { confirmOrderCreation, processCreateResult, validateOrderCreation, validateOrderIds } from "@/utils/orderValidation";
 
 
 export const handleOrderCreate = async (
@@ -9,33 +11,15 @@ export const handleOrderCreate = async (
   bulkCreateMutation: UseMutationResult<DownFormBulkCreateResponse, Error, BulkCreateRequest>,
   currentTemplate: string = "gmarket_erp"
 ) => {  
-  if (!gridApi) return;
+  const validation = validateOrderCreation(gridApi);
+  if(!validation.isValid) return;
 
-  const selectedRows = gridApi.getSelectedRows();
+  const { selectedRows } = validation;
   
-  if (selectedRows.length === 0) {
-    toast.error('생성할 새로운 주문이 없습니다.');
-    return;
-  }
+  const idValidation = validateOrderIds(selectedRows);
+  if (!idValidation.isValid) return;
 
-  const newRows = selectedRows.filter(row => 
-    row.id && row.id !== 0
-  );
-
-  const invalidRows = selectedRows.filter(row => !row.order_id);
-  
-  if (invalidRows.length > 0) {
-    toast.error('주문 ID가 없는 행이 있습니다. 주문 ID를 확인해주세요.');
-    return;
-  }
-
-  const confirmMessage = selectedRows.length === 1 
-    ? `주문 "${selectedRows[0].order_id}"을 생성하시겠습니까?`
-    : `새로운 ${selectedRows.length}개 주문을 생성하시겠습니까?`;
-  
-  if (!confirm(confirmMessage)) {
-    return;
-  }
+  if (!confirmOrderCreation(selectedRows)) return;
 
   try {
     const requestData = {
@@ -69,20 +53,20 @@ export const handleOrderCreate = async (
           model_name: row.model_name || "",
           erp_model_name: row.erp_model_name || "",
           location_nm: row.location_nm || "",
-          sale_cnt: row.sale_cnt ? Number(row.sale_cnt) : 2,
-          pay_cost: row.pay_cost ? Number(row.pay_cost) : 25000,
-          delv_cost: row.delv_cost ? Number(row.delv_cost) : 3000,
-          total_cost: row.total_cost ? Number(row.total_cost) : 28000,
-          total_delv_cost: row.total_delv_cost ? Number(row.total_delv_cost) : 3000,
-          expected_payout: row.expected_payout ? Number(row.expected_payout) : 22000,
-          etc_cost: row.etc_cost || "500",
-          price_formula: row.price_formula || "기본가격 + 배송비",
-          service_fee: row.service_fee ? Number(row.service_fee) : 1000,
-          sum_p_ea: row.sum_p_ea ? Number(row.sum_p_ea) : 2,
-          sum_expected_payout: row.sum_expected_payout ? Number(row.sum_expected_payout) : 22000,
-          sum_pay_cost: row.sum_pay_cost ? Number(row.sum_pay_cost) : 25000,
-          sum_delv_cost: row.sum_delv_cost ? Number(row.sum_delv_cost) : 3000,
-          sum_total_cost: row.sum_total_cost ? Number(row.sum_total_cost) : 28000,
+          sale_cnt: row.sale_cnt ? Number(row.sale_cnt) : ORDER_DEFAULTS.SALE_COUNT,
+          pay_cost: row.pay_cost ? Number(row.pay_cost) : ORDER_DEFAULTS.PAY_COST,
+          delv_cost: row.delv_cost ? Number(row.delv_cost) : ORDER_DEFAULTS.DELIVERY_COST,
+          total_cost: row.total_cost ? Number(row.total_cost) : ORDER_DEFAULTS.TOTAL_COST,
+          total_delv_cost: row.total_delv_cost ? Number(row.total_delv_cost) : ORDER_DEFAULTS.TOTAL_COST,
+          expected_payout: row.expected_payout ? Number(row.expected_payout) : ORDER_DEFAULTS.EXPECTED_PAYOUT,
+          etc_cost: row.etc_cost || ORDER_DEFAULTS.TOTAL_COST,
+          price_formula: row.price_formula || ORDER_DEFAULTS.PRICE_FORMULA,
+          service_fee: row.service_fee ? Number(row.service_fee) : ORDER_DEFAULTS.SERVICE_FEE,
+          sum_p_ea: row.sum_p_ea ? Number(row.sum_p_ea) : ORDER_DEFAULTS.SALE_COUNT,
+          sum_expected_payout: row.sum_expected_payout ? Number(row.sum_expected_payout) : ORDER_DEFAULTS.EXPECTED_PAYOUT,
+          sum_pay_cost: row.sum_pay_cost ? Number(row.sum_pay_cost) : ORDER_DEFAULTS.PAY_COST,
+          sum_delv_cost: row.sum_delv_cost ? Number(row.sum_delv_cost) : ORDER_DEFAULTS.DELIVERY_COST,
+          sum_total_cost: row.sum_total_cost ? Number(row.sum_total_cost) : ORDER_DEFAULTS.TOTAL_COST,
           receive_name: row.receive_name || "",
           receive_cel: row.receive_cel || "",
           receive_tel: row.receive_tel || "",
@@ -108,39 +92,8 @@ export const handleOrderCreate = async (
 
     const response = await bulkCreateMutation.mutateAsync(requestData);
 
-    const successItems = response.items.filter(item => item.status === 'success');
-    const failedItems = response.items.filter(item => item.status !== 'success');
-
-    if (failedItems.length > 0) {
-      console.error('일부 주문 생성 실패:', failedItems);
-      toast.error(`${failedItems.length}개 주문 생성 실패. 상세 내용을 확인해주세요.`);
-    }
-
-    if (successItems.length > 0) {
-      toast.success(`${successItems.length}개 주문이 성공적으로 생성되었습니다.`);
-
-      if (gridApi) {
-        const successOrderIds = successItems.map(item => item.item.order_id);
-        const rowsToRemove = newRows.filter(row => 
-          successOrderIds.includes(row.order_id)
-        );
-        
-        if (rowsToRemove.length > 0) {
-          gridApi.applyTransaction({
-            remove: rowsToRemove
-          });
-        }
-      }
-    }
-    
+    processCreateResult(response, selectedRows, gridApi);
   } catch (error: any) {
-    console.error('주문 생성 실패:', error);
-    
-    // if (error.response?.status === 422) {
-    //   const errorMessage = error.response?.data?.message || '입력 데이터가 올바르지 않습니다.';
-    //   toast.error(`검증 실패: ${errorMessage}`);
-    // } else {
-    //   toast.error('주문 생성에 실패했습니다.');
-    // }
+    handleOrderError(error, '생성');
   }
 };

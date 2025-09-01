@@ -62,53 +62,36 @@ export interface OrderItem {
   updated_at?: string;
 }
 
-export interface OrderResponse {
-  data: OrderItem[];
+export type FormTemplate = 
+  | 'gmarket_erp'
+  | 'coupang_erp'
+  | 'auction_erp'
+  | 'interpark_erp'
+  | 'wemakeprice_erp'
+  | 'tmon_erp';
+
+export type OrderStatus = 
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled'
+  | 'returned';
+
+export type DataFilterTab = "all" | "style" | "collection";
+
+export interface PaginationResponse {
   total: number;
-  page?: number;
-  limit?: number;
+  page: number;
+  page_size: number;
+  items: DownFormOrderResponse[];
 }
 
-export interface OrderRegisterData {
-  selectedTemplate: string;
-  orderData: any[];
-}
-
-export interface OrderRegisterFormData {
-  selectedTemplate: string;
-  orderData: any[];
-}
-
-export interface OrderRegisterForm {
-  selectedTemplate: string;
-  orderData: {
-    order_number?: string;
-    customer_name?: string;
-    product_name?: string;
-    quantity?: number;
-    price?: number;
-    order_date?: string;
-  };
-}
-
-export interface OrderData {
-  id: string;
-  order_id: string;
-  mall_order_id: string;
-  product_name: string;
-  receive_name: string;
-  receive_cel: string;
-  sale_cnt: number;
-  pay_cost: number;
-  expected_payout: number;
-  service_fee: number;
-  delv_cost: number;
-  fld_dsp: string;
-  receive_addr: string;
-  delv_msg: string;
-  sku_value: string;
-  process_dt: string;
-  created_at: string;
+export interface DownFormOrderResponse {
+  item: OrderItem;
+  status: string;
+  message: string;
 }
 
 export interface BulkCreateRequest {
@@ -123,18 +106,6 @@ export interface BulkDeleteRequest {
   ids: number[];
 }
 
-export interface BulkOperationResponse {
-  success: boolean;
-  message?: string;
-  data?: any;
-  errors?: Array<{
-    index?: number;
-    id?: number;
-    message: string;
-    field?: string;
-  }>;
-}
-
 export type BulkCreateOrderItem = Omit<OrderItem, 'id' | 'created_at' | 'updated_at'> & {
   id?: number;
 };
@@ -143,96 +114,76 @@ export type BulkUpdateOrderItem = Partial<OrderItem> & {
   id: number;
 };
 
-export interface ExcelUploadFilters {
-  order_date_from: string;
-  order_date_to: string;
+export interface DownFormBulkCreateResponse {
+  items: DownFormBulkCreateResponseItem[];
+  summary?: {
+    total: number;
+    success: number;
+    failed: number;
+  };
 }
 
-export interface ExcelUploadRequestData {
-  template_code: string;
-  created_by: string;
-  filters: ExcelUploadFilters;
-  source_table: string;
+export interface DownFormBulkCreateResponseItem {
+  item: OrderItem;
+  status: 'success' | 'error';
+  message: string;
+  errors?: Array<{
+    field: string;
+    message: string;
+  }>;
 }
 
-export interface ExcelUploadRequest {
-  request: ExcelUploadRequestData;
-  file: File;
+export interface ValidationResult {
+  isValid: boolean;
+  errors: Array<{
+    index: number;
+    field: string;
+    message: string;
+    value?: any;
+  }>;
 }
 
-export interface ExcelUploadResponse {
-  file_url: string;
-  object_name: string;
-  template_code: string;
+export type ErrorType = 'network' | 'validation' | 'permission' | 'server' | 'unknown';
+
+export interface ErrorInfo {
+  type: ErrorType;
+  message: string;
+  originalError?: Error;
 }
 
-export interface ExcelUploadFormData {
-  template_code: string;
-  order_date_from: string;
-  order_date_to: string;
-  source_table: string;
-  file: File | null;
-}
+export type ModalType = 'orderRegister' | 'batchInfo' | 'confirmDelete' | 'excelBulk' | 'smileMacro';
+export type ModalState = Record<ModalType, boolean>;
 
-// Simple Excel upload request for direct file uploads
-export interface SimpleExcelUploadRequest {
-  template_code: string;
-  file: File;
-}
+export type DeleteActionType = 'bulk' | 'duplicate' | 'selected';
 
-export interface DownFormOrderResponse {
-  item: any;
-  status: string;
+export interface DeleteResult {
+  success: boolean;
+  deletedCount?: number;
   message: string;
 }
 
-export interface PaginationResponse {
-  total: number;
-  page: number;
-  page_size: number;
-  items: DownFormOrderResponse[];
-}
-
-export interface GetDownFormOrdersPaginationParams {
-  page?: number;
-  page_size?: number;
-  template_code?: string;
-}
-
-export interface UseDownFormOrderPaginationParams extends GetDownFormOrdersPaginationParams {
-  enabled?: boolean;
-}
-
-export interface UseOrderDataParams {
-  page: number;
-}
-
-export type DataFilterTab = "all" | "style" | "collection";
-
 export interface OrderContextValue {
-    activeOrderTab: DataFilterTab;
-    setActiveOrderTab: (tab: DataFilterTab) => void;
-    currentTemplate: FormTemplate;
-    setCurrentTemplate: (template: FormTemplate) => void;
-    orderData: OrderItem[];
-    isLoading: boolean;
-    error: Error | null;
-    gridApi: GridApi | null;
-    setGridApi: (api: GridApi | null) => void;
-    selectedRows: any[];
-    setSelectedRows: (rows: any[]) => void;
-    changedRows: any[];
-    setChangedRows: (rows: any[]) => void;
-    clearSelections: () => void;
-};
-
-export interface UseOrderGridParams {
+  activeOrderTab: DataFilterTab;
+  setActiveOrderTab: (tab: DataFilterTab) => void;
+  currentTemplate: FormTemplate;
+  setCurrentTemplate: (template: FormTemplate) => void;
+  orderData: OrderItem[];
+  isLoading: boolean;
+  error: Error | null;
   gridApi: GridApi | null;
   setGridApi: (api: GridApi | null) => void;
-  selectedRows: any[];
-  setSelectedRows: (rows: any[]) => void;
-  changedRows: any[];
-  setChangedRows: (rows: any[]) => void;
+  selectedRows: OrderItem[];
+  setSelectedRows: (rows: OrderItem[]) => void;
+  changedRows: OrderItem[]; 
+  setChangedRows: (rows: OrderItem[]) => void;
+  clearSelections: () => void;
+  
+  hasSelectedRows: boolean;
+  hasChangedRows: boolean;
+  selectedRowCount: number;
+  changedRowCount: number;
+  isGridReady: boolean;
+  hasData: boolean;
 }
 
 export interface BatchInfoData {
@@ -250,12 +201,6 @@ export interface BatchInfoData {
   updated_at: string;      
 }
 
-export interface BatchInfoItem {
-  data: BatchInfoData[];
-  status: string | null;
-  message: string | null;
-}
-
 export interface BatchInfoResponse {
   total: number;
   page: number;
@@ -263,28 +208,23 @@ export interface BatchInfoResponse {
   items: BatchInfoItem[];
 }
 
+export interface BatchInfoItem {
+  data: BatchInfoData[];
+  status: string | null;
+  message: string | null;
+}
+
 export interface BatchInfoParams {
   page?: number;
   page_size?: number;
 }
 
-export interface DownFormBulkCreateResponseItem {
-  item: OrderItem;
-  status: 'success' | 'error';
-  message: string;
-  errors?: Array<{
-    field: string;
-    message: string;
-  }>;
-}
-
-export interface DownFormBulkCreateResponse {
-  items: DownFormBulkCreateResponseItem[];
-  summary?: {
-    total: number;
-    success: number;
-    failed: number;
-  };
+export interface ExcelUploadFormData {
+  template_code: string;
+  order_date_from: string;
+  order_date_to: string;
+  source_table: string;
+  file: File | null;
 }
 
 export interface ExcelRunMacroRequest {
@@ -294,29 +234,8 @@ export interface ExcelRunMacroRequest {
   source_table: string;
 }
 
-export interface ValidationResult {
-  isValid: boolean;
-  errors: Array<{
-    index: number;
-    field: string;
-    message: string;
-    value?: any;
-  }>;
+export interface GetDownFormOrdersPaginationParams {
+  page?: number;
+  page_size?: number;
+  template_code?: string;
 }
-
-export type FormTemplate = 
-  | 'gmarket_erp'
-  | 'coupang_erp'
-  | 'auction_erp'
-  | 'interpark_erp'
-  | 'wemakeprice_erp'
-  | 'tmon_erp';
-
-export type OrderStatus = 
-  | 'pending'
-  | 'confirmed'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled'
-  | 'returned';
