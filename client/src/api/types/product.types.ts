@@ -73,8 +73,6 @@ export interface UseProductDataParams {
 }
 
 // API 요청/응답 타입
-export type ProductListResponse = ProductData[];
-
 export interface ProductCreateRequest {
   data: ProductCreateData[];
   metadata: {
@@ -95,6 +93,9 @@ export interface ProductDeleteRequest {
     request_id: string;
   };
 }
+
+// 상품 목록 응답 타입
+export type ProductListResponse = ProductData[];
 
 // 등록/수정/삭제 응답 타입
 export interface ProductBulkResponse {

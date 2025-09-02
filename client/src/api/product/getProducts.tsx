@@ -8,8 +8,13 @@ export const getProducts = async (
   params: GetProductsParams
 ): Promise<ProductListResponse> => {
   try {
-    const response = await httpClient.get(API_END_POINT.PRODUCTS, {
-      params
+    const { limit = 100, offset = 0 } = params;
+
+    const response = await httpClient.get<ProductListResponse>(API_END_POINT.PRODUCTS, {
+      params: {
+        limit,
+        offset
+      }
     });
 
     return response.data;
@@ -19,17 +24,20 @@ export const getProducts = async (
   }
 };
 
-export const useProductData = ({ search, page }: UseProductDataParams) => {
+export const useProductData = ({ search, page = 1, limit = 1 }: UseProductDataParams = {}) => {
+  // TODO: limit 기본값 100으로 변경
+  const offset = (page - 1) * limit;
+
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['products', search, page],
-    queryFn: () => getProducts({ search, page }),
+    queryKey: ['products', search, page, limit],
+    queryFn: () => getProducts({ limit, offset }),
     retry: 3,
     retryDelay: 1000,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000
   });
 
-  const productData = data?.products || [];
+  const productData = data || [];
 
   const refreshProducts = useCallback(() => {
     refetch();

@@ -37,24 +37,15 @@ export const useProductGrid = () => {
 
   const columnDefs: ColDef<ProductData>[] = useMemo(() => [
     {
-      headerName: '',
-      checkboxSelection: true,
-      headerCheckboxSelection: true,
-      width: 50,
-      pinned: 'left',
-      resizable: false,
-      sortable: false,
-      filter: false,
-      floatingFilter: false,
-    },
-    {
       field: 'goods_nm',
       headerName: '상품명',
       width: 200,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'brand_nm',
@@ -63,27 +54,47 @@ export const useProductGrid = () => {
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'goods_price',
       headerName: '판매가격',
       width: 120,
-      valueFormatter: (params) => `${params.value?.toLocaleString()}원`,
+      valueFormatter: (params) => params.value ? `${params.value?.toLocaleString()}원` : '',
+      valueParser: (params) => {
+        const value = params.newValue;
+        if (value === null || value === undefined || value === '') return 0;
+        const cleanValue = String(value).replace(/[원,]/g, '').trim();
+        const numValue = parseFloat(cleanValue);
+        return isNaN(numValue) ? 0 : numValue;
+      },
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'goods_consumer_price',
       headerName: '소비자가격',
       width: 120,
-      valueFormatter: (params) => `${params.value?.toLocaleString()}원`,
+      valueFormatter: (params) => params.value ? `${params.value?.toLocaleString()}원` : '',
+      valueParser: (params) => {
+        const value = params.newValue;
+        if (value === null || value === undefined || value === '') return 0;
+        const cleanValue = String(value).replace(/[원,]/g, '').trim();
+        const numValue = parseFloat(cleanValue);
+        return isNaN(numValue) ? 0 : numValue;
+      },
       filter: 'agNumberColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'status',
@@ -116,7 +127,9 @@ export const useProductGrid = () => {
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'origin',
@@ -125,16 +138,20 @@ export const useProductGrid = () => {
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
-      field: 'char_1_nm',
+      field: 'good_keyword',
       headerName: '키워드',
       width: 120,
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'char_1_nm',
@@ -143,7 +160,9 @@ export const useProductGrid = () => {
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'char_2_nm',
@@ -152,7 +171,9 @@ export const useProductGrid = () => {
       filter: 'agTextColumnFilter',
       floatingFilterComponentParams: {
         suppressFilterButton: true
-      }
+      },
+      editable: true,
+      cellEditor: 'agTextCellEditor'
     },
     {
       field: 'created_at',
@@ -183,9 +204,19 @@ export const useProductGrid = () => {
     animateRows: true,
     headerHeight: 45,
     rowHeight: 40,
-    rowSelection: "multiple" as const,
+    rowSelection: {
+      mode: "multiRow" as const,
+      checkboxes: true,
+      headerCheckbox: true,
+      enableClickSelection: true,
+      selectAll: "filtered" as const
+    },
     domLayout: "normal" as const,
-    suppressRowClickSelection: true
+    suppressRowClickSelection: false,
+    enterNavigatesVertically: true,
+    enterNavigatesVerticallyAfterEdit: true,
+    singleClickEdit: true,
+    stopEditingWhenCellsLoseFocus: true,
   }), []);
 
   return {

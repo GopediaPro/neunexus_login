@@ -7,20 +7,34 @@ import { ROUTERS } from "@/constant/route";
 import { useProductContext } from "@/api/context/ProductContext";
 import { toast } from "sonner";
 import { useProductImport } from "@/hooks/productManagement/useProductImport";
+import { Dropdown } from "@/components/ui/Dropdown";
+import { ChevronDown } from "lucide-react";
+import { useProductGridActions } from "@/hooks/productManagement/useProductGridActions";
 
 export const ProductToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [isImporting, setIsImporting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const {
     search,
     setSearch,
     activeProductTab,
     setActiveProductTab,
+    gridApi,
+    selectedRows,
+    changedRows,
   } = useProductContext();
 
   const { handleFileImport, triggerFileUpload, isUploading } = useProductImport();
+  const {
+    addNewRow,
+    deleteSelectedRows,
+    selectAllRows,
+    deselectAllRows,
+    hasSelectedRows,
+  } = useProductGridActions(gridApi);
 
   const handleIconClick = () => {
     inputRef.current?.focus();
@@ -46,6 +60,102 @@ export const ProductToolbar = () => {
       }
     });
   };
+
+  const handleAddSingleRow = async () => {
+    try {
+      await addNewRow();
+      toast.success('새 행이 추가되었습니다.');
+    } catch (error) {
+      console.error('행 추가 실패:', error);
+      toast.error('행 추가에 실패했습니다.');
+    }
+  };
+
+  const handleRowDelete = async () => {
+    try {
+      if (!hasSelectedRows) {
+        toast.error('삭제할 행을 선택해주세요.');
+        return;
+      }
+      await deleteSelectedRows();
+    } catch (error) {
+      console.error('행 삭제 실패:', error);
+    }
+  };
+
+  const handleProductRegister = async () => {
+    if (!gridApi) return;
+    
+    const newRows = [];
+    gridApi.forEachNode(node => {
+      if (node.data && !node.data.id) {
+        newRows.push(node.data);
+      }
+    });
+
+    if (newRows.length === 0 && changedRows.length === 0) {
+      toast.error('등록할 상품이 없습니다. 새 행을 추가하거나 기존 상품을 수정해주세요.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const productsToSave = [...newRows, ...changedRows];
+      
+      for (const product of productsToSave) {
+        if (!product.goods_nm || !product.goods_price) {
+          toast.error('상품명과 판매가격은 필수 입력 항목입니다.');
+          setIsSaving(false);
+          return;
+        }
+
+        const response = await fetch('/api/v1/product', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(product),
+        });
+
+        if (!response.ok) {
+          throw new Error('상품 등록 실패');
+        }
+      }
+
+      toast.success(`${productsToSave.length}개 상품이 성공적으로 등록되었습니다.`);
+      
+      if (gridApi) {
+        gridApi.refreshCells();
+      }
+    } catch (error) {
+      console.error('상품 등록 오류:', error);
+      toast.error('상품 등록 중 오류가 발생했습니다.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleRowItems = [
+    {
+      label: '행 1개 추가',
+      onClick: handleAddSingleRow,
+    },
+    {
+      label: '선택 행 삭제',
+      onClick: handleRowDelete,
+      disabled: !hasSelectedRows,
+    },
+    {
+      label: '전체 선택',
+      onClick: selectAllRows,
+      disabled: !gridApi,
+    },
+    {
+      label: '선택 해제',
+      onClick: deselectAllRows,
+      disabled: !hasSelectedRows,
+    }
+  ];
 
   return (
     <>
@@ -82,23 +192,31 @@ export const ProductToolbar = () => {
           <span className="text-h2">상품등록</span>
         </div>
       </div>
-      <div className="flex items-center gap-2 px-6 pt-5 bg-fill-base-100">
-        <div className="flex items-center w-[320px] h-12 bg-fill-alt-100 rounded-md pl-2">
-          <Icon name="search" ariaLabel="검색"
-            onClick={handleIconClick}
-            style="w-5 h-5 text-text-base-400 cursor-pointer flex-shrink-0"/>
-          <Input
-            ref={inputRef}
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="전체 검색 (상품명, ID, 고객명 등)"
-            className="w-[280px] pl-4 bg-fill-alt-100 border-none relative h-12"
-          />
-        </div>
-
+      <div className="flex items-center justify-between gap-2 px-6 pt-5 bg-fill-base-100">
         <div className="flex items-center gap-2">
-          <Button variant="light" className="py-5">상품 등록</Button>
+          <div className="flex items-center w-[320px] h-12 bg-fill-alt-100 rounded-md pl-2">
+            <Icon name="search" ariaLabel="검색"
+              onClick={handleIconClick}
+              style="w-5 h-5 text-text-base-400 cursor-pointer flex-shrink-0"/>
+            <Input
+              ref={inputRef}
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="전체 검색 (상품명, ID, 고객명 등)"
+              className="w-[280px] pl-4 bg-fill-alt-100 border-none relative h-12"
+            />
+          </div>
+
+          <Button 
+            variant="light" 
+            className={`py-5 ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={handleProductRegister}
+            disabled={isSaving}
+          >
+            <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
+            {isSaving ? '등록 중...' : '상품 등록'}
+          </Button>
           <Button 
             variant="light" 
             className="py-5 flex items-center gap-2" 
@@ -120,6 +238,21 @@ export const ProductToolbar = () => {
           <Button variant="light" className="py-5">카테고리 수정</Button>
           <Button variant="light" className="py-5">옵션별칭 수정</Button>
         </div>
+
+        <Dropdown
+          trigger={
+            <Button 
+              variant="light" 
+              size="sidebar"
+              className="py-5 flex items-center gap-1"
+            >
+              행 관리
+              <ChevronDown size={24} className="text-text-base-400" />
+            </Button>
+          }
+          items={handleRowItems}
+          align="right"
+        />
       </div>
     </>
   );
