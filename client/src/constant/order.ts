@@ -89,3 +89,43 @@ export const OPTIMIZED_GRID_OPTIONS = {
   asyncTransactionWaitMillis: 50,
   suppressChangeDetection: false,
 };
+
+export const companyOptions = [
+  { id: 'okay', label: '오케이마트' },
+  { id: 'star', label: '스타배송' }
+];
+
+export const fldDspOptions = [
+  { value: 'GSSHOP', label: 'GSSHOP' },
+  { value: 'YES24', label: 'YES24' },
+  { value: '텐바이텐', label: '텐바이텐' },
+  { value: '스마트스토어', label: '스마트스토어' },
+  { value: '옥션2.0', label: '옥션2.0' },
+  { value: 'G마켓2.0', label: 'G마켓2.0' },
+  { value: '쿠팡', label: '쿠팡' },
+  { value: '무신사', label: '무신사' },
+  { value: '신세계', label: '신세계' },
+  { value: 'NS홈쇼핑', label: 'NS홈쇼핑' },
+  { value: 'CJ온스타일', label: 'CJ온스타일' },
+  { value: '오늘의집', label: '오늘의집' },
+  { value: '카카오톡스토어', label: '카카오톡스토어' },
+  { value: 'CAFE24', label: 'CAFE24' },
+  { value: '브랜디', label: '브랜디' },
+  { value: '그립컴퍼니', label: '그립컴퍼니' },
+  { value: '롯데온', label: '롯데온' },
+  { value: '에이블리', label: '에이블리' },
+  { value: '보리보리', label: '보리보리' },
+  { value: '아트박스', label: '아트박스' },
+  { value: '지그재그', label: '지그재그' },
+  { value: '카카오톡선물하기', label: '카카오톡선물하기' },
+  { value: '11번가', label: '11번가' },
+  { value: '올웨이즈', label: '올웨이즈' },
+  { value: '토스', label: '토스' },
+  { value: '홈&쇼핑', label: '홈&쇼핑' },
+  { value: '떠리몰', label: '떠리몰' }
+];
+
+export const statusOptions = [
+  { id: 'shipped', label: '출고완료' },
+  { id: 'preparing', label: '출고대기' },
+];
