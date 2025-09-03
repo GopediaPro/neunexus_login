@@ -1,25 +1,8 @@
 import { useCallback } from "react";
 import type { GridApi } from "ag-grid-community";
 import { useProductContext } from "@/api/context/ProductContext";
+import type { ProductItemBase } from "@/api/types/product.types";
 import { toast } from "sonner";
-
-export interface ProductItem {
-  id?: number;
-  goods_nm: string;
-  brand_nm?: string;
-  goods_price: number;
-  goods_consumer_price?: number;
-  status?: number;
-  maker?: string;
-  origin?: string;
-  good_keyword?: string;
-  char_1_nm?: string;
-  char_1_val?: string;
-  char_2_nm?: string;
-  char_2_val?: string;
-  created_at?: string;
-  updated_at?: string;
-}
 
 export const useProductGridActions = (gridApi: GridApi | null) => {
   const {
@@ -29,21 +12,36 @@ export const useProductGridActions = (gridApi: GridApi | null) => {
     setChangedRows,
   } = useProductContext();
 
-  const createEmptyRow = useCallback((): ProductItem => {
+  const createEmptyRow = useCallback((): ProductItemBase => {
     return {
-      id: Date.now(),
+      product_nm: '',
       goods_nm: '',
-      brand_nm: '',
+      detail_path_img: '',
+      delv_cost: 0,
+      goods_search: '',
       goods_price: 0,
-      goods_consumer_price: 0,
-      status: 1,
-      maker: '',
-      origin: 'KR',
-      good_keyword: '',
+      certno: '',
+      char_process: '',
       char_1_nm: '',
       char_1_val: '',
       char_2_nm: '',
       char_2_val: '',
+      img_path: '',
+      img_path1: '',
+      img_path2: '',
+      img_path3: '',
+      img_path4: '',
+      img_path5: '',
+      goods_remarks: '',
+      mobile_bn: '',
+      one_plus_one_bn: '',
+      goods_remarks_url: '',
+      delv_one_plus_one: '',
+      delv_one_plus_one_detail: '',
+      class_nm1: '',
+      class_nm2: '',
+      class_nm3: '',
+      class_nm4: '',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };

@@ -10,6 +10,8 @@ import { useProductImport } from "@/hooks/productManagement/useProductImport";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { ChevronDown } from "lucide-react";
 import { useProductGridActions } from "@/hooks/productManagement/useProductGridActions";
+import { createProducts } from "@/api/product/createProducts";
+import type { ProductFormData } from "@/api/types";
 
 export const ProductToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -86,50 +88,95 @@ export const ProductToolbar = () => {
   const handleProductRegister = async () => {
     if (!gridApi) return;
     
-    const newRows = [];
+    const newRows: ProductFormData[] = [];
+    const modifiedRows: ProductFormData[] = [];
+    
     gridApi.forEachNode(node => {
-      if (node.data && !node.data.id) {
-        newRows.push(node.data);
+      if (node.data) {
+        if (!node.data.id || node.data.id.toString().startsWith('new_')) {
+          newRows.push(node.data);
+        }
       }
     });
 
-    if (newRows.length === 0 && changedRows.length === 0) {
+    changedRows.forEach(row => {
+      if (row && row.id && !row.id.toString().startsWith('new_')) {
+        modifiedRows.push(row);
+      }
+    });
+
+    const allProductsToRegister = [...newRows, ...modifiedRows];
+
+    if (allProductsToRegister.length === 0) {
       toast.error('등록할 상품이 없습니다. 새 행을 추가하거나 기존 상품을 수정해주세요.');
       return;
     }
 
+    // 임시로 goods_nm만 검사 (그리드의 필드명)
+    const invalidProducts = allProductsToRegister.filter(product => {
+      return !product.goods_nm?.trim();
+    });
+
+    if (invalidProducts.length > 0) {
+      toast.error('제품명(goods_nm)은 필수 입력 항목입니다.');
+      return;
+    }
+    
+    // goods_nm을 product_nm으로 매핑
+    const mappedProducts = allProductsToRegister.map(product => ({
+      ...product,
+      product_nm: product.goods_nm || product.product_nm || ''
+    }));
+
+    // TODO: 추후 전체 필수 필드 검증 활성화
+    // const invalidProducts = allProductsToRegister.filter(product => {
+    //   return !product.product_nm?.trim() || 
+    //          !product.goods_nm?.trim() || 
+    //          typeof product.goods_price !== 'number' || 
+    //          product.goods_price < 0 ||
+    //          typeof product.delv_cost !== 'number' ||
+    //          !product.goods_search?.trim() ||
+    //          !product.certno?.trim() ||
+    //          !product.detail_path_img?.trim() ||
+    //          !product.img_path?.trim() ||
+    //          !product.stock_use_yn?.trim() ||
+    //          !product.class_nm1?.trim();
+    // });
+
+    // if (invalidProducts.length > 0) {
+    //   toast.error('필수 입력 항목을 모두 입력해주세요. (상품명, 굿즈명, 판매가격, 배송비, 검색어, 인증번호, 이미지 경로, 재고사용여부, 카테고리1)');
+    //   return;
+    // }
+
     setIsSaving(true);
     try {
-      const productsToSave = [...newRows, ...changedRows];
+      const response = await createProducts(mappedProducts);
       
-      for (const product of productsToSave) {
-        if (!product.goods_nm || !product.goods_price) {
-          toast.error('상품명과 판매가격은 필수 입력 항목입니다.');
-          setIsSaving(false);
-          return;
+      if (response.success) {
+        const successCount = response.data?.success_count || 0;
+        const errorCount = response.data?.error_count || 0;
+        
+        if (errorCount > 0) {
+          toast.warning(`${successCount}개 상품이 등록되었고, ${errorCount}개 상품이 실패했습니다.`);
+          console.error('실패한 상품:', response.data?.errors);
+        } else {
+          toast.success(`${successCount}개 상품이 성공적으로 등록되었습니다.`);
         }
-
-        const response = await fetch('/api/v1/product', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(product),
-        });
-
-        if (!response.ok) {
-          throw new Error('상품 등록 실패');
+        
+        if (gridApi) {
+          gridApi.refreshCells();
+          gridApi.deselectAll();
         }
+        
+        if (response.data?.created_ids && response.data.created_ids.length > 0) {
+          console.log('생성된 상품 ID:', response.data.created_ids);
+        }
+      } else {
+        throw new Error(response.data?.errors?.join(', ') || '상품 등록에 실패했습니다.');
       }
-
-      toast.success(`${productsToSave.length}개 상품이 성공적으로 등록되었습니다.`);
-      
-      if (gridApi) {
-        gridApi.refreshCells();
-      }
-    } catch (error) {
+    } catch (error: any) {
       console.error('상품 등록 오류:', error);
-      toast.error('상품 등록 중 오류가 발생했습니다.');
+      toast.error(error.message || '상품 등록 중 오류가 발생했습니다.');
     } finally {
       setIsSaving(false);
     }
