@@ -4,7 +4,8 @@ const API_VERSION_2 = '/api/v2';
 
 export const API_END_POINT = {
   // 상품 관리
-  PRODUCTS: `${API_VERSION}/product-registration/list`,
+  // PRODUCTS: `${API_VERSION}/product-registration/list`,
+  PRODUCTS: `${API_VERSION}/product-registration`,
   PRODUCT_REGISTRATION_BULK: `${API_VERSION}/product-registration/bulk`,
 
   // 다운폼 주문 기본 엔드포인트
