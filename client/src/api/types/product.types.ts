@@ -14,8 +14,8 @@ export interface ProductItemBase {
   char_process?: string;                 // 가공 방식
   char_1_nm?: string;                    // 옵션1 이름
   char_1_val?: string;                   // 옵션1 값
-  char_2_nm?: string;                    // 특성2 이름
-  char_2_val?: string;                   // 특성2 값
+  char_2_nm?: string;                    // 옵션2 이름
+  char_2_val?: string;                   // 옵션2 값
   img_path: string;                      // 메인 이미지
   img_path1?: string;                    // 추가 이미지1
   img_path2?: string;                    // 추가 이미지2

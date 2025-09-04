@@ -1,17 +1,18 @@
 import { useRef, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { Icon } from "@/components/ui/Icon";
-import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { useProductContext } from "@/api/context/ProductContext";
-import { toast } from "sonner";
 import { useProductImport } from "@/hooks/productManagement/useProductImport";
-import { Dropdown } from "@/components/ui/Dropdown";
-import { ChevronDown } from "lucide-react";
 import { useProductGridActions } from "@/hooks/productManagement/useProductGridActions";
 import { useProductsCreate } from "@/api/product/createProducts";
 import type { ProductFormData } from "@/api/types";
+import { Button } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
+import { Input } from "@/components/ui/input";
+import { Dropdown } from "@/components/ui/Dropdown";
+import { ChevronDown } from "lucide-react";
+import { toast } from "sonner";
+import { validateProducts } from "@/schemas";
 
 export const ProductToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -80,7 +81,6 @@ export const ProductToolbar = () => {
       await addNewRow();
       toast.success('새 행이 추가되었습니다.');
     } catch (error) {
-      console.error('행 추가 실패:', error);
       toast.error('행 추가에 실패했습니다.');
     }
   };
@@ -93,7 +93,7 @@ export const ProductToolbar = () => {
       }
       await deleteSelectedRows();
     } catch (error) {
-      console.error('행 삭제 실패:', error);
+      toast.error('행 삭제에 실패했습니다.')
     }
   };
 
@@ -124,21 +124,23 @@ export const ProductToolbar = () => {
       return;
     }
 
-    // 임시로 goods_nm만 검사 (그리드의 필드명)
-    const invalidProducts = allProductsToRegister.filter(product => {
-      return !product.goods_nm?.trim();
-    });
-
-    if (invalidProducts.length > 0) {
-      toast.error('제품명(goods_nm)은 필수 입력 항목입니다.');
+    // 유효성 검사
+    const validation = validateProducts(allProductsToRegister);
+    if (!validation.success) {
+      toast.error(validation.error);
       return;
     }
-    
-    // goods_nm을 product_nm으로 매핑
-    const mappedProducts = allProductsToRegister.map(product => ({
-      ...product,
-      product_nm: product.goods_nm || product.product_nm || ''
-    }));
+
+    // 임시로 goods_nm만 검사 (그리드의 필드명)
+    // const invalidProducts = allProductsToRegister.filter(product => {
+    //   return !product.goods_nm?.trim();
+    // });
+
+    // if (invalidProducts.length > 0) {
+    //   toast.error('제품명(goods_nm)은 필수 입력 항목입니다.');
+    //   return;
+    // }
+  
 
     // TODO: 추후 전체 필수 필드 검증 활성화
     // const invalidProducts = allProductsToRegister.filter(product => {
@@ -160,7 +162,7 @@ export const ProductToolbar = () => {
     //   return;
     // }
 
-    createProductsMutation.mutate(mappedProducts);
+    createProductsMutation.mutate(allProductsToRegister);
   };
 
   const handleRowItems = [
