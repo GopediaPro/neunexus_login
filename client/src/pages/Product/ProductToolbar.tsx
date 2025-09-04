@@ -5,7 +5,8 @@ import { useProductContext } from "@/api/context/ProductContext";
 import { useProductImport } from "@/hooks/productManagement/useProductImport";
 import { useProductGridActions } from "@/hooks/productManagement/useProductGridActions";
 import { useProductsCreate } from "@/api/product/createProducts";
-import type { ProductFormData } from "@/api/types";
+import { useProductUpdate } from "@/api/product/updateProducts";
+import type { ProductFormData, ProductUpdateFormData } from "@/api/types";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ export const ProductToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [isImporting, setIsImporting] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const {
     search,
@@ -48,6 +50,26 @@ export const ProductToolbar = () => {
       if (response.data?.created_ids && response.data.created_ids.length > 0) {
         console.log('생성된 상품 ID:', response.data.created_ids);
       }
+
+      setIsProcessing(false);
+    },
+    onError: (error) => {
+      setIsProcessing(false);
+    }
+  });
+
+  const updateProductsMutation = useProductUpdate({
+    onSuccess: (response) => {
+      if (gridApi) {
+        gridApi.refreshCells();
+        gridApi.deselectAll();
+      }
+      
+      console.log('상품 수정 성공:', response);
+      setIsProcessing(false);
+    },
+    onError: (error) => {
+      setIsProcessing(false);
     }
   });
 
@@ -98,72 +120,137 @@ export const ProductToolbar = () => {
   };
 
   const handleProductRegister = async () => {
-    if (!gridApi) return;
-    
-    const newRows: ProductFormData[] = [];
-    const modifiedRows: ProductFormData[] = [];
-    
-    gridApi.forEachNode(node => {
-      if (node.data) {
-        if (!node.data.id || node.data.id.toString().startsWith('new_')) {
-          newRows.push(node.data);
+    if (createProductsMutation.isPending || isProcessing) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    if (!gridApi) {
+      setIsProcessing(false);
+      return;
+    }
+
+    try {
+      const newRows: ProductFormData[] = [];
+      const modifiedRows: ProductUpdateFormData[] = [];
+      
+      gridApi.forEachNode(node => {
+        if (node.data) {
+          if (!node.data.id || node.data.id.toString().startsWith('new_')) {
+            newRows.push(node.data);
+          }
         }
+      });
+
+      changedRows.forEach(row => {
+        if (row && row.id && !row.id.toString().startsWith('new_')) {
+          modifiedRows.push(row);
+        }
+      });
+
+      const allProductsToRegister = [...newRows, ...modifiedRows];
+
+      if (allProductsToRegister.length === 0) {
+        // 모든 toast 제거 후 새로 표시
+        toast.dismiss();
+        setTimeout(() => {
+          toast.error('등록할 상품이 없습니다. 새 행을 추가하거나 기존 상품을 수정해주세요.');
+        }, 100);
+        setIsProcessing(false);
+        return;
       }
-    });
 
-    changedRows.forEach(row => {
-      if (row && row.id && !row.id.toString().startsWith('new_')) {
-        modifiedRows.push(row);
+      // 유효성 검사
+      const validation = validateProducts(allProductsToRegister);
+      if (!validation.success) {
+        // 모든 toast 제거 후 새로 표시
+        toast.dismiss();
+        setTimeout(() => {
+          toast.error(validation.error);
+        }, 100);
+        setIsProcessing(false);
+        return;
       }
-    });
 
-    const allProductsToRegister = [...newRows, ...modifiedRows];
+      // 등록/수정 분리
+      if (newRows.length > 0) {
+        // 유효성 검사
+        const newValidation = validateProducts(newRows);
+        if (!newValidation.success) {
+          toast.dismiss();
+          setTimeout(() => {
+            toast.error(newValidation.error);
+          }, 100);
+          setIsProcessing(false);
+          return;
+        }
+        
+        // 새 상품 등록
+        createProductsMutation.mutate(newRows);
+      }
 
-    if (allProductsToRegister.length === 0) {
-      toast.error('등록할 상품이 없습니다. 새 행을 추가하거나 기존 상품을 수정해주세요.');
-      return;
+      if (modifiedRows.length > 0) {
+        // 유효성 검사  
+        const modifiedValidation = validateProducts(modifiedRows);
+        if (!modifiedValidation.success) {
+          toast.dismiss();
+          setTimeout(() => {
+            toast.error(modifiedValidation.error);
+          }, 100);
+          setIsProcessing(false);
+          return;
+        }
+        
+        // 기존 상품 수정
+        const updateRequest = {
+          data: modifiedRows,
+          metadata: {
+            request_id: `update-${Date.now()}`
+          }
+        };
+        updateProductsMutation.mutate(updateRequest);
+      }
+      
+    } catch (error) {
+      console.error('상품 등록 처리 중 오류:', error);
+      setIsProcessing(false);
     }
-
-    // 유효성 검사
-    const validation = validateProducts(allProductsToRegister);
-    if (!validation.success) {
-      toast.error(validation.error);
-      return;
-    }
-
-    // 임시로 goods_nm만 검사 (그리드의 필드명)
-    // const invalidProducts = allProductsToRegister.filter(product => {
-    //   return !product.goods_nm?.trim();
-    // });
-
-    // if (invalidProducts.length > 0) {
-    //   toast.error('제품명(goods_nm)은 필수 입력 항목입니다.');
-    //   return;
-    // }
-  
-
-    // TODO: 추후 전체 필수 필드 검증 활성화
-    // const invalidProducts = allProductsToRegister.filter(product => {
-    //   return !product.product_nm?.trim() || 
-    //          !product.goods_nm?.trim() || 
-    //          typeof product.goods_price !== 'number' || 
-    //          product.goods_price < 0 ||
-    //          typeof product.delv_cost !== 'number' ||
-    //          !product.goods_search?.trim() ||
-    //          !product.certno?.trim() ||
-    //          !product.detail_path_img?.trim() ||
-    //          !product.img_path?.trim() ||
-    //          !product.stock_use_yn?.trim() ||
-    //          !product.class_nm1?.trim();
-    // });
-
-    // if (invalidProducts.length > 0) {
-    //   toast.error('필수 입력 항목을 모두 입력해주세요. (상품명, 굿즈명, 판매가격, 배송비, 검색어, 인증번호, 이미지 경로, 재고사용여부, 카테고리1)');
-    //   return;
-    // }
-
-    createProductsMutation.mutate(allProductsToRegister);
   };
+  //   const newRows: ProductFormData[] = [];
+  //   const modifiedRows: ProductFormData[] = [];
+    
+  //   gridApi.forEachNode(node => {
+  //     if (node.data) {
+  //       if (!node.data.id || node.data.id.toString().startsWith('new_')) {
+  //         newRows.push(node.data);
+  //       }
+  //     }
+  //   });
+
+  //   changedRows.forEach(row => {
+  //     if (row && row.id && !row.id.toString().startsWith('new_')) {
+  //       modifiedRows.push(row);
+  //     }
+  //   });
+
+  //   const allProductsToRegister = [...newRows, ...modifiedRows];
+
+  //   if (allProductsToRegister.length === 0) {
+  //     toast.dismiss();
+  //     toast.error('등록할 상품이 없습니다. 새 행을 추가하거나 기존 상품을 수정해주세요.');
+  //     return;
+  //   }
+
+  //   // 유효성 검사
+  //   const validation = validateProducts(allProductsToRegister);
+  //   if (!validation.success) {
+  //     toast.error(validation.error);
+  //     return;
+  //   }
+
+  //   createProductsMutation.mutate(allProductsToRegister);
+  // };
 
   const handleRowItems = [
     {

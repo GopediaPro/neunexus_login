@@ -57,7 +57,7 @@ export const useProductGrid = () => {
     createTextColumn('char_1_val', '옵션1 값', 100),
     createTextColumn('char_2_nm', '옵션2', 100),
     createTextColumn('char_2_val', '옵션2 값', 100),
-    createTextColumn('img_path', '메인 이미지', 120),
+    createTextColumn('img_path', '대표 이미지', 120),
     createTextColumn('img_path1', '추가 이미지1', 120),
     createTextColumn('img_path2', '추가 이미지2', 120),
     createTextColumn('img_path3', '추가 이미지3', 120),

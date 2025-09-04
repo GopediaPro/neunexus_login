@@ -1,7 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import type { GridApi } from "ag-grid-community";
 import { useProductContext } from "@/api/context/ProductContext";
-import type { ProductItemBase } from "@/api/types/product.types";
+import type { ProductFormData, ProductItem, ProductUpdateFormData } from "@/api/types/product.types";
 import { toast } from "sonner";
 
 export const useProductGridActions = (gridApi: GridApi | null) => {
@@ -12,14 +12,20 @@ export const useProductGridActions = (gridApi: GridApi | null) => {
     setChangedRows,
   } = useProductContext();
 
-  const createEmptyRow = useCallback((): ProductItemBase => {
+  const newRowCounter = useRef(0);
+
+  const createEmptyRow = useCallback((): ProductItem => {
+    const tempId = `new_${Date.now()}_${++newRowCounter.current}`;
+
     return {
+      id: tempId as any,
       product_nm: '',
       goods_nm: '',
       detail_path_img: '',
       delv_cost: 0,
       goods_search: '',
       goods_price: 0,
+      stock_use_yn: 'N',
       certno: '',
       char_process: '',
       char_1_nm: '',
@@ -42,8 +48,6 @@ export const useProductGridActions = (gridApi: GridApi | null) => {
       class_nm2: '',
       class_nm3: '',
       class_nm4: '',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
     };
   }, []);
 
@@ -59,19 +63,34 @@ export const useProductGridActions = (gridApi: GridApi | null) => {
       });
 
       if (result && result.add && result.add.length > 0) {
+        const addedNode = result.add[0];
+
         setTimeout(() => {
-          const rowNode = gridApi.getRowNode(newRow.id?.toString() || '');
-          if (rowNode) {
+          // const rowNode = gridApi.getRowNode(newRow.id?.toString() || '');          
+          if (addedNode) {
             gridApi.deselectAll();
-            rowNode.setSelected(true);
-            
-            gridApi.ensureIndexVisible(rowNode.rowIndex!, 'top');
-            
-            gridApi.startEditingCell({
-              rowIndex: rowNode.rowIndex!,
-              colKey: 'goods_nm'
-            });
+            addedNode.setSelected(true);
+
+            if (typeof addedNode.rowIndex == 'number') {
+              gridApi.ensureIndexVisible(addedNode.rowIndex, 'top');
+
+              gridApi.startEditingCell({
+                rowIndex: addedNode.rowIndex,
+                colKey: 'goods_nm'
+              });
+            }
           }
+          // if (rowNode) {
+            // gridApi.deselectAll();
+            // rowNode.setSelected(true);
+            
+            // gridApi.ensureIndexVisible(rowNode.rowIndex!, 'top');
+            
+          //   gridApi.startEditingCell({
+          //     rowIndex: rowNode.rowIndex!,
+          //     colKey: 'goods_nm'
+          //   });
+          // }
         }, 100);
         
         return newRow;
@@ -113,7 +132,7 @@ export const useProductGridActions = (gridApi: GridApi | null) => {
   const selectAllRows = useCallback(() => {
     if (!gridApi) return;
     gridApi.selectAll();
-    const allRows = [];
+    const allRows: ProductUpdateFormData[] = [];
     gridApi.forEachNode(node => {
       if (node.data) {
         allRows.push(node.data);

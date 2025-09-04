@@ -16,7 +16,7 @@ export interface ProductItemBase {
   char_1_val?: string;                   // 옵션1 값
   char_2_nm?: string;                    // 옵션2 이름
   char_2_val?: string;                   // 옵션2 값
-  img_path: string;                      // 메인 이미지
+  img_path: string;                      // 대표 이미지
   img_path1?: string;                    // 추가 이미지1
   img_path2?: string;                    // 추가 이미지2
   img_path3?: string;                    // 추가 이미지3
@@ -51,7 +51,7 @@ export interface ProductItem extends ProductItemBase {
 export type ProductFormData = Omit<ProductItemBase, 'created_at' | 'updated_at'>;
 
 // 수정 폼 데이터 타입
-export type ProductEditFormData = Omit<ProductItem, 'created_at' | 'updated_at'>;
+export type ProductUpdateFormData = Omit<ProductItem, 'created_at' | 'updated_at'>;
 
 // 상품 조회 파라미터
 export interface GetProductsParams {
@@ -75,7 +75,7 @@ export interface ProductCreateRequest {
 }
 
 export interface ProductUpdateRequest {
-  data: ProductFormData[];
+  data: ProductUpdateFormData[];
   metadata: {
     request_id: string;
   };
