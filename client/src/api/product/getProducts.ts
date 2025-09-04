@@ -17,7 +17,6 @@ export const getProducts = async (
       }
     });
     return response.data;
-console.log('데이터:', response.data)
 
   } catch (error) {
     console.error('상품 목록 로딩 실패:', error);
@@ -39,7 +38,6 @@ export const useProductData = ({ search, page = 1, limit = 50 }: UseProductDataP
 
   const productData = data?.product_registration_dto_list || [];
   const totalCount = data?.item_count || 0;
-console.log()
   const refreshProducts = useCallback(() => {
     refetch();
   }, [refetch]);

@@ -10,14 +10,13 @@ import { useProductImport } from "@/hooks/productManagement/useProductImport";
 import { Dropdown } from "@/components/ui/Dropdown";
 import { ChevronDown } from "lucide-react";
 import { useProductGridActions } from "@/hooks/productManagement/useProductGridActions";
-import { createProducts } from "@/api/product/createProducts";
+import { useProductsCreate } from "@/api/product/createProducts";
 import type { ProductFormData } from "@/api/types";
 
 export const ProductToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [isImporting, setIsImporting] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
 
   const {
     search,
@@ -37,6 +36,19 @@ export const ProductToolbar = () => {
     deselectAllRows,
     hasSelectedRows,
   } = useProductGridActions(gridApi);
+
+  const createProductsMutation = useProductsCreate({
+    onSuccess: (response) => {
+      if (gridApi) {
+        gridApi.refreshCells();
+        gridApi.deselectAll();
+      }
+      
+      if (response.data?.created_ids && response.data.created_ids.length > 0) {
+        console.log('생성된 상품 ID:', response.data.created_ids);
+      }
+    }
+  });
 
   const handleIconClick = () => {
     inputRef.current?.focus();
@@ -148,38 +160,7 @@ export const ProductToolbar = () => {
     //   return;
     // }
 
-    setIsSaving(true);
-    try {
-      const response = await createProducts(mappedProducts);
-      
-      if (response.success) {
-        const successCount = response.data?.success_count || 0;
-        const errorCount = response.data?.error_count || 0;
-        
-        if (errorCount > 0) {
-          toast.warning(`${successCount}개 상품이 등록되었고, ${errorCount}개 상품이 실패했습니다.`);
-          console.error('실패한 상품:', response.data?.errors);
-        } else {
-          toast.success(`${successCount}개 상품이 성공적으로 등록되었습니다.`);
-        }
-        
-        if (gridApi) {
-          gridApi.refreshCells();
-          gridApi.deselectAll();
-        }
-        
-        if (response.data?.created_ids && response.data.created_ids.length > 0) {
-          console.log('생성된 상품 ID:', response.data.created_ids);
-        }
-      } else {
-        throw new Error(response.data?.errors?.join(', ') || '상품 등록에 실패했습니다.');
-      }
-    } catch (error: any) {
-      console.error('상품 등록 오류:', error);
-      toast.error(error.message || '상품 등록 중 오류가 발생했습니다.');
-    } finally {
-      setIsSaving(false);
-    }
+    createProductsMutation.mutate(mappedProducts);
   };
 
   const handleRowItems = [
@@ -257,12 +238,12 @@ export const ProductToolbar = () => {
 
           <Button 
             variant="light" 
-            className={`py-5 ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`py-5 ${createProductsMutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={handleProductRegister}
-            disabled={isSaving}
+            disabled={createProductsMutation.isPending}
           >
             <Icon name="plus" ariaLabel="plus" style="w-4 h-4" />
-            {isSaving ? '등록 중...' : '상품 등록'}
+            {createProductsMutation.isPending ? '등록 중...' : '상품 등록'}
           </Button>
           <Button 
             variant="light" 
