@@ -7,9 +7,9 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <SidebarProvider>
-      <div>
+      <main>
         {children}
-      </div>
+      </main>
     </SidebarProvider>
   )
 };
