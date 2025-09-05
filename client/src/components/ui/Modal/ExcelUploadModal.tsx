@@ -7,7 +7,6 @@ import { Modal } from "../ModalComponent";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "../ModalComponent/ModalLayout";
 import { ResultModal } from "./BulkResultModal";
 import { FormField } from "../FormField";
-import { modalConfig } from "@/constant/order"
 import type { ExcelUploadFormData } from "@/api/types";
 import { postExcelRunMacro } from "@/api/order/postExcelRunMacro";
 
@@ -48,12 +47,6 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
   });
 
   const watchedValues = watch();
-  const config = modalConfig[mode as keyof typeof modalConfig] || {
-    submitText: mode === 'macro' ? '매크로 실행' : '업로드',
-    loadingText: mode === 'macro' ? '매크로 실행 중...' : '업로드 중...',
-    successTitle: mode === 'macro' ? '매크로 실행 완료' : '업로드 완료',
-    requiresDates: mode === 'minio' || mode === 'database'
-  }
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -310,7 +303,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
             onClick={handleSubmit(handleFormSubmit)}
             disabled={!isFormValid || isUploading}
           >
-            {isUploading ? config.loadingText : config.submitText}
+            매크로 실행
           </Button>
         </ModalFooter>
       </Modal>

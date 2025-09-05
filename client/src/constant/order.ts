@@ -61,23 +61,6 @@ export const STATUS_OPTIONS = [
   { value: 'error', label: '실패' }
 ];
 
-export const modalConfig = {
-  minio: {
-    title: '엑셀 업로드',
-    submitText: '업로드',
-    loadingText: '업로드 중...',
-    successTitle: '업로드 완료',
-    requiresDates: true
-  },
-  database: {
-    title: 'DB에 저장',
-    submitText: 'DB에 저장',
-    loadingText: 'DB 저장 중...',
-    successTitle: 'DB 저장 완료',
-    requiresDates: false
-  }
-};
-
 export const ORDER_DEFAULTS = {
   SALE_COUNT: 2,
   PAY_COST: 25000,
@@ -149,4 +132,11 @@ export const fldDspOptions = [
 export const statusOptions = [
   { id: 'shipped', label: '출고완료' },
   { id: 'preparing', label: '출고대기' },
+];
+
+export const WORK_STATUS_OPTIONS: SelectOption[] = [
+  { value: 'processing', label: 'processing - 처리중' },
+  { value: 'completed', label: 'completed - 완료' },
+  { value: 'pending', label: 'pending - 대기중' },
+  { value: 'error', label: 'error - 오류' }
 ];

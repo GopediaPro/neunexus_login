@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { BulkResultModal } from "./ResultBulkModal";
 import { postSmileMacroMultiple } from "@/api/order/postSmileMacro";
 import { useAuthContext } from "@/contexts";
+import { validateExcelFile } from "@/utils/fileUtils";
 
 interface FileItem {
   id: string;
@@ -63,27 +64,11 @@ export const SmileMacroBulkUploadModal = ({
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const validateFile = (file: File): string | null => {
-    const allowedExtensions = ['.xlsx', '.xls'];
-    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-    
-    if (!allowedExtensions.includes(fileExtension)) {
-      return '지원되지 않는 파일 형식입니다. (.xlsx, .xls만 가능)';
-    }
-
-    const maxSize = 50 * 1024 * 1024; // 50MB
-    if (file.size > maxSize) {
-      return '파일 크기가 50MB를 초과합니다.';
-    }
-
-    return null;
-  };
-
   const addFiles = (newFiles: FileList | File[]) => {
     const filesToAdd: FileItem[] = [];
     
     Array.from(newFiles).forEach(file => {
-      const validationError = validateFile(file);
+      const validationError = validateExcelFile(file);
       
       if (validationError) {
         toast.error(`${file.name}: ${validationError}`);

@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useState, useRef, type DragEvent, type ChangeEvent } from "react";
 import { Modal } from "../ModalComponent";
 import { Button } from "../Button";
+import { Icon } from "../Icon";
 import { toast } from "sonner";
 import { BulkResultModal } from "./ResultBulkModal";
-import { postDbToExcel } from "@/api/order/postDbToExcel";
+import { postExcelToDb } from "@/api/order/postExcelToDb";
 import { useAuthContext } from "@/contexts";
-import type { DbToExcelRequest } from "@/api/types";
+import type { ExcelToDbRequestData } from "@/api/types";
 import { SelectSearchInput } from "@/components/management/common/SelectSearchInput";
-import { FORM_NAME_OPTIONS } from "@/constant/order";
+import { FORM_NAME_OPTIONS, WORK_STATUS_OPTIONS } from "@/constant/order";
+import { validateExcelFile } from "@/utils/fileUtils";
+
+interface FileItem {
+  id: string;
+  name: string;
+  size: number;
+  status: 'waiting' | 'uploading' | 'completed' | 'error';
+  progress?: number;
+  uploadTime?: string;
+  file?: File;
+}
 
 interface FileResult {
   name: string;
@@ -15,30 +27,20 @@ interface FileResult {
   status: 'success' | 'error';
 }
 
-const createDbToExcelRequest = (
-  ordStDate: string,
-  ordEdDate: string,
+const createExcelToDbRequest = (
   formName: string,
+  workStatus: string,
   requestId?: string
-): DbToExcelRequest => {
+): ExcelToDbRequestData => {
   return {
     data: {
-      ord_st_date: ordStDate,
-      ord_ed_date: ordEdDate,
-      form_name: formName
+      form_name: formName,
+      work_status: workStatus || undefined
     },
     metadata: {
       request_id: requestId 
     }
   };
-};
-
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
 export const ExcelToDbModal = ({ 
@@ -49,97 +51,322 @@ export const ExcelToDbModal = ({
   onClose: () => void; 
 }) => {
   const { user } = useAuthContext();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [files, setFiles] = useState<FileItem[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
-  const [orderDateFrom, setOrderDateFrom] = useState(new Date().toISOString().split('T')[0]);
-  const [orderDateTo, setOrderDateTo] = useState(new Date().toISOString().split('T')[0]);
   const [formName, setFormName] = useState('');
+  const [workStatus, setWorkStatus] = useState('');
   const [bulkResult, setBulkResult] = useState<{
     type: 'success' | 'error' | 'info' | 'warning';
     title: string;
     message: string;
     fileResults: FileResult[];
   } | null>(null);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleStartProcessing = async () => {
-    if (!orderDateFrom || !orderDateTo) {
-      toast.error('주문 날짜를 설정해주세요.');
+
+  const addFiles = (newFiles: FileList | File[]) => {
+    const filesToAdd: FileItem[] = [];
+    
+    Array.from(newFiles).forEach(file => {
+      const validationError = validateExcelFile(file);
+      
+      if (validationError) {
+        toast.error(`${file.name}: ${validationError}`);
+        return;
+      }
+
+      const isDuplicate = files.some(existingFile => 
+        existingFile.name === file.name && existingFile.size === file.size
+      );
+
+      if (isDuplicate) {
+        toast.warning(`${file.name}은 이미 추가된 파일입니다.`);
+        return;
+      }
+
+      filesToAdd.push({
+        id: Date.now() + Math.random().toString(),
+        name: file.name,
+        size: file.size,
+        status: 'waiting',
+        file: file
+      });
+    });
+
+    if (filesToAdd.length > 0) {
+      setFiles(prev => [...prev, ...filesToAdd]);
+      toast.success(`${filesToAdd.length}개 파일이 추가되었습니다.`);
+    }
+  };
+
+  const handleDragEnter = (e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles.length > 0) {
+      addFiles(droppedFiles);
+    }
+  };
+
+  const handleFileSelectButton = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    if (selectedFiles && selectedFiles.length > 0) {
+      addFiles(selectedFiles);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveFile = (fileId: string) => {
+    setFiles(files.filter(file => file.id !== fileId));
+    setSelectedFiles(selectedFiles.filter(id => id !== fileId));
+    toast.info('파일이 삭제되었습니다.');
+  };
+
+  const handleFileCheck = (fileId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedFiles([...selectedFiles, fileId]);
+    } else {
+      setSelectedFiles(selectedFiles.filter(id => id !== fileId));
+    }
+  };
+
+  const simulateProgressUpdate = (fileIds: string[]) => {
+    const interval = setInterval(() => {
+      setFiles(prev => prev.map(f => 
+        fileIds.includes(f.id) && f.status === 'uploading'
+          ? { ...f, progress: Math.min((f.progress || 0) + Math.random() * 15, 95) }
+          : f
+      ));
+    }, 300);
+
+    return interval;
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allFileIds = files.map(file => file.id);
+      setSelectedFiles(allFileIds);
+      toast.info(`전체 ${files.length}개 파일이 선택되었습니다.`);
+    } else {
+      setSelectedFiles([]);
+      toast.info('전체 선택이 해제되었습니다.');
+    }
+  };
+
+  const handleStartUpload = async () => {
+    const filesToUpload = files.filter(file => file.status === 'waiting');
+
+    if (filesToUpload.length === 0) {
+      toast.warning('업로드할 파일이 없습니다.');
       return;
     }
 
     if (!formName.trim()) {
-      toast.error('Form Name을 입력해주세요.');
+      toast.error('Form Name을 선택해주세요.');
       return;
     }
 
-    if (new Date(orderDateFrom) > new Date(orderDateTo)) {
-      toast.error('시작 날짜는 종료 날짜보다 이전이어야 합니다.');
-      return;
-    }
+    setIsUploading(true);
 
-    setIsProcessing(true);
+    setFiles(prev => prev.map(file => 
+      filesToUpload.some(f => f.id === file.id)
+        ? { ...file, status: 'uploading', progress: 0 }
+        : file
+    ));
+
+    const fileIds = filesToUpload.map(f => f.id);
+    const progressInterval = simulateProgressUpdate(fileIds);
 
     try {
       const requestId = user?.preferred_username || 'unknown';
-      
-      const ordStDateISO = new Date(orderDateFrom + 'T00:00:00.000Z').toISOString();
-      const ordEdDateISO = new Date(orderDateTo + 'T23:59:59.999Z').toISOString();
+      const requestData = createExcelToDbRequest(formName, workStatus, requestId);
 
-      const requestData = createDbToExcelRequest(
-        ordStDateISO,
-        ordEdDateISO,
-        formName.trim(),
-        requestId
-      );
+      // 파일을 하나씩 처리
+      const results: FileResult[] = [];
+      let totalProcessed = 0;
+      let totalInserted = 0;
+      let totalUpdated = 0;
+      let totalFailed = 0;
 
-      const response = await postDbToExcel(requestData);
-      
-      if (response.success) {
-        const fileName = response.data.excel_url.split('/').pop() || `${formName}_${orderDateFrom}_${orderDateTo}.xlsx`;
-        
-        const fileResults: FileResult[] = [{
-          name: fileName,
-          status: 'success' as const,
-          url: response.data.excel_url
-        }];
+      for (const fileItem of filesToUpload) {
+        if (!fileItem.file) continue;
 
-        setBulkResult({
-          type: 'success',
-          title: 'Excel 파일 생성 완료',
-          message: `처리된 건수: ${response.data.record_count}건\n파일 크기: ${formatFileSize(response.data.file_size)}\n요청 ID: ${response.metadata.request_id}\nAPI 버전: ${response.metadata.version}\n생성 시간: ${new Date().toLocaleString('ko-KR')}\n\n다운로드 링크가 제공되었습니다.`,
-          fileResults
-        });
+        try {
+          const response = await postExcelToDb({
+            request: JSON.stringify(requestData),
+            file: fileItem.file
+          });
 
-        setShowResultModal(true);
-        toast.success('Excel 파일이 성공적으로 생성되었습니다.');
-      } else {
-        throw new Error(response.message || 'Excel 파일 생성 실패');
+          if (response.success) {
+            results.push({
+              name: fileItem.name,
+              status: 'success' as const
+            });
+
+            totalProcessed += response.data.processed_count;
+            totalInserted += response.data.inserted_count;
+            totalUpdated += response.data.updated_count;
+            totalFailed += response.data.failed_count;
+          } else {
+            throw new Error(response.message || '처리 실패');
+          }
+        } catch (error) {
+          results.push({
+            name: fileItem.name,
+            status: 'error' as const
+          });
+          
+          // API 에러 처리 - 더 구체적인 에러 메시지 표시
+          if (error instanceof Error) {
+            const errorMessage = error.message;
+            if (errorMessage.includes("order_id")) {
+              toast.error(`${fileItem.name}: order_id 컬럼이 필요합니다`);
+            } else if (errorMessage.includes("BAD_REQUEST")) {
+              toast.error(`${fileItem.name}: 파일 형식 오류`);
+            } else {
+              toast.error(`${fileItem.name}: ${errorMessage}`);
+            }
+          }
+        }
       }
+
+      clearInterval(progressInterval);
+
+      const successCount = results.filter(r => r.status === 'success').length;
+      const errorCount = results.filter(r => r.status === 'error').length;
+
+      setFiles(prev => prev.map(file => 
+        filesToUpload.some(f => f.id === file.id)
+          ? { 
+              ...file, 
+              status: results.find(r => r.name === file.name)?.status === 'success' ? 'completed' : 'error', 
+              progress: 100, 
+              uploadTime: new Date().toLocaleString('ko-KR')
+            }
+          : file
+      ));
+
+      setBulkResult({
+        type: errorCount === 0 ? 'success' : (successCount > 0 ? 'warning' : 'error'),
+        title: 'Excel to DB 처리 결과',
+        message: `총 처리 파일: ${filesToUpload.length}개\n성공: ${successCount}개 | 실패: ${errorCount}개\n\n총 처리된 레코드: ${totalProcessed}건\n삽입: ${totalInserted}건 | 업데이트: ${totalUpdated}건 | 실패: ${totalFailed}건\n\n처리 시간: ${new Date().toLocaleString('ko-KR')}`,
+        fileResults: results
+      });
+
+      setShowResultModal(true);
+      
+      if (errorCount === 0) {
+        toast.success(`${successCount}개 파일 처리가 완료되었습니다.`);
+      } else {
+        toast.warning(`${successCount}개 성공, ${errorCount}개 실패`);
+      }
+
     } catch (error) {
-      const fileResults: FileResult[] = [{
-        name: `${formName}_${orderDateFrom}_${orderDateTo}.xlsx`,
+      clearInterval(progressInterval);
+
+      const fileResults: FileResult[] = filesToUpload.map(file => ({
+        name: file.name,
         status: 'error' as const,
-      }];
+      }));
+
+      setFiles(prev => prev.map(file => 
+        filesToUpload.some(f => f.id === file.id)
+          ? { ...file, status: 'error', progress: 0 }
+          : file
+      ));
 
       setBulkResult({
         type: 'error',
-        title: 'Excel 파일 생성 실패',
-        message: `Excel 파일 생성 중 오류가 발생했습니다.\n오류 시간: ${new Date().toLocaleString('ko-KR')}\n\n${error instanceof Error ? error.message : '알 수 없는 오류'}\n\n다시 시도해주세요.`,
+        title: 'Excel to DB 처리 실패',
+        message: `파일 처리 중 오류가 발생했습니다.\n오류 시간: ${new Date().toLocaleString('ko-KR')}\n\n${error instanceof Error ? error.message : '알 수 없는 오류'}\n\n다시 시도해주세요.`,
         fileResults
       });
 
       setShowResultModal(true);
-      toast.error('Excel 파일 생성 중 오류가 발생했습니다.');
+      toast.error('업로드 중 오류가 발생했습니다.');
     } finally {
-      setIsProcessing(false);
+      setIsUploading(false);
     }
   };
 
+  const getStatusIcon = (status: FileItem['status']) => {
+    switch (status) {
+      case 'uploading':
+        return <Icon name="loading" style="w-4 h-4 text-primary-500 animate-spin" />;
+      case 'completed':
+        return <Icon name="check" style="w-4 h-4 text-primary-500" />;
+      case 'error':
+        return <Icon name="alert" style="w-4 h-4 text-rose-500" />;
+      default:
+        return <Icon name="document" style="w-4 h-4 text-gray-500" />;
+    }
+  };
+
+  const getStatusText = (file: FileItem) => {
+    switch (file.status) {
+      case 'uploading':
+        return 'Processing...';
+      case 'completed':
+        return file.uploadTime;
+      case 'error':
+        return 'Processing failed';
+      default:
+        return 'Waiting...';
+    }
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const handleClose = () => {
+    setFiles([]);
+    setSelectedFiles([]);
     setBulkResult(null);
-    setOrderDateFrom(new Date().toISOString().split('T')[0]);
-    setOrderDateTo(new Date().toISOString().split('T')[0]);
     setFormName('');
+    setWorkStatus('');
     onClose();
   };
 
@@ -151,73 +378,204 @@ export const ExcelToDbModal = ({
     setBulkResult(null);
   };
 
+  const waitingFiles = files.filter(f => f.status === 'waiting');
+  const isAllSelected = files.length > 0 && selectedFiles.length === files.length;
+  const isPartiallySelected = selectedFiles.length > 0 && selectedFiles.length < files.length;
+
   return (
     <>
-      <Modal isOpen={isOpen} onClose={handleClose} size="2xl">
+      <Modal isOpen={isOpen} onClose={handleClose} size="3xl">
         <Modal.Header>
-          <Modal.Title>주문 데이터 Excel 생성</Modal.Title>
+          <Modal.Title>Excel to DB 업로드</Modal.Title>
           <Modal.CloseButton />
         </Modal.Header>
         
-        <Modal.Body className="h-[500px] flex flex-col">
-          <div className="mb-6 p-4 bg-fill-base-50">
-            <h3 className="text-h4 text-text-base-700 mb-3">Excel 생성 설정</h3>
-            
+        <Modal.Body className="h-[700px] flex flex-col">
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept=".xlsx,.xls"
+            onChange={handleFileInputChange}
+            className="hidden"
+          />
+
+          <div className="mb-6 p-4 border border-stroke-base-200 rounded-lg bg-fill-base-50">
+            <h3 className="text-h4 text-text-base-700 mb-3">업로드 설정</h3>
             <div className="space-y-4">
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-4 items-end">
                 <div className="flex flex-col flex-1">
-                  <label className="text-body-s text-text-base-600 mb-1">시작 날짜</label>
-                  <input
-                    type="date"
-                    value={orderDateFrom}
-                    onChange={(e) => setOrderDateFrom(e.target.value)}
-                    className="px-3 py-2 border border-stroke-base-300 bg-inherit rounded text-body-m"
-                    disabled={isProcessing}
+                  <label className="text-body-s text-text-base-600 mb-1">Form Name *</label>
+                  <SelectSearchInput
+                    options={FORM_NAME_OPTIONS}
+                    value={formName}
+                    onChange={setFormName}
+                    placeholder="Form Name을 선택해주세요"
                   />
                 </div>
                 <div className="flex flex-col flex-1">
-                  <label className="text-body-s text-text-base-600 mb-1">종료 날짜</label>
-                  <input
-                    type="date"
-                    value={orderDateTo}
-                    onChange={(e) => setOrderDateTo(e.target.value)}
-                    className="px-3 py-2 border border-stroke-base-300 bg-inherit rounded text-body-m"
-                    disabled={isProcessing}
+                  <label className="text-body-s text-text-base-600 mb-1">Work Status (선택)</label>
+                  <SelectSearchInput
+                    options={WORK_STATUS_OPTIONS}
+                    value={workStatus}
+                    onChange={setWorkStatus}
+                    placeholder="작업 상태를 선택해주세요"
                   />
                 </div>
               </div>
-              
-              <div className="flex flex-col">
-                <label className="text-body-s text-text-base-600 mb-1">Form Name</label>
-                <SelectSearchInput
-                  options={FORM_NAME_OPTIONS}
-                  value={formName}
-                  onChange={setFormName}
-                  placeholder="Form Name을 선택해주세요"
-                />
+              <p className="text-body-xs text-text-base-500">
+                * Form Name은 필수 항목입니다. Work Status는 선택사항입니다.
+              </p>
+            </div>
+          </div>
+
+          <div
+            className={`border-2 border-dashed rounded-lg p-8 text-center mb-6 transition-colors cursor-pointer ${
+              isDragging 
+                ? 'border-primary-500 bg-primary-50' 
+                : 'border-stroke-base-200 bg-fill-base-50 hover:bg-fill-base-100'
+            }`}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onClick={handleFileSelectButton}
+          >
+            <div className="flex flex-col items-center space-y-4">
+              <div>
+                <h3 className="text-h3 text-text-base-700 mb-2">
+                  Excel 파일을 업로드하세요
+                </h3>
+                <p className="text-body-l text-text-base-500 mb-4">
+                  .xlsx, .xls 형식의 파일을 업로드 할 수 있습니다. (최대 50MB)
+                </p>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFileSelectButton();
+                  }}
+                  className="px-5 py-1 bg-stroke-base-100 text-text-base-500 text-body-l hover:bg-stroke-base-200"
+                  disabled={isUploading}
+                >
+                  파일 선택
+                </Button>
               </div>
             </div>
+          </div>
+
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-h3 text-text-base-700">파일 목록</h2>
+              {files.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
+                    ref={(input) => {
+                      if (input) {
+                        input.indeterminate = isPartiallySelected;
+                      }
+                    }}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                    className="w-4 h-4 rounded border-stroke-base-300 cursor-pointer"
+                    disabled={isUploading}
+                  />
+                  <span className="text-body-s text-text-base-500">
+                    전체 선택 ({selectedFiles.length}/{files.length})
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            {files.length === 0 ? (
+              <div className="text-center py-8 text-text-base-500">
+                업로드할 Excel 파일을 추가해주세요.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {files.map((file) => (
+                  <div key={file.id} className="border border-stroke-base-100 rounded-lg p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 flex-1">
+                        <input
+                          type="checkbox"
+                          checked={selectedFiles.includes(file.id)}
+                          onChange={(e) => handleFileCheck(file.id, e.target.checked)}
+                          className="w-4 h-4 rounded border-stroke-base-300 cursor-pointer"
+                          disabled={isUploading}
+                        />
+                        <div className="w-12 h-12 bg-accent-blue-100 rounded-lg flex items-center justify-center">
+                          <Icon name="document" style="w-5 h-5 text-primary-500" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-body-l text-text-base-700">
+                              {file.name}
+                            </p>
+                            {getStatusIcon(file.status)}
+                          </div>
+                          <div className="flex items-center gap-4 text-body-s text-text-base-500">
+                            <span>{getStatusText(file)}</span>
+                            <span>{formatFileSize(file.size)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveFile(file.id)}
+                        disabled={file.status === 'uploading'}
+                        className={`${
+                          file.status === 'uploading' 
+                            ? 'opacity-50 cursor-not-allowed' 
+                            : 'hover:bg-gray-100'
+                        } p-1 rounded`}
+                      >
+                        <Icon name="close" style="w-6 h-6 text-text-base-500" />
+                      </button>
+                    </div>
+                        
+                    {file.status === 'uploading' && (
+                      <div className="mt-3">
+                        <div className="flex justify-between text-xs text-text-base-500 mb-1">
+                          <span>처리 중...</span>
+                          <span>{Math.round(file.progress || 0)}%</span>
+                        </div>
+                        <div className="w-full bg-stroke-base-100 rounded-full h-2">
+                          <div 
+                            className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${file.progress || 0}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </Modal.Body>
         
         <Modal.Footer>
           <div className="flex items-center justify-between w-full">
-            <div />
+            <div className="text-sm text-text-base-500">
+              총 {files.length}개 파일 | 처리 대기: {waitingFiles.length}개
+            </div>
             <div className="flex gap-2">
               <Button
                 variant="light"
                 onClick={handleClose}
-                disabled={isProcessing}
+                disabled={isUploading}
               >
                 취소
               </Button>
               <Button
                 variant="default"
-                onClick={handleStartProcessing}
-                disabled={isProcessing || !orderDateFrom || !orderDateTo || !formName.trim()}
+                onClick={handleStartUpload}
+                disabled={isUploading || waitingFiles.length === 0 || !formName.trim()}
                 className="bg-primary-500 text-white"
               >
-                {isProcessing ? 'Excel 생성 중...' : 'Excel 파일 생성'}
+                {isUploading ? 'DB 업로드 중...' : `DB 업로드 시작`}
               </Button>
             </div>
           </div>
@@ -232,8 +590,8 @@ export const ExcelToDbModal = ({
           title={bulkResult.title}
           message={bulkResult.message}
           fileResults={bulkResult.fileResults}
-          urlLabel="Excel 파일"
-          showCopyButton={true}
+          urlLabel="처리 결과"
+          showCopyButton={false}
         />
       )}
     </>
