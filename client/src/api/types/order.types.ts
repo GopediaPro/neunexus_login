@@ -239,3 +239,55 @@ export interface GetDownFormOrdersPaginationParams {
   page_size?: number;
   template_code?: string;
 }
+
+export interface DbToExcelRequest {
+  data: {
+    ord_st_date: string;
+    ord_ed_date: string;  
+    form_name: string;
+  };
+  metadata: {
+    request_id?: string;
+  };
+}
+
+export interface DbToExcelResponse {
+  success: boolean;
+  data: {
+    file_url: string;    
+    processed_count: number;
+
+    created_at: string;
+  };
+  message?: string;
+}
+
+export interface ExcelToDbRequest {
+  request: string; 
+  file: File;  
+}
+
+export interface ExcelToDbRequestData {
+  data: {
+    form_name: string; 
+    work_status?: string;
+  };
+  metadata: {
+    request_id?: string;
+  };
+}
+
+export interface ExcelToDbResponse {
+  success: boolean;
+  data: {
+    processed_count: number;
+    inserted_count: number;
+    updated_count: number;
+    failed_count: number;
+  };
+  metadata: {
+    version: string;
+    request_id: string;
+  };
+  message?: string;
+}
