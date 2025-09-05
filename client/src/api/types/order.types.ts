@@ -254,10 +254,13 @@ export interface DbToExcelRequest {
 export interface DbToExcelResponse {
   success: boolean;
   data: {
-    file_url: string;    
-    processed_count: number;
-
-    created_at: string;
+    excel_url: string;
+    record_count: number;
+    file_size: number;
+  };
+  metadata: {
+    version: string;   
+    request_id: string;
   };
   message?: string;
 }
