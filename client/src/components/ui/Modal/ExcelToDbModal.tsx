@@ -41,6 +41,24 @@ const createExcelToDbRequest = (
   };
 };
 
+const getApiErrorMessage = (error: any, fileName: string): string => {
+  if (error?.error?.message) {
+    const errorMessage = error.error.message;
+    
+    if (errorMessage.includes("order_id")) {
+      return `${fileName}: order_id 컬럼이 필요합니다`;
+    } else if (errorMessage.includes("BAD_REQUEST") || error.error.code === "BAD_REQUEST") {
+      return `${fileName}: ${errorMessage}`;
+    } else {
+      return `${fileName}: ${errorMessage}`;
+    }
+  } else if (error instanceof Error) {
+    return `${fileName}: ${error.message}`;
+  } else {
+    return `${fileName}: 알 수 없는 오류가 발생했습니다`;
+  }
+};
+
 export const ExcelToDbModal = ({ 
   isOpen, 
   onClose 
@@ -98,18 +116,18 @@ export const ExcelToDbModal = ({
           file: fileItem.file
         });
 
-        if (response.success) {
+        if (response.success === true && response.data) {
           results.push({
             name: fileItem.name,
             status: 'success' as const
           });
 
-          totalProcessed += response.data.processed_count;
-          totalInserted += response.data.inserted_count;
-          totalUpdated += response.data.updated_count;
-          totalFailed += response.data.failed_count;
+          totalProcessed += response.data.processed_count || 0;
+          totalInserted += response.data.inserted_count || 0;
+          totalUpdated += response.data.updated_count || 0;
+          totalFailed += response.data.failed_count || 0;
         } else {
-          throw new Error(response.message || '처리 실패');
+          throw response;
         }
       } catch (error) {
         results.push({
@@ -117,17 +135,8 @@ export const ExcelToDbModal = ({
           status: 'error' as const
         });
         
-        // API 에러 처리 - 더 구체적인 에러 메시지 표시
-        if (error instanceof Error) {
-          const errorMessage = error.message;
-          if (errorMessage.includes("order_id")) {
-            toast.error(`${fileItem.name}: order_id 컬럼이 필요합니다`);
-          } else if (errorMessage.includes("BAD_REQUEST")) {
-            toast.error(`${fileItem.name}: 파일 형식 오류`);
-          } else {
-            toast.error(`${fileItem.name}: ${errorMessage}`);
-          }
-        }
+        const errorMessage = getApiErrorMessage(error, fileItem.name);
+        toast.error(errorMessage);
       }
     }
 
@@ -172,7 +181,6 @@ export const ExcelToDbModal = ({
       const successCount = results.filter(r => r.status === 'success').length;
       const errorCount = results.filter(r => r.status === 'error').length;
 
-      // 파일 상태 업데이트
       setFiles(prev => prev.map(file => 
         filesToUpload.some(f => f.id === file.id)
           ? { 
