@@ -20,6 +20,8 @@ import { handleBulkDeleteAll, handleBulkDeleteDuplicate, handleSelectedRowsDelet
 import { fetchOrdersByTemplate, showOrderLoadSuccess, validateOrderData } from "@/utils/orderRefgisterHelpers";
 import { handleError } from "@/utils/errorHandler";
 import { ModalLoader } from "@/components/ui/ModalComponent/ModalLoader";
+import { DbToExcelModal } from "@/components/ui/Modal/DbToExcelModal";
+import { ExcelToDbModal } from "@/components/ui/Modal/ExcelToDbModal";
 
 const OrderRegisterModal = lazy(() =>
   import("@/components/ui/Modal/OrderRegisterModal").then(module => ({
@@ -368,6 +370,14 @@ export const OrderToolbar = memo(() => {
       onClick: handleSelectedBatchInfo,
       disabled: isSelectedBatchLoading,
     },
+    {
+      label: '주문내역 다운로드',
+      onClick: () => openModal('dbToExcel'),
+    },
+    {
+      label: 'Excel 데이터 동기화',
+      onClick: () => openModal('excelToDb')
+    }
   ], [openModal, handleSelectedBatchInfo, isSelectedBatchLoading]);
 
   const actionStates = useMemo(() => ({
@@ -492,6 +502,20 @@ export const OrderToolbar = memo(() => {
           title={getDeleteModalContent().title}
           message={getDeleteModalContent().message}
           isLoading={isBulkDeleting}
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalLoader />}>
+        <DbToExcelModal
+          isOpen={modals.dbToExcel} 
+          onClose={() => closeModal('dbToExcel')} 
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalLoader />}>
+        <ExcelToDbModal
+          isOpen={modals.excelToDb} 
+          onClose={() => closeModal('excelToDb')} 
         />
       </Suspense>
     </>

@@ -31,5 +31,9 @@ export const API_END_POINT = {
 
   PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/complete-workflow`,
 
-  SMILE_MACRO_MULTIPLE_V2: `${API_VERSION_2}/smile-macro/smile-excel-macro-multiple-v2`
+  // V2 
+  SMILE_MACRO_MULTIPLE_V2: `${API_VERSION_2}/smile-macro/smile-excel-macro-multiple-v2`,
+
+  DOWN_FORM_ORDERS_DB_TO_EXCEL_URL: `${API_VERSION_2}/down-form-orders/db-to-excel-url`,
+  DOWN_FORM_ORDERS_EXCEL_TO_DB: `${API_VERSION_2}/down-form-orders/excel-to-db`,
 } as const;

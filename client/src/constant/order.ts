@@ -25,6 +25,27 @@ export const REQUIRED_FIELDS_BY_TEMPLATE: Record<FormTemplate, (keyof OrderItem)
   tmon_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
 };
 
+export const FORM_NAME_OPTIONS: SelectOption[] = [
+  { value: 'integ_sites', label: 'integ_sites - 통합사이트 공용' },
+  { value: 'integ_sites_erp', label: 'integ_sites_erp - 통합사이트 ERP용' },
+  { value: 'integ_sites_bundle', label: 'integ_sites_bundle - 통합사이트 합포장용' },
+  { value: 'smile_erp', label: 'smile_erp - 스마일배송 ERP용' },
+  { value: 'smile_bundle', label: 'smile_bundle - 스마일배송 합포장용' },
+  { value: 'kakao_erp', label: 'kakao_erp - 카카오,OMT샵 ERP용' },
+  { value: 'kakao_bundle', label: 'kakao_bundle - 카카오,OMT샵 합포장용' },
+  { value: 'gmarket_erp', label: 'gmarket_erp - G마켓,옥션 ERP용' },
+  { value: 'gmarket_bundle', label: 'gmarket_bundle - G마켓,옥션 합포장용' },
+  { value: 'brandi_erp', label: 'brandi_erp - 브랜디 ERP용' },
+  { value: 'basic_erp', label: 'basic_erp - 알리 지그재그 기타사이트 ERP용' },
+  { value: 'basic_bundle', label: 'basic_bundle - 기본양식 합포장용' },
+  { value: 'star_basic_erp', label: 'star_basic_erp - 스타배송-기본양식 ERP용' },
+  { value: 'star_basic_bundle', label: 'star_basic_bundle - 스타배송-기본양식 합포장용' },
+  { value: 'star_gmarket_erp', label: 'star_gmarket_erp - 스타배송-G마켓,옥션 ERP용' },
+  { value: 'star_gmarket_bundle', label: 'star_gmarket_bundle - 스타배송-G마켓,옥션 합포장용' },
+  { value: 'star_brandi_erp', label: 'star_brandi_erp - 스타배송-브랜디 ERP용' },
+  { value: 'star_brandi_bundle', label: 'star_brandi_bundle - 스타배송-브랜디 합포장용' }
+];
+
 export const FORM_TYPE_OPTIONS = [
   { value: 'all', label: '전체' },
   { value: 'basic_erp', label: 'Basic ERP' },
@@ -39,23 +60,6 @@ export const STATUS_OPTIONS = [
   { value: 'success', label: '성공' },
   { value: 'error', label: '실패' }
 ];
-
-export const modalConfig = {
-  minio: {
-    title: '엑셀 업로드',
-    submitText: '업로드',
-    loadingText: '업로드 중...',
-    successTitle: '업로드 완료',
-    requiresDates: true
-  },
-  database: {
-    title: 'DB에 저장',
-    submitText: 'DB에 저장',
-    loadingText: 'DB 저장 중...',
-    successTitle: 'DB 저장 완료',
-    requiresDates: false
-  }
-};
 
 export const ORDER_DEFAULTS = {
   SALE_COUNT: 2,
@@ -128,4 +132,11 @@ export const fldDspOptions = [
 export const statusOptions = [
   { id: 'shipped', label: '출고완료' },
   { id: 'preparing', label: '출고대기' },
+];
+
+export const WORK_STATUS_OPTIONS: SelectOption[] = [
+  { value: 'processing', label: 'processing - 처리중' },
+  { value: 'completed', label: 'completed - 완료' },
+  { value: 'pending', label: 'pending - 대기중' },
+  { value: 'error', label: 'error - 오류' }
 ];
