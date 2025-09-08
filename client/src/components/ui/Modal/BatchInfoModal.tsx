@@ -1,18 +1,29 @@
-import { Modal } from '../Modal';
+import { Modal } from '../ModalComponent';
 import { Button } from '../Button';
-import type { BatchInfoData, BatchInfoResponse } from '@/shared/types';
+import type { BatchInfoData, BatchInfoResponse } from '@/api/types';
 import { convertToHttps } from '@/utils/convertToHttps';
 import { Icon } from '../Icon';
 import { formatDate } from '@/utils/formatDate';
 import { Checkbox } from '../Checkbox';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FORM_TYPE_OPTIONS, STATUS_OPTIONS } from '@/constant/order';
 import { Dropdown } from '../Dropdown';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import JSZip from 'jszip';
+import { toast } from 'sonner';
 
 interface BatchInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
   batchInfo: BatchInfoResponse | null;
+}
+
+interface DownloadProgress {
+  current: number;
+  total: number;
+  currentFileName: string;
+  isCompleted: boolean;
 }
 
 type FilterFormType = string;
@@ -26,6 +37,33 @@ export const BatchInfoModal = ({
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [filterFormType, setFilterFormType] = useState<FilterFormType>('all');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('success');
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState<DownloadProgress>({
+    current: 0,
+    total: 0,
+    currentFileName: '',
+    isCompleted: false
+  });
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedItems(new Set());
+      setFilterFormType('all');
+      setFilterStatus('success');
+      setStartDate(null);
+      setEndDate(null);
+      setIsDownloading(false);
+      setDownloadProgress({
+        current: 0,
+        total: 0,
+        currentFileName: '',
+        isCompleted: false
+      });
+    }
+  }, [isOpen]);
 
   const allBatches = useMemo(() => {
     if (!batchInfo) return [];
@@ -48,9 +86,15 @@ export const BatchInfoModal = ({
       if (filterStatus === 'success' && batch.error_message) return false;
       if (filterStatus === 'error' && !batch.error_message) return false;
       
+      // 날짜 필터링
+      if (startDate || endDate) {
+        const batchDate = new Date(batch.created_at);
+        if (startDate && batchDate < startDate) return false;
+        if (endDate && batchDate > endDate) return false;
+      }
       return true;
     });
-  }, [allBatches, filterFormType, filterStatus]);
+  }, [allBatches, filterFormType, filterStatus, startDate, endDate]);
 
   const groupedBatches = useMemo(() => {
     const groups: { [key: string]: BatchInfoData[] } = {};
@@ -85,6 +129,132 @@ export const BatchInfoModal = ({
     window.open(httpsUrl, '_blank', 'noopener,noreferrer');
   };
 
+  const handleBatchDownload = async () => {
+    const selectedBatches = filteredBatches.filter(batch => 
+      selectedItems.has(batch.batch_id) && batch.file_url
+    );
+    
+    if (selectedBatches.length === 0) {
+      toast.error('다운로드할 파일을 선택해주세요.');
+      return;
+    }
+    
+    setIsDownloading(true);
+    setDownloadProgress({
+      current: 0,
+      total: selectedBatches.length,
+      currentFileName: '',
+      isCompleted: false
+    });
+    
+    try {
+      const zip = new JSZip();
+      const failedFiles: string[] = [];
+      
+      const fileNameCounts = new Map<string, number>();
+      
+      for (let i = 0; i < selectedBatches.length; i++) {
+        const batch = selectedBatches[i];
+        
+        setDownloadProgress(prev => ({
+          ...prev,
+          current: i + 1,
+          currentFileName: batch.original_filename
+        }));
+        
+        try {
+          const httpsUrl = convertToHttps(batch.file_url);
+          
+          const response = await fetch(httpsUrl, {
+            method: 'GET',
+            headers: {
+              'Accept': '*/*',
+            },
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          
+          const blob = await response.blob();
+          
+          let filename = batch.original_filename;
+          const count = fileNameCounts.get(filename) || 0;
+          if (count > 0) {
+            const ext = filename.split('.').pop();
+            const name = filename.replace(`.${ext}`, '');
+            filename = `${name}_${count + 1}.${ext}`;
+          }
+          fileNameCounts.set(batch.original_filename, count + 1);
+          
+          zip.file(filename, blob);
+          
+        } catch (error) {
+          failedFiles.push(batch.original_filename);
+        }
+      }
+      
+      if (failedFiles.length > 0) {
+        const message = `다음 파일들은 다운로드에 실패했습니다:\n${failedFiles.join('\n')}\n\n다운로드 가능한 파일들로만 ZIP을 생성합니다.`;
+        if (!confirm(message)) {
+          setIsDownloading(false);
+          return;
+        }
+      }
+      
+      if (Object.keys(zip.files).length === 0) {
+        toast.error('다운로드 가능한 파일이 없습니다.');
+        setIsDownloading(false);
+        return;
+      }
+      
+      setDownloadProgress(prev => ({
+        ...prev,
+        currentFileName: 'ZIP 파일 생성 중...'
+      }));
+      
+      const content = await zip.generateAsync({ 
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: {
+          level: 6
+        }
+      });
+      
+      const url = URL.createObjectURL(content);
+      const fileName = `batch_files_${new Date().toISOString().split('T')[0]}.zip`;
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      URL.revokeObjectURL(url);
+      
+      setDownloadProgress(prev => ({
+        ...prev,
+        isCompleted: true,
+        currentFileName: '다운로드 완료!'
+      }));
+      
+      setTimeout(() => {
+        setDownloadProgress({
+          current: 0,
+          total: 0,
+          currentFileName: '',
+          isCompleted: false
+        });
+      }, 3000);
+      
+    } catch (error) {
+      toast.error('파일 다운로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const toggleSelectItem = (batchId: number) => {
     const newSelectedItems = new Set(selectedItems);
     if (selectedItems.has(batchId)) {
@@ -103,20 +273,11 @@ export const BatchInfoModal = ({
     }
   };
 
-  const handleBatchDownload = () => {
-    const selectedBatches = filteredBatches.filter(batch => 
-      selectedItems.has(batch.batch_id) && batch.file_url
-    );
-    
-    selectedBatches.forEach(batch => {
-      handleDownload(batch.file_url);
-    });
-  };
-
-
   const resetFilters = () => {
     setFilterFormType('all');
     setFilterStatus('all');
+    setStartDate(null);
+    setEndDate(null);
     setSelectedItems(new Set());
   };
 
@@ -143,15 +304,15 @@ export const BatchInfoModal = ({
       
       <Modal.Body>
         <div className="space-y-4 w-full">
-          <div className="p-4 bg-gray-50 rounded-lg space-y-4 border border-gray-200">
+          <div className="p-4 bg-fill-base-100 rounded-lg space-y-4 border border-stroke-base-200">
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600 whitespace-nowrap">폼 타입:</span>
+                <span className="text-sm text-text-base-400 whitespace-nowrap">폼 타입:</span>
                 <Dropdown
                   trigger={
-                    <div className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 cursor-pointer min-w-[120px]">
+                    <div className="flex items-center gap-2 px-3 py-2 border border-stroke-base-300 rounded-md text-sm bg-fill-base-100 hover:bg-fill-base-200 cursor-pointer min-w-[120px]">
                       <span className="flex-1">{currentFormTypeLabel}</span>
-                      <Icon name="chevron-down" style="w-4 h-4 text-gray-500" />
+                      <Icon name="chevron-down" style="w-4 h-4 text-text-base-200" />
                     </div>
                   }
                   items={FORM_TYPE_OPTIONS.map(option => ({
@@ -162,12 +323,12 @@ export const BatchInfoModal = ({
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600 whitespace-nowrap">상태:</span>
+                <span className="text-sm text-text-base-400 whitespace-nowrap">상태:</span>
                 <Dropdown
                   trigger={
-                    <div className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md text-sm bg-white hover:bg-gray-50 cursor-pointer min-w-[80px]">
+                    <div className="flex items-center gap-2 px-3 py-2 border border-stroke-base-300 rounded-md text-sm bg-fill-base-100 hover:bg-fill-base-200 cursor-pointer min-w-[80px]">
                       <span className="flex-1">{currentStatusLabel}</span>
-                      <Icon name="chevron-down" style="w-4 h-4 text-gray-500" />
+                      <Icon name="chevron-down" style="w-4 h-4 text-text-base-200" />
                     </div>
                   }
                   items={STATUS_OPTIONS.map(option => ({
@@ -177,16 +338,55 @@ export const BatchInfoModal = ({
                 />
               </div>
 
-              <Button variant="light" onClick={resetFilters}>
+              <div className="flex gap-2 items-center flex-shrink-0">
+                <span className="text-sm text-base-400 whitespace-nowrap">생성일:</span>
+                <div className="flex gap-1 items-center">
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(date) => setStartDate(date)}
+                    selectsStart
+                    startDate={startDate}
+                    endDate={endDate}
+                    placeholderText="0000-00-00"
+                    dateFormat="yyyy-MM-dd"
+                    formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 1)}
+                    showYearDropdown
+                    dateFormatCalendar="MMMM"
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100}
+                    todayButton="Today"
+                    className="px-3 py-2 w-32 sm:w-28 lg:w-32 h-10 text-sm bg-fill-base-100 rounded-md border border-stroke-base-300 hover:bg-fill-base-200"
+                  />
+                  <span className="text-base-400">~</span>
+                  <DatePicker
+                    selected={endDate}
+                    onChange={(date) => setEndDate(date)}
+                    selectsEnd
+                    startDate={startDate}
+                    endDate={endDate}
+                    placeholderText="0000-00-00"
+                    dateFormat="yyyy-MM-dd"
+                    formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 1)}
+                    showYearDropdown
+                    dateFormatCalendar="MMMM"
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={100}
+                    todayButton="Today"
+                    className="px-3 py-2 w-32 h-10 text-sm bg-fill-base-100 rounded-md border border-stroke-base-300 hover:bg-fill-base-200"
+                  />
+                </div>
+              </div>
+
+              <Button variant="light" onClick={resetFilters} className="h-10 whitespace-nowrap text-text-base-100 border border-stroke-base-300">
                 필터 초기화
               </Button>
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500">
-                총 <span className="font-semibold text-gray-700">{filteredBatches.length}</span>개의 배치 정보
+              <div className="text-sm text-text-base-300">
+                총 <span className="font-semibold text-text-base-300">{filteredBatches.length}</span>개의 배치 정보
                 {filteredBatches.length !== batchInfo.total && (
-                  <span className="text-gray-400 ml-2">
+                  <span className="text-text-base-300 ml-2">
                     (전체 {batchInfo.total}개 중 필터링됨)
                   </span>
                 )}
@@ -194,13 +394,40 @@ export const BatchInfoModal = ({
               
               <div className="flex items-center gap-4">
                 {selectedItems.size > 0 && (
-                  <Button 
-                    variant="light" 
-                    onClick={handleBatchDownload}
-                    className="flex items-center gap-2"
-                  >
-                    선택한 파일 다운로드 ({selectedItems.size}개)
-                  </Button>
+                  <div className="flex items-center gap-3">
+                    <Button 
+                      variant="light" 
+                      onClick={handleBatchDownload}
+                      disabled={isDownloading}
+                      className="flex items-center gap-2"
+                    >
+                      {isDownloading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-t-transparent rounded-full animate-spin"></div>
+                          ZIP 생성 중...
+                        </>
+                      ) : (
+                        <>
+                          <Icon name="download" style="w-4 h-4" />
+                          선택한 파일 ZIP 다운로드 ({selectedItems.size}개)
+                        </>
+                      )}
+                    </Button>
+                    
+                    {isDownloading && (
+                      <div className="flex items-center gap-2 text-sm text-base-400">
+                        <div className="w-24 bg-fill-base-100 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${(downloadProgress.current / downloadProgress.total) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-xs whitespace-nowrap">
+                          {downloadProgress.current}/{downloadProgress.total}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 )}
                 
                 <div className="flex items-center gap-2">
@@ -208,7 +435,7 @@ export const BatchInfoModal = ({
                     checked={selectedItems.size === filteredBatches.length && filteredBatches.length > 0}
                     onCheckedChange={toggleSelectAll}
                   />
-                  <span className="text-sm text-gray-600">전체 선택</span>
+                  <span className="text-sm text-text-base-300">전체 선택</span>
                 </div>
               </div>
             </div>
@@ -216,13 +443,13 @@ export const BatchInfoModal = ({
           
           <div className="flex flex-col gap-4 max-h-[40rem] overflow-y-auto overflow-x-hidden w-full scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
             {filteredBatches.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-base-500">
                 필터 조건에 맞는 배치 정보가 없습니다.
               </div>
             ) : (
               groupedBatches.map(([date, batches]) => (
                 <div key={date} className="space-y-3">
-                  <h2 className="text-lg text-gray-700 pb-2 border-b border-gray-200">
+                  <h2 className="text-lg text-base-300 pb-2 border-b border-stroke-base-100">
                     {date} ({batches.length}건)
                   </h2>
                   
@@ -231,8 +458,8 @@ export const BatchInfoModal = ({
                       onClick={() => toggleSelectItem(batch.batch_id)}
                       className={`p-4 border-2 rounded-lg relative transition-colors duration-200 cursor-pointer ${
                       selectedItems.has(batch.batch_id) 
-                        ? 'border-blue-300 bg-blue-50' 
-                        : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                        ? 'border-blue-300 bg-blue-50 bg-fill-base-100' 
+                        : 'border-stroke-base-100 bg-fill-base-100 hover:border-stroke-base-200'
                     }`}>
                       <div className="absolute top-4 left-4">
                         <Checkbox
@@ -252,12 +479,12 @@ export const BatchInfoModal = ({
                         </div>
                         
                         <div className="flex-1">
-                          <h3 className="text-lg text-gray-900 mb-2">
+                          <h3 className="text-lg text-text-base-400 mb-2">
                             {batch.original_filename}
                           </h3>
-                          <div className="flex items-center gap-4 text-gray-600 flex-wrap">
+                          <div className="flex items-center gap-4 text-text-base-300 flex-wrap">
                             <span>{formatFileSize(batch.file_size)}</span>
-                            <span className="px-2 py-1 bg-gray-200 rounded text-xs">
+                            <span className="px-2 py-1 bg-fill-base-200 rounded text-xs">
                               {getFormTypeFromUrl(batch.file_url)}
                             </span>
                             <div className="flex items-center gap-1">
@@ -273,19 +500,19 @@ export const BatchInfoModal = ({
                       <div className="grid grid-cols-2 gap-4 mb-6 ml-10 text-sm">
                         <div className="space-y-2">
                           <div className="flex">
-                            <span className="text-gray-600 pr-2 min-w-[80px]">배치 ID:</span>
-                            <span className="text-gray-800">{batch.batch_id}</span>
+                            <span className="text-text-base-400 pr-2 min-w-[80px]">배치 ID:</span>
+                            <span className="text-text-base-400">{batch.batch_id}</span>
                           </div>
                           
                           <div className="flex">
-                            <span className="text-gray-600 pr-2 min-w-[80px]">생성자:</span>
-                            <span className="text-gray-800">{batch.created_by}</span>
+                            <span className="text-text-base-400 pr-2 min-w-[80px]">생성자:</span>
+                            <span className="text-text-base-400">{batch.created_by}</span>
                           </div>
                           
                           {batch.date_from && batch.date_to && (
                             <div className="flex">
-                              <span className="text-gray-600 pr-2 min-w-[80px]">주문 기간:</span>
-                              <div className="text-gray-800">
+                              <span className="text-text-base-400 pr-2 min-w-[80px]">주문 기간:</span>
+                              <div className="text-text-base-400">
                                 <div>{formatDateTime(batch.date_from)} ~</div>
                                 <div>{formatDateTime(batch.date_to)}</div>
                               </div>
@@ -295,13 +522,13 @@ export const BatchInfoModal = ({
                         
                         <div className="space-y-2">
                           <div className="flex">
-                            <span className="text-gray-600 pr-2 min-w-[80px]">생성일:</span>
-                            <span className="text-gray-800">{formatDateTime(batch.created_at)}</span>
+                            <span className="text-text-base-400 pr-2 min-w-[80px]">생성일:</span>
+                            <span className="text-text-base-400">{formatDateTime(batch.created_at)}</span>
                           </div>
                           
                           <div className="flex">
-                            <span className="text-gray-600 pr-2 min-w-[80px]">수정일:</span>
-                            <span className="text-gray-800">{formatDateTime(batch.updated_at)}</span>
+                            <span className="text-text-base-400 pr-2 min-w-[80px]">수정일:</span>
+                            <span className="text-text-base-400">{formatDateTime(batch.updated_at)}</span>
                           </div>
                         </div>
                       </div>

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
-import { useProductData } from "./useProductData";
+import { useProductData } from "@/api/product/getProducts";
 import { useProductGrid } from "./useProductGrid";
-import type { ProductTab } from "@/contexts/ProductContext";
+import type { ProductTab } from "@/api/context/ProductContext";
 
 export const useProductManagement = () => {
   const [search, setSearch] = useState("");

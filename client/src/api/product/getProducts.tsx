@@ -1,6 +1,8 @@
-import { httpClient } from '@/shared/axios';
-import { API_END_POINT } from '@/constant/apiEndPoint';
-import type { ProductListResponse, GetProductsParams } from '@/shared/types';
+import { httpClient } from '@/api/axios';
+import { API_END_POINT } from '@/api/apiEndPoint';
+import type { ProductListResponse, GetProductsParams, UseProductDataParams } from '@/api/types';
+import { useQuery } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 export const getProducts = async (
   params: GetProductsParams
@@ -15,4 +17,28 @@ export const getProducts = async (
     console.error('상품 목록 로딩 실패:', error);
     throw error;
   }
+};
+
+export const useProductData = ({ search, page }: UseProductDataParams) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['products', search, page],
+    queryFn: () => getProducts({ search, page }),
+    retry: 3,
+    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000
+  });
+
+  const productData = data?.products || [];
+
+  const refreshProducts = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  return {
+    productData,
+    isLoading,
+    error,
+    refreshProducts
+  };
 };

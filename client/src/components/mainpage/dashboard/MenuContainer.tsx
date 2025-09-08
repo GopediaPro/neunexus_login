@@ -1,6 +1,6 @@
 import { MenuBox } from "@/components/mainpage/common/MenuBox";
 import { Icon } from "@/components/ui/Icon";
-import { Modal } from "@/components/ui/Modal";
+import { Modal } from "@/components/ui/ModalComponent";
 import { menuItems } from "@/constant";
 import { useState } from "react";
 

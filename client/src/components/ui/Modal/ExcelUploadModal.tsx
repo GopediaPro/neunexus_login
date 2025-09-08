@@ -3,15 +3,12 @@ import { templateOptions } from "@/constant";
 import { useState, type ChangeEvent } from "react";
 import { Button } from "../Button";
 import { useForm } from "react-hook-form";
-import { Modal } from ".";
-import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "./ModalLayout";
+import { Modal } from "../ModalComponent";
+import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "../ModalComponent/ModalLayout";
 import { ResultModal } from "./BulkResultModal";
 import { FormField } from "../FormField";
-import { postExcelToDb, postExcelToMinio } from "@/api/order";
-import { modalConfig } from "@/constant/order"
-import type { ExcelUploadFormData } from "@/shared/types";
+import type { ExcelUploadFormData } from "@/api/types";
 import { postExcelRunMacro } from "@/api/order/postExcelRunMacro";
-import { toast } from "sonner";
 
 interface ExcelUploadModalProps {
   isOpen: boolean;
@@ -50,12 +47,6 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
   });
 
   const watchedValues = watch();
-  const config = modalConfig[mode as keyof typeof modalConfig] || {
-    submitText: mode === 'macro' ? '매크로 실행' : '업로드',
-    loadingText: mode === 'macro' ? '매크로 실행 중...' : '업로드 중...',
-    successTitle: mode === 'macro' ? '매크로 실행 완료' : '업로드 완료',
-    requiresDates: mode === 'minio' || mode === 'database'
-  }
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -94,34 +85,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
     setIsUploading(true);
 
     try {
-      if (mode === 'minio') {
-        if (!data.template_code || !data.file || !data.order_date_from || !data.order_date_to) return;
-        const response = await postExcelToMinio({
-          template_code: data.template_code,
-          file: data.file
-        });
-
-        setUploadResult({
-          type: 'success',
-          title: '업로드 완료',
-          message: `엑셀 파일이 성공적으로 업로드되었습니다.\n\n파일명: ${selectedFile.name}\n업로드 시간: ${new Date().toLocaleString('ko-KR')}`,
-          url: response.file_url || response.file_url
-        });
-      } else if (mode === 'database') {
-        if (!data.template_code || !data.file) 
-          return toast.error('템플릿 코드와 파일을 선택해주세요.');
-        const response = await postExcelToDb({
-          template_code: data.template_code,
-          file: data.file
-        });
-
-        setUploadResult({
-          type: 'success',
-          title: 'DB 저장 완료',
-          message: `엑셀 파일이 성공적으로 DB에 저장되었습니다.\n\n파일명: ${selectedFile.name}\n저장 시간: ${new Date().toLocaleString('ko-KR')}`,
-          url: response.file_url || response.file_url
-        }); 
-      } else if (mode === 'macro') {
+      if (mode === 'macro') {
         if (!data.template_code || !data.file) return;
         const todayString = new Date().toISOString().split('T')[0];
         
@@ -339,7 +303,7 @@ export const ExcelUploadModal = ({ isOpen, onClose, onSuccess, mode = 'macro', c
             onClick={handleSubmit(handleFormSubmit)}
             disabled={!isFormValid || isUploading}
           >
-            {isUploading ? config.loadingText : config.submitText}
+            매크로 실행
           </Button>
         </ModalFooter>
       </Modal>

@@ -1,4 +1,4 @@
-import type { StatsDataItem } from "@/shared/types/stats.types";
+import type { StatsDataItem } from "@/api/types/stats.types";
 
 export const statsData: StatsDataItem[] = [
   {

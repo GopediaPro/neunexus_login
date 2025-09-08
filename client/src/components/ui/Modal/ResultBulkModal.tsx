@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { Modal } from ".";
+import { Modal } from "../ModalComponent";
 import { Button } from "../Button";
 import { Icon } from "../Icon";
 
@@ -117,7 +117,7 @@ export const BulkResultModal = ({
                   {fileResults.map((fileResult, index) => (
                     <div 
                       key={index} 
-                      className={`w-full border-2 ${colors.border} p-4 rounded-lg ${colors.bg}`}
+                      className={`w-full border ${colors.border} p-4 rounded-lg bg-inherit`}
                     >
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3 flex-1 min-w-0">

@@ -366,3 +366,8 @@
 .ag-theme-alpine .ag-paging-panel {
   background-color: hsl(var(--fill-base-100)) !important;
 }
+
+/* ag-grid 로딩 오버레이 배경 */
+.ag-theme-alpine .ag-overlay-loading-wrapper {
+  background-color: hsl(var(--fill-base-100)) !important;
+}

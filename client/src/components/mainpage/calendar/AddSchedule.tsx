@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Modal } from '@/components/ui/Modal';
+import { Modal } from '@/components/ui/ModalComponent';
 import moment from 'moment';
 import { Button } from '@/components/ui/Button';
 import { useForm } from 'react-hook-form';
