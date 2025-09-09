@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import type { GridApi } from "ag-grid-community";
 import { useProductContext } from "@/api/context/ProductContext";
-import type { ProductFormData, ProductItem, ProductUpdateFormData } from "@/api/types/product.types";
+import type { ProductItem, ProductUpdateFormData } from "@/api/types/product.types";
 import { toast } from "sonner";
 
 export const useProductGridActions = (gridApi: GridApi | null) => {
@@ -9,7 +9,6 @@ export const useProductGridActions = (gridApi: GridApi | null) => {
     selectedRows,
     setSelectedRows,
     changedRows,
-    setChangedRows,
   } = useProductContext();
 
   const newRowCounter = useRef(0);

@@ -55,7 +55,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [gridApi]);
 
-  const { productData, isLoading, error, refreshProducts } = useProductData({ search, page });
+  const { productData, isLoading, error, refreshProducts } = useProductData({ search, skip: (page - 1) * 50 });
   const { gridRef, columnDefs, defaultColDef, gridOptions } = useProductGrid();
 
   const value: ProductContextValue = {

@@ -29,54 +29,52 @@ export const ProductToolbar = () => {
     activeProductTab,
     setActiveProductTab,
     gridApi,
-    selectedRows,
     changedRows,
   } = useProductContext();
 
   const { handleFileImport, triggerFileUpload, isUploading } = useProductImport();
   const {
     addNewRow,
-    deleteSelectedRows,
     selectAllRows,
     deselectAllRows,
     hasSelectedRows,
   } = useProductGridActions(gridApi);
 
   const createProductsMutation = useProductsCreate({
-    onSuccess: (response) => {
+    onSuccess: () => {
       if (gridApi) {
         gridApi.refreshCells();
         gridApi.deselectAll();
       }
       setIsProcessing(false);
     },
-    onError: (error) => {
+    onError: () => {
       setIsProcessing(false);
     }
   });
 
   const updateProductsMutation = useProductUpdate({
-    onSuccess: (response) => {
+    onSuccess: () => {
       if (gridApi) {
         gridApi.refreshCells();
         gridApi.deselectAll();
       }
       setIsProcessing(false);
     },
-    onError: (error) => {
+    onError: () => {
       setIsProcessing(false);
     }
   });
 
   const deleteProductsMutation = useProductDelete({
-    onSuccess: (response) => {
+    onSuccess: () => {
       if (gridApi) {
         gridApi.refreshCells();
         gridApi.deselectAll();
       }
       setIsDeleting(false);
     },
-    onError: (error) => {
+    onError: () => {
       setIsDeleting(false);
     }
   });
