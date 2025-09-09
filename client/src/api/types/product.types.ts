@@ -39,31 +39,18 @@ export interface ProductItemBase {
 // 상품 데이터 수정/삭제용 타입 (id 있음)
 export interface ProductItem extends ProductItemBase {
   id: number;
-}
+};
 
-// 상품 데이터 등록용 타입 (id 없음)
-// export type ProductCreateData = ProductItemBase;
-
-// 상품 데이터 수정용 타입
-// export type ProductUpdateData = ProductItem;
-
-// 폼 데이터 타입
+// 등록 폼 데이터 타입
 export type ProductFormData = Omit<ProductItemBase, 'created_at' | 'updated_at'>;
 
 // 수정 폼 데이터 타입
 export type ProductUpdateFormData = Omit<ProductItem, 'created_at' | 'updated_at'>;
 
-// 상품 조회 파라미터
-export interface GetProductsParams {
-  limit?: number;   // 조회할 데이터 수
-  skip?: number;    // 조회 시작 위치
-}
-
 export interface UseProductDataParams {
   search?: string;
-  page?: number;
   limit?: number;
-  offset?: number;
+  skip?: number;
 }
 
 // API 요청/응답 타입
@@ -88,6 +75,30 @@ export interface ProductDeleteRequest {
   };
 }
 
+// 상품 목록 응답 타입('/product-registration')
+export interface ProductListResponse {
+  item_count: number;
+  product_registration_dto_list: ProductItem[];
+}
+
+// 등록/수정 응답 타입
+export interface ProductBulkResponse {
+  success: boolean;
+  data: {
+    success_count: number;
+    error_count: number;
+    created_ids?: number[];
+    updated_ids?: number[];
+    deleted_ids?: number[];
+    errors: string[];
+    success_data: ProductItem[];
+  };
+  metadata: {
+    version: string;
+    request_id: string;
+  };
+}
+
 // 삭제 응답 타입
 export interface ProductDeleteResponse {
   success: boolean;
@@ -99,30 +110,6 @@ export interface ProductDeleteResponse {
     }[];
     success_count: number;
     error_count: number;
-  };
-  metadata: {
-    version: string;
-    request_id: string;
-  };
-}
-
-// 상품 목록 응답 타입('/product-registration')
-export interface ProductListResponse {
-  item_count: number;
-  product_registration_dto_list: ProductItem[];
-}
-
-// 등록/수정/삭제 응답 타입
-export interface ProductBulkResponse {
-  success: boolean;
-  data: {
-    success_count: number;
-    error_count: number;
-    created_ids?: number[];
-    updated_ids?: number[];
-    deleted_ids?: number[];
-    errors: string[];
-    success_data: ProductItem[];
   };
   metadata: {
     version: string;

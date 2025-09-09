@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { type ColDef } from 'ag-grid-community';
 import { AgGridReact } from "ag-grid-react";
 import type { ProductItem } from "@/api/types";
@@ -7,25 +7,62 @@ export const useProductGrid = () => {
   const gridRef = useRef<AgGridReact<ProductItem>>(null);
 
   // 가격 포맷팅 함수
-  const formatCurrency = useCallback((value: number | null | undefined): string => {
-    return value ? `${value.toLocaleString()}원` : '';
-  }, []);
+  const priceFormatter = (params: any): string => {
+    const value = params.value;
+    if (value == null || value === '') return '';
+    const num = Number(value);
+    return isNaN(num) ? '' : `${num.toLocaleString()}원`
+  };
 
-  // 가격 파싱 함수
-  const parseCurrency = useCallback((value: string): number => {
-    if (value === null || value === undefined || value === '') return 0;
+  const priceParser = (params: any): number => {
+    const value = params.newValue;
+    if (value == null || value === '') return 0;
     const cleanValue = String(value).replace(/[원,]/g, '').trim();
-    const numValue = parseFloat(cleanValue);
-    return isNaN(numValue) ? 0 : numValue;
-  }, []);
+    const num = parseFloat(cleanValue);
+    return isNaN(num) ? 0 : num;
+  }
+
+  const priceSetter = (params: any): boolean => {
+    const { field, newValue } = params;
+    let parsedValue = 0;
+    
+    // 모든 타입의 입력값을 숫자로 변환
+    if (newValue !== null && newValue !== undefined && newValue !== '') {
+      if (typeof newValue === 'string') {
+        const cleanValue = newValue.replace(/[원,]/g, '').trim();
+        const numValue = parseFloat(cleanValue);
+        parsedValue = isNaN(numValue) ? 0 : numValue;
+      } else if (typeof newValue === 'number') {
+        parsedValue = isNaN(newValue) ? 0 : newValue;
+      } else {
+        const numValue = Number(newValue);
+        parsedValue = isNaN(numValue) ? 0 : numValue;
+      }
+    }
+    params.data[field] = parsedValue;
+    return true;
+  };
+
+  const priceGetter = (params: any): number => {
+    const value = params.data[params.colDef.field];
+    if (value == null || value === '') return 0;
+
+    // 문자열인 경우 숫자로 변환
+    if (typeof value === 'string') {
+      const cleanValue = value.replace(/[원,]/g, '').trim();
+      const num = parseFloat(cleanValue);
+      return isNaN(num) ? 0 : num;
+    }
+    return Number(value);
+  }
 
   // 날짜 포맷팅 함수
-  const formatDate = useCallback((value: string | null | undefined): string => {
-    return value ? new Date(value).toLocaleDateString('ko-KR') : '';
-  }, []);
+  const dateFormatter = (params: any): string => {
+    return params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '';
+  };
 
   // 텍스트 컬럼 생성
-  const createTextColumn = useCallback((field: keyof ProductItem, headerName: string, width: number, editable = true) => ({
+  const createTextColumn = (field: keyof ProductItem, headerName: string, width: number, editable = true) => ({
     field,
     headerName,
     width,
@@ -33,15 +70,28 @@ export const useProductGrid = () => {
     floatingFilterComponentParams: { suppressFilterButton: true },
     editable,
     cellEditor: 'agTextCellEditor',
-  }), []);
+  });
 
   // 가격 컬럼 생성
-  const createPriceColumn = useCallback((field: keyof ProductItem, headerName: string) => ({
+  const createPriceColumn = (field: keyof ProductItem, headerName: string) => ({
     ...createTextColumn(field, headerName, 120),
-    valueFormatter: (params: any) => formatCurrency(params.value),
-    valueParser: (params: any) => parseCurrency(params.newValue),
+    valueFormatter: priceFormatter,
+    valueParser: priceParser,
+    valueSetter: priceSetter,
+    valueGetter: priceGetter,
     filter: 'agNumberColumnFilter',
-  }), []);
+  });
+  
+  // 날짜 컬럼 생성
+  const createDateColumn = (field: keyof ProductItem, headerName: string) => ({
+    field,
+    headerName,
+    width: 140,
+    valueFormatter: dateFormatter,
+    filter: 'agDateColumnFilter',
+    floatingFilterComponentParams: { suppressFilterButton: true },
+    editable: false,
+  });
 
   const columnDefs: ColDef<ProductItem>[] = useMemo(() => [
     createTextColumn('product_nm', '상품명', 200),
@@ -73,24 +123,8 @@ export const useProductGrid = () => {
     createTextColumn('class_nm2', '중분류', 120),
     createTextColumn('class_nm3', '소분류', 120),
     createTextColumn('class_nm4', '세분류', 120),
-    {
-      field: 'created_at',
-      headerName: '생성일시',
-      width: 140,
-      valueFormatter: (params: any) => formatDate(params.value),
-      filter: 'agDateColumnFilter',
-      floatingFilterComponentParams: { suppressFilterButton: true },
-      editable: false,
-    },
-    {
-      field: 'updated_at',
-      headerName: '수정일시',
-      width: 140,
-      valueFormatter: (params: any) => formatDate(params.value),
-      filter: 'agDateColumnFilter',
-      floatingFilterComponentParams: { suppressFilterButton: true },
-      editable: false,
-    },
+    createDateColumn('created_at', '생성일시'),
+    createDateColumn('updated_at', '수정일시'),
   ], []);
 
   const defaultColDef = useMemo(() => ({
@@ -129,4 +163,4 @@ export const useProductGrid = () => {
     defaultColDef,
     gridOptions,
   };
-}
+};

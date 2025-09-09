@@ -1,8 +1,13 @@
 import { httpClient } from '@/api/axios';
 import { API_END_POINT } from '@/api/apiEndPoint';
-import type { ProductListResponse, GetProductsParams, UseProductDataParams } from '@/api/types';
+import type { ProductListResponse, UseProductDataParams } from '@/api/types';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
+
+interface GetProductsParams {
+  limit?: number;   // 조회할 데이터 수
+  skip?: number;    // 조회 시작 위치
+}
 
 export const getProducts = async (
   params: GetProductsParams
@@ -24,11 +29,10 @@ export const getProducts = async (
   }
 };
 
-export const useProductData = ({ search, page = 1, limit = 50 }: UseProductDataParams = {}) => {
-  const skip = (page - 1) * limit;
+export const useProductData = ({ search, limit = 50, skip = 0 }: UseProductDataParams = {}) => {
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['products', search, page, limit],
+    queryKey: ['products', search, limit, skip],
     queryFn: () => getProducts({ limit, skip }),
     retry: 3,
     retryDelay: 1000,

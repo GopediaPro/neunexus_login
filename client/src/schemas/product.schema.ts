@@ -64,10 +64,10 @@ export const validateProducts = (products: unknown[]) => {
       char_1_val: product.char_1_val || '',
       img_path: product.img_path || '',
       class_nm1: product.class_nm1 || '',
-      goods_price: product.goods_price ?? 0,
-      delv_cost: product.delv_cost ?? 0,
+      goods_price: typeof product.goods_price === 'string' ? parseFloat(product.goods_price) || 0 : (product.goods_price ?? 0),
+      delv_cost: typeof product.delv_cost === 'string' ? parseFloat(product.delv_cost) || 0 : (product.delv_cost ?? 0),
     };
-    
+
     // id가 있으면 수정, 없으면 등록
     const hasId = product.id !== undefined && product.id !== null && !String(product.id).startsWith('new_');
     const schema = hasId ? productUpdateSchema : productRegistrationSchema;
@@ -88,15 +88,5 @@ export const validateProducts = (products: unknown[]) => {
     };
   }
 
-
-    // const result = productRegistrationSchema.safeParse(products[i]);
-  //   if (!result.success) {
-  //     return {
-  //       success: false,
-  //       error: `${result.error.errors[0].message}`
-  //     };
-  //   }
-  // }
-  
   return { success: true };
 }

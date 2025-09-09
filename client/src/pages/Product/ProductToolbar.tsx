@@ -98,8 +98,7 @@ export const ProductToolbar = () => {
           toast.error(result.message);
         }
       } catch (error) {
-        alert('업로드 중 예상치 못한 오류가 발생했습니다.');
-        console.error('Upload error:', error);
+        toast.error('업로드 중 예상치 못한 오류가 발생했습니다.');
       } finally {
         setIsImporting(false);
       }
@@ -213,7 +212,7 @@ export const ProductToolbar = () => {
       }
       
     } catch (error) {
-      console.error('상품 등록 처리 중 오류:', error);
+      toast.error('상품 등록 오류가 발생했습니다');
       setIsProcessing(false);
     }
   };
@@ -274,45 +273,10 @@ export const ProductToolbar = () => {
         setIsDeleting(false);
       }
     } catch (error) {
-      console.error('상품 삭제 중 오류:', error);
-      toast.error('상품 삭제 중 오류가 발생했습니다.');
+      toast.error('상품 삭제 오류가 발생했습니다.');
       setIsDeleting(false);
     }
   };
-  //   const newRows: ProductFormData[] = [];
-  //   const modifiedRows: ProductFormData[] = [];
-    
-  //   gridApi.forEachNode(node => {
-  //     if (node.data) {
-  //       if (!node.data.id || node.data.id.toString().startsWith('new_')) {
-  //         newRows.push(node.data);
-  //       }
-  //     }
-  //   });
-
-  //   changedRows.forEach(row => {
-  //     if (row && row.id && !row.id.toString().startsWith('new_')) {
-  //       modifiedRows.push(row);
-  //     }
-  //   });
-
-  //   const allProductsToRegister = [...newRows, ...modifiedRows];
-
-  //   if (allProductsToRegister.length === 0) {
-  //     toast.dismiss();
-  //     toast.error('등록할 상품이 없습니다. 새 행을 추가하거나 기존 상품을 수정해주세요.');
-  //     return;
-  //   }
-
-  //   // 유효성 검사
-  //   const validation = validateProducts(allProductsToRegister);
-  //   if (!validation.success) {
-  //     toast.error(validation.error);
-  //     return;
-  //   }
-
-  //   createProductsMutation.mutate(allProductsToRegister);
-  // };
 
   const handleRowItems = [
     {
