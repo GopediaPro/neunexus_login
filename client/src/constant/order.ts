@@ -140,3 +140,10 @@ export const WORK_STATUS_OPTIONS: SelectOption[] = [
   { value: 'pending', label: 'pending - 대기중' },
   { value: 'error', label: 'error - 오류' }
 ];
+
+export const ERP_TEMPLATE_OPTIONS = [
+  { value: 'okmart_erp_sale_ok', label: 'OK마트 ERP 판매 (일반)' },
+  { value: 'okmart_erp_sale_iyes', label: 'OK마트 ERP 판매 (아이예스)' },
+  { value: 'iyes_erp_sale_iyes', label: '아이예스 ERP 판매' },
+  { value: 'iyes_erp_purchase_iyes', label: '아이예스 ERP 구매' },
+];

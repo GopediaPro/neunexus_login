@@ -22,6 +22,7 @@ import { handleError } from "@/utils/errorHandler";
 import { ModalLoader } from "@/components/ui/ModalComponent/ModalLoader";
 import { DbToExcelModal } from "@/components/ui/Modal/DbToExcelModal";
 import { ExcelToDbModal } from "@/components/ui/Modal/ExcelToDbModal";
+import { EcountErpTransferModal } from "@/components/ui/Modal/EcountErpTransferModal";
 
 const OrderRegisterModal = lazy(() =>
   import("@/components/ui/Modal/OrderRegisterModal").then(module => ({
@@ -159,7 +160,7 @@ const ActionButtons = memo(({
   </div>
 ));
 
-const MacroButtons = memo(({ onOpenSmileMacro }: { onOpenSmileMacro: () => void }) => (
+const MacroButtons = memo(({ onOpenSmileMacro, onOpenErpUpload }: { onOpenSmileMacro: () => void, onOpenErpUpload: () => void }) => (
   <div className="flex gap-2">
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
@@ -177,7 +178,7 @@ const MacroButtons = memo(({ onOpenSmileMacro }: { onOpenSmileMacro: () => void 
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
       스마일배송 업로드
     </Button>
-    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
+    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenErpUpload}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
       ERP 업로드
     </Button>
@@ -438,7 +439,7 @@ export const OrderToolbar = memo(() => {
               selectedRowCount={selectedRows.length}
             />
             
-            <MacroButtons onOpenSmileMacro={() => openModal('smileMacro')} />
+            <MacroButtons onOpenSmileMacro={() => openModal('smileMacro')} onOpenErpUpload={() => openModal('ecountErpTransfer')} />
           </div>
           
           <div className="flex gap-2">
@@ -516,6 +517,13 @@ export const OrderToolbar = memo(() => {
         <ExcelToDbModal
           isOpen={modals.excelToDb} 
           onClose={() => closeModal('excelToDb')} 
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalLoader />}>
+        <EcountErpTransferModal
+          isOpen={modals.ecountErpTransfer} 
+          onClose={() => closeModal('ecountErpTransfer')} 
         />
       </Suspense>
     </>

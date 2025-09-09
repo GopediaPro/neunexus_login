@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-type ModalType = 'orderRegister' | 'batchInfo' | 'confirmDelete' | 'excelBulk' | 'smileMacro' | 'dbToExcel' | 'excelToDb';
+type ModalType = 'orderRegister' | 'batchInfo' | 'confirmDelete' | 'excelBulk' | 'smileMacro' | 'dbToExcel' | 'excelToDb' | 'ecountErpTransfer';
 
 export const useModals = () => {
   const [modals, setModals] = useState({
@@ -11,6 +11,7 @@ export const useModals = () => {
     smileMacro: false,
     dbToExcel: false,
     excelToDb: false,
+    ecountErpTransfer: false,
   });
 
   const openModal = useCallback((modalType: ModalType) => {

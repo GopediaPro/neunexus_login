@@ -36,4 +36,6 @@ export const API_END_POINT = {
 
   DOWN_FORM_ORDERS_DB_TO_EXCEL_URL: `${API_VERSION_2}/down-form-orders/db-to-excel-url`,
   DOWN_FORM_ORDERS_EXCEL_TO_DB: `${API_VERSION_2}/down-form-orders/excel-to-db`,
+
+  ECOUNT_ERP_TRANSFER_DOWNLOAD:`${API_VERSION_2}/ecount/erp-transfer/download`
 } as const;
