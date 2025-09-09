@@ -8,31 +8,41 @@ export const MainLayout = () => {
   const { isOpen } = useSidebar();
 
   return (
-    <div className="bg-fill-base-200">
+    <main className="bg-fill-base-200">
       {isOpen ? (
-        <div className="grid grid-cols-sidebar-layout 2xl:grid-cols-sidebar-layout-2xl min-h-screen">
-          <MenuSidebarLayout />
-          <div className="flex flex-col h-full">
-            <HeaderLayout />
-            <div className="flex flex-1 h-full">
-              <DashboardLayout />
-              <div className="pt-5 pr-2 h-full">
+        <section className="grid grid-cols-sidebar-layout 2xl:grid-cols-sidebar-layout-2xl min-h-screen">
+          <nav>
+            <MenuSidebarLayout />
+          </nav>
+          <section className="flex flex-col h-full">
+            <header>
+              <HeaderLayout />
+            </header>
+            <section className="flex flex-1 h-full">
+              <main>
+                <DashboardLayout />
+              </main>
+              <aside className="pt-5 pr-2 h-full">
                 <InfoSidebarLayout />
-              </div>
-            </div>
-          </div>
-        </div>
+              </aside>
+            </section>
+          </section>
+        </section>
       ): (
-        <div className="flex flex-col bg-fill-base-200">
-          <HeaderLayout />
-          <div className="flex flex-1">
-            <DashboardLayout />
-            <div className="pt-5 pr-2">
+        <section className="flex flex-col bg-fill-base-200">
+          <header>
+            <HeaderLayout />
+          </header>
+          <section className="flex flex-1">
+            <main>
+              <DashboardLayout />
+            </main>
+            <aside className="pt-5 pr-2">
               <InfoSidebarLayout />
-            </div>
-          </div>
-        </div>
+            </aside>
+          </section>
+        </section>
       )}
-    </div>
+    </main>
   );
 };

@@ -12,6 +12,7 @@ export const API_END_POINT = {
   DOWN_FORM_ORDERS: `${API_VERSION}/down-form-orders`,
   DOWN_FORM_ORDERS_PAGINATION: `${API_VERSION}/down-form-orders/pagination`,
   DOWN_FORM_ODDERS_PAGINATION_DATE_RANGE: `${API_VERSION}/down-form-orders/pagination/date-range`,
+  CREATE_FROM_RECEIVE_ORDERS: `${API_VERSION}/down-form-orders/create-from-receive-orders`,
   
   // 다운폼 주문 대량 작업
   DOWN_FORM_ORDERS_BULK_CREATE: `${API_VERSION}/down-form-orders/bulk`,
@@ -21,10 +22,6 @@ export const API_END_POINT = {
   // 다운폼 주문 삭제 작업
   DOWN_FORM_ORDERS_DELETE_ALL: `${API_VERSION}/down-form-orders/all`,
   DOWN_FORM_ORDERS_DELETE_DUPLICATE: `${API_VERSION}/down-form-orders/duplicate`,
-  
-  // 엑셀 관련
-  DOWN_FORM_EXCEL_TO_MINIO: `${API_VERSION}/down-form-orders/excel-to-minio`,
-  DOWN_FORM_EXCEL_TO_DB: `${API_VERSION}/down-form-orders/excel-to-db`,
   
   // 필터 기반 대량 생성
   DOWN_FORM_ORDERS_BULK_FILTER: `${API_VERSION}/down-form-orders/bulk/filter`,
@@ -38,5 +35,9 @@ export const API_END_POINT = {
 
   PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/complete-workflow`,
 
-  SMILE_MACRO_MULTIPLE_V2: `${API_VERSION_2}/smile-macro/smile-excel-macro-multiple-v2`
+  // V2 
+  SMILE_MACRO_MULTIPLE_V2: `${API_VERSION_2}/smile-macro/smile-excel-macro-multiple-v2`,
+
+  DOWN_FORM_ORDERS_DB_TO_EXCEL_URL: `${API_VERSION_2}/down-form-orders/db-to-excel-url`,
+  DOWN_FORM_ORDERS_EXCEL_TO_DB: `${API_VERSION_2}/down-form-orders/excel-to-db`,
 } as const;

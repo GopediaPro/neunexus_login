@@ -25,6 +25,27 @@ export const REQUIRED_FIELDS_BY_TEMPLATE: Record<FormTemplate, (keyof OrderItem)
   tmon_erp: ['form_name', 'idx', 'order_id', 'product_id', 'product_name'],
 };
 
+export const FORM_NAME_OPTIONS: SelectOption[] = [
+  { value: 'integ_sites', label: 'integ_sites - 통합사이트 공용' },
+  { value: 'integ_sites_erp', label: 'integ_sites_erp - 통합사이트 ERP용' },
+  { value: 'integ_sites_bundle', label: 'integ_sites_bundle - 통합사이트 합포장용' },
+  { value: 'smile_erp', label: 'smile_erp - 스마일배송 ERP용' },
+  { value: 'smile_bundle', label: 'smile_bundle - 스마일배송 합포장용' },
+  { value: 'kakao_erp', label: 'kakao_erp - 카카오,OMT샵 ERP용' },
+  { value: 'kakao_bundle', label: 'kakao_bundle - 카카오,OMT샵 합포장용' },
+  { value: 'gmarket_erp', label: 'gmarket_erp - G마켓,옥션 ERP용' },
+  { value: 'gmarket_bundle', label: 'gmarket_bundle - G마켓,옥션 합포장용' },
+  { value: 'brandi_erp', label: 'brandi_erp - 브랜디 ERP용' },
+  { value: 'basic_erp', label: 'basic_erp - 알리 지그재그 기타사이트 ERP용' },
+  { value: 'basic_bundle', label: 'basic_bundle - 기본양식 합포장용' },
+  { value: 'star_basic_erp', label: 'star_basic_erp - 스타배송-기본양식 ERP용' },
+  { value: 'star_basic_bundle', label: 'star_basic_bundle - 스타배송-기본양식 합포장용' },
+  { value: 'star_gmarket_erp', label: 'star_gmarket_erp - 스타배송-G마켓,옥션 ERP용' },
+  { value: 'star_gmarket_bundle', label: 'star_gmarket_bundle - 스타배송-G마켓,옥션 합포장용' },
+  { value: 'star_brandi_erp', label: 'star_brandi_erp - 스타배송-브랜디 ERP용' },
+  { value: 'star_brandi_bundle', label: 'star_brandi_bundle - 스타배송-브랜디 합포장용' }
+];
+
 export const FORM_TYPE_OPTIONS = [
   { value: 'all', label: '전체' },
   { value: 'basic_erp', label: 'Basic ERP' },
@@ -39,23 +60,6 @@ export const STATUS_OPTIONS = [
   { value: 'success', label: '성공' },
   { value: 'error', label: '실패' }
 ];
-
-export const modalConfig = {
-  minio: {
-    title: '엑셀 업로드',
-    submitText: '업로드',
-    loadingText: '업로드 중...',
-    successTitle: '업로드 완료',
-    requiresDates: true
-  },
-  database: {
-    title: 'DB에 저장',
-    submitText: 'DB에 저장',
-    loadingText: 'DB 저장 중...',
-    successTitle: 'DB 저장 완료',
-    requiresDates: false
-  }
-};
 
 export const ORDER_DEFAULTS = {
   SALE_COUNT: 2,
@@ -89,3 +93,50 @@ export const OPTIMIZED_GRID_OPTIONS = {
   asyncTransactionWaitMillis: 50,
   suppressChangeDetection: false,
 };
+
+export const companyOptions = [
+  { id: 'okay', label: '오케이마트' },
+  { id: 'star', label: '스타배송' }
+];
+
+export const fldDspOptions = [
+  { value: 'GSSHOP', label: 'GSSHOP' },
+  { value: 'YES24', label: 'YES24' },
+  { value: '텐바이텐', label: '텐바이텐' },
+  { value: '스마트스토어', label: '스마트스토어' },
+  { value: '옥션2.0', label: '옥션2.0' },
+  { value: 'G마켓2.0', label: 'G마켓2.0' },
+  { value: '쿠팡', label: '쿠팡' },
+  { value: '무신사', label: '무신사' },
+  { value: '신세계', label: '신세계' },
+  { value: 'NS홈쇼핑', label: 'NS홈쇼핑' },
+  { value: 'CJ온스타일', label: 'CJ온스타일' },
+  { value: '오늘의집', label: '오늘의집' },
+  { value: '카카오톡스토어', label: '카카오톡스토어' },
+  { value: 'CAFE24', label: 'CAFE24' },
+  { value: '브랜디', label: '브랜디' },
+  { value: '그립컴퍼니', label: '그립컴퍼니' },
+  { value: '롯데온', label: '롯데온' },
+  { value: '에이블리', label: '에이블리' },
+  { value: '보리보리', label: '보리보리' },
+  { value: '아트박스', label: '아트박스' },
+  { value: '지그재그', label: '지그재그' },
+  { value: '카카오톡선물하기', label: '카카오톡선물하기' },
+  { value: '11번가', label: '11번가' },
+  { value: '올웨이즈', label: '올웨이즈' },
+  { value: '토스', label: '토스' },
+  { value: '홈&쇼핑', label: '홈&쇼핑' },
+  { value: '떠리몰', label: '떠리몰' }
+];
+
+export const statusOptions = [
+  { id: 'shipped', label: '출고완료' },
+  { id: 'preparing', label: '출고대기' },
+];
+
+export const WORK_STATUS_OPTIONS: SelectOption[] = [
+  { value: 'processing', label: 'processing - 처리중' },
+  { value: 'completed', label: 'completed - 완료' },
+  { value: 'pending', label: 'pending - 대기중' },
+  { value: 'error', label: 'error - 오류' }
+];

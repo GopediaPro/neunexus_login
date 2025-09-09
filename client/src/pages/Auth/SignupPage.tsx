@@ -13,12 +13,14 @@ export const SignupPage = () => {
   } = useSignup();
 
   return (
-    <div className="w-full h-screen bg-fill-base-200 shadow-xl flex justify-center items-center">
-      <div className="w-[590px] p-24 rounded-3xl bg-fill-base-100 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-stroke-base-100">
-        <div className="w-full space-y-8">
-          <h1 className="text-text-base-500 text-h2">
-            회원가입
-          </h1>
+    <main className="w-full h-screen bg-fill-base-200 shadow-xl flex justify-center items-center">
+      <section className="w-[590px] p-24 rounded-3xl bg-fill-base-100 shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-stroke-base-100">
+        <section className="w-full space-y-8">
+          <header>
+            <h1 className="text-text-base-500 text-h2">
+              회원가입
+            </h1>
+          </header>
           
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <FormField
@@ -71,9 +73,9 @@ export const SignupPage = () => {
             />
 
             {errors.root && (
-              <div className="flex items-center pt-1 pl-1 text-sm text-error-500">
+              <aside className="flex items-center pt-1 pl-1 text-sm text-error-500" role="alert">
                 <span className="text-caption">{errors.root.message}</span>
-              </div>
+              </aside>
             )}
             <Button
               type="submit"
@@ -86,7 +88,7 @@ export const SignupPage = () => {
             </Button>
           </form>
           
-          <div className="flex justify-center items-center gap-1">
+          <footer className="flex justify-center items-center gap-1">
             <span className="text-text-base-500 text-body-s">
               이미 계정이 있으신가요?
             </span>
@@ -97,9 +99,9 @@ export const SignupPage = () => {
             >
               로그인
             </button>
-          </div>
-        </div>
-      </div>
-    </div>
+          </footer>
+        </section>
+      </section>
+    </main>
   );
 };
