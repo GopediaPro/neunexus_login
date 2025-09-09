@@ -37,5 +37,10 @@ export const API_END_POINT = {
   DOWN_FORM_ORDERS_DB_TO_EXCEL_URL: `${API_VERSION_2}/down-form-orders/db-to-excel-url`,
   DOWN_FORM_ORDERS_EXCEL_TO_DB: `${API_VERSION_2}/down-form-orders/excel-to-db`,
 
-  ECOUNT_ERP_TRANSFER_DOWNLOAD:`${API_VERSION_2}/ecount/erp-transfer/download`
+  ECOUNT_ERP_TRANSFER_DOWNLOAD:`${API_VERSION_2}/ecount/erp-transfer/download`,
+  ECOUNT_ERP_PARTNER_CODE_UPLOAD: `${API_VERSION_2}/ecount-excel-import/erp-partner-code`,
+  ECOUNT_IYES_COST_UPLOAD: `${API_VERSION_2}/ecount-excel-import/iyes-cost`,
+  ECOUNT_ALL_DATA_UPLOAD: `${API_VERSION_2}/ecount-excel-import/all-data`,
+  ECOUNT_ERP_PARTNER_CODE_DOWNLOAD: `${API_VERSION_2}/ecount-excel-import/download/erp-partner-code`,
+  ECOUNT_IYES_COST_DOWNLOAD: `${API_VERSION_2}/ecount-excel-import/download/iyes-cost`,
 } as const;

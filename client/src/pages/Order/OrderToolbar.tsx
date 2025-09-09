@@ -23,6 +23,7 @@ import { ModalLoader } from "@/components/ui/ModalComponent/ModalLoader";
 import { DbToExcelModal } from "@/components/ui/Modal/DbToExcelModal";
 import { ExcelToDbModal } from "@/components/ui/Modal/ExcelToDbModal";
 import { EcountErpTransferModal } from "@/components/ui/Modal/EcountErpTransferModal";
+import { EcountUploadModal } from "@/components/ui/Modal/EcountUploadModal";
 
 const OrderRegisterModal = lazy(() =>
   import("@/components/ui/Modal/OrderRegisterModal").then(module => ({
@@ -160,7 +161,15 @@ const ActionButtons = memo(({
   </div>
 ));
 
-const MacroButtons = memo(({ onOpenSmileMacro, onOpenErpUpload }: { onOpenSmileMacro: () => void, onOpenErpUpload: () => void }) => (
+const MacroButtons = memo(({ 
+  onOpenSmileMacro, 
+  onOpenErpUpload, 
+  onOpenEcountUpload 
+}: { 
+  onOpenSmileMacro: () => void; 
+  onOpenErpUpload: () => void;
+  onOpenEcountUpload: () => void;
+}) => (
   <div className="flex gap-2">
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
@@ -181,6 +190,10 @@ const MacroButtons = memo(({ onOpenSmileMacro, onOpenErpUpload }: { onOpenSmileM
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenErpUpload}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
       ERP 업로드
+    </Button>
+    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenEcountUpload}>
+      <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+      ECount 업로드
     </Button>
   </div>
 ));
@@ -439,7 +452,11 @@ export const OrderToolbar = memo(() => {
               selectedRowCount={selectedRows.length}
             />
             
-            <MacroButtons onOpenSmileMacro={() => openModal('smileMacro')} onOpenErpUpload={() => openModal('ecountErpTransfer')} />
+            <MacroButtons 
+              onOpenSmileMacro={() => openModal('smileMacro')} 
+              onOpenErpUpload={() => openModal('ecountErpTransfer')}
+              onOpenEcountUpload={() => openModal('ecountUpload')}
+            />
           </div>
           
           <div className="flex gap-2">
@@ -524,6 +541,13 @@ export const OrderToolbar = memo(() => {
         <EcountErpTransferModal
           isOpen={modals.ecountErpTransfer} 
           onClose={() => closeModal('ecountErpTransfer')} 
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalLoader />}>
+        <EcountUploadModal
+          isOpen={modals.ecountUpload} 
+          onClose={() => closeModal('ecountUpload')} 
         />
       </Suspense>
     </>

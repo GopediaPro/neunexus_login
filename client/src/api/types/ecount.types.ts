@@ -29,3 +29,59 @@ export interface ErpTransferResponse {
     request_id: string;
   };
 }
+
+export interface EcountExcelImportRequest {
+  data: {
+    sheet_name: string;
+    clear_existing: boolean;
+  };
+  metadata: {
+    request_id: string;
+  };
+}
+
+export interface EcountAllDataImportRequest {
+  data: {
+    clear_existing: boolean;
+    erp_partner_code_sheet: string;
+    iyes_cost_sheet: string;
+  };
+  metadata: {
+    request_id: string;
+  };
+}
+
+export interface EcountImportResponse {
+  success: boolean;
+  data: {
+    success: boolean;
+    message: string;
+    imported_count: number;
+    file_name: string;
+    error_details?: string;
+  };
+  metadata: {
+    version: string;
+    request_id: string;
+  };
+}
+
+export interface EcountDownloadRequest {
+  data: {};
+  metadata: {
+    request_id: string;
+  };
+}
+
+export interface EcountDownloadResponse {
+  success: boolean;
+  data: {
+    download_url: string;
+    file_name: string;
+    file_size: number;
+  };
+  metadata: {
+    version: string;
+    request_id: string;
+  };
+}
