@@ -6,6 +6,7 @@ import { useProductImport } from "@/hooks/productManagement/useProductImport";
 import { useProductGridActions } from "@/hooks/productManagement/useProductGridActions";
 import { useProductsCreate } from "@/api/product/createProducts";
 import { useProductUpdate } from "@/api/product/updateProducts";
+import { useProductDelete } from "@/api/product/deleteProducts";
 import type { ProductFormData, ProductUpdateFormData } from "@/api/types";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -20,6 +21,7 @@ export const ProductToolbar = () => {
   const navigate = useNavigate();
   const [isImporting, setIsImporting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     search,
@@ -46,11 +48,6 @@ export const ProductToolbar = () => {
         gridApi.refreshCells();
         gridApi.deselectAll();
       }
-      
-      if (response.data?.created_ids && response.data.created_ids.length > 0) {
-        console.log('생성된 상품 ID:', response.data.created_ids);
-      }
-
       setIsProcessing(false);
     },
     onError: (error) => {
@@ -64,12 +61,23 @@ export const ProductToolbar = () => {
         gridApi.refreshCells();
         gridApi.deselectAll();
       }
-      
-      console.log('상품 수정 성공:', response);
       setIsProcessing(false);
     },
     onError: (error) => {
       setIsProcessing(false);
+    }
+  });
+
+  const deleteProductsMutation = useProductDelete({
+    onSuccess: (response) => {
+      if (gridApi) {
+        gridApi.refreshCells();
+        gridApi.deselectAll();
+      }
+      setIsDeleting(false);
+    },
+    onError: (error) => {
+      setIsDeleting(false);
     }
   });
 
@@ -108,15 +116,7 @@ export const ProductToolbar = () => {
   };
 
   const handleRowDelete = async () => {
-    try {
-      if (!hasSelectedRows) {
-        toast.error('삭제할 행을 선택해주세요.');
-        return;
-      }
-      await deleteSelectedRows();
-    } catch (error) {
-      toast.error('행 삭제에 실패했습니다.')
-    }
+    await handleProductDelete();
   };
 
   const handleProductRegister = async () => {
@@ -217,6 +217,68 @@ export const ProductToolbar = () => {
       setIsProcessing(false);
     }
   };
+
+  const handleProductDelete = async () => {
+    if (deleteProductsMutation.isPending || isDeleting) {
+      return;
+    }
+
+    if (!gridApi) {
+      toast.error('그리드를 초기화할 수 없습니다.');
+      return;
+    }
+
+    const selectedRowsData = gridApi.getSelectedRows();
+    
+    if (selectedRowsData.length === 0) {
+      toast.error('삭제할 상품을 선택해주세요.');
+      return;
+    }
+
+    // 새로 추가된 행(아직 저장되지 않은 행)과 기존 행 분리
+    const unsavedRows = selectedRowsData.filter(row => 
+      !row.id || row.id.toString().startsWith('new_')
+    );
+    const savedRows = selectedRowsData.filter(row => 
+      row.id && !row.id.toString().startsWith('new_')
+    );
+
+    const confirmMessage = `선택한 ${selectedRowsData.length}개 상품을 삭제하시겠습니까?`;
+    
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      // 저장되지 않은 행은 그리드에서만 제거
+      if (unsavedRows.length > 0) {
+        gridApi.applyTransaction({
+          remove: unsavedRows
+        });
+      }
+
+      // 저장된 행은 서버에서 삭제
+      if (savedRows.length > 0) {
+        const deleteRequest = {
+          data: savedRows.map(row => ({ id: Number(row.id) })),
+          metadata: {
+            request_id: `delete-${Date.now()}`
+          }
+        };
+        deleteProductsMutation.mutate(deleteRequest);
+      } else if (unsavedRows.length > 0) {
+        // 저장되지 않은 행만 있는 경우
+        toast.success(`${unsavedRows.length}개 행이 삭제되었습니다.`);
+        setIsDeleting(false);
+      }
+    } catch (error) {
+      console.error('상품 삭제 중 오류:', error);
+      toast.error('상품 삭제 중 오류가 발생했습니다.');
+      setIsDeleting(false);
+    }
+  };
   //   const newRows: ProductFormData[] = [];
   //   const modifiedRows: ProductFormData[] = [];
     
@@ -260,7 +322,7 @@ export const ProductToolbar = () => {
     {
       label: '선택 행 삭제',
       onClick: handleRowDelete,
-      disabled: !hasSelectedRows,
+      disabled: !hasSelectedRows || deleteProductsMutation.isPending || isDeleting,
     },
     {
       label: '전체 선택',

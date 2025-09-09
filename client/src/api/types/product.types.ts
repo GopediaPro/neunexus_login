@@ -88,6 +88,24 @@ export interface ProductDeleteRequest {
   };
 }
 
+// 삭제 응답 타입
+export interface ProductDeleteResponse {
+  success: boolean;
+  data: {
+    items: {
+      id: number;
+      status: 'success' | 'error';
+      message: string;
+    }[];
+    success_count: number;
+    error_count: number;
+  };
+  metadata: {
+    version: string;
+    request_id: string;
+  };
+}
+
 // 상품 목록 응답 타입('/product-registration')
 export interface ProductListResponse {
   item_count: number;
