@@ -3,7 +3,11 @@ const API_VERSION = '/api/v1';
 const API_VERSION_2 = '/api/v2';
 
 export const API_END_POINT = {
-  PRODUCTS: `${API_VERSION}/product`,
+  // 상품 관리
+  // PRODUCTS: `${API_VERSION}/product-registration/list`,
+  PRODUCTS: `${API_VERSION}/product-registration`,
+  PRODUCT_REGISTRATION_BULK: `${API_VERSION}/product-registration/bulk`,
+
   // 다운폼 주문 기본 엔드포인트
   DOWN_FORM_ORDERS: `${API_VERSION}/down-form-orders`,
   DOWN_FORM_ORDERS_PAGINATION: `${API_VERSION}/down-form-orders/pagination`,

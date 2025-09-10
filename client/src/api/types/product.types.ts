@@ -1,39 +1,123 @@
 import type { ProductTab } from "@/api/context/ProductContext";
-import type { ColDef } from "ag-grid-community";
+import type { ColDef, GridApi } from "ag-grid-community";
 
-export interface ProductData {
+// 상품 기본 데이터 (id 없음)
+export interface ProductItemBase {
+  product_nm: string;                    // 상품명
+  goods_nm: string;                      // 제품명
+  detail_path_img: string;               // 상세 이미지
+  delv_cost: number;                     // 배송비
+  goods_search: string;                  // 검색어
+  goods_price: number;                   // 판매가격
+  stock_use_yn: string;                  // 재고여부
+  certno: string;                        // 인증번호
+  char_process?: string;                 // 가공 방식
+  char_1_nm?: string;                    // 옵션1 이름
+  char_1_val?: string;                   // 옵션1 값
+  char_2_nm?: string;                    // 옵션2 이름
+  char_2_val?: string;                   // 옵션2 값
+  img_path: string;                      // 대표 이미지
+  img_path1?: string;                    // 추가 이미지1
+  img_path2?: string;                    // 추가 이미지2
+  img_path3?: string;                    // 추가 이미지3
+  img_path4?: string;                    // 추가 이미지4
+  img_path5?: string;                    // 추가 이미지5
+  goods_remarks?: string;                // 상품 비고사항
+  mobile_bn?: string;                    // 모바일 배너
+  one_plus_one_bn?: string;              // 1+1 배너
+  goods_remarks_url?: string;            // 상품 비고 URL
+  delv_one_plus_one?: string;            // 1+1 배송 정보
+  delv_one_plus_one_detail?: string;     // 1+1 배송 상세정보
+  class_nm1: string;
+  class_nm2?: string;
+  class_nm3?: string;
+  class_nm4?: string;
+  created_at?: string;                   // 생성일시
+  updated_at?: string;                   // 수정일시
+}
+
+// 상품 데이터 수정/삭제용 타입 (id 있음)
+export interface ProductItem extends ProductItemBase {
   id: number;
-  goods_nm: string;
-  brand_nm: string;
-  goods_price: number;
-  goods_consumer_price: number;
-  status: number;
-  maker: string;
-  origin: string;
-  good_keyword: string;
-  char_1_nm: string;
-  char_1_val: string;
-  char_2_nm: string;
-  char_2_val: string;
-  created_at: string;
-}
+};
 
-export interface ProductListResponse {
-  products: ProductData[];
-  current_page: number;
-  page_size: string;
-}
+// 등록 폼 데이터 타입
+export type ProductFormData = Omit<ProductItemBase, 'created_at' | 'updated_at'>;
 
-export interface GetProductsParams {
-  search: string;
-  page: number;
-}
+// 수정 폼 데이터 타입
+export type ProductUpdateFormData = Omit<ProductItem, 'created_at' | 'updated_at'>;
 
 export interface UseProductDataParams {
-  search: string;
-  page: number;
+  search?: string;
+  limit?: number;
+  skip?: number;
 }
 
+// API 요청/응답 타입
+export interface ProductCreateRequest {
+  data: ProductFormData[];
+  metadata: {
+    request_id: string;
+  };
+}
+
+export interface ProductUpdateRequest {
+  data: ProductUpdateFormData[];
+  metadata: {
+    request_id: string;
+  };
+}
+
+export interface ProductDeleteRequest {
+  data: { id: number }[];
+  metadata: {
+    request_id: string;
+  };
+}
+
+// 상품 목록 응답 타입('/product-registration')
+export interface ProductListResponse {
+  item_count: number;
+  product_registration_dto_list: ProductItem[];
+}
+
+// 등록/수정 응답 타입
+export interface ProductBulkResponse {
+  success: boolean;
+  data: {
+    success_count: number;
+    error_count: number;
+    created_ids?: number[];
+    updated_ids?: number[];
+    deleted_ids?: number[];
+    errors: string[];
+    success_data: ProductItem[];
+  };
+  metadata: {
+    version: string;
+    request_id: string;
+  };
+}
+
+// 삭제 응답 타입
+export interface ProductDeleteResponse {
+  success: boolean;
+  data: {
+    items: {
+      id: number;
+      status: 'success' | 'error';
+      message: string;
+    }[];
+    success_count: number;
+    error_count: number;
+  };
+  metadata: {
+    version: string;
+    request_id: string;
+  };
+}
+
+// Context 타입
 export interface ProductContextValue {
   search: string;
   setSearch: (value: string) => void;
@@ -41,12 +125,19 @@ export interface ProductContextValue {
   setActiveProductTab: (tab: ProductTab) => void;
   page: number;
   setPage: (page: number) => void;
-  productData: ProductData[];
+  productData: ProductItem[];
   isLoading: boolean;
   error: unknown;
   refreshProducts: () => void;
   gridRef: any;
-  columnDefs: ColDef<ProductData>[];
-  defaultColDef: ColDef<ProductData>;
+  columnDefs: ColDef<ProductItem>[];
+  defaultColDef: ColDef<ProductItem>;
   gridOptions: any;
+  gridApi: GridApi | null;
+  setGridApi: (api: GridApi | null) => void;
+  selectedRows: any[];
+  setSelectedRows: (rows: any[]) => void;
+  changedRows: any[];
+  setChangedRows: (rows: any[]) => void;
+  clearSelections: () => void;
 }

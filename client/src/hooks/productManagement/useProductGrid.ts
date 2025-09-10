@@ -1,170 +1,130 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { type ColDef } from 'ag-grid-community';
 import { AgGridReact } from "ag-grid-react";
-import type { ProductData } from "@/api/types/product.types";
+import type { ProductItem } from "@/api/types";
 
 export const useProductGrid = () => {
-  const gridRef = useRef<AgGridReact<ProductData>>(null);
+  const gridRef = useRef<AgGridReact<ProductItem>>(null);
 
-  const getStatusCellStyle = useCallback((params: any) => {
-    const status = params.value;
-    switch (status) {
-      case 1:
-      case '판매중':
-        return { 
-          backgroundColor: '#F4FFF4',
-          color: '#2F8230',
-          fontWeight: '500'
-        };
-      case 0:
-      case '품절':
-        return { 
-          backgroundColor: '#fef2f2',
-          color: '#F04848',
-          fontWeight: '500'
-        };
-      case 2:
-      case '단종':
-        return { 
-          backgroundColor: '#f9fafb',
-          color: '#6b7280',         
-          fontWeight: '500'
-        };
-      default:
-        return null;
-    }
-  }, []);
+  // 가격 포맷팅 함수
+  const priceFormatter = (params: any): string => {
+    const value = params.value;
+    if (value == null || value === '') return '';
+    const num = Number(value);
+    return isNaN(num) ? '' : `${num.toLocaleString()}원`
+  };
 
-  const columnDefs: ColDef<ProductData>[] = useMemo(() => [
-    {
-      headerName: '',
-      checkboxSelection: true,
-      headerCheckboxSelection: true,
-      width: 50,
-      pinned: 'left',
-      resizable: false,
-      sortable: false,
-      filter: false,
-      floatingFilter: false,
-    },
-    {
-      field: 'goods_nm',
-      headerName: '상품명',
-      width: 200,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'brand_nm',
-      headerName: '브랜드',
-      width: 200,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'goods_price',
-      headerName: '판매가격',
-      width: 120,
-      valueFormatter: (params) => `${params.value?.toLocaleString()}원`,
-      filter: 'agNumberColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'goods_consumer_price',
-      headerName: '소비자가격',
-      width: 120,
-      valueFormatter: (params) => `${params.value?.toLocaleString()}원`,
-      filter: 'agNumberColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'status',
-      headerName: '상태',
-      width: 120,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      },
-      editable: true,
-      cellEditor: 'agSelectCellEditor',
-      cellEditorParams: {
-        values: ['판매중', '품절', '단종']
-      },
-      cellStyle: getStatusCellStyle,
-      cellClass: 'ag-cell-centered',
-      valueFormatter: (params) => {
-        const statusMap: { [key: number]: string } = {
-          0: '비활성',
-          1: '활성',
-          2: '대기',
-        };
-        return statusMap[params.value] || '알 수 없음';
-      },
-    },
-    {
-      field: 'maker',
-      headerName: '제조사',
-      width: 160,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'origin',
-      headerName: '원산지',
-      width: 120,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'char_1_nm',
-      headerName: '키워드',
-      width: 120,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'char_1_nm',
-      headerName: '옵션1',
-      width: 120,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'char_2_nm',
-      headerName: '옵션2',
-      width: 120,
-      filter: 'agTextColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
-      }
-    },
-    {
-      field: 'created_at',
-      headerName: '생성일시',
-      width: 120,
-      valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '',
-      filter: 'agDateColumnFilter',
-      floatingFilterComponentParams: {
-        suppressFilterButton: true
+  const priceParser = (params: any): number => {
+    const value = params.newValue;
+    if (value == null || value === '') return 0;
+    const cleanValue = String(value).replace(/[원,]/g, '').trim();
+    const num = parseFloat(cleanValue);
+    return isNaN(num) ? 0 : num;
+  }
+
+  const priceSetter = (params: any): boolean => {
+    const { field, newValue } = params;
+    let parsedValue = 0;
+    
+    // 모든 타입의 입력값을 숫자로 변환
+    if (newValue !== null && newValue !== undefined && newValue !== '') {
+      if (typeof newValue === 'string') {
+        const cleanValue = newValue.replace(/[원,]/g, '').trim();
+        const numValue = parseFloat(cleanValue);
+        parsedValue = isNaN(numValue) ? 0 : numValue;
+      } else if (typeof newValue === 'number') {
+        parsedValue = isNaN(newValue) ? 0 : newValue;
+      } else {
+        const numValue = Number(newValue);
+        parsedValue = isNaN(numValue) ? 0 : numValue;
       }
     }
+    params.data[field] = parsedValue;
+    return true;
+  };
+
+  const priceGetter = (params: any): number => {
+    const value = params.data[params.colDef.field];
+    if (value == null || value === '') return 0;
+
+    // 문자열인 경우 숫자로 변환
+    if (typeof value === 'string') {
+      const cleanValue = value.replace(/[원,]/g, '').trim();
+      const num = parseFloat(cleanValue);
+      return isNaN(num) ? 0 : num;
+    }
+    return Number(value);
+  }
+
+  // 날짜 포맷팅 함수
+  const dateFormatter = (params: any): string => {
+    return params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '';
+  };
+
+  // 텍스트 컬럼 생성
+  const createTextColumn = (field: keyof ProductItem, headerName: string, width: number, editable = true) => ({
+    field,
+    headerName,
+    width,
+    filter: 'agTextColumnFilter',
+    floatingFilterComponentParams: { suppressFilterButton: true },
+    editable,
+    cellEditor: 'agTextCellEditor',
+  });
+
+  // 가격 컬럼 생성
+  const createPriceColumn = (field: keyof ProductItem, headerName: string) => ({
+    ...createTextColumn(field, headerName, 120),
+    valueFormatter: priceFormatter,
+    valueParser: priceParser,
+    valueSetter: priceSetter,
+    valueGetter: priceGetter,
+    filter: 'agNumberColumnFilter',
+  });
+  
+  // 날짜 컬럼 생성
+  const createDateColumn = (field: keyof ProductItem, headerName: string) => ({
+    field,
+    headerName,
+    width: 140,
+    valueFormatter: dateFormatter,
+    filter: 'agDateColumnFilter',
+    floatingFilterComponentParams: { suppressFilterButton: true },
+    editable: false,
+  });
+
+  const columnDefs: ColDef<ProductItem>[] = useMemo(() => [
+    createTextColumn('product_nm', '상품명', 200),
+    createTextColumn('goods_nm', '제품명', 200),
+    createTextColumn('detail_path_img', '상세이미지', 200),
+    createPriceColumn('goods_price', '판매가격'),
+    createPriceColumn('delv_cost', '배송비'),
+    createTextColumn('goods_search', '검색어', 150),
+    createTextColumn('stock_use_yn', '재고여부', 120),
+    createTextColumn('certno', '인증번호', 120),
+    createTextColumn('char_process', '가공 방식', 120),
+    createTextColumn('char_1_nm', '옵션1', 100),
+    createTextColumn('char_1_val', '옵션1 값', 100),
+    createTextColumn('char_2_nm', '옵션2', 100),
+    createTextColumn('char_2_val', '옵션2 값', 100),
+    createTextColumn('img_path', '대표 이미지', 120),
+    createTextColumn('img_path1', '추가 이미지1', 120),
+    createTextColumn('img_path2', '추가 이미지2', 120),
+    createTextColumn('img_path3', '추가 이미지3', 120),
+    createTextColumn('img_path4', '추가 이미지4', 120),
+    createTextColumn('img_path5', '추가 이미지5', 120),
+    createTextColumn('goods_remarks', '상품비고', 150),
+    createTextColumn('mobile_bn', '모바일배너', 120),
+    createTextColumn('one_plus_one_bn', '1+1배너', 120),
+    createTextColumn('goods_remarks_url', '비고URL', 150),
+    createTextColumn('delv_one_plus_one', '1+1배송정보', 150),
+    createTextColumn('delv_one_plus_one_detail', '1+1배송상세', 150),
+    createTextColumn('class_nm1', '대분류', 120),
+    createTextColumn('class_nm2', '중분류', 120),
+    createTextColumn('class_nm3', '소분류', 120),
+    createTextColumn('class_nm4', '세분류', 120),
+    createDateColumn('created_at', '생성일시'),
+    createDateColumn('updated_at', '수정일시'),
   ], []);
 
   const defaultColDef = useMemo(() => ({
@@ -183,9 +143,18 @@ export const useProductGrid = () => {
     animateRows: true,
     headerHeight: 45,
     rowHeight: 40,
-    rowSelection: "multiple" as const,
+    rowSelection: {
+      mode: "multiRow" as const,
+      checkboxes: true,
+      headerCheckbox: true,
+      enableClickSelection: true,
+      selectAll: "filtered" as const
+    },
     domLayout: "normal" as const,
-    suppressRowClickSelection: true
+    enterNavigatesVertically: true,
+    enterNavigatesVerticallyAfterEdit: true,
+    singleClickEdit: true,
+    stopEditingWhenCellsLoseFocus: true,
   }), []);
 
   return {
@@ -194,4 +163,4 @@ export const useProductGrid = () => {
     defaultColDef,
     gridOptions,
   };
-}
+};

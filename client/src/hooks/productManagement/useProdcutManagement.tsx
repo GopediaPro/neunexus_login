@@ -8,7 +8,7 @@ export const useProductManagement = () => {
   const [activeProductTab, setActiveProductTab] = useState<ProductTab>("registration");
   const [page, setPage] = useState(1);
 
-  const productDataHook = useProductData({ search, page });
+  const productDataHook = useProductData({ search, skip: (page - 1) * 50 });
   const productGridHook = useProductGrid();
 
   const handleSearchChange = useCallback((value: string) => {
