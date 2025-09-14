@@ -10,7 +10,7 @@ export interface ErpTransferRequest {
 }
 
 export interface ErpTransferResponse {
-  success: boolean;
+  success?: boolean; // 서버에서 제공하지 않을 수 있으므로 optional로 변경
   data: {
     batch_id: string;
     total_records: number;
@@ -79,6 +79,45 @@ export interface EcountDownloadResponse {
     download_url: string;
     file_name: string;
     file_size: number;
+  };
+  metadata: {
+    version: string;
+    request_id: string;
+  };
+}
+
+export interface ErpBulkUploadRequest {
+  data: {
+    sheet_name: string;
+    template_code: string;
+    is_test: boolean;
+    clear_existing: boolean;
+  };
+  metadata: {
+    request_id: string;
+  };
+}
+
+export interface ExcelUploadResponse {
+  success: boolean;
+  data: {
+    success: boolean;
+    message: string;
+    batch_info: {
+      batch_id: string;
+      user_id: string;
+      total_processed: number;
+      success_count: number;
+      fail_count: number;
+      validation_errors: number;
+      processed_at: string;
+      file_url: string;
+      file_name: string;
+      file_size: number;
+    };
+    successful_sales: Array<any>;
+    errors: Array<string>;
+    api_response: any;
   };
   metadata: {
     version: string;
