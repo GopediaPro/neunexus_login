@@ -24,8 +24,8 @@ const createErpBulkUploadRequest = (
   formTemplate: string,
   userId: string
 ): ErpBulkUploadRequest => {
-  // .env 파일에서 IS_TEST 값을 읽어오거나, 없으면 false로 설정
-  const isTest = import.meta.env.VITE_IS_TEST === 'true';
+  // .env 파일에서 VITE_IS_TEST 값을 읽어오거나, 없으면 false로 설정
+  const isTest = import.meta.env.VITE_IS_TEST === 'true' || false;
   // console.log('isTest', isTest);
   return {
     data: {
