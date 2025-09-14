@@ -3,6 +3,12 @@
 ```
 실행
 npm run dev
+# dev test 용 
+## .env 파일 변경
+## VITE_KEYCLOAK_CLIENT_ID="portal-client-dev"
+## PORT=5174
+## dev용 실행 명령어
+npx vite --port 5174
 
 ESLint 검사
 npm run lint

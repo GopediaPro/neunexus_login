@@ -71,7 +71,9 @@ export const EcountErpTransferModal = ({
     setIsProcessing(true);
 
     try {
-      const userId = user?.sub || 'unknown';
+      const userId = user?.preferred_username || 'unknown';
+      // console.log('user', user);
+      // console.log('userId', userId);
 
       const requestData = createErpTransferRequest(
         dateFrom,
@@ -82,7 +84,8 @@ export const EcountErpTransferModal = ({
 
       const response = await postEcountErpDownload(requestData);
       
-      if (response.success) {
+      // 응답이 성공적이고 필요한 데이터가 있으면 성공으로 처리
+      if (response && response.data && response.data.batch_id) {
         const fileName = response.data.excel_file_name || `${formTemplate}_${Date.now()}.xlsx`;
         
         const fileResults: FileResult[] = [{
@@ -148,7 +151,7 @@ export const EcountErpTransferModal = ({
     <>
       <Modal isOpen={isOpen} onClose={handleClose} size="2xl">
         <Modal.Header>
-          <Modal.Title>ERP 업로드 파일 생성</Modal.Title>
+          <Modal.Title>ERP 업로드용 Excel 파일 생성</Modal.Title>
           <Modal.CloseButton />
         </Modal.Header>
         
