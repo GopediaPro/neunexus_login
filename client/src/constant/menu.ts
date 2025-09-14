@@ -7,7 +7,7 @@ export const menuItems = [
   {
     id: "2", 
     icon: "upload",
-    label: "ERP 업로드"
+    label: "ERP 업로드용 Excel 다운로드"
   },
   {
     id: "3",
