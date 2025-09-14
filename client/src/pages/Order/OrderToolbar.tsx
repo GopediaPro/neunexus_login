@@ -24,6 +24,7 @@ import { DbToExcelModal } from "@/components/ui/Modal/DbToExcelModal";
 import { ExcelToDbModal } from "@/components/ui/Modal/ExcelToDbModal";
 import { EcountErpTransferModal } from "@/components/ui/Modal/EcountErpTransferModal";
 import { EcountUploadModal } from "@/components/ui/Modal/EcountUploadModal";
+import { EcountErpUploadByExcelModal } from "@/components/ui/Modal/EcountErpUploadByExcelModal";
 
 const OrderRegisterModal = lazy(() =>
   import("@/components/ui/Modal/OrderRegisterModal").then(module => ({
@@ -164,20 +165,22 @@ const ActionButtons = memo(({
 const MacroButtons = memo(({ 
   onOpenSmileMacro, 
   onOpenErpUpload, 
-  onOpenEcountUpload 
+  onOpenEcountUpload,
+  onOpenErpUploadByExcel
 }: { 
   onOpenSmileMacro: () => void; 
   onOpenErpUpload: () => void;
   onOpenEcountUpload: () => void;
+  onOpenErpUploadByExcel: () => void;
 }) => (
   <div className="flex gap-2">
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
       전체 Macro
     </Button>
-    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
+    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenErpUploadByExcel}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
-      ERP Macro
+      ERP 업로드 By Excel
     </Button>
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
@@ -189,7 +192,7 @@ const MacroButtons = memo(({
     </Button>
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenErpUpload}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
-      ERP 업로드
+      ERP 업로드용 Excel 다운로드
     </Button>
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenEcountUpload}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
@@ -456,6 +459,7 @@ export const OrderToolbar = memo(() => {
               onOpenSmileMacro={() => openModal('smileMacro')} 
               onOpenErpUpload={() => openModal('ecountErpTransfer')}
               onOpenEcountUpload={() => openModal('ecountUpload')}
+              onOpenErpUploadByExcel={() => openModal('ecountErpUploadByExcel')}
             />
           </div>
           
@@ -548,6 +552,13 @@ export const OrderToolbar = memo(() => {
         <EcountUploadModal
           isOpen={modals.ecountUpload} 
           onClose={() => closeModal('ecountUpload')} 
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalLoader />}>
+        <EcountErpUploadByExcelModal
+          isOpen={modals.ecountErpUploadByExcel} 
+          onClose={() => closeModal('ecountErpUploadByExcel')} 
         />
       </Suspense>
     </>
