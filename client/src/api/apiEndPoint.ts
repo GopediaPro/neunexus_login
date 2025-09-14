@@ -47,4 +47,5 @@ export const API_END_POINT = {
   ECOUNT_ALL_DATA_UPLOAD: `${API_VERSION_2}/ecount-excel-import/all-data`,
   ECOUNT_ERP_PARTNER_CODE_DOWNLOAD: `${API_VERSION_2}/ecount-excel-import/download/erp-partner-code`,
   ECOUNT_IYES_COST_DOWNLOAD: `${API_VERSION_2}/ecount-excel-import/download/iyes-cost`,
+  ECOUNT_ERP_UPLOAD_BY_EXCEL: `${API_VERSION_2}/ecount/create-bulk-from-excel`,
 } as const;
