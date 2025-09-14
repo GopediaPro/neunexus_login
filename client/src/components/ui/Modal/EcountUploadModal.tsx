@@ -97,7 +97,7 @@ export const EcountUploadModal = ({ isOpen, onClose }: EcountUploadModalProps) =
 
         toast.success('ECount 데이터가 성공적으로 업로드되었습니다.');
       } else {
-        throw new Error(response.data.message || 'ECount 업로드 실패');
+        throw new Error(response.data.message || 'Ecount 데이터 업로드 실패');
       }
     } catch (error) {
       const fileResults: FileResult[] = [{
@@ -107,12 +107,12 @@ export const EcountUploadModal = ({ isOpen, onClose }: EcountUploadModalProps) =
 
       setBulkResult({
         type: 'error',
-        title: 'ECount 업로드 실패',
+        title: 'Ecount 데이터 업로드 실패',
         message: `ECount 데이터 업로드 중 오류가 발생했습니다.\n오류 시간: ${new Date().toLocaleString('ko-KR')}\n\n${error instanceof Error ? error.message : '알 수 없는 오류'}\n\n다시 시도해주세요.`,
         fileResults
       });
 
-      toast.error('ECount 업로드 중 오류가 발생했습니다.');
+      toast.error('Ecount 데이터 업로드 중 오류가 발생했습니다.');
     } finally {
       setIsProcessing(false);
       setShowResultModal(true);

@@ -193,7 +193,7 @@ const MacroButtons = memo(({
     </Button>
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenEcountUpload}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
-      ECount 업로드
+      Ecount 데이터 업로드
     </Button>
   </div>
 ));
