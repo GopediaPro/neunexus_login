@@ -26,7 +26,6 @@ export const ProductToolbar = () => {
   const debounceTimerRef = useRef<NodeJS.Timeout>();
 
   const {
-    search,
     setSearch,
     activeProductTab,
     setActiveProductTab,
@@ -40,9 +39,13 @@ export const ProductToolbar = () => {
       clearTimeout(debounceTimerRef.current);
     }
 
+    if (!value.trim()) {
+      setSearch("");
+      return;
+    }
+
     debounceTimerRef.current = setTimeout(() => {
       setSearch(value);
-      // console.log(value);
     }, 400);
   }, [setSearch]);
 
@@ -329,14 +332,14 @@ export const ProductToolbar = () => {
 
   return (
     <>
-      <div className="bg-fill-base-100">
-        <div className="px-6">
+      <header className="bg-fill-base-100">
+        <nav className="px-6">
           <div className="flex gap-2 border-b border-stroke-base-100">
             <button className="px-4 py-4 text-primary-500 bg-fill-base-100 text-h2 border-b-2 border-primary-500">상품관리</button>
             <button onClick={() => navigate(ROUTERS.ORDER_MANAGEMENT)} className="px-4 py-4 text-text-base-400 text-h2 hover:text-primary-500 hover:bg-fill-alt-100 transition-colors">주문관리</button>
           </div>
-        </div>
-        <div className="flex gap-4 pt-6 px-6 bg-fill-base-100">
+        </nav>
+        <nav className="flex gap-4 pt-6 px-6 bg-fill-base-100">
           <Button
             onClick={() => setActiveProductTab("registration")}
             variant="light"
@@ -357,14 +360,14 @@ export const ProductToolbar = () => {
             }`}>
             대량상품등록
           </Button>
-        </div>
+        </nav>
         <div className="mt-6 px-6">
           <span className="text-h2">상품등록</span>
         </div>
-      </div>
-      <div className="flex items-center justify-between gap-2 px-6 pt-5 bg-fill-base-100">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center w-[320px] h-12 bg-fill-alt-100 rounded-md pl-2">
+      </header>
+      <main className="flex items-center justify-between gap-2 px-6 pt-5 bg-fill-base-100">
+        <section className="flex items-center gap-2">
+          <search className="flex items-center w-[320px] h-12 bg-fill-alt-100 rounded-md pl-2">
             <Icon name="search" ariaLabel="검색"
               onClick={handleIconClick}
               style="w-5 h-5 text-text-base-400 cursor-pointer flex-shrink-0"/>
@@ -374,9 +377,10 @@ export const ProductToolbar = () => {
               value={localSearch}
               onChange={handleSearchInput}
               placeholder="전체 검색 (상품명, ID, 고객명 등)"
+              aria-label="상품 검색 입력"
               className="w-[280px] pl-4 bg-fill-alt-100 border-none relative h-12"
             />
-          </div>
+          </search>
 
           <Button 
             variant="light" 
@@ -407,7 +411,7 @@ export const ProductToolbar = () => {
           </Button>
           <Button variant="light" className="py-5">카테고리 수정</Button>
           <Button variant="light" className="py-5">옵션별칭 수정</Button>
-        </div>
+        </section>
 
         <Dropdown
           trigger={
@@ -423,7 +427,7 @@ export const ProductToolbar = () => {
           items={handleRowItems}
           align="right"
         />
-      </div>
+      </main>
     </>
   );
 };

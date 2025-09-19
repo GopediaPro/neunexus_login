@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, useMemo } from "react";
 import type { ReactNode } from "react";
 import type { ProductContextValue } from "@/api/types";
 import type { GridApi } from "ag-grid-community";
@@ -58,7 +58,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const { productData, isLoading, error, refreshProducts } = useProductData({ search, skip: (page - 1) * 50 });
   const { gridRef, columnDefs, defaultColDef, gridOptions } = useProductGrid();
 
-  const value: ProductContextValue = {
+  const value: ProductContextValue = useMemo(() => ({
     search,
     setSearch,
     activeProductTab,
@@ -80,7 +80,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     changedRows,
     setChangedRows,
     clearSelections,
-  };
+  }), [search, activeProductTab, page, productData, isLoading, error, gridApi, selectedRows, changedRows]);
 
   return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>;
 };

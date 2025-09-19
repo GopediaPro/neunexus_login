@@ -1,7 +1,8 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, Suspense } from "react";
 import { AgGridReact } from "ag-grid-react";
 import type { GridReadyEvent } from "ag-grid-community";
 import { useProductContext } from "@/api/context/ProductContext";
+import { Spinner } from "@/components/ui/Spinner";
 
 export const ProductGrid = () => {
   const {
@@ -67,19 +68,21 @@ export const ProductGrid = () => {
   }, [search, gridApi]);
 
   return (
-    <div className="ag-theme-alpine w-full h-[calc(100vh-60px)]">
-      <AgGridReact
-        ref={gridRef}
-        rowData={productData || []}
-        columnDefs={columnDefs}
-        defaultColDef={defaultColDef}
-        onGridReady={onGridReady}
-        onSelectionChanged={onSelectionChangedCallback}
-        onCellValueChanged={onCellValueChanged}
-        onRowDataUpdated={clearChangedRows}
-        {...gridOptions}
-        getRowId={(params) => params.data.id?.toString()}
-      />
-    </div>
+    <Suspense fallback={<Spinner/>}>
+      <section className="ag-theme-alpine w-full h-[calc(100vh-60px)]" aria-label="상품 목록 테이블">
+        <AgGridReact
+          ref={gridRef}
+          rowData={productData || []}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          onGridReady={onGridReady}
+          onSelectionChanged={onSelectionChangedCallback}
+          onCellValueChanged={onCellValueChanged}
+          onRowDataUpdated={clearChangedRows}
+          {...gridOptions}
+          getRowId={(params) => params.data.id?.toString()}
+        />
+      </section>
+    </Suspense>
   );
 };
