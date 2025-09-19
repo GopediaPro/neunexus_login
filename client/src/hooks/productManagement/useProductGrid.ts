@@ -22,40 +22,6 @@ export const useProductGrid = () => {
     return isNaN(num) ? 0 : num;
   }
 
-  const priceSetter = (params: any): boolean => {
-    const { field, newValue } = params;
-    let parsedValue = 0;
-    
-    // 모든 타입의 입력값을 숫자로 변환
-    if (newValue !== null && newValue !== undefined && newValue !== '') {
-      if (typeof newValue === 'string') {
-        const cleanValue = newValue.replace(/[원,]/g, '').trim();
-        const numValue = parseFloat(cleanValue);
-        parsedValue = isNaN(numValue) ? 0 : numValue;
-      } else if (typeof newValue === 'number') {
-        parsedValue = isNaN(newValue) ? 0 : newValue;
-      } else {
-        const numValue = Number(newValue);
-        parsedValue = isNaN(numValue) ? 0 : numValue;
-      }
-    }
-    params.data[field] = parsedValue;
-    return true;
-  };
-
-  const priceGetter = (params: any): number => {
-    const value = params.data[params.colDef.field];
-    if (value == null || value === '') return 0;
-
-    // 문자열인 경우 숫자로 변환
-    if (typeof value === 'string') {
-      const cleanValue = value.replace(/[원,]/g, '').trim();
-      const num = parseFloat(cleanValue);
-      return isNaN(num) ? 0 : num;
-    }
-    return Number(value);
-  }
-
   // 날짜 포맷팅 함수
   const dateFormatter = (params: any): string => {
     return params.value ? new Date(params.value).toLocaleDateString('ko-KR') : '';
@@ -74,12 +40,14 @@ export const useProductGrid = () => {
 
   // 가격 컬럼 생성
   const createPriceColumn = (field: keyof ProductItem, headerName: string) => ({
-    ...createTextColumn(field, headerName, 120),
+    field,
+    headerName,
+    width: 120,
     valueFormatter: priceFormatter,
     valueParser: priceParser,
-    valueSetter: priceSetter,
-    valueGetter: priceGetter,
     filter: 'agNumberColumnFilter',
+    editable: true,
+    cellEditor: 'agTextCellEditor',
   });
   
   // 날짜 컬럼 생성
