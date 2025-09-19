@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { useProductContext } from "@/api/context/ProductContext";
@@ -22,6 +22,8 @@ export const ProductToolbar = () => {
   const [isImporting, setIsImporting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [localSearch, setLocalSearch] = useState("");
+  const debounceTimerRef = useRef<NodeJS.Timeout>();
 
   const {
     search,
@@ -31,6 +33,33 @@ export const ProductToolbar = () => {
     gridApi,
     changedRows,
   } = useProductContext();
+
+  // 검색 디바운싱
+  const debouncer = useCallback((value: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      setSearch(value);
+      // console.log(value);
+    }, 400);
+  }, [setSearch]);
+
+  // 컴포넌트 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleSearchInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearch(value);
+    debouncer(value);
+  }, [debouncer]);
 
   const { handleFileImport, triggerFileUpload, isUploading } = useProductImport();
   const {
@@ -342,8 +371,8 @@ export const ProductToolbar = () => {
             <Input
               ref={inputRef}
               type="text"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
+              value={localSearch}
+              onChange={handleSearchInput}
               placeholder="전체 검색 (상품명, ID, 고객명 등)"
               className="w-[280px] pl-4 bg-fill-alt-100 border-none relative h-12"
             />

@@ -7,18 +7,20 @@ import { useCallback } from 'react';
 interface GetProductsParams {
   limit?: number;   // 조회할 데이터 수
   skip?: number;    // 조회 시작 위치
+  search?: string;  // 검색어
 }
 
 export const getProducts = async (
   params: GetProductsParams
 ): Promise<ProductListResponse> => {
   try {
-    const { limit = 50, skip = 0 } = params;
+    const { limit = 50, skip = 0, search } = params;
 
     const response = await httpClient.get<ProductListResponse>(API_END_POINT.PRODUCTS, {
       params: {
         limit,
-        skip
+        skip,
+        ...(search && { search })
       }
     });
     return response.data;
@@ -33,7 +35,7 @@ export const useProductData = ({ search, limit = 50, skip = 0 }: UseProductDataP
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['products', search, limit, skip],
-    queryFn: () => getProducts({ limit, skip }),
+    queryFn: () => getProducts({ limit, skip, search }),
     retry: 3,
     retryDelay: 1000,
     staleTime: 5 * 60 * 1000,

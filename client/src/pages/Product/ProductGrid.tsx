@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import type { GridReadyEvent } from "ag-grid-community";
 import { useProductContext } from "@/api/context/ProductContext";
@@ -13,6 +13,8 @@ export const ProductGrid = () => {
     setGridApi,
     setSelectedRows,
     setChangedRows,
+    search,
+    gridApi,
   } = useProductContext();
 
   const [changedRowsState, setChangedRowsState] = useState<Set<string>>(new Set());
@@ -56,6 +58,13 @@ export const ProductGrid = () => {
       setChangedRows([]);
     }
   }, [setChangedRows]);
+
+  // 검색어 변경 시 AG-Grid QuickFilter 적용
+  useEffect(() => {
+    if (gridApi) {
+      gridApi.setGridOption('quickFilterText', search);
+    }
+  }, [search, gridApi]);
 
   return (
     <div className="ag-theme-alpine w-full h-[calc(100vh-60px)]">
