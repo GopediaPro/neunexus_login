@@ -19,30 +19,60 @@ export const productRegistrationSchema = z.object({
   img_path: z.string().min(1, '대표 이미지 경로를 입력해주세요'),
   stock_use_yn: z.string().min(1, '재고 여부를 선택해주세요'),
   class_nm1: z.string().min(1, '대분류를 입력해주세요'),
-  char_process: z.string().optional(),
-  char_2_nm: z.string().optional(),
-  char_2_val: z.string().optional(),
-  img_path1: z.string().optional(),
-  img_path2: z.string().optional(),
-  img_path3: z.string().optional(),
-  img_path4: z.string().optional(),
-  img_path5: z.string().optional(),
-  goods_remarks: z.string().optional(),
-  mobile_bn: z.string().optional(),
-  one_plus_one_bn: z.string().optional(),
-  goods_remarks_url: z.string().optional(),
-  delv_one_plus_one: z.string().optional(),
-  delv_one_plus_one_detail: z.string().optional(),
-  class_nm2: z.string().optional(),
-  class_nm3: z.string().optional(),
-  class_nm4: z.string().optional(),
+  char_process: z.string().optional().nullable(),
+  char_2_nm: z.string().optional().nullable(),
+  char_2_val: z.string().optional().nullable(),
+  img_path1: z.string().optional().nullable(),
+  img_path2: z.string().optional().nullable(),
+  img_path3: z.string().optional().nullable(),
+  img_path4: z.string().optional().nullable(),
+  img_path5: z.string().optional().nullable(),
+  goods_remarks: z.string().optional().nullable(),
+  mobile_bn: z.string().optional().nullable(),
+  one_plus_one_bn: z.string().optional().nullable(),
+  goods_remarks_url: z.string().optional().nullable(),
+  delv_one_plus_one: z.string().optional().nullable(),
+  delv_one_plus_one_detail: z.string().optional().nullable(),
+  class_nm2: z.string().optional().nullable(),
+  class_nm3: z.string().optional().nullable(),
+  class_nm4: z.string().optional().nullable(),
 })
 
-// 상품 수정 스키마 (id 포함)
-export const productUpdateSchema = productRegistrationSchema.extend({
+// 상품 수정 스키마 - 부분 업데이트 허용
+export const productUpdateSchema = z.object({
   id: z.union([z.number(), z.string()]),
-  created_at: z.string().optional(),
-  updated_at: z.string().optional(),
+  product_nm: z.string().optional().nullable(),
+  goods_nm: z.string().optional().nullable(),
+  detail_path_img: z.string().optional().nullable(),
+  goods_search: z.string().optional().nullable(),
+  stock_use_yn: z.string().optional().nullable(),
+  certno: z.string().optional().nullable(),
+  char_1_nm: z.string().optional().nullable(),
+  char_1_val: z.string().optional().nullable(),
+  img_path: z.string().optional().nullable(),
+  class_nm1: z.string().optional().nullable(),
+  delv_cost: z.number().optional().nullable(),
+  goods_price: z.number().optional().nullable(),
+  // 나머지 선택 필드들
+  char_process: z.string().optional().nullable(),
+  char_2_nm: z.string().optional().nullable(),
+  char_2_val: z.string().optional().nullable(),
+  img_path1: z.string().optional().nullable(),
+  img_path2: z.string().optional().nullable(),
+  img_path3: z.string().optional().nullable(),
+  img_path4: z.string().optional().nullable(),
+  img_path5: z.string().optional().nullable(),
+  goods_remarks: z.string().optional().nullable(),
+  mobile_bn: z.string().optional().nullable(),
+  one_plus_one_bn: z.string().optional().nullable(),
+  goods_remarks_url: z.string().optional().nullable(),
+  delv_one_plus_one: z.string().optional().nullable(),
+  delv_one_plus_one_detail: z.string().optional().nullable(),
+  class_nm2: z.string().optional().nullable(),
+  class_nm3: z.string().optional().nullable(),
+  class_nm4: z.string().optional().nullable(),
+  created_at: z.string().optional().nullable(),
+  updated_at: z.string().optional().nullable(),
 });
 
 export const validateProducts = (products: unknown[]) => {
@@ -70,6 +100,7 @@ export const validateProducts = (products: unknown[]) => {
 
     // id가 있으면 수정, 없으면 등록
     const hasId = product.id !== undefined && product.id !== null && !String(product.id).startsWith('new_');
+    
     const schema = hasId ? productUpdateSchema : productRegistrationSchema;
     
     const result = schema.safeParse(processedProduct);
