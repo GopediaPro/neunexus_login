@@ -117,6 +117,27 @@ export interface ProductDeleteResponse {
   };
 }
 
+// 사방넷 업로드 요청 타입
+export interface SabangUploadRequest {
+  data: {
+    sheet_name: string; // 기본값: "상품등록"
+  };
+  metadata: {
+    request_id: string;
+  };
+}
+
+// 사방넷 업로드 응답 타입
+export interface SabangUploadResponse {
+  success: boolean;
+  message: string;
+  excel_processing: Record<string, any>;
+  database_result: Record<string, any>;
+  transfer_result: Record<string, any>;
+  sabang_api_result: Record<string, any>;
+  error?: string;
+}
+
 // Context 타입
 export interface ProductContextValue {
   search: string;

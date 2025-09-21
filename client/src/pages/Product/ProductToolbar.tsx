@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback, useEffect, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTERS } from "@/constant/route";
 import { useProductContext } from "@/api/context/ProductContext";
@@ -7,6 +7,7 @@ import { useProductGridActions } from "@/hooks/productManagement/useProductGridA
 import { useProductsCreate } from "@/api/product/createProducts";
 import { useProductUpdate } from "@/api/product/updateProducts";
 import { useProductDelete } from "@/api/product/deleteProducts";
+import { useModals } from "@/hooks/useModals";
 import type { ProductFormData, ProductUpdateFormData } from "@/api/types";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -15,6 +16,8 @@ import { Dropdown } from "@/components/ui/Dropdown";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { validateProducts } from "@/schemas";
+import { SabangUploadByExcelModal } from "@/components/ui/Modal/SabangUploadByExcelModal";
+import { ModalLoader } from "@/components/ui/ModalComponent/ModalLoader";
 
 export const ProductToolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,6 +27,7 @@ export const ProductToolbar = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [localSearch, setLocalSearch] = useState("");
   const debounceTimerRef = useRef<NodeJS.Timeout>();
+  const { modals, openModal, closeModal } = useModals();
 
   const {
     setSearch,
@@ -411,6 +415,13 @@ export const ProductToolbar = () => {
           </Button>
           <Button variant="light" className="py-5">카테고리 수정</Button>
           <Button variant="light" className="py-5">옵션별칭 수정</Button>
+          <Button 
+            variant="light" 
+            className="py-5"
+            onClick={() => openModal('sabangUploadByExcel')}
+          >
+            사방넷 업로드_EXCEL
+          </Button>
         </section>
 
         <Dropdown
@@ -428,6 +439,13 @@ export const ProductToolbar = () => {
           align="right"
         />
       </main>
+
+      <Suspense fallback={<ModalLoader />}>
+        <SabangUploadByExcelModal
+          isOpen={modals.sabangUploadByExcel} 
+          onClose={() => closeModal('sabangUploadByExcel')} 
+        />
+      </Suspense>
     </>
   );
 };
