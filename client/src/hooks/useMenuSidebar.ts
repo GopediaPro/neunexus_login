@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/contexts";
-import { ROUTERS } from "@/constant/route";
-import { sidebarMenu } from "@/constant/sidebar";
+import { ROUTERS } from "@/constants/route";
+import { sidebarMenu } from "@/constants/sidebar";
 import type { IMenuItemType } from "@/api/types/sidebar.types";
 
 const withHoverState = (items: IMenuItemType[]): IMenuItemType[] =>

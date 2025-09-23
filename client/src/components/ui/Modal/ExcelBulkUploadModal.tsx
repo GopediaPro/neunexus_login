@@ -7,7 +7,7 @@ import { postExcelRunMacroBulk } from "@/api/order/postExcelRunMacroBulk";
 import { BulkResultModal } from "./ResultBulkModal";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useBulkResult } from "@/hooks/useBulkResult";
-import { TOAST_MESSAGES } from "@/constant/messages";
+import { TOAST_MESSAGES } from "@/constants/messages";
 import { createProgressSimulator } from "@/utils/progressUtils";
 import type { FileResult } from "@/api/types/common";
 import { FileDropZone } from "../FileDropZone";

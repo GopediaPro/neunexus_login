@@ -121,6 +121,11 @@ export interface ProductDeleteResponse {
 export interface SabangUploadRequest {
   data: {
     sheet_name: string; // 기본값: "상품등록"
+    mall_configs?: {
+      [mallCode: string]: {
+        discount_rate: number;
+      };
+    };
   };
   metadata: {
     request_id: string;

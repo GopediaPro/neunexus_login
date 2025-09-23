@@ -1,4 +1,4 @@
-import { ERROR_CODE } from '@/constant/errorCode';
+import { ERROR_CODE } from '@/constants/errorCode';
 import { AxiosError } from 'axios';
 
 export const getErrorByCode = (

@@ -1,4 +1,4 @@
-import { API_END_POINT } from "@/constant";
+import { API_END_POINT } from "@/constants";
 import { httpClient } from "@/api/axios";
 import type { BulkCreateRequest, DownFormBulkCreateResponse } from "@/api/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

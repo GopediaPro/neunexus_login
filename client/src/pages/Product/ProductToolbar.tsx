@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback, useEffect, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROUTERS } from "@/constant/route";
+import { ROUTERS } from "@/constants/route";
 import { useProductContext } from "@/api/context/ProductContext";
 import { useProductImport } from "@/hooks/productManagement/useProductImport";
 import { useProductGridActions } from "@/hooks/productManagement/useProductGridActions";

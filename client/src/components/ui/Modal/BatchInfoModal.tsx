@@ -6,7 +6,7 @@ import { Icon } from '../Icon';
 import { formatDate } from '@/utils/formatDate';
 import { Checkbox } from '../Checkbox';
 import { useEffect, useMemo, useState } from 'react';
-import { FORM_TYPE_OPTIONS, STATUS_OPTIONS } from '@/constant/order';
+import { FORM_TYPE_OPTIONS, STATUS_OPTIONS } from '@/constants/order';
 import { Dropdown } from '../Dropdown';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';

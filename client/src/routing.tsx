@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { ROUTERS } from './constant/route';
+import { ROUTERS } from './constants/route';
 import Layout from './Layout';
 import { TestComponent } from './components/TestComponent';
 import { PrivateRoute } from '@/components/layout/PrivateRoute';

@@ -9,7 +9,7 @@ import { useFileUpload } from "@/hooks/useFileUpload";
 import { useBulkResult } from "@/hooks/useBulkResult";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { createSelectionHandlers } from "@/utils/createSelectionHandlers";
-import { ERROR_MESSAGES, SUCCESS_MESSAGES, TOAST_MESSAGES } from "@/constant/messages";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES, TOAST_MESSAGES } from "@/constants/messages";
 import { createProgressSimulator } from "@/utils/progressUtils";
 import { DateRangeSelector } from "../DateRangeSelector";
 import { FileDropZone } from "../FileDropZone";

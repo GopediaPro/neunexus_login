@@ -1,4 +1,4 @@
-import { API_END_POINT } from "@/constant";
+import { API_END_POINT } from "@/constants";
 import { httpClient } from "@/api/axios";
 import type { GetDownFormOrdersPaginationParams, PaginationResponse } from "@/api/types";
 import { useQuery } from "@tanstack/react-query";

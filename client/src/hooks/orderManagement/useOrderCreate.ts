@@ -1,7 +1,7 @@
 import { type UseMutationResult } from "@tanstack/react-query";
 import type { BulkCreateOrderItem, BulkCreateRequest, DownFormBulkCreateResponse } from "@/api/types";
 import type { GridApi } from "ag-grid-community";
-import { ORDER_DEFAULTS } from "@/constant/order";
+import { ORDER_DEFAULTS } from "@/constants/order";
 import { handleOrderError } from "@/utils/errorHandler";
 import { confirmOrderCreation, processCreateResult, validateOrderCreation, validateOrderIds } from "@/utils/orderValidation";
 
