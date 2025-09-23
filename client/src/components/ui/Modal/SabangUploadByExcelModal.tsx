@@ -5,8 +5,11 @@ import { Modal } from "@/components/ui/ModalComponent";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
+import { MallConfigButton } from "@/components/ui/Button/MallConfigButton";
+import { MallConfigModal } from "@/components/ui/Modal/MallConfigModal";
 import { postSabangUploadByExcel, createSabangUploadRequest } from "@/api/product/postSabangUploadByExcel";
 import type { FileResult } from "@/api/types/common";
+import type { MallConfigs } from "@/constants/mallConfig";
 
 export const SabangUploadByExcelModal = ({
   isOpen, 
@@ -20,6 +23,8 @@ export const SabangUploadByExcelModal = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
   const [sheetName, setSheetName] = useState('상품등록');
+  const [showMallConfigModal, setShowMallConfigModal] = useState(false);
+  const [mallConfigs, setMallConfigs] = useState<MallConfigs | null>(null);
 
   const [bulkResult, setBulkResult] = useState<{
     type: 'success' | 'error' | 'info' | 'warning';
@@ -47,7 +52,8 @@ export const SabangUploadByExcelModal = ({
       const userId = user?.preferred_username || 'unknown';
       const requestData = createSabangUploadRequest(
         sheetName.trim(),
-        userId
+        userId,
+        mallConfigs
       );
 
       const response = await postSabangUploadByExcel(file, requestData);
@@ -97,7 +103,13 @@ export const SabangUploadByExcelModal = ({
     setSheetName('상품등록');
     setBulkResult(null);
     setShowResultModal(false);
+    setShowMallConfigModal(false);
+    setMallConfigs(null);
     onClose();
+  };
+
+  const handleMallConfigApply = (configs: MallConfigs) => {
+    setMallConfigs(configs);
   };
 
   const handleResultModalClose = () => {
@@ -126,6 +138,17 @@ export const SabangUploadByExcelModal = ({
                   onChange={(e) => setSheetName(e.target.value)}
                   placeholder="시트명을 입력하세요"
                   className="w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-text-base-500 mb-2">
+                  쇼핑몰별 판매가 설정
+                </label>
+                <MallConfigButton
+                  onClick={() => setShowMallConfigModal(true)}
+                  isConfigSet={mallConfigs !== null}
+                  disabled={isProcessing}
                 />
               </div>
 
@@ -235,6 +258,14 @@ export const SabangUploadByExcelModal = ({
           </Modal.Footer>
         </Modal>
       )}
+
+      {/* 쇼핑몰별 판매가 설정 모달 */}
+      <MallConfigModal
+        isOpen={showMallConfigModal}
+        onClose={() => setShowMallConfigModal(false)}
+        onApply={handleMallConfigApply}
+        initialConfigs={mallConfigs || undefined}
+      />
     </>
   );
 };
