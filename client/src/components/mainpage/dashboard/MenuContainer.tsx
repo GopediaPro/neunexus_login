@@ -1,7 +1,7 @@
 import { MenuBox } from "@/components/mainpage/common/MenuBox";
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/ModalComponent";
-import { menuItems } from "@/constant";
+import { menuItems } from "@/constants";
 import { useState } from "react";
 
 export const MenuContainer = () => {

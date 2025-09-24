@@ -5,7 +5,7 @@ import { useAuthContext } from "@/contexts";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Modal } from "../ModalComponent";
-import { ERP_TEMPLATE_OPTIONS } from "@/constant/order";
+import { ERP_TEMPLATE_OPTIONS } from "@/constants/order";
 import { SelectSearchInput } from "@/components/management/common/SelectSearchInput";
 import { Button } from "../Button";
 import { BulkResultModal } from "./ResultBulkModal";

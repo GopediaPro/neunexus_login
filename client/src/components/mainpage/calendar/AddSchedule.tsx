@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FormField } from '@/components/ui/FormField';
 import { Input } from '@/components/ui/input';
 import type { CalendarEvent } from './ScheduleCalendar';
-import { COLOR_OPTIONS } from '@/constant/calendar';
+import { COLOR_OPTIONS } from '@/constants/calendar';
 import { Textarea } from '@/components/ui/Textarea';
 
 interface AddScheduleProps {

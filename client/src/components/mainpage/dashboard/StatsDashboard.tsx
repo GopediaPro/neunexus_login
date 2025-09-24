@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui/Icon";
-import { statsItems } from "@/constant/dashboard";
+import { statsItems } from "@/constants/dashboard";
 import { statsData } from "@/mocks/dummy/stats";
 
 interface StatsItemProps {

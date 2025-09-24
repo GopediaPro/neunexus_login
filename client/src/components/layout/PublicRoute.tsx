@@ -1,4 +1,4 @@
-import { ROUTERS } from "@/constant/route";
+import { ROUTERS } from "@/constants/route";
 import { useAuthContext } from "@/contexts";
 import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";

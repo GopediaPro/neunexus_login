@@ -1,4 +1,4 @@
-import { API_END_POINT } from "@/constant";
+import { API_END_POINT } from "@/constants";
 import { httpClient } from "@/api/axios";
 import type { BatchInfoParams, BatchInfoResponse } from "@/api/types/order.types"
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
