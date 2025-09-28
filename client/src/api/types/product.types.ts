@@ -121,6 +121,7 @@ export interface ProductDeleteResponse {
 export interface SabangUploadRequest {
   data: {
     sheet_name: string; // 기본값: "상품등록"
+    enable_mall_value_setting?: boolean; // 쇼핑몰별 판매가 설정 활성화
     mall_configs?: {
       [mallCode: string]: {
         discount_rate: number;
@@ -132,15 +133,27 @@ export interface SabangUploadRequest {
   };
 }
 
-// 사방넷 업로드 응답 타입
+// 쇼핑몰별 판매가 설정 결과 타입
+export interface MallValueSettingResult {
+  success: boolean;
+  message: string;
+  processed_count?: number;
+  error_count?: number;
+  errors?: string[];
+}
+
+// 사방넷 업로드 응답 타입 (새로운 구조)
 export interface SabangUploadResponse {
   success: boolean;
   message: string;
-  excel_processing: Record<string, any>;
-  database_result: Record<string, any>;
-  transfer_result: Record<string, any>;
-  sabang_api_result: Record<string, any>;
-  error?: string;
+  product_registration: Record<string, any>; // 상품 등록 워크플로우 결과
+  mall_value_setting: MallValueSettingResult; // ProductMallValue 설정 결과
+  overall_success: boolean; // 전체 성공 여부
+  error?: string; // 오류 메시지
+  metadata?: {
+    version: string;
+    request_id: string;
+  };
 }
 
 // Context 타입

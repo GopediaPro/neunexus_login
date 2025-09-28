@@ -10,7 +10,8 @@ export const createSabangUploadRequest = (
 ): SabangUploadRequest => {
   const requestData: SabangUploadRequest = {
     data: {
-      sheet_name: sheetName
+      sheet_name: sheetName,
+      enable_mall_value_setting: true
     },
     metadata: {
       // request_id: `sabang-upload-${Date.now()}-${userId}`

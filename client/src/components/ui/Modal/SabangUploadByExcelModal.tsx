@@ -5,11 +5,11 @@ import { Modal } from "@/components/ui/ModalComponent";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/Icon";
-import { MallConfigButton } from "@/components/ui/Button/MallConfigButton";
-import { MallConfigModal } from "@/components/ui/Modal/MallConfigModal";
+// import { MallConfigButton } from "@/components/ui/Button/MallConfigButton";
+// import { MallConfigModal } from "@/components/ui/Modal/MallConfigModal";
 import { postSabangUploadByExcel, createSabangUploadRequest } from "@/api/product/postSabangUploadByExcel";
 import type { FileResult } from "@/api/types/common";
-import type { MallConfigs } from "@/constants/mallConfig";
+// import type { MallConfigs } from "@/constants/mallConfig";
 
 export const SabangUploadByExcelModal = ({
   isOpen, 
@@ -23,8 +23,8 @@ export const SabangUploadByExcelModal = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [showResultModal, setShowResultModal] = useState(false);
   const [sheetName, setSheetName] = useState('상품등록');
-  const [showMallConfigModal, setShowMallConfigModal] = useState(false);
-  const [mallConfigs, setMallConfigs] = useState<MallConfigs | null>(null);
+  // const [showMallConfigModal, setShowMallConfigModal] = useState(false);
+  // const [mallConfigs, setMallConfigs] = useState<MallConfigs | null>(null);
 
   const [bulkResult, setBulkResult] = useState<{
     type: 'success' | 'error' | 'info' | 'warning';
@@ -53,7 +53,7 @@ export const SabangUploadByExcelModal = ({
       const requestData = createSabangUploadRequest(
         sheetName.trim(),
         userId,
-        mallConfigs
+        null // mallConfigs는 주석처리됨
       );
 
       const response = await postSabangUploadByExcel(file, requestData);
@@ -67,7 +67,7 @@ export const SabangUploadByExcelModal = ({
         setBulkResult({
           type: 'success',
           title: '사방넷 업로드 By Excel 완료',
-          message: `처리 완료: ${response.message}\n\nExcel 처리: ${JSON.stringify(response.excel_processing, null, 2)}\n데이터베이스 결과: ${JSON.stringify(response.database_result, null, 2)}\n전송 결과: ${JSON.stringify(response.transfer_result, null, 2)}\n사방넷 API 결과: ${JSON.stringify(response.sabang_api_result, null, 2)}`,
+          message: `처리 완료: ${response.message}\n\n상품 등록 결과: ${JSON.stringify(response.product_registration, null, 2)}\n쇼핑몰별 판매가 설정 결과: ${JSON.stringify(response.mall_value_setting, null, 2)}\n전체 성공 여부: ${response.overall_success}`,
           fileResults
         });
 
@@ -103,14 +103,14 @@ export const SabangUploadByExcelModal = ({
     setSheetName('상품등록');
     setBulkResult(null);
     setShowResultModal(false);
-    setShowMallConfigModal(false);
-    setMallConfigs(null);
+    // setShowMallConfigModal(false);
+    // setMallConfigs(null);
     onClose();
   };
 
-  const handleMallConfigApply = (configs: MallConfigs) => {
-    setMallConfigs(configs);
-  };
+  // const handleMallConfigApply = (configs: MallConfigs) => {
+  //   setMallConfigs(configs);
+  // };
 
   const handleResultModalClose = () => {
     setShowResultModal(false);
@@ -141,7 +141,8 @@ export const SabangUploadByExcelModal = ({
                 />
               </div>
 
-              <div>
+              {/* 쇼핑몰별 판매가 설정 기능 주석처리 */}
+              {/* <div>
                 <label className="block text-sm font-medium text-text-base-500 mb-2">
                   쇼핑몰별 판매가 설정
                 </label>
@@ -150,7 +151,7 @@ export const SabangUploadByExcelModal = ({
                   isConfigSet={mallConfigs !== null}
                   disabled={isProcessing}
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label className="block text-sm font-medium text-text-base-500 mb-2">
@@ -259,13 +260,13 @@ export const SabangUploadByExcelModal = ({
         </Modal>
       )}
 
-      {/* 쇼핑몰별 판매가 설정 모달 */}
-      <MallConfigModal
+      {/* 쇼핑몰별 판매가 설정 모달 주석처리 */}
+      {/* <MallConfigModal
         isOpen={showMallConfigModal}
         onClose={() => setShowMallConfigModal(false)}
         onApply={handleMallConfigApply}
         initialConfigs={mallConfigs || undefined}
-      />
+      /> */}
     </>
   );
 };
