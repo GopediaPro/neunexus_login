@@ -34,7 +34,7 @@ export const API_END_POINT = {
   MACRO_BATCH_INFO_LATEST: `${API_VERSION}/macro/batch-info/latest`,
 
   PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/complete-workflow`,
-  PRODUCT_SABANG_UPLOAD_BY_EXCEL: `${API_VERSION_2}/product/complete-workflow`,
+  PRODUCT_SABANG_UPLOAD_BY_EXCEL: `${API_VERSION_2}/product/complete-workflow-with-mall-value`,
 
   // V2 
   SMILE_MACRO_MULTIPLE_V2: `${API_VERSION_2}/smile-macro/smile-excel-macro-multiple-v2`,
