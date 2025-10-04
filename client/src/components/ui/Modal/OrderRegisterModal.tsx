@@ -1,6 +1,6 @@
 import { useForm, Controller } from "react-hook-form";
 import { SelectSearchInput } from "@/components/management/common/SelectSearchInput";
-import { templateOptions } from "@/constant";
+import { templateOptions } from "@/constants";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "../ModalComponent";
 import { ModalBody, ModalFooter, ModalHeader, ModalTitle } from "../ModalComponent/ModalLayout";

@@ -1,6 +1,6 @@
 import { lazy, memo, Suspense, useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { ROUTERS } from "@/constant/route";
+import { ROUTERS } from "@/constants/route";
 import type { BatchInfoResponse, BulkUpdateOrderItem, FormTemplate } from "@/api/types";
 import { useOrderGridActions } from "@/hooks/orderManagement/useOrderGridActions";
 import { useOrderContext } from "@/api/context/OrderContext";
@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useOrderCreate } from "@/api/order/postBulkDownFormOrders";
 import { useOrderUpdate } from "@/api/order/putBlukDownFormOrders";
 import { OrderSabangNetMenu } from "./OrderSabangNetMenu";
-import { DATA_FILTER_TABS } from "@/constant/order";
+import { DATA_FILTER_TABS } from "@/constants/order";
 import { useModals } from "@/hooks/useModals";
 import { handleBulkDeleteAll, handleBulkDeleteDuplicate, handleSelectedRowsDelete, refreshGridData } from "@/utils/deleteHelpers";
 import { fetchOrdersByTemplate, showOrderLoadSuccess, validateOrderData } from "@/utils/orderRefgisterHelpers";
@@ -22,6 +22,9 @@ import { handleError } from "@/utils/errorHandler";
 import { ModalLoader } from "@/components/ui/ModalComponent/ModalLoader";
 import { DbToExcelModal } from "@/components/ui/Modal/DbToExcelModal";
 import { ExcelToDbModal } from "@/components/ui/Modal/ExcelToDbModal";
+import { EcountErpTransferModal } from "@/components/ui/Modal/EcountErpTransferModal";
+import { EcountUploadModal } from "@/components/ui/Modal/EcountUploadModal";
+import { EcountErpUploadByExcelModal } from "@/components/ui/Modal/EcountErpUploadByExcelModal";
 
 const OrderRegisterModal = lazy(() =>
   import("@/components/ui/Modal/OrderRegisterModal").then(module => ({
@@ -159,15 +162,25 @@ const ActionButtons = memo(({
   </div>
 ));
 
-const MacroButtons = memo(({ onOpenSmileMacro }: { onOpenSmileMacro: () => void }) => (
+const MacroButtons = memo(({ 
+  onOpenSmileMacro, 
+  onOpenErpUpload, 
+  onOpenEcountUpload,
+  onOpenErpUploadByExcel
+}: { 
+  onOpenSmileMacro: () => void; 
+  onOpenErpUpload: () => void;
+  onOpenEcountUpload: () => void;
+  onOpenErpUploadByExcel: () => void;
+}) => (
   <div className="flex gap-2">
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
       전체 Macro
     </Button>
-    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
+    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenErpUploadByExcel}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
-      ERP Macro
+      ERP 업로드 By Excel
     </Button>
     <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
@@ -177,9 +190,13 @@ const MacroButtons = memo(({ onOpenSmileMacro }: { onOpenSmileMacro: () => void 
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
       스마일배송 업로드
     </Button>
-    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={() => {}}>
+    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenErpUpload}>
       <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
-      ERP 업로드
+      ERP 업로드용 Excel 다운로드
+    </Button>
+    <Button variant="light" size="sidebar" className="py-5 cursor-pointer border border-stroke-base-100 transition-colors" onClick={onOpenEcountUpload}>
+      <Icon name="boxes" ariaLabel="boxes" style="w-4 h-4" />
+      Ecount 데이터 업로드
     </Button>
   </div>
 ));
@@ -438,7 +455,12 @@ export const OrderToolbar = memo(() => {
               selectedRowCount={selectedRows.length}
             />
             
-            <MacroButtons onOpenSmileMacro={() => openModal('smileMacro')} />
+            <MacroButtons 
+              onOpenSmileMacro={() => openModal('smileMacro')} 
+              onOpenErpUpload={() => openModal('ecountErpTransfer')}
+              onOpenEcountUpload={() => openModal('ecountUpload')}
+              onOpenErpUploadByExcel={() => openModal('ecountErpUploadByExcel')}
+            />
           </div>
           
           <div className="flex gap-2">
@@ -516,6 +538,27 @@ export const OrderToolbar = memo(() => {
         <ExcelToDbModal
           isOpen={modals.excelToDb} 
           onClose={() => closeModal('excelToDb')} 
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalLoader />}>
+        <EcountErpTransferModal
+          isOpen={modals.ecountErpTransfer} 
+          onClose={() => closeModal('ecountErpTransfer')} 
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalLoader />}>
+        <EcountUploadModal
+          isOpen={modals.ecountUpload} 
+          onClose={() => closeModal('ecountUpload')} 
+        />
+      </Suspense>
+
+      <Suspense fallback={<ModalLoader />}>
+        <EcountErpUploadByExcelModal
+          isOpen={modals.ecountErpUploadByExcel} 
+          onClose={() => closeModal('ecountErpUploadByExcel')} 
         />
       </Suspense>
     </>

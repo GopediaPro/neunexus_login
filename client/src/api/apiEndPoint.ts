@@ -3,7 +3,11 @@ const API_VERSION = '/api/v1';
 const API_VERSION_2 = '/api/v2';
 
 export const API_END_POINT = {
-  PRODUCTS: `${API_VERSION}/product`,
+  // 상품 관리
+  // PRODUCTS: `${API_VERSION}/product-registration/list`,
+  PRODUCTS: `${API_VERSION}/product-registration`,
+  PRODUCT_REGISTRATION_BULK: `${API_VERSION}/product-registration/bulk`,
+
   // 다운폼 주문 기본 엔드포인트
   DOWN_FORM_ORDERS: `${API_VERSION}/down-form-orders`,
   DOWN_FORM_ORDERS_PAGINATION: `${API_VERSION}/down-form-orders/pagination`,
@@ -30,10 +34,19 @@ export const API_END_POINT = {
   MACRO_BATCH_INFO_LATEST: `${API_VERSION}/macro/batch-info/latest`,
 
   PRODUCT_REGISTRATION_EXCEL_IMPORT: `${API_VERSION}/product-registration/complete-workflow`,
+  PRODUCT_SABANG_UPLOAD_BY_EXCEL: `${API_VERSION_2}/product/complete-workflow-with-mall-value`,
 
   // V2 
   SMILE_MACRO_MULTIPLE_V2: `${API_VERSION_2}/smile-macro/smile-excel-macro-multiple-v2`,
 
   DOWN_FORM_ORDERS_DB_TO_EXCEL_URL: `${API_VERSION_2}/down-form-orders/db-to-excel-url`,
   DOWN_FORM_ORDERS_EXCEL_TO_DB: `${API_VERSION_2}/down-form-orders/excel-to-db`,
+
+  ECOUNT_ERP_TRANSFER_DOWNLOAD:`${API_VERSION_2}/ecount/erp-transfer/download`,
+  ECOUNT_ERP_PARTNER_CODE_UPLOAD: `${API_VERSION_2}/ecount-excel-import/erp-partner-code`,
+  ECOUNT_IYES_COST_UPLOAD: `${API_VERSION_2}/ecount-excel-import/iyes-cost`,
+  ECOUNT_ALL_DATA_UPLOAD: `${API_VERSION_2}/ecount-excel-import/all-data`,
+  ECOUNT_ERP_PARTNER_CODE_DOWNLOAD: `${API_VERSION_2}/ecount-excel-import/download/erp-partner-code`,
+  ECOUNT_IYES_COST_DOWNLOAD: `${API_VERSION_2}/ecount-excel-import/download/iyes-cost`,
+  ECOUNT_ERP_UPLOAD_BY_EXCEL: `${API_VERSION_2}/ecount/create-bulk-from-excel`,
 } as const;

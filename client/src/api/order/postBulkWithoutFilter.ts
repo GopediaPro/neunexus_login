@@ -1,4 +1,4 @@
-import { API_END_POINT } from "@/constant";
+import { API_END_POINT } from "@/constants";
 import { httpClient } from "@/api/axios";
 // 미사용 
 export const postBulkWithoutFilter = async (data: any) => {

@@ -1,5 +1,5 @@
 import { SelectSearchInput } from "@/components/management/common/SelectSearchInput";
-import { templateOptions } from "@/constant";
+import { templateOptions } from "@/constants";
 import { useState, type ChangeEvent } from "react";
 import { Button } from "../Button";
 import { useForm } from "react-hook-form";

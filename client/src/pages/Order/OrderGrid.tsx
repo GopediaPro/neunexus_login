@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import type { CellValueChangedEvent, GridReadyEvent, SelectionChangedEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useOptimizedOrderData, useOrderActions, useRenderTracker } from "@/api/context/OrderContext";
-import { OPTIMIZED_GRID_OPTIONS } from "@/constant/order";
+import { OPTIMIZED_GRID_OPTIONS } from "@/constants/order";
 import { createDefaultColDef, createGridOptions, createOrderColumns } from "@/utils/columnHelpers";
 
 const CellRenderer = React.memo(({ value }: { value: any }) => (

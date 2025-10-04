@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useOrderCreateFromReceive } from '@/api/order/postOrderCreate';
 import { Button } from '@/components/ui/Button';
 import { SelectSearchInput } from '@/components/management/common/SelectSearchInput';
-import { companyOptions, fldDspOptions, statusOptions } from '@/constant/order';
+import { companyOptions, fldDspOptions, statusOptions } from '@/constants/order';
 
 export const OrderSabangNetMenu = () => {
   const [dateFrom, setDateFrom] = useState<string>('');

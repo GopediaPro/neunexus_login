@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { SelectSearchInput } from "./common/SelectSearchInput";
 import { ruleOptions } from "@/mocks/dummy/rule";
 import { Select } from "../ui/Select";
-import { sectionOptions } from "@/constant";
+import { sectionOptions } from "@/constants";
 import { Textarea } from "../ui/Textarea";
 
 interface RuleFormData {

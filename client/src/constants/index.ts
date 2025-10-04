@@ -6,3 +6,4 @@ export { ROUTERS } from "./route";
 export { sectionOptions } from "./sectionOptions";
 export { sidebarMenu } from "./sidebar";
 export { templateOptions } from "./order";
+export * from "./product";
